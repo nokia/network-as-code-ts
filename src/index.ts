@@ -1,2 +1,7 @@
+import { NetworkAsCodeClient } from './network_as_code/client';
 
-console.log("Hello world!")
+export function main() {
+	const client = new NetworkAsCodeClient('<my-token>');
+}
+
+main();

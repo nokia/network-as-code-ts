@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { NetworkAsCodeClient } from '../src/client';
+import { NetworkAsCodeClient } from '../src/network_as_code/client';
 
 describe('NetworkAsCodeClient', () => {
 	test('should create an instance of NetworkAsCodeClient', () => {
