@@ -56,11 +56,23 @@ pipeline {
     timestamps()
   }
   stages {
+    stage('Setup') {
+      steps {
+        container('narwhal') {
+          script {
+            sh """
+              npm i
+            """
+          }
+        }        
+      }
+    }
     stage('Test') {
       steps {
         container('narwhal') {
           script {
             sh """
+              npm test
             """
           }
         }        
@@ -72,6 +84,7 @@ pipeline {
           script {
             sh """
               env | grep gitlab
+              echo 'No tests here yet!'
             """
           }
         }        
