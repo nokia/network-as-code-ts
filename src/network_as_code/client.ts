@@ -13,6 +13,23 @@
         Any additional keyword arguments will be directly passed to the underlying HTTPX client.
  */
 
+import { APIClient } from "./api/client";
+import { Devices } from "./namespaces/device";
+
 export class NetworkAsCodeClient {
-	constructor(token: string, ...args: any[]) {}
+    _api: APIClient;
+    _devices: Devices;
+
+	constructor(token: string, ...args: any[]) {
+        this._api = new APIClient(token);
+        this._devices = new Devices(this._api)
+    }
+
+
+     /**
+         * Namespace containing functionalities related to mobile subscriptions.
+    */
+    get devices(){
+       return this._devices;
+    }
 }
