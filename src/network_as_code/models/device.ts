@@ -149,19 +149,20 @@ export class Device {
 		try {
 			let sessions: any = await this._api.sessions.getAllSessions(this);
 			return sessions.map((session: any) =>
-				this.__convertSessionModel(JSON.parse(session))
+				this.__convertSessionModel(session)
 			);
-		} catch (NotFound) {
+		} catch (error) {
 			// TODO Change it to NotFound Error
 			return [];
 		}
 	}
 
 	__convertSessionModel(session: any): QoDSession {
-		return QoDSession.convertSessionModel(
+		const result = QoDSession.convertSessionModel(
 			this._api,
 			this.ipv4Address,
 			session
 		);
+		return result;
 	}
 }

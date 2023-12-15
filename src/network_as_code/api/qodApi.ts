@@ -12,16 +12,14 @@ export class QodAPI {
             rapidKey (str): RapidAPI Key
             baseUrl (str): URL for
     */
-	private client: AxiosInstance;
+	private headers: HeadersInit;
+	private baseUrl: string;
 	constructor(baseURL: string, rapidKey: string, rapidHost: string) {
-		this.client = axios.create({
-			baseURL,
-			headers: {
-				'content-type': 'application/json',
-				'X-RapidAPI-Key': rapidKey,
-				'X-RapidAPI-Host': rapidHost,
-			},
-		});
+		this.baseUrl = baseURL;
+		this.headers = {
+			'X-RapidAPI-Host': rapidHost,
+			'X-RapidAPI-Key': rapidKey,
+		};
 	}
 
 	/**
@@ -104,13 +102,17 @@ export class QodAPI {
 				'Bearer ' + notificationAuthToken;
 		}
 
-		let response = await this.client.post('/sessions', sessionPayload);
+		let response = await fetch(this.baseUrl + '/sessions', {
+			method: 'POST',
+			headers: this.headers,
+			body: JSON.stringify(sessionPayload),
+		});
 		// ADD ERROR HANDLER
 
 		return response;
 	}
 
-		/**
+	/**
  *  This function retrieves all sessions given a device_id
  * Args:
             deviceId (dict): The dict with device-id of the device whose sessions to retrieve
@@ -119,16 +121,19 @@ export class QodAPI {
             list: returns list of session
  */
 	async getAllSessions(device: Device) {
-		let url = "";
+		let url = '';
 
-		if(device.networkAccessIdentifier){
-			url = `/sessions?networkAccessIdentifier=${device.networkAccessIdentifier}`
-		}else if(device.phoneNumber) {
-			url = `/sessions?phoneNumber=${device.phoneNumber}`
+		if (device.networkAccessIdentifier) {
+			url = `/sessions?networkAccessIdentifier=${device.networkAccessIdentifier}`;
+		} else if (device.phoneNumber) {
+			url = `/sessions?phoneNumber=${device.phoneNumber}`;
 		}
 
-		let response = this.client.get(url);
-
+		let response = await fetch(this.baseUrl + url, {
+			method: 'GET',
+			headers: this.headers,
+		});
+		response = await response.json();
 		// ERROR HANDLER
 		return response;
 	}

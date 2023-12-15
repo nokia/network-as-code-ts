@@ -5,7 +5,7 @@
             end (int): the `end` of a port object.
  */
 
-import { APIClient } from "../api/client";
+import { APIClient } from '../api/client';
 
 export class PortRange {
 	constructor(start: number, end: number) {}
@@ -19,7 +19,7 @@ export class PortRange {
             ports (Optional[int]): the `ports` of a ports spec object.
  */
 export class PortSpec {
-	constructor(ranges: PortRange[]=[], ports: number[]=[]) {}
+	constructor(ranges: PortRange[] = [], ports: number[] = []) {}
 }
 
 /**
@@ -42,19 +42,24 @@ export class PortSpec {
     #### Static Methods:
         convert_session_model (Session): Returns A `Session` instance.
  */
-export class QoDSession{
-    private _api: APIClient;
-    id: string | undefined;
-    profile: string | undefined;
-    status: string | undefined;
-    startedAt: number | null | undefined
-    expiresAt: number | null | undefined
+export class QoDSession {
+	private _api: APIClient;
+	id: string | undefined;
+	profile: string | undefined;
+	status: string | undefined;
+	startedAt: number | null | undefined;
+	expiresAt: number | null | undefined;
 
-    constructor(api: APIClient, options: Record<string, any>={}){
-        this._api = api;
-    }
+	constructor(api: APIClient, options: Record<string, any> = {}) {
+		this._api = api;
+		this.id = options?.id;
+		this.profile = options?.profile;
+		this.status = options?.status;
+		this.startedAt = options?.startedAt;
+		this.expiresAt = options?.expiresAt;
+	}
 
-/**
+	/**
  * Returns a `Session` instance.
 
  * Assigns the startedAt and expiresAt attributes None if their value not found.
@@ -62,23 +67,28 @@ export class QoDSession{
             ip (any): IP address of the service.
             session (any): A `Session` object created by the low-level API.
  */
-    static convertSessionModel(api: APIClient, ip: any, session: any): QoDSession{
-        let startedAt = parseInt(session.get("startedAt", false) ? session["startedAt"] : null);
-        let expiresAt = parseInt(session.get("expiresAt", false) ? session["expiresAt"] : null);
+	static convertSessionModel(
+		api: APIClient,
+		ip: any,
+		session: any
+	): QoDSession {
+		let startedAt = session['startedAt']
+			? parseInt(session['startedAt'])
+			: null;
+		let expiresAt = session['expiresAt']
+			? parseInt(session['expiresAt'])
+			: null;
 
-        return new QoDSession(
-            api=api,
-             {
-               id: session["id"],
-               deviceIp: ip,
-               devicePorts: undefined,
-               serviceIP: '',
-               servicePorts: undefined,
-               profile: session["qosProfile"],
-               status: session["qosStatus"],
-               startedAt,
-               expiresAt
-            }
-        )
-    }
+		return new QoDSession((api = api), {
+			id: session['sessionId'],
+			deviceIp: ip,
+			devicePorts: undefined,
+			serviceIP: '',
+			servicePorts: undefined,
+			profile: session['qosProfile'],
+			status: session['qosStatus'],
+			startedAt,
+			expiresAt,
+		});
+	}
 }

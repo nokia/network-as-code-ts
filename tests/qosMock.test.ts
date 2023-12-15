@@ -1,8 +1,9 @@
+import { enableFetchMocks } from 'jest-fetch-mock';
+enableFetchMocks();
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import { NetworkAsCodeClient } from '../src/network_as_code/client';
 import { DeviceIpv4Addr } from '../src/network_as_code/models/device';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
+import fetchMock from 'jest-fetch-mock';
 
 let client: NetworkAsCodeClient;
 
@@ -12,14 +13,8 @@ beforeAll((): any => {
 });
 
 describe('Qos', () => {
-	let mock: MockAdapter;
-
 	beforeEach(() => {
-		mock = new MockAdapter(axios);
-	});
-
-	afterEach(() => {
-		mock.restore();
+		fetchMock.resetMocks();
 	});
 
 	test('should get a device', () => {
@@ -30,5 +25,27 @@ describe('Qos', () => {
 		expect(device.networkAccessIdentifier).toEqual(
 			'testuser@open5glab.net'
 		);
+	});
+
+	test('should get all sessions', async () => {
+		let device = client.devices.get(
+			'testuser@open5glab.net',
+			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80)
+		);
+
+		let mockResponse = [
+			{
+				sessionId: '1234',
+				qosProfile: 'QOS_L',
+				qosStatus: 'BLA',
+				expiresAt: 1641494400,
+				startedAt: 0,
+			},
+		];
+
+		fetchMock.mockResponseOnce(JSON.stringify(mockResponse));
+
+		const sessions = await device.sessions();
+		expect(sessions[0].id).toEqual('1234');
 	});
 });
