@@ -109,6 +109,7 @@ export class QodAPI {
 		});
 		// ADD ERROR HANDLER
 
+		response = await response.json();
 		return response;
 	}
 

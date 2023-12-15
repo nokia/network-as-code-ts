@@ -21,7 +21,7 @@ export class Devices extends Namespace {
 		networkAccessIdentifier: string | undefined = undefined,
 		ipv4Address: string | DeviceIpv4Addr,
 		ipv6Address = undefined,
-		phoneNumber = undefined
+		phoneNumber: string | undefined = undefined
 	): Device {
 		if (
 			!networkAccessIdentifier &&
