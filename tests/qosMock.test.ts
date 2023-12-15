@@ -13,6 +13,11 @@ beforeAll((): any => {
 });
 
 describe('Qos', () => {
+	let baseUrl = 'https://quality-of-service-on-demand.p-eu.rapidapi.com';
+	let headers = {
+		'X-RapidAPI-Host': 'quality-of-service-on-demand.nokia.rapidapi.com',
+		'X-RapidAPI-Key': 'TEST_TOKEN',
+	};
 	beforeEach(() => {
 		fetchMock.resetMocks();
 	});
@@ -27,6 +32,25 @@ describe('Qos', () => {
 		);
 	});
 
+	// test('should create a session', async () => {
+	// 	let device = client.devices.get(
+	// 		'testuser@open5glab.net',
+	// 		new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80)
+	// 	);
+	// 	let mockResponse = {
+	// 		"sessionId": "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+	// 		"qosProfile": "QOS_L",
+	// 		"qosStatus": "REQUESTED",
+	// 		"startedAt": 1691671102,
+	// 		"expiresAt": 1691757502
+	// 	}
+
+	// 	fetchMock.mockResponseOnce(JSON.stringify(mockResponse));
+
+	// 	const sessions = await client.sessions.get('1234');
+	// 	expect(sessions.id).toEqual('1234');
+	// });
+
 	test('should get one session', async () => {
 		let mockResponse = {
 			sessionId: '1234',
@@ -40,6 +64,10 @@ describe('Qos', () => {
 
 		const sessions = await client.sessions.get('1234');
 		expect(sessions.id).toEqual('1234');
+		expect(fetchMock).toHaveBeenCalledWith(baseUrl + '/sessions/1234', {
+			method: 'GET',
+			headers,
+		});
 	});
 
 	test('should get all sessions', async () => {
@@ -62,5 +90,13 @@ describe('Qos', () => {
 
 		const sessions = await device.sessions();
 		expect(sessions[0].id).toEqual('1234');
+		expect(fetchMock).toHaveBeenCalledWith(
+			baseUrl +
+				'/sessions?networkAccessIdentifier=testuser@open5glab.net',
+			{
+				method: 'GET',
+				headers,
+			}
+		);
 	});
 });
