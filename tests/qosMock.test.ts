@@ -27,6 +27,21 @@ describe('Qos', () => {
 		);
 	});
 
+	test('should get one session', async () => {
+		let mockResponse = {
+			sessionId: '1234',
+			qosProfile: 'QOS_L',
+			qosStatus: 'BLA',
+			expiresAt: 1641494400,
+			startedAt: 0,
+		};
+
+		fetchMock.mockResponseOnce(JSON.stringify(mockResponse));
+
+		const sessions = await client.sessions.get('1234');
+		expect(sessions.id).toEqual('1234');
+	});
+
 	test('should get all sessions', async () => {
 		let device = client.devices.get(
 			'testuser@open5glab.net',

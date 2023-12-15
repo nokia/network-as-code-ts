@@ -1,3 +1,7 @@
+import { APIClient } from './api/client';
+import { Devices } from './namespaces/device';
+import { Sessions } from './namespaces/session';
+
 /**
  * A client for working with Network as Code.
  * ### Example:
@@ -12,24 +16,28 @@
         token (str): Authentication token for the Network as Code API.
         Any additional keyword arguments will be directly passed to the underlying HTTPX client.
  */
-
-import { APIClient } from "./api/client";
-import { Devices } from "./namespaces/device";
-
 export class NetworkAsCodeClient {
-    _api: APIClient;
-    _devices: Devices;
+	_api: APIClient;
+	_devices: Devices;
+	_sessions: Sessions;
 
 	constructor(token: string, ...args: any[]) {
-        this._api = new APIClient(token);
-        this._devices = new Devices(this._api)
-    }
+		this._api = new APIClient(token);
+		this._devices = new Devices(this._api);
+		this._sessions = new Sessions(this._api);
+	}
 
+	/**
+	 * Namespace containing functionalities related to mobile subscriptions.
+	 */
+	get devices() {
+		return this._devices;
+	}
 
-     /**
-         * Namespace containing functionalities related to mobile subscriptions.
-    */
-    get devices(){
-       return this._devices;
-    }
+	/**
+	 * Namespace containing functionalities related to mobile subscriptions.
+	 */
+	get sessions() {
+		return this._sessions;
+	}
 }

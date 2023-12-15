@@ -137,4 +137,23 @@ export class QodAPI {
 		// ERROR HANDLER
 		return response;
 	}
+
+	/**
+ *  Returns a session given session ID
+ * Args:
+            sessionId (str): A string session ID
+
+        Returns:
+            Session: the session object
+ */
+	async getSession(sessionId: string) {
+		const url = `/sessions/${sessionId}`;
+		let response = await fetch(this.baseUrl + url, {
+			method: 'GET',
+			headers: this.headers,
+		});
+		response = await response.json();
+		// ERROR HANDLER
+		return response;
+	}
 }
