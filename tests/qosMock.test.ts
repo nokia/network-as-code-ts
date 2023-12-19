@@ -129,4 +129,17 @@ describe('Qos', () => {
 			}
 		);
 	});
+
+	test('should not create a session without ip address', async () => {
+		let device = client.devices.get(
+			'testuser@open5glab.net',
+			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80),
+			undefined,
+			'9382948473'
+		);
+
+		expect(device.createQodSession('QOS_L')).rejects.toThrow(
+			'ValueError: At least one of IP parameters must be provided'
+		);
+	});
 });

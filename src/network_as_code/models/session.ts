@@ -44,7 +44,7 @@ export class PortSpec {
  */
 export class QoDSession {
 	private _api: APIClient;
-	id: string | undefined;
+	id: string;
 	profile: string | undefined;
 	status: string | undefined;
 	startedAt: number | null | undefined;
@@ -57,6 +57,26 @@ export class QoDSession {
 		this.status = options?.status;
 		this.startedAt = options?.startedAt;
 		this.expiresAt = options?.expiresAt;
+	}
+
+	/**
+	 *  Deletes a given session
+	 *
+	 */
+	deleteSession() {
+		this._api.sessions.deleteSession(this.id);
+	}
+
+	/**
+	 *  Returns the duration of a given session.
+	 *
+	 */
+	duration() {
+		if (this.startedAt && this.expiresAt) {
+			return this.expiresAt - this.startedAt;
+		} else {
+			null;
+		}
 	}
 
 	/**

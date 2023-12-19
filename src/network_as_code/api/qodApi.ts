@@ -157,4 +157,20 @@ export class QodAPI {
 		// ERROR HANDLER
 		return response;
 	}
+
+	/**
+ *  Deletes a session given session ID
+ * Args:
+            id (string): session ID
+ */
+	async deleteSession(sessionId: string) {
+		const url = `/sessions/${sessionId}`;
+		let response = await fetch(this.baseUrl + url, {
+			method: 'DELETE',
+			headers: this.headers,
+		});
+		response = await response.json();
+		// ERROR HANDLER
+		return response;
+	}
 }
