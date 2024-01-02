@@ -17,6 +17,7 @@ describe('Qos', () => {
 	let headers = {
 		'X-RapidAPI-Host': 'quality-of-service-on-demand.nokia.rapidapi.com',
 		'X-RapidAPI-Key': 'TEST_TOKEN',
+		'content-type': 'application/json',
 	};
 	beforeEach(() => {
 		fetchMock.resetMocks();

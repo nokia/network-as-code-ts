@@ -8,7 +8,13 @@
 import { APIClient } from '../api/client';
 
 export class PortRange {
-	constructor(start: number, end: number) {}
+	// Aliasing Functionality is not implemented here but the python version has it
+	from;
+	to;
+	constructor(from: number, to: number) {
+		this.from = from;
+		this.to = to;
+	}
 }
 
 /**
@@ -19,7 +25,12 @@ export class PortRange {
             ports (Optional[int]): the `ports` of a ports spec object.
  */
 export class PortSpec {
-	constructor(ranges: PortRange[] = [], ports: number[] = []) {}
+	ranges;
+	ports;
+	constructor(ranges: PortRange[] = [], ports: number[] = []) {
+		this.ranges = ranges;
+		this.ports = ports;
+	}
 }
 
 /**
@@ -63,8 +74,8 @@ export class QoDSession {
 	 *  Deletes a given session
 	 *
 	 */
-	deleteSession() {
-		this._api.sessions.deleteSession(this.id);
+	async deleteSession() {
+		await this._api.sessions.deleteSession(this.id);
 	}
 
 	/**

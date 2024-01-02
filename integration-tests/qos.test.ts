@@ -1,7 +1,8 @@
-import { beforeAll, describe, expect, test } from '@jest/globals';
+import { beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
 import { NetworkAsCodeClient } from '../src/network_as_code/client';
 import { DeviceIpv4Addr } from '../src/network_as_code/models/device';
 import 'dotenv/config';
+import { PortRange, PortSpec } from '../src/network_as_code/models/session';
 
 let client: NetworkAsCodeClient;
 
@@ -12,24 +13,22 @@ beforeAll((): any => {
 });
 
 describe('Qos', () => {
-	test('should get a device', () => {
-		let device = client.devices.get(
+	let device: any;
+	beforeEach(() => {
+		device = client.devices.get(
 			'testuser@open5glab.net',
-			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80)
+			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80),
+			undefined,
+			'9382948473'
 		);
+	});
+	test('should get a device', () => {
 		expect(device.networkAccessIdentifier).toEqual(
 			'testuser@open5glab.net'
 		);
 	});
 
 	test('should create a session', async () => {
-		let device = client.devices.get(
-			'testuser@open5glab.net',
-			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80),
-			undefined,
-			'9382948473'
-		);
-
 		const session = await device.createQodSession(
 			'QOS_L',
 			'5.6.7.8',
@@ -41,13 +40,6 @@ describe('Qos', () => {
 	});
 
 	test('should get one session', async () => {
-		let device = client.devices.get(
-			'testuser@open5glab.net',
-			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80),
-			undefined,
-			'9382948473'
-		);
-
 		const newSession = await device.createQodSession(
 			'QOS_L',
 			'5.6.7.8',
@@ -58,5 +50,62 @@ describe('Qos', () => {
 		expect(session.id).toEqual(newSession.id);
 		await session.deleteSession();
 		// Test with not found case, when the error handler is added
+	});
+
+	test('should create a session with service port', async () => {
+		const session = await device.createQodSession(
+			'QOS_L',
+			'5.6.7.8',
+			'2041:0000:140F::875B:131B',
+			undefined,
+			new PortSpec(undefined, [80])
+		);
+		expect(session.status).toEqual('REQUESTED');
+		expect(session.profile).toEqual('QOS_L');
+		await session.deleteSession();
+	});
+
+	test('should create a session with port range', async () => {
+		const session = await device.createQodSession(
+			'QOS_L',
+			'5.6.7.8',
+			'2041:0000:140F::875B:131B',
+			undefined,
+			new PortSpec([new PortRange(80, 443)])
+		);
+		expect(session.status).toEqual('REQUESTED');
+		expect(session.profile).toEqual('QOS_L');
+		await session.deleteSession();
+	});
+
+	test('should create a session with duration', async () => {
+		const session = await device.createQodSession(
+			'QOS_L',
+			'5.6.7.8',
+			'2041:0000:140F::875B:131B',
+			undefined,
+			undefined,
+			60
+		);
+		expect(session.startedAt).toBeTruthy();
+		expect(session.expiresAt).toBeTruthy();
+		expect(session.duration()).toEqual(60);
+		await session.deleteSession();
+	});
+
+	test('should create a session with notification url', async () => {
+		const session = await device.createQodSession(
+			'QOS_L',
+			'5.6.7.8',
+			'2041:0000:140F::875B:131B',
+			undefined,
+			undefined,
+			undefined,
+			'https://example.com/notifications',
+			'c8974e592c2fa383d4a3960714'
+		);
+		expect(session.status).toEqual('REQUESTED');
+		expect(session.profile).toEqual('QOS_L');
+		await session.deleteSession();
 	});
 });
