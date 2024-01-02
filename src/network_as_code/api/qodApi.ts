@@ -19,6 +19,7 @@ export class QodAPI {
 		this.headers = {
 			'X-RapidAPI-Host': rapidHost,
 			'X-RapidAPI-Key': rapidKey,
+			'content-type': 'application/json',
 		};
 	}
 
@@ -169,7 +170,7 @@ export class QodAPI {
 			method: 'DELETE',
 			headers: this.headers,
 		});
-		response = await response.json();
+		response = await response;
 		// ERROR HANDLER
 		return response;
 	}
