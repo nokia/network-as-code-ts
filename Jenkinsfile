@@ -72,7 +72,7 @@ pipeline {
         container('narwhal') {
           script {
             sh """
-              npm test tests/
+              npm test
             """
           }
         }        
@@ -84,7 +84,7 @@ pipeline {
           script {
             sh """
               env | grep gitlab
-              echo 'No tests here yet!'
+              npm run integration
             """
           }
         }        

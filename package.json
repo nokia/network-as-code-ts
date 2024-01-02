@@ -6,7 +6,8 @@
 	"scripts": {
 		"build": "tsc",
 		"lint": "eslint",
-		"test": "jest"
+		"test": "jest",
+		"integration": "jest -c jest.config.integration.ts"
 	},
 	"repository": {
 		"type": "git",
