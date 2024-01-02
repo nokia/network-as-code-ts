@@ -157,6 +157,17 @@ export class Device {
 		}
 	}
 
+	/**
+	 *  Clears sessions of the device.
+	 *
+	 */
+	async clearSessions(): Promise<void> {
+		const sessions = await this.sessions();
+		sessions.forEach(async (session: any) => {
+			await session.deleteSession();
+		});
+	}
+
 	__convertSessionModel(session: any): QoDSession {
 		const result = QoDSession.convertSessionModel(
 			this._api,

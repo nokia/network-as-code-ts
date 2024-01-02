@@ -72,7 +72,7 @@ pipeline {
         container('narwhal') {
           script {
             sh """
-              npm test
+              npm test tests/
             """
           }
         }        
