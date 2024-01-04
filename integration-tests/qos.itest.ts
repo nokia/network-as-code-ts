@@ -49,7 +49,7 @@ describe('Qos', () => {
 		const session = await client.sessions.get(newSession.id);
 		expect(session.id).toEqual(newSession.id);
 		await session.deleteSession();
-		// Test with not found case, when the error handler is added
+		// TODO: Add another assertion, with not found case, when the error handler is added
 	});
 
 	test('should create a session with service port', async () => {
