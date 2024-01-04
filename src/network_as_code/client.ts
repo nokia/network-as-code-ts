@@ -21,8 +21,8 @@ export class NetworkAsCodeClient {
 	_devices: Devices;
 	_sessions: Sessions;
 
-	constructor(token: string, ...args: any[]) {
-		this._api = new APIClient(token);
+	constructor(token: string, dev_mode?: boolean) {
+		this._api = new APIClient(token, undefined, dev_mode);
 		this._devices = new Devices(this._api);
 		this._sessions = new Sessions(this._api);
 	}

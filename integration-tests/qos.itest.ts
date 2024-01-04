@@ -8,7 +8,7 @@ let client: NetworkAsCodeClient;
 
 beforeAll((): any => {
 	const NAC_TOKEN = process.env['NAC_TOKEN'];
-	client = new NetworkAsCodeClient(NAC_TOKEN ? NAC_TOKEN : 'TEST_TOKEN');
+	client = new NetworkAsCodeClient(NAC_TOKEN ? NAC_TOKEN : 'TEST_TOKEN', true);
 	return client;
 });
 

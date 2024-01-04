@@ -10,7 +10,6 @@ export class APIClient {
 		token: string,
 		qosBaseUrl: string = QOS_BASE_URL_PROD,
 		devMode: boolean = false,
-		...args: any[]
 	) {
 		if (devMode && qosBaseUrl == QOS_BASE_URL_PROD) {
 			qosBaseUrl = QOS_BASE_URL_DEV;
