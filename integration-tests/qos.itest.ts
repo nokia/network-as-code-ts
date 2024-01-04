@@ -8,7 +8,6 @@ let client: NetworkAsCodeClient;
 
 beforeAll((): any => {
 	const NAC_TOKEN = process.env['NAC_TOKEN'];
-	console.log("NACCCC", NAC_TOKEN)
 	client = new NetworkAsCodeClient(NAC_TOKEN ? NAC_TOKEN : 'TEST_TOKEN');
 	return client;
 });
