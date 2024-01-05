@@ -1,5 +1,6 @@
 import { APIClient } from '../api/client';
 import { PortSpec, QoDSession } from './session';
+import { Location, CivicAddress } from "./location";
 
 /**
  * An interface representing the `Event` model.
@@ -176,4 +177,10 @@ export class Device {
 		);
 		return result;
 	}
+
+    async getLocation(maxAge: number): Promise<Location> {
+        const location = await this._api.locationRetrieval.getLocation(this, maxAge)
+
+        return location;
+    }
 }

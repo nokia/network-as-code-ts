@@ -7,10 +7,10 @@ interface CivicAddress {
     a4?: string;
     a5?: string;
     a6?: string;
-  }
+}
   
   
-  class Location {
+interface Location {
     /**
      * A class representing the `Location` model.
      *
@@ -21,11 +21,9 @@ interface CivicAddress {
     longitude: number;
     latitude: number;
     civicAddress?: CivicAddress;
+}
   
-    constructor(longitude: number, latitude: number, civicAddress?: CivicAddress) {
-      this.longitude = longitude;
-      this.latitude = latitude;
-      this.civicAddress = civicAddress;
-    }
-  }
-  
+export {
+    Location,
+    CivicAddress
+}
