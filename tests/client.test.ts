@@ -8,9 +8,7 @@ describe('NetworkAsCodeClient', () => {
 	});
 
 	test('should create an instance of NetworkAsCodeClient with optional arguments', () => {
-		const nac = new NetworkAsCodeClient('TEST_TOKEN', {
-			'key 1': 'value 1',
-		});
+		const nac = new NetworkAsCodeClient('TEST_TOKEN', false);
 		expect(nac).toBeInstanceOf(NetworkAsCodeClient);
 	});
 });

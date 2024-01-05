@@ -84,7 +84,7 @@ pipeline {
           script {
             sh """
               env | grep gitlab
-              echo 'No tests here yet!'
+              npm run integration
             """
           }
         }        
