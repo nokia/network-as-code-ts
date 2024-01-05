@@ -16,7 +16,7 @@ describe('Qos', () => {
 	let device: any;
 	beforeEach(() => {
 		device = client.devices.get(
-			'testuser@open5glab.net',
+			'test-device@testcsp.net',
 			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80),
 			undefined,
 			'9382948473'
@@ -24,7 +24,7 @@ describe('Qos', () => {
 	});
 	test('should get a device', () => {
 		expect(device.networkAccessIdentifier).toEqual(
-			'testuser@open5glab.net'
+			'test-device@testcsp.net'
 		);
 	});
 
