@@ -183,4 +183,8 @@ export class Device {
 
         return location;
     }
+
+    async verifyLocation(latitude: number, longitude: number, radius: number, maxAge: number): Promise<boolean> {
+        return this._api.locationVerify.verifyLocation(latitude, longitude, this, radius, maxAge);
+    }
 }

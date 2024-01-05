@@ -39,20 +39,18 @@ describe('Device', () => {
 
         const location = await device.getLocation(60);
 
-        console.log(location);
-
         expect(location.longitude).toBe(0.0);
         expect(location.latitude).toBe(0.0);
         expect(location.civicAddress).toBeDefined();
     });
 
-//     it('should verify location', async () => {
-//         fetchMock.mockResponseOnce(JSON.stringify({
-//             verificationResult: 'TRUE',
-//         }));
+    it('should verify location', async () => {
+        fetchMock.mockResponseOnce(JSON.stringify({
+            verificationResult: 'TRUE',
+        }));
 
-//         const result = await device.verifyLocation(19, 47, 10000, 60);
+        const result = await device.verifyLocation(0, 0, 5000, 60);
 
-//         expect(result).toBe(true);
-//     });
+        expect(result).toBe(true);
+    });
 });

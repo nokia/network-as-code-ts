@@ -14,7 +14,7 @@ class LocationVerifyAPI {
     
     async verifyLocation(latitude: number, longitude: number, device: Device, radius: number, max_age?: number): Promise<boolean> {
         const body: any = {
-            device: device.toJSON(),
+            device: device,
             area: {
                 areaType: "Circle",
                 center: { latitude: latitude, longitude: longitude },
@@ -72,5 +72,6 @@ class LocationRetrievalAPI {
 }
 
 export {
-    LocationRetrievalAPI
+    LocationRetrievalAPI,
+    LocationVerifyAPI
 }
