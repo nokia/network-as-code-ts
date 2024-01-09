@@ -14,7 +14,7 @@ class LocationVerifyAPI {
     
     async verifyLocation(latitude: number, longitude: number, device: Device, radius: number, max_age?: number): Promise<boolean> {
         const body: any = {
-            device: device,
+            device: device.toJson(),
             area: {
                 areaType: "Circle",
                 center: { latitude: latitude, longitude: longitude },
@@ -50,7 +50,7 @@ class LocationRetrievalAPI {
     }
     
     async getLocation(device: Device, max_age?: number): Promise<any> {
-        const body: any = { device: device };
+        const body: any = { device: device.toJson() };
         
         if (max_age) {
             body.maxAge = max_age;

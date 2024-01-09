@@ -178,13 +178,22 @@ export class Device {
 		return result;
 	}
 
-    async getLocation(maxAge: number): Promise<Location> {
+    async getLocation(maxAge: number = 60): Promise<Location> {
         const location = await this._api.locationRetrieval.getLocation(this, maxAge)
 
         return location;
     }
 
-    async verifyLocation(latitude: number, longitude: number, radius: number, maxAge: number): Promise<boolean> {
+    async verifyLocation(latitude: number, longitude: number, radius: number, maxAge: number = 60): Promise<boolean> {
         return this._api.locationVerify.verifyLocation(latitude, longitude, this, radius, maxAge);
+    }
+
+    toJson(): any {
+        return {
+            networkAccessIdentifier: this.networkAccessId,
+            phoneNumber: this.phoneNumber,
+            ipv4Address: this.ipv4Address,
+            ipv6Address: this.ipv6Address
+        }
     }
 }
