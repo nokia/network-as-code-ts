@@ -1,4 +1,5 @@
 import { Device } from "../models/device";
+import { Location } from "../models/location";
 
 class LocationVerifyAPI {
     private baseUrl: string;
@@ -7,6 +8,7 @@ class LocationVerifyAPI {
     constructor(base_url: string, rapid_key: string, rapid_host: string) {
         this.baseUrl = base_url;
         this.headers = {
+            "Content-Type": "application/json",
             "X-RapidAPI-Host": rapid_host,
             "X-RapidAPI-Key": rapid_key,
         };
@@ -44,12 +46,13 @@ class LocationRetrievalAPI {
     constructor(baseUrl: string, rapidKey: string, rapidHost: string) {
         this.baseUrl = baseUrl;
         this.headers = {
+            "Content-Type": "application/json",
             "X-RapidAPI-Host": rapidHost,
             "X-RapidAPI-Key": rapidKey,
         };
     }
     
-    async getLocation(device: Device, max_age?: number): Promise<any> {
+    async getLocation(device: Device, max_age?: number): Promise<Location> {
         const body: any = { device: device.toJson() };
         
         if (max_age) {
@@ -64,10 +67,17 @@ class LocationRetrievalAPI {
         
         // Error handling
         if (!response.ok) {
+            console.log(await response.json());
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        return await response.json();
+        const jsonData = await response.json();
+
+        return {
+            latitude: jsonData.area.center.latitude,
+            longitude: jsonData.area.center.longitude,
+            civicAddress: jsonData.civicAddress
+        }
     }
 }
 

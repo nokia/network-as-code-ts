@@ -51,7 +51,7 @@ export class APIClient {
 		);
 
 		if (devMode && locationVerifyBaseUrl == LOCATION_VERIFY_BASE_URL_PROD) {
-			locationRetrievalBaseUrl = LOCATION_VERIFY_BASE_URL_DEV;
+			locationVerifyBaseUrl = LOCATION_VERIFY_BASE_URL_DEV;
 		}
 
 		this.locationVerify = new LocationVerifyAPI(
