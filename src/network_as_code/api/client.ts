@@ -1,14 +1,26 @@
 import { QodAPI } from './qodApi';
+import { LocationRetrievalAPI, LocationVerifyAPI } from './locationApi';
 
 const QOS_BASE_URL_PROD =
 	'https://quality-of-service-on-demand.p-eu.rapidapi.com';
 const QOS_BASE_URL_DEV = 'https://qos-on-demand2.p-eu.rapidapi.com';
 
+const LOCATION_RETRIEVAL_BASE_URL_PROD = "https://location-retrieval.p-eu.rapidapi.com"
+const LOCATION_RETRIEVAL_BASE_URL_DEV = "https://location-retrieval3.p-eu.rapidapi.com"
+
+const LOCATION_VERIFY_BASE_URL_PROD = "https://location-verification.p-eu.rapidapi.com"
+const LOCATION_VERIFY_BASE_URL_DEV = "https://location-verification5.p-eu.rapidapi.com"
+
 export class APIClient {
 	sessions: QodAPI;
+    locationRetrieval: LocationRetrievalAPI;
+    locationVerify: LocationVerifyAPI;
+    
 	constructor(
 		token: string,
 		qosBaseUrl: string = QOS_BASE_URL_PROD,
+        locationRetrievalBaseUrl: string = LOCATION_RETRIEVAL_BASE_URL_PROD,
+        locationVerifyBaseUrl: string = LOCATION_VERIFY_BASE_URL_PROD,
 		devMode: boolean = false,
 	) {
 		if (devMode && qosBaseUrl == QOS_BASE_URL_PROD) {
@@ -19,9 +31,37 @@ export class APIClient {
 			token,
 			devMode
 				? qosBaseUrl
-						.replace('https://', '')
-						.replace('p-eu', 'nokia-dev')
+					.replace('https://', '')
+					.replace('p-eu', 'nokia-dev')
 				: qosBaseUrl.replace('https://', '').replace('p-eu', 'nokia')
+		);
+
+		if (devMode && locationRetrievalBaseUrl == LOCATION_RETRIEVAL_BASE_URL_PROD) {
+			locationRetrievalBaseUrl = LOCATION_RETRIEVAL_BASE_URL_DEV;
+		}
+
+		this.locationRetrieval = new LocationRetrievalAPI(
+			locationRetrievalBaseUrl,
+			token,
+			devMode
+				? locationRetrievalBaseUrl
+					.replace('https://', '')
+					.replace('p-eu', 'nokia-dev')
+				: locationRetrievalBaseUrl.replace('https://', '').replace('p-eu', 'nokia')
+		);
+
+		if (devMode && locationVerifyBaseUrl == LOCATION_VERIFY_BASE_URL_PROD) {
+			locationVerifyBaseUrl = LOCATION_VERIFY_BASE_URL_DEV;
+		}
+
+		this.locationVerify = new LocationVerifyAPI(
+			locationVerifyBaseUrl,
+			token,
+			devMode
+				? locationVerifyBaseUrl
+					.replace('https://', '')
+					.replace('p-eu', 'nokia-dev')
+				: locationVerifyBaseUrl.replace('https://', '').replace('p-eu', 'nokia')
 		);
 	}
 }
