@@ -97,6 +97,7 @@ export class Device {
             notificationToken (optional): Security bearer token to authenticate registration of session.
 
         #### Example:
+        TODO: Replace with TS example
             ```python
             session = device.createSession(profile="QOS_L", serviceIpv4="5.6.7.8", serviceIpv6="2041:0000:140F::875B:131B", notificationUrl="https://example.com/notifications, notificationToken="c8974e592c2fa383d4a3960714")
             ```
