@@ -1,29 +1,30 @@
-import axios, { AxiosInstance } from 'axios';
-import { Device, DeviceIpv4Addr } from '../models/device';
-import { QoDSession } from '../models/session';
+import axios, { AxiosInstance } from "axios";
+import { Device, DeviceIpv4Addr } from "../models/device";
+import { QoDSession } from "../models/session";
+import { errorHandler } from "../errors";
 /**
  *  Qod API, that sends requests to the API via httpx calls
  */
 export class QodAPI {
-	/**
+    /**
  *  Methods takes rapidHost, rapidKey, and baseUrl.
  * Args:
             rapidHost (str): RapidAPI Host
             rapidKey (str): RapidAPI Key
             baseUrl (str): URL for
     */
-	private headers: HeadersInit;
-	private baseUrl: string;
-	constructor(baseURL: string, rapidKey: string, rapidHost: string) {
-		this.baseUrl = baseURL;
-		this.headers = {
-			'X-RapidAPI-Host': rapidHost,
-			'X-RapidAPI-Key': rapidKey,
-			'content-type': 'application/json',
-		};
-	}
+    private headers: HeadersInit;
+    private baseUrl: string;
+    constructor(baseURL: string, rapidKey: string, rapidHost: string) {
+        this.baseUrl = baseURL;
+        this.headers = {
+            "X-RapidAPI-Host": rapidHost,
+            "X-RapidAPI-Key": rapidKey,
+            "content-type": "application/json",
+        };
+    }
 
-	/**
+    /**
  *  Function that hits the create session endpoint with the data
  * 
  * #### Args:
@@ -39,82 +40,83 @@ export class QodAPI {
         Returns:
             Session: response of the endpoint, ideally a Session
  */
-	async createSession(
-		sid: any,
-		profile: any,
-		serviceIpv6: any,
-		serviceIpv4?: string,
-		phoneNumber?: string,
-		ipv4Address?: string | DeviceIpv4Addr,
-		devicePorts: any | undefined = undefined,
-		servicePorts: any | undefined = undefined,
-		duration = undefined,
-		notificationUrl = undefined,
-		notificationAuthToken = undefined
-	) {
-		let sessionPayload: any = {
-			qosProfile: profile,
-			device: { ipv4Address: {} },
-			applicationServer: { ipv4Address: serviceIpv4 },
-			devicePorts: devicePorts ? devicePorts : undefined,
-			applicationServerPorts: servicePorts ? servicePorts : undefined,
-		};
+    async createSession(
+        sid: any,
+        profile: any,
+        serviceIpv6: any,
+        serviceIpv4?: string,
+        phoneNumber?: string,
+        ipv4Address?: string | DeviceIpv4Addr,
+        devicePorts: any | undefined = undefined,
+        servicePorts: any | undefined = undefined,
+        duration = undefined,
+        notificationUrl = undefined,
+        notificationAuthToken = undefined
+    ) {
+        let sessionPayload: any = {
+            qosProfile: profile,
+            device: { ipv4Address: {} },
+            applicationServer: { ipv4Address: serviceIpv4 },
+            devicePorts: devicePorts ? devicePorts : undefined,
+            applicationServerPorts: servicePorts ? servicePorts : undefined,
+        };
 
-		if (sid) {
-			sessionPayload['device']['networkAccessIdentifier'] = sid;
-		}
+        if (sid) {
+            sessionPayload["device"]["networkAccessIdentifier"] = sid;
+        }
 
-		if (ipv4Address) {
-			if ((ipv4Address as DeviceIpv4Addr).publicAddress) {
-				sessionPayload['device']['ipv4Address']['publicAddress'] = (
-					ipv4Address as DeviceIpv4Addr
-				).publicAddress;
-			}
-			if ((ipv4Address as DeviceIpv4Addr).privateAddress) {
-				sessionPayload['device']['ipv4Address']['privateAddress'] = (
-					ipv4Address as DeviceIpv4Addr
-				).privateAddress;
-			}
-			if ((ipv4Address as DeviceIpv4Addr).publicPort) {
-				sessionPayload['device']['ipv4Address']['publicPort'] = (
-					ipv4Address as DeviceIpv4Addr
-				).publicPort;
-			}
-		}
+        if (ipv4Address) {
+            if ((ipv4Address as DeviceIpv4Addr).publicAddress) {
+                sessionPayload["device"]["ipv4Address"]["publicAddress"] = (
+                    ipv4Address as DeviceIpv4Addr
+                ).publicAddress;
+            }
+            if ((ipv4Address as DeviceIpv4Addr).privateAddress) {
+                sessionPayload["device"]["ipv4Address"]["privateAddress"] = (
+                    ipv4Address as DeviceIpv4Addr
+                ).privateAddress;
+            }
+            if ((ipv4Address as DeviceIpv4Addr).publicPort) {
+                sessionPayload["device"]["ipv4Address"]["publicPort"] = (
+                    ipv4Address as DeviceIpv4Addr
+                ).publicPort;
+            }
+        }
 
-		if (phoneNumber) {
-			sessionPayload['device']['phoneNumber'] = phoneNumber;
-		}
+        if (phoneNumber) {
+            sessionPayload["device"]["phoneNumber"] = phoneNumber;
+        }
 
-		if (serviceIpv6) {
-			sessionPayload['applicationServer']['ipv6Address'] = serviceIpv6;
-		}
+        if (serviceIpv6) {
+            sessionPayload["applicationServer"]["ipv6Address"] = serviceIpv6;
+        }
 
-		if (duration) {
-			sessionPayload['duration'] = duration;
-		}
+        if (duration) {
+            sessionPayload["duration"] = duration;
+        }
 
-		if (notificationUrl) {
-			sessionPayload['notificationUrl'] = notificationUrl;
-		}
+        if (notificationUrl) {
+            sessionPayload["notificationUrl"] = notificationUrl;
+        }
 
-		if (notificationAuthToken) {
-			sessionPayload['notificationAuthToken'] =
-				'Bearer ' + notificationAuthToken;
-		}
+        if (notificationAuthToken) {
+            sessionPayload["notificationAuthToken"] =
+                "Bearer " + notificationAuthToken;
+        }
 
-		let response = await fetch(this.baseUrl + '/sessions', {
-			method: 'POST',
-			headers: this.headers,
-			body: JSON.stringify(sessionPayload),
-		});
-		// ADD ERROR HANDLER
+        let response = await fetch(this.baseUrl + "/sessions", {
+            method: "POST",
+            headers: this.headers,
+            body: JSON.stringify(sessionPayload),
+        });
 
-		response = await response.json();
-		return response;
-	}
+        errorHandler(response);
 
-	/**
+        response = await response.json();
+        return response;
+    }
+
+    /**
  *  This function retrieves all sessions given a device_id
  * Args:
             deviceId (dict): The dict with device-id of the device whose sessions to retrieve
@@ -122,25 +124,27 @@ export class QodAPI {
         Returns:
             list: returns list of session
  */
-	async getAllSessions(device: Device) {
-		let url = '';
+    async getAllSessions(device: Device) {
+        let url = "";
 
-		if (device.networkAccessIdentifier) {
-			url = `/sessions?networkAccessIdentifier=${device.networkAccessIdentifier}`;
-		} else if (device.phoneNumber) {
-			url = `/sessions?phoneNumber=${device.phoneNumber}`;
-		}
+        if (device.networkAccessIdentifier) {
+            url = `/sessions?networkAccessIdentifier=${device.networkAccessIdentifier}`;
+        } else if (device.phoneNumber) {
+            url = `/sessions?phoneNumber=${device.phoneNumber}`;
+        }
 
-		let response = await fetch(this.baseUrl + url, {
-			method: 'GET',
-			headers: this.headers,
-		});
-		response = await response.json();
-		// ERROR HANDLER
-		return response;
-	}
+        let response = await fetch(this.baseUrl + url, {
+            method: "GET",
+            headers: this.headers,
+        });
 
-	/**
+        errorHandler(response);
+
+        response = await response.json();
+        return response;
+    }
+
+    /**
  *  Returns a session given session ID
  * Args:
             sessionId (str): A string session ID
@@ -148,30 +152,33 @@ export class QodAPI {
         Returns:
             Session: the session object
  */
-	async getSession(sessionId: string) {
-		const url = `/sessions/${sessionId}`;
-		let response = await fetch(this.baseUrl + url, {
-			method: 'GET',
-			headers: this.headers,
-		});
-		response = await response.json();
-		// ERROR HANDLER
-		return response;
-	}
+    async getSession(sessionId: string) {
+        const url = `/sessions/${sessionId}`;
+        let response = await fetch(this.baseUrl + url, {
+            method: "GET",
+            headers: this.headers,
+        });
 
-	/**
+        errorHandler(response);
+
+        response = await response.json();
+        return response;
+    }
+
+    /**
  *  Deletes a session given session ID
  * Args:
             id (string): session ID
  */
-	async deleteSession(sessionId: string) {
-		const url = `/sessions/${sessionId}`;
-		let response = await fetch(this.baseUrl + url, {
-			method: 'DELETE',
-			headers: this.headers,
-		});
-		response = await response;
-		// ERROR HANDLER
-		return response;
-	}
+    async deleteSession(sessionId: string) {
+        const url = `/sessions/${sessionId}`;
+        let response = await fetch(this.baseUrl + url, {
+            method: "DELETE",
+            headers: this.headers,
+        });
+
+        errorHandler(response);
+
+        return response;
+    }
 }
