@@ -12,4 +12,6 @@ const main = async () => {
 
     // Create a QoD session with QOS_L (large bandwidth)
     const session = await myDevice.createQodSession("QOS_L", "8.8.8.8");
+
+    session.deleteSession();
 }
