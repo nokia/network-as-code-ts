@@ -17,7 +17,7 @@ describe('Qos', () => {
 	beforeEach(() => {
 		device = client.devices.get(
 			'test-device@testcsp.net',
-			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80),
+			{ publicAddress: "1.1.1.2", privateAddress: "1.1.1.2", publicPort: 80},
 			undefined,
 			'9382948473'
 		);

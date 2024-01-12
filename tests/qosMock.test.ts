@@ -26,7 +26,7 @@ describe('Qos', () => {
 	test('should get a device', () => {
 		let device = client.devices.get(
 			'testuser@open5glab.net',
-			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80)
+			{ publicAddress: '1.1.1.2', privateAddress: '1.1.1.2', publicPort: 80 }
 		);
 		expect(device.networkAccessIdentifier).toEqual(
 			'testuser@open5glab.net'
@@ -36,7 +36,7 @@ describe('Qos', () => {
 	test('should create a session', async () => {
 		let device = client.devices.get(
 			'testuser@open5glab.net',
-			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80),
+			{ publicAddress: '1.1.1.2', privateAddress: '1.1.1.2', publicPort: 80 },
 			undefined,
 			'9382948473'
 		);
@@ -104,7 +104,7 @@ describe('Qos', () => {
 	test('should get all sessions', async () => {
 		let device = client.devices.get(
 			'testuser@open5glab.net',
-			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80)
+			{ publicAddress: '1.1.1.2', privateAddress: '1.1.1.2', publicPort: 80 }
 		);
 
 		let mockResponse = [
@@ -134,7 +134,7 @@ describe('Qos', () => {
 	test('should not create a session without ip address', async () => {
 		let device = client.devices.get(
 			'testuser@open5glab.net',
-			new DeviceIpv4Addr('1.1.1.2', '1.1.1.2', 80),
+			{ publicAddress: '1.1.1.2', privateAddress: '1.1.1.2', publicPort: 80 },
 			undefined,
 			'9382948473'
 		);

@@ -1,5 +1,6 @@
 import { QodAPI } from './qodApi';
 import { LocationRetrievalAPI, LocationVerifyAPI } from './locationApi';
+import { DeviceStatusAPI } from './deviceStatusAPI';
 
 const QOS_BASE_URL_PROD =
 	'https://quality-of-service-on-demand.p-eu.rapidapi.com';
@@ -11,16 +12,21 @@ const LOCATION_RETRIEVAL_BASE_URL_DEV = "https://location-retrieval3.p-eu.rapida
 const LOCATION_VERIFY_BASE_URL_PROD = "https://location-verification.p-eu.rapidapi.com"
 const LOCATION_VERIFY_BASE_URL_DEV = "https://location-verification5.p-eu.rapidapi.com"
 
+const DEVICE_STATUS_BASE_URL_PROD = "https://device-status.p-eu.rapidapi.com"
+const DEVICE_STATUS_BASE_URL_DEV = "https://device-status1.p-eu.rapidapi.com"
+
 export class APIClient {
 	sessions: QodAPI;
     locationRetrieval: LocationRetrievalAPI;
     locationVerify: LocationVerifyAPI;
+    deviceStatus: DeviceStatusAPI;
     
 	constructor(
 		token: string,
 		qosBaseUrl: string = QOS_BASE_URL_PROD,
         locationRetrievalBaseUrl: string = LOCATION_RETRIEVAL_BASE_URL_PROD,
         locationVerifyBaseUrl: string = LOCATION_VERIFY_BASE_URL_PROD,
+        deviceStatusBaseUrl: string = DEVICE_STATUS_BASE_URL_PROD,
 		devMode: boolean = false,
 	) {
 		if (devMode && qosBaseUrl == QOS_BASE_URL_PROD) {
@@ -62,6 +68,20 @@ export class APIClient {
 					.replace('https://', '')
 					.replace('p-eu', 'nokia-dev')
 				: locationVerifyBaseUrl.replace('https://', '').replace('p-eu', 'nokia')
+		);
+
+		if (devMode && deviceStatusBaseUrl == DEVICE_STATUS_BASE_URL_PROD) {
+			deviceStatusBaseUrl = DEVICE_STATUS_BASE_URL_DEV;
+		}
+
+		this.deviceStatus = new DeviceStatusAPI(
+			deviceStatusBaseUrl,
+			token,
+			devMode
+				? deviceStatusBaseUrl
+					.replace('https://', '')
+					.replace('p-eu', 'nokia-dev')
+				: deviceStatusBaseUrl.replace('https://', '').replace('p-eu', 'nokia')
 		);
 	}
 }

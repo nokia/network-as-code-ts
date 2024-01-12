@@ -1,5 +1,6 @@
 import { APIClient } from './api/client';
 import { Devices } from './namespaces/device';
+import { DeviceStatus } from './namespaces/deviceStatus';
 import { Sessions } from './namespaces/session';
 
 /**
@@ -17,14 +18,16 @@ import { Sessions } from './namespaces/session';
         Any additional keyword arguments will be directly passed to the underlying HTTPX client.
  */
 export class NetworkAsCodeClient {
-	_api: APIClient;
-	_devices: Devices;
-	_sessions: Sessions;
+	private _api: APIClient;
+	private _devices: Devices;
+	private _sessions: Sessions;
+    private _deviceStatus: DeviceStatus; 
 
 	constructor(token: string, dev_mode?: boolean) {
-		this._api = new APIClient(token, undefined, undefined, undefined, dev_mode);
+		this._api = new APIClient(token, undefined, undefined, undefined, undefined, dev_mode);
 		this._devices = new Devices(this._api);
 		this._sessions = new Sessions(this._api);
+        this._deviceStatus = new DeviceStatus(this._api);
 	}
 
 	/**
@@ -40,4 +43,8 @@ export class NetworkAsCodeClient {
 	get sessions() {
 		return this._sessions;
 	}
+
+    get deviceStatus() {
+        return this._deviceStatus;
+    }
 }
