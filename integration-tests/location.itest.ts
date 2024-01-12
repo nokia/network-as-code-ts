@@ -14,7 +14,7 @@ beforeAll((): any => {
 
 describe("Location retrieval and verification", () => {
     it("should retrieve location of a test device", async () => {
-        let device = client.devices.get("test-device@testcsp.net", new DeviceIpv4Addr("1.1.1.2", "1.1.1.2", 80))
+        let device = client.devices.get("test-device@testcsp.net", { publicAddress: "1.1.1.2", privateAddress: "1.1.1.2", publicPort: 80 })
 
         let location = await device.getLocation();
 
@@ -27,7 +27,7 @@ describe("Location retrieval and verification", () => {
 
 
     it("should verify location of a test device", async () => {
-        let device = client.devices.get("test-device@testcsp.net", new DeviceIpv4Addr("1.1.1.2", "1.1.1.2", 80))
+        let device = client.devices.get("test-device@testcsp.net", { publicAddress: "1.1.1.2", privateAddress: "1.1.1.2", publicPort: 80 })
 
         let is_here = await device.verifyLocation(47.48627616952785, 19.07915612501993, 10_000, 60);
 

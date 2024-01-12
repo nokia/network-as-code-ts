@@ -20,19 +20,10 @@ interface Event {
             privateAddress (float): the `private_address` of a device IPv4 address object.
             publicPort (Optional[CivicAddress]): the `public_port` of a device IPv4 address object.
  */
-export class DeviceIpv4Addr {
+export interface DeviceIpv4Addr {
 	publicAddress?: string;
 	privateAddress?: string;
 	publicPort?: number;
-	constructor(
-		publicAddress?: string,
-		privateAddress?: string,
-		publicPort?: number
-	) {
-		this.publicAddress = publicAddress;
-		this.privateAddress = privateAddress;
-		this.publicPort = publicPort;
-	}
 }
 
 /**
