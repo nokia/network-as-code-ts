@@ -7,7 +7,7 @@ import { QoDSession } from "./session";
             mnc (string): the `mnc` of a network identifier object.
             mcc (Optional[string]): the `mcc` of a network identifier object.
  */
-interface NetworkIdentifier {
+export interface NetworkIdentifier {
     mnc: string;
     mcc: string;
 }
@@ -18,7 +18,7 @@ interface NetworkIdentifier {
             serviceType (string): the service type of a slice object, Example: `eMBB`
             differentiator (Optional[string]): the differentiator of a slice object.
  */
-interface SliceInfo {
+export interface SliceInfo {
     serviceType: string;
     differentiator?: string;
 }
