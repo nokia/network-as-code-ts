@@ -32,7 +32,7 @@ export class SliceAPI {
         sliceInfo: SliceInfo,
         notificationUrl: string,
         optionalArgs?: SliceOptionalArgs
-    ): Promise<Slice> {
+    ) {
         const body: any = {
             networkIdentifier: networkId,
             sliceInfo: sliceInfo,

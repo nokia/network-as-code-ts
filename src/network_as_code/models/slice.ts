@@ -119,31 +119,34 @@ export class Slice {
         state: string,
         sliceInfo: SliceInfo,
         networkIdentifier: NetworkIdentifier,
-        {
-            sid,
-            name,
-            areaOfService,
-            maxDataConnections,
-            maxDevices,
-            sliceDownlinkThroughput,
-            sliceUplinkThroughput,
-            deviceDownlinkThroughput,
-            deviceUplinkThroughput,
-        }: SliceOptionalArgs
+        sliceOptionalArgs?: SliceOptionalArgs
     ) {
         this._api = api;
         this._sessions = [];
         this.state = state;
         this.sliceInfo = sliceInfo;
         this.networkIdentifier = networkIdentifier;
-        this.sid = sid;
-        this.name = name;
-        this.areaOfService = areaOfService;
-        this.maxDataConnections = maxDataConnections;
-        this.maxDevices = maxDevices;
-        this.sliceDownlinkThroughput = sliceDownlinkThroughput;
-        this.sliceUplinkThroughput = sliceUplinkThroughput;
-        this.deviceDownlinkThroughput = deviceDownlinkThroughput;
-        this.deviceUplinkThroughput = deviceUplinkThroughput;
+        if (sliceOptionalArgs) {
+            const {
+                sid,
+                name,
+                areaOfService,
+                maxDataConnections,
+                maxDevices,
+                sliceDownlinkThroughput,
+                sliceUplinkThroughput,
+                deviceDownlinkThroughput,
+                deviceUplinkThroughput,
+            } = sliceOptionalArgs;
+            this.sid = sid;
+            this.name = name;
+            this.areaOfService = areaOfService;
+            this.maxDataConnections = maxDataConnections;
+            this.maxDevices = maxDevices;
+            this.sliceDownlinkThroughput = sliceDownlinkThroughput;
+            this.sliceUplinkThroughput = sliceUplinkThroughput;
+            this.deviceDownlinkThroughput = deviceDownlinkThroughput;
+            this.deviceUplinkThroughput = deviceUplinkThroughput;
+        }
     }
 }
