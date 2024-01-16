@@ -103,4 +103,37 @@ describe("Qos", () => {
 
         expect(slice.name).toEqual("sdk-integration-slice-2");
     });
+
+    test("should get a slice", async () => {
+        const newSlice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { service_type: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: "sdk-integration-slice-3",
+                notificationAuthToken: "my-token",
+            }
+        );
+
+        const fetchedSlice = await client.slices.get(newSlice.name as string);
+        expect(newSlice.sid).toEqual(fetchedSlice.sid);
+    });
+
+    test("should mark a deleted slice's state as 'Deleted'", async () => {
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { service_type: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: "sdk-integration-slice-3",
+                notificationAuthToken: "my-token",
+            }
+        );
+
+        await slice.delete();
+
+        await slice.refresh();
+
+        expect(slice.state).toEqual("DELETED");
+    });
 });

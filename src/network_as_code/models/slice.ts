@@ -192,4 +192,17 @@ export class Slice {
             return await this._api.slicing.delete(this.name);
         }
     }
+
+    /**
+ *  Refresh state of the network slice.
+ * #### Args:
+            None
+
+    #### Example:
+    slice.refresh()
+ */
+    async refresh() {
+        const sliceData: any = await this._api.slicing.get(this.name as string);
+        this.state = sliceData["state"];
+    }
 }
