@@ -175,4 +175,34 @@ describe("Slicing", () => {
             expect.anything()
         );
     });
+
+    it("should delete a slice", async () => {
+        fetchMock.mockIf(
+            "https://network-slicing.p-eu.rapidapi.com/slices/sliceone",
+            (req) => {
+                expect(req.method).toBe("DELETE");
+                return Promise.resolve({});
+            }
+        );
+
+        const slice = new Slice(
+            client.api,
+            "NOT_SUBMITTED",
+            {
+                serviceType: "eMBB",
+                differentiator: "AAABBB",
+            },
+            { mcc: "236", mnc: "30" },
+            {
+                name: "sliceone",
+            }
+        );
+
+        await slice.delete();
+
+        expect(fetchMock).toHaveBeenCalledWith(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            expect.anything()
+        );
+    });
 });

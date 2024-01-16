@@ -177,4 +177,18 @@ export class Slice {
             return await this._api.slicing.deactivate(this.name);
         }
     }
+
+    /**
+ *  Delete network slice.
+ * #### Args:
+            None
+
+    #### Example:
+    slice.delete()
+ */
+    async delete() {
+        if (this.name) {
+            return await this._api.slicing.delete(this.name);
+        }
+    }
 }
