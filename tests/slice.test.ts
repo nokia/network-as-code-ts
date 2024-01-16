@@ -111,4 +111,15 @@ describe("Slicing", () => {
             expect.anything()
         );
     });
+
+    it("should get a slice", async () => {
+        fetchMock.mockResponseOnce(JSON.stringify(MOCK_SLICE));
+
+        const slice = await client.slices.get(MOCK_SLICE.slice.name);
+        expect(slice.sid).toEqual(MOCK_SLICE.csi_id);
+        expect(fetchMock).toHaveBeenCalledWith(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            expect.anything()
+        );
+    });
 });

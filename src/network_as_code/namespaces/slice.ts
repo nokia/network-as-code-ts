@@ -101,15 +101,52 @@ export class Slices extends Namespace {
                         areaOfService: slice.slice.areaOfService,
                         maxDataConnections: slice.slice.maxDataConnections,
                         maxDevices: slice.slice.maxDevices,
-                        sliceDownlinkThroughput: slice.slice.sliceDownlinkThroughput,
-                        sliceUplinkThroughput: slice.slice.sliceUplinkThroughput,
+                        sliceDownlinkThroughput:
+                            slice.slice.sliceDownlinkThroughput,
+                        sliceUplinkThroughput:
+                            slice.slice.sliceUplinkThroughput,
                         deviceDownlinkThroughput:
                             slice.slice.deviceDownlinkThroughput,
-                        deviceUplinkThroughput: slice.slice.deviceUplinkThroughput,
+                        deviceUplinkThroughput:
+                            slice.slice.deviceUplinkThroughput,
                     }
                 )
             );
         });
         return slices;
+    }
+
+    /**
+ *  Get network slice by id.
+ * 
+ * #### Args:
+            id (string): Resource id.
+
+    #### Example:
+            ```
+           fetchedSlice = nac_client.slices.get(id)
+            ```
+ */
+    async get(id: string): Promise<Slice> {
+        const data = await this.api.slicing.get(id);
+
+        let slice: Slice = new Slice(
+            this.api,
+            data.state,
+            data.slice.slice_info,
+            data.slice.networkIdentifier,
+            {
+                sid: data.csi_id,
+                name: data.slice.name,
+                areaOfService: data.slice.areaOfService,
+                maxDataConnections: data.slice.maxDataConnections,
+                maxDevices: data.slice.maxDevices,
+                sliceDownlinkThroughput: data.slice.sliceDownlinkThroughput,
+                sliceUplinkThroughput: data.slice.sliceUplinkThroughput,
+                deviceDownlinkThroughput: data.slice.deviceDownlinkThroughput,
+                deviceUplinkThroughput: data.slice.deviceUplinkThroughput,
+            }
+        );
+        return slice;
     }
 }
