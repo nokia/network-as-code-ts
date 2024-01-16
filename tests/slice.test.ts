@@ -87,7 +87,7 @@ describe("Slicing", () => {
 
         const newSlice = await client.slices.create(
             { mcc: "236", mnc: "30" },
-            { serviceType: "eMBB", differentiator: "AAABBB" },
+            { service_type: "eMBB", differentiator: "AAABBB" },
             "https://example.com/notify",
             { name: "sliceone" }
         );
@@ -133,7 +133,7 @@ describe("Slicing", () => {
             client.api,
             "NOT_SUBMITTED",
             {
-                serviceType: "eMBB",
+                service_type: "eMBB",
                 differentiator: "AAABBB",
             },
             { mcc: "236", mnc: "30" },
@@ -159,7 +159,7 @@ describe("Slicing", () => {
             client.api,
             "NOT_SUBMITTED",
             {
-                serviceType: "eMBB",
+                service_type: "eMBB",
                 differentiator: "AAABBB",
             },
             { mcc: "236", mnc: "30" },
@@ -189,7 +189,7 @@ describe("Slicing", () => {
             client.api,
             "NOT_SUBMITTED",
             {
-                serviceType: "eMBB",
+                service_type: "eMBB",
                 differentiator: "AAABBB",
             },
             { mcc: "236", mnc: "30" },

@@ -15,11 +15,11 @@ export interface NetworkIdentifier {
 /**
  *  An interface representing the `SliceInfo` model.
  * #### Public Attributes:
-            serviceType (string): the service type of a slice object, Example: `eMBB`
+            service_type (string): the service type of a slice object, Example: `eMBB`
             differentiator (Optional[string]): the differentiator of a slice object.
  */
 export interface SliceInfo {
-    serviceType: string;
+    service_type: string;
     differentiator?: string;
 }
 
@@ -40,7 +40,7 @@ interface Throughput {
             longitude (Union[float, int]): the `longitude` of a point object.
             latitude (Union[float, int]): the `latitude` of a point object.
  */
-interface Point {
+export interface Point {
     longitude?: number;
     latitude?: number;
 }
@@ -50,7 +50,7 @@ interface Point {
  * #### Public Attributes:
             polygon (List[Point]): the `polygon` value of an area of service object.
  */
-interface AreaOfService {
+export interface AreaOfService {
     polygon: Point[];
 }
 
@@ -60,6 +60,7 @@ export interface SliceOptionalArgs {
     areaOfService?: AreaOfService;
     maxDataConnections?: number;
     maxDevices?: number;
+    notificationAuthToken?: string;
     sliceDownlinkThroughput?: Throughput;
     sliceUplinkThroughput?: Throughput;
     deviceDownlinkThroughput?: Throughput;

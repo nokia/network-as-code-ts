@@ -1,5 +1,7 @@
 import {
+    AreaOfService,
     NetworkIdentifier,
+    Point,
     Slice,
     SliceInfo,
     SliceOptionalArgs,
@@ -49,7 +51,9 @@ export class SliceAPI {
             }
 
             if (optionalArgs.areaOfService) {
-                body.areaOfService = optionalArgs.areaOfService;
+                body.areaOfService = this.convertAreaOfServiceObj(
+                    optionalArgs.areaOfService
+                );
             }
 
             if (optionalArgs.maxDataConnections) {
@@ -150,6 +154,14 @@ export class SliceAPI {
         errorHandler(response);
 
         return response;
+    }
+
+    convertAreaOfServiceObj(areaOfService: AreaOfService) {
+        let polygon: any[] = [];
+        areaOfService.polygon.forEach((point: Point) => {
+            polygon.push({ lat: point.latitude, lon: point.longitude });
+        });
+        return { polygon };
     }
 }
 
