@@ -59,7 +59,14 @@ export class NetworkAsCodeClient {
         return this._deviceStatus;
     }
 
+    /**
+     * Namespace containing functionalities related to network slicing.
+     */
     get slices() {
         return this._slices;
+    }
+
+    get api() {
+        return this._api;
     }
 }

@@ -2,6 +2,7 @@ import fetchMock from "jest-fetch-mock";
 
 import { NetworkAsCodeClient } from "../src/network_as_code/client";
 import { Device } from "../src/network_as_code/models/device";
+import { Slice } from "../src/network_as_code/models/slice";
 
 fetchMock.enableMocks();
 
@@ -119,6 +120,58 @@ describe("Slicing", () => {
         expect(slice.sid).toEqual(MOCK_SLICE.csi_id);
         expect(fetchMock).toHaveBeenCalledWith(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            expect.anything()
+        );
+    });
+
+    it("should activate a slice", async () => {
+        fetchMock.mockIf(
+            "https://network-slicing.p-eu.rapidapi.com/slices/sliceone/activate"
+        );
+
+        const slice = new Slice(
+            client.api,
+            "NOT_SUBMITTED",
+            {
+                serviceType: "eMBB",
+                differentiator: "AAABBB",
+            },
+            { mcc: "236", mnc: "30" },
+            {
+                name: "sliceone",
+            }
+        );
+
+        await slice.activate();
+
+        expect(fetchMock).toHaveBeenCalledWith(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}/activate`,
+            expect.anything()
+        );
+    });
+
+    it("should deactivate a slice", async () => {
+        fetchMock.mockIf(
+            "https://network-slicing.p-eu.rapidapi.com/slices/sliceone/deactivate"
+        );
+
+        const slice = new Slice(
+            client.api,
+            "NOT_SUBMITTED",
+            {
+                serviceType: "eMBB",
+                differentiator: "AAABBB",
+            },
+            { mcc: "236", mnc: "30" },
+            {
+                name: "sliceone",
+            }
+        );
+
+        await slice.deactivate();
+
+        expect(fetchMock).toHaveBeenCalledWith(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}/deactivate`,
             expect.anything()
         );
     });

@@ -124,7 +124,7 @@ export class SliceAPI {
 
         errorHandler(response);
 
-        return response.json();
+        return response;
     }
 
     async deactivate(sliceId: string) {
@@ -138,7 +138,7 @@ export class SliceAPI {
 
         errorHandler(response);
 
-        return response.json();
+        return response;
     }
 
     async delete(sliceId: string) {

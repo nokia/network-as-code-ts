@@ -149,4 +149,32 @@ export class Slice {
             this.deviceUplinkThroughput = deviceUplinkThroughput;
         }
     }
+
+    /**
+ *  Activate network slice.
+ * #### Args:
+            None
+
+    #### Example:
+    slice.activate()
+ */
+    async activate() {
+        if (this.name) {
+            return await this._api.slicing.activate(this.name);
+        }
+    }
+
+    /**
+ *  Deactivate network slice.
+ * #### Args:
+            None
+
+    #### Example:
+    slice.deactivate()
+ */
+    async deactivate() {
+        if (this.name) {
+            return await this._api.slicing.deactivate(this.name);
+        }
+    }
 }
