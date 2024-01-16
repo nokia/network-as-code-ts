@@ -11,7 +11,7 @@ const main = async () => {
     const myDevice = client.devices.get("my_device@testcsp.net", { publicAddress: "1.1.1.2" });
 
     // Get location info
-    const location = await myDevice.getLocation(60)
+    const location = await myDevice.getLocation(60);
 
     console.log(location.latitude);
     console.log(location.longitude);
