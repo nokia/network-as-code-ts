@@ -74,5 +74,42 @@ export class Slices extends Namespace {
         return slice;
     }
 
-    // TODO: ADD get and getAll methods
+    /**
+ *  Get All slices by id.
+ * 
+ * #### Args:
+            None
+
+    #### Example:
+            ```
+            fetchedSlices = nac_client.slices.getAll()
+            ```
+ */
+    async getAll(): Promise<Slice[]> {
+        const data = await this.api.slicing.getAll();
+
+        let slices: Slice[] = [];
+        data.forEach((slice: any) => {
+            slices.push(
+                new Slice(
+                    this.api,
+                    slice.state,
+                    slice.slice.slice_info,
+                    slice.slice.networkIdentifier,
+                    {
+                        name: slice.slice.name,
+                        areaOfService: slice.slice.areaOfService,
+                        maxDataConnections: slice.slice.maxDataConnections,
+                        maxDevices: slice.slice.maxDevices,
+                        sliceDownlinkThroughput: slice.slice.sliceDownlinkThroughput,
+                        sliceUplinkThroughput: slice.slice.sliceUplinkThroughput,
+                        deviceDownlinkThroughput:
+                            slice.slice.deviceDownlinkThroughput,
+                        deviceUplinkThroughput: slice.slice.deviceUplinkThroughput,
+                    }
+                )
+            );
+        });
+        return slices;
+    }
 }

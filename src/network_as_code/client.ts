@@ -58,4 +58,8 @@ export class NetworkAsCodeClient {
     get deviceStatus() {
         return this._deviceStatus;
     }
+
+    get slices() {
+        return this._slices;
+    }
 }
