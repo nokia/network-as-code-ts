@@ -13,7 +13,7 @@ beforeAll((): any => {
     return client;
 });
 
-describe("Qos", () => {
+describe("Slicing", () => {
     let device: any;
     beforeEach(() => {
         device = client.devices.get(

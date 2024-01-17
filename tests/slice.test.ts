@@ -70,11 +70,16 @@ const MOCK_SLICE = {
 
 beforeAll(() => {
     client = new NetworkAsCodeClient("TEST_TOKEN");
-    device = client.devices.get("test-device@testcsp.net", {
-        publicAddress: "1.1.1.2",
-        privateAddress: "1.1.1.2",
-        publicPort: 80,
-    });
+    device = client.devices.get(
+        "test-device@testcsp.net",
+        {
+            publicAddress: "1.1.1.2",
+            privateAddress: "1.1.1.2",
+            publicPort: 80,
+        },
+        undefined,
+        "+12065550100"
+    );
 });
 
 beforeEach(() => {
@@ -204,5 +209,69 @@ describe("Slicing", () => {
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             expect.anything()
         );
+    });
+
+    it("should attach a device to slice", async () => {
+        fetchMock.mockResponseOnce(JSON.stringify(MOCK_SLICE));
+
+        const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
+
+        fetchMock.mockIf(
+            `https://network-slice-device-attach-norc.p-eu.rapidapi.com/slice/${slice.name}/attach`,
+            (req) => {
+                expect(req.method).toBe("POST");
+                expect(req.body).toEqual(
+                    Buffer.from(
+                        JSON.stringify({
+                            phoneNumber: "+12065550100",
+                            notificationUrl: "https://notify.me/here",
+                        })
+                    )
+                );
+                return Promise.resolve(
+                    JSON.stringify({
+                        id: "string",
+                        phoneNumber: "string",
+                        deviceStatus: "ATTACHED",
+                        progress: "INPROGRESS",
+                        slice_id: "string",
+                    })
+                );
+            }
+        );
+
+        await slice.attach(device, "https://notify.me/here");
+    });
+
+    it("should detach a device from slice", async () => {
+        fetchMock.mockResponseOnce(JSON.stringify(MOCK_SLICE));
+
+        const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
+
+        fetchMock.mockIf(
+            `https://network-slice-device-attach-norc.p-eu.rapidapi.com/slice/${slice.name}/detach`,
+            (req) => {
+                expect(req.method).toBe("POST");
+                expect(req.body).toEqual(
+                    Buffer.from(
+                        JSON.stringify({
+                            phoneNumber: "+12065550100",
+                            notificationUrl: "https://notify.me/here",
+                        })
+                    )
+                );
+                return Promise.resolve(
+                    JSON.stringify({
+                        id: "string",
+                        phoneNumber: "string",
+                        deviceStatus: "ATTACHED",
+                        progress: "INPROGRESS",
+                        slice_id: "string",
+                    })
+                );
+            }
+        );
+
+        await slice.detach(device, "https://notify.me/here");
     });
 });

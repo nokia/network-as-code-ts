@@ -1,7 +1,7 @@
 import { QodAPI } from "./qodApi";
 import { LocationRetrievalAPI, LocationVerifyAPI } from "./locationApi";
 import { DeviceStatusAPI } from "./deviceStatusAPI";
-import { SliceAPI } from "./sliceApi";
+import { AttachAPI, SliceAPI } from "./sliceApi";
 
 const QOS_BASE_URL_PROD =
     "https://quality-of-service-on-demand.p-eu.rapidapi.com";
@@ -23,12 +23,18 @@ const DEVICE_STATUS_BASE_URL_DEV = "https://device-status1.p-eu.rapidapi.com";
 const SLICE_BASE_URL_PROD = "https://network-slicing.p-eu.rapidapi.com";
 const SLICE_BASE_URL_DEV = "https://network-slicing2.p-eu.rapidapi.com";
 
+const SLICE_ATTACH_BASE_URL_PROD =
+    "https://network-slice-device-attach-norc.p-eu.rapidapi.com";
+const SLICE_ATTACH_BASE_URL_DEV =
+    "https://device-attach-norc1.p-eu.rapidapi.com";
+
 export class APIClient {
     sessions: QodAPI;
     locationRetrieval: LocationRetrievalAPI;
     locationVerify: LocationVerifyAPI;
     deviceStatus: DeviceStatusAPI;
     slicing: SliceAPI;
+    sliceAttach: AttachAPI;
 
     constructor(
         token: string,
@@ -37,6 +43,7 @@ export class APIClient {
         locationVerifyBaseUrl: string = LOCATION_VERIFY_BASE_URL_PROD,
         deviceStatusBaseUrl: string = DEVICE_STATUS_BASE_URL_PROD,
         sliceBaseUrl: string = SLICE_BASE_URL_PROD,
+        sliceAttachBaseUrl: string = SLICE_ATTACH_BASE_URL_PROD,
         devMode: boolean = false
     ) {
         if (devMode && qosBaseUrl == QOS_BASE_URL_PROD) {
@@ -115,6 +122,22 @@ export class APIClient {
                       .replace("https://", "")
                       .replace("p-eu", "nokia-dev")
                 : sliceBaseUrl.replace("https://", "").replace("p-eu", "nokia")
+        );
+
+        if (devMode && sliceAttachBaseUrl == SLICE_BASE_URL_PROD) {
+            sliceAttachBaseUrl = SLICE_BASE_URL_DEV;
+        }
+
+        this.sliceAttach = new AttachAPI(
+            sliceAttachBaseUrl,
+            token,
+            devMode
+                ? sliceAttachBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
+                : sliceAttachBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia")
         );
     }
 }

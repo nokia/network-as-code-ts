@@ -7,6 +7,7 @@ import {
     SliceOptionalArgs,
 } from "../models/slice";
 import { errorHandler } from "../errors";
+import { Device } from "../models/device";
 
 export class SliceAPI {
     private baseUrl: string;
@@ -166,5 +167,59 @@ export class SliceAPI {
 }
 
 export class AttachAPI {
-    // TODO: ATTACH API
+    private baseUrl: string;
+    private headers: HeadersInit;
+
+    /**
+ *  The class takes rapidHost, rapidKey, and baseUrl.
+ * Args:
+            rapidHost (str): RapidAPI Host
+            rapidKey (str): RapidAPI Key
+            baseUrl (str): URL for
+    */
+
+    constructor(baseURL: string, rapidKey: string, rapidHost: string) {
+        this.baseUrl = baseURL;
+        this.headers = {
+            "X-RapidAPI-Host": rapidHost,
+            "X-RapidAPI-Key": rapidKey,
+            "content-type": "application/json",
+        };
+    }
+
+    async attach(
+        device: Device,
+        sliceId: string,
+        notificationUrl: string,
+        notificationAuthToken?: string
+    ) {
+        const res = await fetch(`${this.baseUrl}/slice/${sliceId}/attach`, {
+            method: "POST",
+            body: JSON.stringify({
+                phoneNumber: device.phoneNumber,
+                notificationUrl,
+                notificationAuthToken,
+            }),
+        });
+
+        errorHandler(res);
+    }
+
+    async detach(
+        device: Device,
+        sliceId: string,
+        notificationUrl: string,
+        notificationAuthToken?: string
+    ) {
+        const res = await fetch(`${this.baseUrl}/slice/${sliceId}/detach`, {
+            method: "POST",
+            body: JSON.stringify({
+                phoneNumber: device.phoneNumber,
+                notificationUrl,
+                notificationAuthToken,
+            }),
+        });
+
+        errorHandler(res);
+    }
 }

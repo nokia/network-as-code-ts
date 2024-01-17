@@ -1,4 +1,5 @@
 import { APIClient } from "../api/client";
+import { Device } from "./device";
 import { QoDSession } from "./session";
 
 /**
@@ -204,5 +205,50 @@ export class Slice {
     async refresh() {
         const sliceData: any = await this._api.slicing.get(this.name as string);
         this.state = sliceData["state"];
+    }
+
+    /**
+ *  Attach network slice.
+ * #### Args:
+            device (Device): Device object that the slice is being attached to
+
+    #### Example:
+            device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80})
+            slice.attach(device)
+ */
+    async attach(
+        device: Device,
+        notificationUrl: string,
+        notificationAuthToken?: string
+    ) {
+        await this._api.sliceAttach.attach(
+            device,
+            this.name as string,
+            notificationUrl,
+            notificationAuthToken
+        );
+    }
+
+    /**
+ *  Detach network slice.
+ * #### Args:
+            device (Device): Device object that the slice is being attached to
+
+    #### Example:
+            device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80})
+            slice.attach(device)
+            slice.detach()
+ */
+    async detach(
+        device: Device,
+        notificationUrl: string,
+        notificationAuthToken?: string
+    ) {
+        await this._api.sliceAttach.detach(
+            device,
+            this.name as string,
+            notificationUrl,
+            notificationAuthToken
+        );
     }
 }
