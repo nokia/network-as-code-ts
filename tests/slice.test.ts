@@ -3,6 +3,12 @@ import fetchMock from "jest-fetch-mock";
 import { NetworkAsCodeClient } from "../src/network_as_code/client";
 import { Device } from "../src/network_as_code/models/device";
 import { Slice } from "../src/network_as_code/models/slice";
+import {
+    APIError,
+    AuthenticationError,
+    NotFoundError,
+    ServiceError,
+} from "../src/network_as_code/errors";
 
 fetchMock.enableMocks();
 
@@ -273,5 +279,91 @@ describe("Slicing", () => {
         );
 
         await slice.detach(device, "https://notify.me/here");
+    });
+
+    test("should throw NotFound Error for 404 HTTPError", async () => {
+        fetchMock.mockResponseOnce(JSON.stringify({ message: "Not Found" }), {
+            status: 404,
+        });
+
+        try {
+            await client.slices.get(MOCK_SLICE["slice"]["name"]);
+        } catch (error) {
+            expect(error).toBeInstanceOf(NotFoundError);
+        }
+    });
+
+    test("should throw Authentication Error for 403 HTTPError", async () => {
+        fetchMock.mockResponseOnce(
+            JSON.stringify({ message: "Authentication Error" }),
+            {
+                status: 403,
+            }
+        );
+
+        try {
+            await client.slices.create(
+                { mcc: "236", mnc: "30" },
+                { service_type: "eMBB", differentiator: "AAABBB" },
+                "https://example.com/notify",
+                { name: "sliceone" }
+            );
+        } catch (error) {
+            expect(error).toBeInstanceOf(AuthenticationError);
+        }
+    });
+
+    test("should throw Authentication Error for 401 HTTPError", async () => {
+        fetchMock.mockResponseOnce(
+            JSON.stringify({ message: "Authentication Error" }),
+            {
+                status: 401,
+            }
+        );
+
+        try {
+            await client.slices.create(
+                { mcc: "236", mnc: "30" },
+                { service_type: "eMBB", differentiator: "AAABBB" },
+                "https://example.com/notify",
+                { name: "sliceone" }
+            );
+        } catch (error) {
+            expect(error).toBeInstanceOf(AuthenticationError);
+        }
+    });
+
+    test("should throw API Error for 4xx HTTPError", async () => {
+        fetchMock.mockResponseOnce(JSON.stringify({ message: "API Error" }), {
+            status: 400, // All 4XX error code except 401, 403, and 404.
+        });
+
+        try {
+            await client.slices.create(
+                { mcc: "236", mnc: "30" },
+                { service_type: "eMBB", differentiator: "AAABBB" },
+                "https://example.com/notify",
+                { name: "sliceone" }
+            );
+        } catch (error) {
+            expect(error).toBeInstanceOf(APIError);
+        }
+    });
+
+    test("should throw Service Error for 500 HTTPError", async () => {
+        fetchMock.mockResponseOnce(JSON.stringify({ message: "API Error" }), {
+            status: 500,
+        });
+
+        try {
+            await client.slices.create(
+                { mcc: "236", mnc: "30" },
+                { service_type: "eMBB", differentiator: "AAABBB" },
+                "https://example.com/notify",
+                { name: "sliceone" }
+            );
+        } catch (error) {
+            expect(error).toBeInstanceOf(ServiceError);
+        }
     });
 });
