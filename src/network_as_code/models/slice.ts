@@ -107,10 +107,10 @@ export class Slice {
     sliceInfo: SliceInfo;
     networkIdentifier: NetworkIdentifier;
     sid?: string;
-    name?: string; // TODO: Add Validation As the Python version
+    name?: string;
     areaOfService?: AreaOfService;
-    maxDataConnections?: number; // TODO: Add GE validation
-    maxDevices?: number; // TODO: Add GE validation
+    maxDataConnections?: number;
+    maxDevices?: number;
     sliceDownlinkThroughput?: Throughput;
     sliceUplinkThroughput?: Throughput;
     deviceDownlinkThroughput?: Throughput;
