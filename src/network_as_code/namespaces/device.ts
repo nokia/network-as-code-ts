@@ -1,5 +1,5 @@
-import { Device, DeviceIpv4Addr } from '../models/device';
-import { Namespace } from './namespace';
+import { Device, DeviceIpv4Addr } from "../models/device";
+import { Namespace } from "./namespace";
 
 /**
  *  Representation of a mobile subscription.
@@ -8,7 +8,7 @@ import { Namespace } from './namespace';
     subscription can be configured on the network.
  */
 export class Devices extends Namespace {
-	/**
+    /**
      *  Get a subscription by its external ID.
      * 
      * Args:
@@ -17,32 +17,32 @@ export class Devices extends Namespace {
             ipv6Address (Any | None): ipv6 address of the subscription.
             phoneNumber (Any | None): phone number of the subscription.
     */
-	get(
-		networkAccessIdentifier: string | undefined = undefined,
-		ipv4Address: string | DeviceIpv4Addr,
-		ipv6Address = undefined,
-		phoneNumber: string | undefined = undefined
-	): Device {
-		if (
-			!networkAccessIdentifier &&
-			!ipv4Address &&
-			!ipv6Address &&
-			phoneNumber
-		) {
-			throw new Error('At least one parameter must be set.');
-		}
+    get(
+        networkAccessIdentifier: string | undefined = undefined,
+        ipv4Address: string | DeviceIpv4Addr,
+        ipv6Address = undefined,
+        phoneNumber: string | undefined = undefined
+    ): Device {
+        if (
+            !networkAccessIdentifier &&
+            !ipv4Address &&
+            !ipv6Address &&
+            phoneNumber
+        ) {
+            throw new Error("At least one parameter must be set.");
+        }
 
-		if (typeof ipv4Address === 'string') {
-			ipv4Address = new DeviceIpv4Addr(ipv4Address, undefined, undefined);
-		}
+        if (typeof ipv4Address === "string") {
+            ipv4Address = { publicAddress: ipv4Address };
+        }
 
-		let retDevice = new Device(
-			this.api,
-			networkAccessIdentifier,
-			ipv4Address,
-			ipv6Address,
-			phoneNumber
-		);
-		return retDevice;
-	}
+        let retDevice = new Device(
+            this.api,
+            networkAccessIdentifier,
+            ipv4Address,
+            ipv6Address,
+            phoneNumber
+        );
+        return retDevice;
+    }
 }

@@ -6,7 +6,7 @@ class NaCError extends Error {}
 /**
  *Error for when the Network as Code API returns an error message.
  */
-class APIError extends Error {}
+export class APIError extends Error {}
 
 /**
  *Error for when a connection to the SDK gateway can't be established.
@@ -16,7 +16,7 @@ class GatewayConnectionError extends Error {}
 /**
  *Error for when a resource can't be found from the Network as Code API.
  */
-class NotFoundError extends Error {}
+export class NotFoundError extends Error {}
 
 /**
  *Error for when the Network as Code API cannot be reached.
@@ -26,12 +26,12 @@ class APIConnectionError extends Error {}
 /**
  *Error for when the API key is invalid, the user of the key is not subscribed to the API, or the API key was not supplied. (403)
  */
-class AuthenticationError extends Error {}
+export class AuthenticationError extends Error {}
 
 /**
  *Error for when the server returns an error when responding to the request. (5XX)
  */
-class ServiceError extends Error {}
+export class ServiceError extends Error {}
 
 /**
  *Error for when the user input parameters are invalid
