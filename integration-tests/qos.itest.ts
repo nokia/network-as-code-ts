@@ -71,7 +71,7 @@ describe("Qos", () => {
             "5.6.7.8",
             "2041:0000:140F::875B:131B",
             undefined,
-            new PortSpec(undefined, [80])
+            { ports: [80] }
         );
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_L");
@@ -84,7 +84,7 @@ describe("Qos", () => {
             "5.6.7.8",
             "2041:0000:140F::875B:131B",
             undefined,
-            new PortSpec([new PortRange(80, 443)])
+            { ranges: [{ from: 80, to: 443 }] }
         );
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_L");
