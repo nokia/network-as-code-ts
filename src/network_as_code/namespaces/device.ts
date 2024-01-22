@@ -12,7 +12,7 @@ export class Devices extends Namespace {
      *  Get a subscription by its external ID.
      * 
      * Args:
-            id (str): External ID of the subscription. Email-like.
+            id (string): External ID of the subscription. Email-like.
             ipv4Address (Any | None): ipv4 address of the subscription.
             ipv6Address (Any | None): ipv6 address of the subscription.
             phoneNumber (Any | None): phone number of the subscription.
