@@ -6,12 +6,12 @@ class LocationVerifyAPI {
     private baseUrl: string;
     private headers: HeadersInit;
 
-    constructor(base_url: string, rapid_key: string, rapid_host: string) {
-        this.baseUrl = base_url;
+    constructor(baseUrl: string, rapidKey: string, rapidHost: string) {
+        this.baseUrl = baseUrl;
         this.headers = {
             "Content-Type": "application/json",
-            "X-RapidAPI-Host": rapid_host,
-            "X-RapidAPI-Key": rapid_key,
+            "X-RapidAPI-Host": rapidHost,
+            "X-RapidAPI-Key": rapidKey,
         };
     }
 
@@ -20,7 +20,7 @@ class LocationVerifyAPI {
         longitude: number,
         device: Device,
         radius: number,
-        max_age?: number
+        maxAge?: number
     ): Promise<boolean> {
         const body: any = {
             device: device.toJson(),
@@ -31,8 +31,8 @@ class LocationVerifyAPI {
             },
         };
 
-        if (max_age) {
-            body.maxAge = max_age;
+        if (maxAge) {
+            body.maxAge = maxAge;
         }
 
         const response = await fetch(`${this.baseUrl}/verify`, {
@@ -61,11 +61,11 @@ class LocationRetrievalAPI {
         };
     }
 
-    async getLocation(device: Device, max_age?: number): Promise<Location> {
+    async getLocation(device: Device, maxAge?: number): Promise<Location> {
         const body: any = { device: device.toJson() };
 
-        if (max_age) {
-            body.maxAge = max_age;
+        if (maxAge) {
+            body.maxAge = maxAge;
         }
 
         const response = await fetch(`${this.baseUrl}/retrieve`, {

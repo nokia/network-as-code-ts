@@ -9,8 +9,7 @@
     "sourceType": "module"
   },
   "rules": {
-    "@typescript-eslint/naming-convention": "off",
-    "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/naming-convention": "error",
     "@typescript-eslint/semi": "off",
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/quotes": "off",
