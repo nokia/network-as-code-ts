@@ -1,7 +1,6 @@
-import axios, { AxiosInstance } from "axios";
 import { Device, DeviceIpv4Addr } from "../models/device";
-import { QoDSession } from "../models/session";
 import { errorHandler } from "../errors";
+import { PortSpec } from "../models/session";
 /**
  *  Qod API, that sends requests to the API via httpx calls
  */
@@ -41,14 +40,14 @@ export class QodAPI {
             Session: response of the endpoint, ideally a Session
  */
     async createSession(
-        sid: any,
-        profile: any,
-        serviceIpv6: any,
+        sid: string | undefined,
+        profile: string,
+        serviceIpv6: string | undefined,
         serviceIpv4?: string,
         phoneNumber?: string,
         ipv4Address?: string | DeviceIpv4Addr,
-        devicePorts: any | undefined = undefined,
-        servicePorts: any | undefined = undefined,
+        devicePorts: PortSpec | undefined = undefined,
+        servicePorts: PortSpec | undefined = undefined,
         duration = undefined,
         notificationUrl = undefined,
         notificationAuthToken = undefined

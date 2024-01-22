@@ -158,7 +158,7 @@ export class SliceAPI {
     }
 
     convertAreaOfServiceObj(areaOfService: AreaOfService) {
-        let polygon: any[] = [];
+        let polygon: Array<{ lat?: number; lon?: number }> = [];
         areaOfService.polygon.forEach((point: Point) => {
             polygon.push({ lat: point.latitude, lon: point.longitude });
         });
