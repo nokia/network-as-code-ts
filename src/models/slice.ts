@@ -5,8 +5,8 @@ import { QoDSession } from "./session";
 /**
  * An interface representing the `NetworkIdentifier` model.
  * #### Public Attributes:
-            mnc (string): the `mnc` of a network identifier object.
-            mcc (Optional[string]): the `mcc` of a network identifier object.
+            @param mnc (string): the `mnc` of a network identifier object.
+            @param mcc (Optional[string]): the `mcc` of a network identifier object.
  */
 export interface NetworkIdentifier {
     mnc: string;
@@ -16,8 +16,8 @@ export interface NetworkIdentifier {
 /**
  *  An interface representing the `SliceInfo` model.
  * #### Public Attributes:
-            service_type (string): the service type of a slice object, Example: `eMBB`
-            differentiator (Optional[string]): the differentiator of a slice object.
+            @param service_type (string): the service type of a slice object, Example: `eMBB`
+            @param differentiator (Optional[string]): the differentiator of a slice object.
  */
 export interface SliceInfo {
     service_type: string;
@@ -27,8 +27,8 @@ export interface SliceInfo {
 /**
  *  An interface representing the `Throughput` model.
  * #### Public Attributes:
-            guaranteed (number): the guaranteed throughput amount in integer
-            maximum (number): the maximum throughput amount in integer
+           @param guaranteed (number): the guaranteed throughput amount in integer
+           @param maximum (number): the maximum throughput amount in integer
  */
 interface Throughput {
     guaranteed?: number;
@@ -38,8 +38,8 @@ interface Throughput {
 /**
  *  An interface representing the `Point` model.
  * #### Public Attributes:
-            longitude (Union[float, int]): the `longitude` of a point object.
-            latitude (Union[float, int]): the `latitude` of a point object.
+           @param longitude (number): the `longitude` of a point object.
+           @param latitude (number): the `latitude` of a point object.
  */
 export interface Point {
     longitude?: number;
@@ -49,7 +49,7 @@ export interface Point {
 /**
  *  An interface representing the `AreaOfService` model.
  * #### Public Attributes:
-            polygon (List[Point]): the `polygon` value of an area of service object.
+           @param polygon (Point[]): the `polygon` value of an area of service object.
  */
 export interface AreaOfService {
     polygon: Point[];
@@ -71,22 +71,22 @@ export interface SliceOptionalArgs {
 /**
  *  A class representing the `Slice` model.
  * #### Private Attributes:
-        _api(APIClient): An API client object.
-        _sessions(List[Session]): List of device session instances.
+       @param _api(APIClient): An API client object.
+       @param _sessions(List[Session]): List of device session instances.
 
     #### Public Attributes:
-        sid (optional): String ID of the slice
-        state (str): State of the slice (ie. NOT_SUBMITTED)
-        name (optional): Optional short name for the slice. Must be ASCII characters, digits and dash. Like name of an event, such as "Concert-2029-Big-Arena".
-        networkIdentifier (NetworkIdentifier): Name of the network
-        sliceInfo (SliceInfo): Purpose of this slice
-        areaOfService (AreaOfService): Location of the slice
-        maxDataConnections (optional): Optional maximum number of data connection sessions in the slice.
-        maxDevices (optional): Optional maximum number of devices using the slice.
-        sliceDownlinkThroughput (optional): Optional throughput object
-        sliceUplinkThroughput (optional): Optional throughput object
-        deviceDownlinkThroughput (optional): Optional throughput object
-        deviceUplinkThroughput: (optional): Optional throughput object
+       @param sid (optional): String ID of the slice
+       @param state (str): State of the slice (ie. NOT_SUBMITTED)
+       @param name (optional): Optional short name for the slice. Must be ASCII characters, digits and dash. Like name of an event, such as "Concert-2029-Big-Arena".
+       @param networkIdentifier (NetworkIdentifier): Name of the network
+       @param sliceInfo (SliceInfo): Purpose of this slice
+       @param areaOfService (AreaOfService): Location of the slice
+       @param maxDataConnections (optional): Optional maximum number of data connection sessions in the slice.
+       @param maxDevices (optional): Optional maximum number of devices using the slice.
+       @param sliceDownlinkThroughput (optional): Optional throughput object
+       @param sliceUplinkThroughput (optional): Optional throughput object
+       @param deviceDownlinkThroughput (optional): Optional throughput object
+       @param deviceUplinkThroughput: (optional): Optional throughput object
 
 
     #### Public Methods:

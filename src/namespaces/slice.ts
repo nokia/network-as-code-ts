@@ -17,19 +17,18 @@ export class Slices extends Namespace {
  *  Create a slice with its network identifier, slice info, area of service, and notification url.
  * 
  * #### Args:
-            networkId (NetworkIdentifier): Name of the network
-            sliceInfo (SliceInfo): Purpose of this slice
-            areaOfService (AreaOfService): Location of the slice
-            sliceDownlinkThroughput (optional): Optional throughput object
-            sliceUplinkThroughput (optional): Optional throughput object
-            deviceDownlinkThroughput (optional): Optional throughput object
-            deviceUplinkThroughput: (optional): Optional throughput object
-            name (optional): Optional short name for the slice. Must be ASCII characters, digits and dash. Like name of an event, such as "Concert-2029-Big-Arena".
-            maxDataConnections (optional): Optional maximum number of data connection sessions in the slice.
-            maxDevices (optional): Optional maximum number of devices using the slice.
-
+            @param networkId (NetworkIdentifier): Name of the network
+            @param sliceInfo (SliceInfo): Purpose of this slice
+            @param areaOfService (AreaOfService): Location of the slice
+            @param sliceDownlinkThroughput (optional): Optional throughput object
+            @param sliceUplinkThroughput (optional): Optional throughput object
+            @param deviceDownlinkThroughput (optional): Optional throughput object
+            @param deviceUplinkThroughput: (optional): Optional throughput object
+            @param name (optional): Optional short name for the slice. Must be ASCII characters, digits and dash. Like name of an event, such as "Concert-2029-Big-Arena".
+            @param maxDataConnections (optional): Optional maximum number of data connection sessions in the slice.
+            @param maxDevices (optional): Optional maximum number of devices using the slice.
+            @returns Slice
     #### Example:
-        ```typescript
         import NetworkIdentifier, SliceInfo, AreaOfService, Point from models.slice
         
 
@@ -44,7 +43,6 @@ export class Slices extends Namespace {
             area_of_service = area_of_service,
             notification_url = notification_url
         )
-        ```
  */
 
     async create(
@@ -79,11 +77,10 @@ export class Slices extends Namespace {
  * 
  * #### Args:
             None
+        @returns Promise Slice[]
 
     #### Example:
-            ```
             fetchedSlices = nac_client.slices.getAll()
-            ```
  */
     async getAll(): Promise<Slice[]> {
         const data = await this.api.slicing.getAll();
@@ -120,12 +117,11 @@ export class Slices extends Namespace {
  *  Get network slice by id.
  * 
  * #### Args:
-            id (string): Resource id.
+          @param  id (string): Resource id.
+          @returns Promise Slice
 
     #### Example:
-            ```
            fetchedSlice = nac_client.slices.get(id)
-            ```
  */
     async get(id: string): Promise<Slice> {
         const data = await this.api.slicing.get(id);

@@ -30,18 +30,18 @@ export interface DeviceIpv4Addr {
  *  A class representing the `Device` model.
  * #### Private Attributes:
         _api(APIClient): An API client object.
-        _sessions(List[Session]): List of device session instances.
+        _sessions(Session[]): List of device session instances.
 
 
     #### Public Attributes:
         sid(EmailStr): Device Identifier email string.
-        phoneNumber(str): Phone Number string
+        phoneNumber(string): Phone Number string
         ipv4Address (DeviceIpv4Addr): DeviceIpv4Addr
-        ipv6Address (str): string
+        ipv6Address (string): string
 
     #### Public Methods:
         createSession (Session): Creates a session for the device.
-        sessions (List[Session]): Returns all the sessions created by the device network_access_id.
+        sessions (Session[]): Returns all the sessions created by the device network_access_id.
         clearSessions (): Deletes all the sessions created by the device network_access_id.
         location (Location): Gets the location of the device and returns a Location client object.
         verifyLocation (bool): Verifies if a device is located in a given location point.
@@ -78,20 +78,18 @@ export class Device {
     /**
  *  Creates a session for the device.
  * #### Args:
-            profile (any): Name of the requested QoS profile.
-            serviceIpv4 (any): IPv4 address of the service.
-            serviceIpv6 (optional): IPv6 address of the service.
-            devicePorts (optional): List of the device ports.
-            servicePorts (optional): List of the application server ports.
-            duration (optional): Session duration in seconds.
-            notificationUrl (optional): Notification URL for session-related events.
-            notificationToken (optional): Security bearer token to authenticate registration of session.
+            @param profile (any): Name of the requested QoS profile.
+            @param serviceIpv4 (any): IPv4 address of the service.
+            @param serviceIpv6 (optional): IPv6 address of the service.
+            @param devicePorts (optional): List of the device ports.
+            @param servicePorts (optional): List of the application server ports.
+            @param duration (optional): Session duration in seconds.
+            @param notificationUrl (optional): Notification URL for session-related events.
+            @param notificationToken (optional): Security bearer token to authenticate registration of session.
+            @returns Promise QoDSession
 
         #### Example:
-        TODO: Replace with TS example
-            ```python
             session = device.createSession(profile="QOS_L", serviceIpv4="5.6.7.8", serviceIpv6="2041:0000:140F::875B:131B", notificationUrl="https://example.com/notifications, notificationToken="c8974e592c2fa383d4a3960714")
-            ```
  */
     async createQodSession(
         profile: string,
@@ -133,10 +131,9 @@ export class Device {
 
     /**
  *  List sessions of the device.
+ *  @returns Promise QoDSession[]
  *  #### Example:
-            ```
             sessions = device.sessions()
-            ```
  */
     async sessions(): Promise<QoDSession[]> {
         try {
@@ -145,7 +142,6 @@ export class Device {
                 this.__convertSessionModel(session)
             );
         } catch (error) {
-            // TODO Change it to NotFound Error
             return [];
         }
     }
@@ -170,6 +166,13 @@ export class Device {
         return result;
     }
 
+    /**
+ *  Returns the location of the device.
+ *  @param maxAge (number): Max acceptable age for location info in seconds
+ *  @returns Promise Location
+ *  #### Example:
+            location = device.location(60)
+ */
     async getLocation(maxAge: number = 60): Promise<Location> {
         const location = await this._api.locationRetrieval.getLocation(
             this,
@@ -178,6 +181,17 @@ export class Device {
 
         return location;
     }
+
+    /**
+ *  Verifies the location of the device(Returns boolean value).
+ *  @param latitude (number):latitude of the device.
+ *  @param longitude (number):longitude of the device.
+ *  @param radius (number):radius of the device.
+ *  @param maxAge (number):maxAge of the device.
+ *  @returns Promise boolean
+ *  #### Example:
+            located? = device.verifyLocation(24.07915612501993, 47.48627616952785, 10_000, 60)
+ */
 
     async verifyLocation(
         latitude: number,

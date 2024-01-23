@@ -17,8 +17,8 @@ export interface PortRange {
  * An interface representing the `PortsSpec` model.
 
  * #### Public Attributes:
-            ranges (PortRange[]): the `ranges` of a ports spec object.
-            ports (Optional[int]): the `ports` of a ports spec object.
+            @param ranges (PortRange[]): the `ranges` of a ports spec object.
+            @param ports (Optional[number]): the `ports` of a ports spec object.
  */
 export interface PortSpec {
     ranges?: PortRange[];
@@ -32,16 +32,16 @@ export interface PortSpec {
         _api(APIClient): An API client object.
 
     #### Public Attributes:
-        id (string): Session identifier.
-        serviceIp (string): IP address of a service.
-        servicePorts (Union[PortsSpec, None]): List of ports for a service.
-        profile (string): Name of the requested QoS profile.
-        status(string): Status of the requested QoS.
-        startedAt (Union[int, None]): Starting time of the session.
-        expiresAt (Union[int, None]): Expiry time of the session.
+        @param id (string): Session identifier.
+        @param serviceIp (string): IP address of a service.
+        @param servicePorts (Union[PortsSpec, undefined]): List of ports for a service.
+        @param profile (string): Name of the requested QoS profile.
+        @param status(string): Status of the requested QoS.
+        @param startedAt (Union[number, undefined]): Starting time of the session.
+        @param expiresAt (Union[number, undefined]): Expiry time of the session.
     #### Public Methods:
-        delete (None): Deletes a given session.
-        duration (int | None): Returns the duration of a given session.
+        delete (undefined): Deletes a given session.
+        duration (number | undefined): Returns the duration of a given session.
     #### Static Methods:
         convertSessionModel (Session): Returns A `Session` instance.
  */
@@ -87,8 +87,9 @@ export class QoDSession {
 
  * Assigns the startedAt and expiresAt attributes None if their value not found.
      #### Args:
-            ip (any): IP address of the service.
-            session (any): A `Session` object created by the low-level API.
+            @param ip (any): IP address of the service.
+            @param session (any): A `Session` object created by the low-level API.
+            @returns QoDSession
  */
     static convertSessionModel(
         api: APIClient,
