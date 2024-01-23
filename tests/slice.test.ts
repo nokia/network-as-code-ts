@@ -1,14 +1,14 @@
 import fetchMock from "jest-fetch-mock";
 
-import { NetworkAsCodeClient } from "../src/network_as_code/client";
-import { Device } from "../src/network_as_code/models/device";
-import { Slice } from "../src/network_as_code/models/slice";
 import {
     APIError,
     AuthenticationError,
     NotFoundError,
     ServiceError,
-} from "../src/network_as_code/errors";
+} from "../src/errors";
+import { NetworkAsCodeClient } from "../src";
+import { Device } from "../src/models/device";
+import { Slice } from "../src/models/slice";
 
 fetchMock.enableMocks();
 

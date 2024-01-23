@@ -1,6 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
-import { NetworkAsCodeClient } from "../src/network_as_code/client";
 import "dotenv/config";
+import { NetworkAsCodeClient } from "../src";
 
 let client: NetworkAsCodeClient;
 

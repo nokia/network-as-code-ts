@@ -1,8 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
-import { NetworkAsCodeClient } from "../src/network_as_code/client";
-import { DeviceIpv4Addr } from "../src/network_as_code/models/device";
 import "dotenv/config";
-import { PortRange, PortSpec } from "../src/network_as_code/models/session";
+import { NetworkAsCodeClient } from "../src";
 
 let client: NetworkAsCodeClient;
 

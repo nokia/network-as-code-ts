@@ -1,8 +1,8 @@
 import { enableFetchMocks } from "jest-fetch-mock";
 enableFetchMocks();
 import { beforeAll, describe, expect, test } from "@jest/globals";
-import { NetworkAsCodeClient } from "../src/network_as_code/client";
 import fetchMock from "jest-fetch-mock";
+import { NetworkAsCodeClient } from "../src";
 
 let client: NetworkAsCodeClient;
 
