@@ -16,7 +16,7 @@ import { Slices } from "./namespaces/slice";
     ### Args:
         @param token - Authentication token for the Network as Code API.
  */
-export default class NetworkAsCodeClient {
+export class NetworkAsCodeClient {
     private _api: APIClient;
     private _devices: Devices;
     private _sessions: Sessions;
