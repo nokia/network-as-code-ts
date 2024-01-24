@@ -6,7 +6,7 @@ import { Slices } from "./namespaces/slice";
 
 /**
  * A client for working with Network as Code.
- * ### Example:
+ *  @example Example:
     import { NetworkAsCodeClient } from "../src";
 
     client = NetworkAsCodeClient(token="your_api_token")
@@ -16,7 +16,7 @@ import { Slices } from "./namespaces/slice";
     ### Args:
         @param token - Authentication token for the Network as Code API.
  */
-export class NetworkAsCodeClient {
+export default class NetworkAsCodeClient {
     private _api: APIClient;
     private _devices: Devices;
     private _sessions: Sessions;
