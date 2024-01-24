@@ -7,7 +7,7 @@
 		"build": "tsc",
 		"lint": "eslint",
 		"test": "jest",
-		"integration": "jest -c jest.config.integration.ts --maxConcurrency=1"
+		"integration": "jest -c jest.config.integration.ts --runInBand"
 	},
 	"repository": {
 		"type": "git",
