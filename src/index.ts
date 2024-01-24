@@ -82,10 +82,6 @@ export class NetworkAsCodeClient {
 
 export function main() {
     const client = new NetworkAsCodeClient("<my-token>");
-
-    const device = client.devices.get("testuser@open5glab.net", "1.1.1.2");
-
-    const session = device.createQodSession("M_L", "5.6.7.8");
 }
 
 main();
