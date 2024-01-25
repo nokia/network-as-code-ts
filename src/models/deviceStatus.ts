@@ -2,15 +2,23 @@ import { APIClient } from "../api";
 import { Device } from "./device";
 
 export class Subscription {
-    private api: APIClient
-    eventSubscriptionId: string
-    device: Device
-    eventType: string
-    notificationUrl: string
-    startsAt: string
-    expiresAt?: string
+    private api: APIClient;
+    eventSubscriptionId: string;
+    device: Device;
+    eventType: string;
+    notificationUrl: string;
+    startsAt: string;
+    expiresAt?: string;
 
-    constructor(api: APIClient, eventSubscriptionId: string, device: Device, eventType: string, notificationUrl: string, startsAt: string, expiresAt?: string) {
+    constructor(
+        api: APIClient,
+        eventSubscriptionId: string,
+        device: Device,
+        eventType: string,
+        notificationUrl: string,
+        startsAt: string,
+        expiresAt?: string
+    ) {
         this.api = api;
         this.eventSubscriptionId = eventSubscriptionId;
         this.device = device;
@@ -20,6 +28,9 @@ export class Subscription {
         this.expiresAt = expiresAt;
     }
 
+    /**
+     *  Delete device connectivity status
+     */
     async delete() {
         this.api.deviceStatus.delete(this.eventSubscriptionId);
     }

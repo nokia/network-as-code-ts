@@ -11,11 +11,11 @@ export class Devices extends Namespace {
     /**
      *  Get a subscription by its external ID.
      * 
-     * Args:
-            id (str): External ID of the subscription. Email-like.
-            ipv4Address (Any | None): ipv4 address of the subscription.
-            ipv6Address (Any | None): ipv6 address of the subscription.
-            phoneNumber (Any | None): phone number of the subscription.
+            @param networkAccessIdentifier (string): External ID of the subscription. Email-like.
+            @param ipv4Address (Any | None): ipv4 address of the subscription.
+            @param ipv6Address (Any | None): ipv6 address of the subscription.
+            @param phoneNumber (Any | None): phone number of the subscription.
+            @returns Device
     */
     get(
         networkAccessIdentifier: string | undefined = undefined,

@@ -1,4 +1,4 @@
-import { NetworkAsCodeClient } from "../src/network_as_code/client"; // This would need to change into an import from 'network-as-code'
+import { NetworkAsCodeClient } from "../src"; // This would need to change into an import from 'network-as-code'
 
 // You can ignore the main function here, it's here to signify we are running in async
 const main = async () => {

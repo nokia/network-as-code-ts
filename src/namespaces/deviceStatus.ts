@@ -9,6 +9,16 @@ export interface SubscribeOptionalArgs {
 }
 
 export class DeviceStatus extends Namespace {
+    /**
+     *  Create subscription for device connectivity status.
+     * 
+            @param device (Device): Identifier of the device.
+            @param eventType (string): Event type of the subscription.
+            @param notificationUrl (string): Notification URL for session-related events.
+            @param optionalArgs (SubscribeOptionalArgs): optional arguments(subscriptionExpireTime, maxNumberOfReports, notificationAuthToken)
+            @returns Promise Subscription
+    */
+
     async subscribe(
         device: Device,
         eventType: string,
@@ -33,6 +43,12 @@ export class DeviceStatus extends Namespace {
         );
     }
 
+    /**
+     *  Get a subscription by its external ID.
+     * 
+            @param eventSubscriptionId (string): Resource ID
+            @returns Promise Subscription
+    */
     async get(eventSubscriptionId: string): Promise<Subscription> {
         const jsonData = await this.api.deviceStatus.get(eventSubscriptionId);
 

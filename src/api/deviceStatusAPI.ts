@@ -7,12 +7,12 @@ export class DeviceStatusAPI {
     private baseUrl: string;
     private headers: HeadersInit;
 
-    constructor(base_url: string, rapid_key: string, rapid_host: string) {
-        this.baseUrl = base_url;
+    constructor(baseUrl: string, rapidKey: string, rapidHost: string) {
+        this.baseUrl = baseUrl;
         this.headers = {
             "Content-Type": "application/json",
-            "X-RapidAPI-Host": rapid_host,
-            "X-RapidAPI-Key": rapid_key,
+            "X-RapidAPI-Host": rapidHost,
+            "X-RapidAPI-Key": rapidKey,
         };
     }
 

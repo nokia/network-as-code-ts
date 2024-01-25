@@ -1,8 +1,6 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
-import { NetworkAsCodeClient } from "../src/network_as_code/client";
-import { DeviceIpv4Addr } from "../src/network_as_code/models/device";
 import "dotenv/config";
-import { PortRange, PortSpec } from "../src/network_as_code/models/session";
+import { NetworkAsCodeClient } from "../src";
 
 let client: NetworkAsCodeClient;
 
@@ -71,7 +69,7 @@ describe("Qos", () => {
             "5.6.7.8",
             "2041:0000:140F::875B:131B",
             undefined,
-            new PortSpec(undefined, [80])
+            { ports: [80] }
         );
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_L");
@@ -84,7 +82,7 @@ describe("Qos", () => {
             "5.6.7.8",
             "2041:0000:140F::875B:131B",
             undefined,
-            new PortSpec([new PortRange(80, 443)])
+            { ranges: [{ from: 80, to: 443 }] }
         );
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_L");
