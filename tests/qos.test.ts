@@ -65,10 +65,58 @@ describe("Qos", () => {
             },
             applicationServer: {
                 ipv4Address: "5.6.7.8",
+            },
+        };
+
+        fetchMock.mockOnce(async (req: any) => {
+            expect(req.method).toBe("POST");
+            const requestBody = await JSON.parse(req.body);
+            expect(requestBody).toEqual(mockRequestBody);
+            return JSON.stringify(mockResponse);
+        });
+
+        const session = await device.createQodSession(
+            "QOS_L",
+            "5.6.7.8",
+        );
+        expect(session.status).toEqual(mockResponse["qosStatus"]);
+    });
+
+    test("should create a session with ipv6", async () => {
+        let device = client.devices.get(
+            "testuser@open5glab.net",
+            {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            "2041:0000:140F::875B:131B",
+            "9382948473"
+        );
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            qosStatus: "REQUESTED",
+            startedAt: 1691671102,
+            expiresAt: 1691757502,
+        };
+
+        let mockRequestBody = {
+            qosProfile: "QOS_L",
+            device: {
+                ipv4Address: {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                ipv6Address: "2041:0000:140F::875B:131B",
+                networkAccessIdentifier: "testuser@open5glab.net",
+                phoneNumber: "9382948473",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
             },
-            devicePorts: undefined,
-            applicationServerPorts: undefined,
         };
 
         fetchMock.mockOnce(async (req: any) => {

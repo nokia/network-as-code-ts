@@ -115,6 +115,7 @@ export class Device {
             serviceIpv4,
             this.phoneNumber,
             this.ipv4Address,
+            this.ipv6Address,
             devicePorts,
             servicePorts,
             duration,

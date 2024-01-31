@@ -46,6 +46,7 @@ export class QodAPI {
         serviceIpv4?: string,
         phoneNumber?: string,
         ipv4Address?: string | DeviceIpv4Addr,
+        ipv6Address?: string | undefined,
         devicePorts: PortSpec | undefined = undefined,
         servicePorts: PortSpec | undefined = undefined,
         duration = undefined,
@@ -80,6 +81,10 @@ export class QodAPI {
                     ipv4Address as DeviceIpv4Addr
                 ).publicPort;
             }
+        }
+
+        if (ipv6Address) {
+            sessionPayload["device"]["ipv6Address"] = ipv6Address;
         }
 
         if (phoneNumber) {
