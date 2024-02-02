@@ -84,7 +84,7 @@ pipeline {
           script {
             sh """
               env | grep gitlab
-              npm run integration
+              https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
             """
           }
         }        
