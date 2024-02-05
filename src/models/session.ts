@@ -50,8 +50,8 @@ export class QoDSession {
     id: string;
     profile: string | undefined;
     status: string | undefined;
-    startedAt: number | null | undefined;
-    expiresAt: number | null | undefined;
+    startedAt: Date | null | undefined;
+    expiresAt: Date | null | undefined;
 
     constructor(api: APIClient, options: Record<string, any> = {}) {
         this._api = api;
@@ -76,7 +76,7 @@ export class QoDSession {
      */
     duration() {
         if (this.startedAt && this.expiresAt) {
-            return this.expiresAt - this.startedAt;
+            return this.expiresAt.getTime() - this.startedAt.getTime();
         } else {
             null;
         }
@@ -97,10 +97,10 @@ export class QoDSession {
         session: any
     ): QoDSession {
         let startedAt = session["startedAt"]
-            ? parseInt(session["startedAt"])
+            ? new Date(session["startedAt"])
             : null;
         let expiresAt = session["expiresAt"]
-            ? parseInt(session["expiresAt"])
+            ? new Date(session["expiresAt"])
             : null;
 
         return new QoDSession((api = api), {
