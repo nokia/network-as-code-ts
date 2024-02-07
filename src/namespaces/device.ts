@@ -20,8 +20,8 @@ export class Devices extends Namespace {
     get(
         networkAccessIdentifier: string | undefined = undefined,
         ipv4Address: string | DeviceIpv4Addr,
-        ipv6Address: string | undefined,
-        phoneNumber: string | undefined = undefined
+        ipv6Address?: string,
+        phoneNumber?: string
     ): Device {
         if (
             !networkAccessIdentifier &&

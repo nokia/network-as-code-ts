@@ -1,3 +1,4 @@
+import { ProxyAgent } from "proxy-agent";
 import { errorHandler } from "../errors";
 import { Device } from "../models/device";
 import { Subscription } from "../models/deviceStatus";
@@ -7,7 +8,7 @@ export class DeviceStatusAPI {
     private baseUrl: string;
     private headers: HeadersInit;
 
-    constructor(baseUrl: string, rapidKey: string, rapidHost: string) {
+    constructor(baseUrl: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
         this.baseUrl = baseUrl;
         this.headers = {
             "Content-Type": "application/json",

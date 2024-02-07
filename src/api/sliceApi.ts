@@ -8,6 +8,7 @@ import {
 } from "../models/slice";
 import { errorHandler } from "../errors";
 import { Device } from "../models/device";
+import { ProxyAgent } from "proxy-agent";
 
 export class SliceAPI {
     private baseUrl: string;
@@ -21,7 +22,7 @@ export class SliceAPI {
             baseUrl (str): URL for
     */
 
-    constructor(baseURL: string, rapidKey: string, rapidHost: string) {
+    constructor(baseURL: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
         this.baseUrl = baseURL;
         this.headers = {
             "X-RapidAPI-Host": rapidHost,
@@ -178,7 +179,7 @@ export class AttachAPI {
             baseUrl (str): URL for
     */
 
-    constructor(baseURL: string, rapidKey: string, rapidHost: string) {
+    constructor(baseURL: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
         this.baseUrl = baseURL;
         this.headers = {
             "X-RapidAPI-Host": rapidHost,

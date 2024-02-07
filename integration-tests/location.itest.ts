@@ -19,7 +19,7 @@ describe("Location retrieval and verification", () => {
             publicAddress: "1.1.1.2",
             privateAddress: "1.1.1.2",
             publicPort: 80,
-        });
+        }, undefined, undefined);
 
         let location = await device.getLocation();
 
@@ -35,7 +35,7 @@ describe("Location retrieval and verification", () => {
             publicAddress: "1.1.1.2",
             privateAddress: "1.1.1.2",
             publicPort: 80,
-        });
+        }, undefined, undefined);
 
         let isHere = await device.verifyLocation(
             47.48627616952785,

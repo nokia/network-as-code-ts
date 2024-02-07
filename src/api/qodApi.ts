@@ -1,6 +1,7 @@
 import { Device, DeviceIpv4Addr } from "../models/device";
 import { errorHandler } from "../errors";
 import { PortSpec } from "../models/session";
+import { ProxyAgent } from "proxy-agent";
 /**
  *  Qod API, that sends requests to the API via httpx calls
  */
@@ -14,7 +15,7 @@ export class QodAPI {
     */
     private headers: HeadersInit;
     private baseUrl: string;
-    constructor(baseURL: string, rapidKey: string, rapidHost: string) {
+    constructor(baseURL: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
         this.baseUrl = baseURL;
         this.headers = {
             "X-RapidAPI-Host": rapidHost,
