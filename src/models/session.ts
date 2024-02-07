@@ -71,12 +71,12 @@ export class QoDSession {
     }
 
     /**
-     *  Returns the duration of a given session.
+     *  Returns the duration of a given session in seconds.
      *
      */
     duration() {
         if (this.startedAt && this.expiresAt) {
-            return this.expiresAt.getTime() - this.startedAt.getTime();
+            return (this.expiresAt.getTime() - this.startedAt.getTime()) / 1000;
         } else {
             null;
         }
