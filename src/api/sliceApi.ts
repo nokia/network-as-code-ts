@@ -10,9 +10,12 @@ import { errorHandler } from "../errors";
 import { Device } from "../models/device";
 import { ProxyAgent } from "proxy-agent";
 
+import fetch from "node-fetch";
+
 export class SliceAPI {
     private baseUrl: string;
     private headers: HeadersInit;
+    private agent: ProxyAgent;
 
     /**
  *  Methods takes rapidHost, rapidKey, and baseUrl.
@@ -22,13 +25,19 @@ export class SliceAPI {
             baseUrl (str): URL for
     */
 
-    constructor(baseURL: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
+    constructor(
+        baseURL: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent
+    ) {
         this.baseUrl = baseURL;
         this.headers = {
             "X-RapidAPI-Host": rapidHost,
             "X-RapidAPI-Key": rapidKey,
             "content-type": "application/json",
         };
+        this.agent = agent;
     }
 
     async create(
@@ -90,6 +99,7 @@ export class SliceAPI {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
+            agent: this.agent,
         });
 
         errorHandler(response);
@@ -101,6 +111,7 @@ export class SliceAPI {
         const response = await fetch(`${this.baseUrl}/slices`, {
             method: "GET",
             headers: this.headers,
+            agent: this.agent,
         });
 
         errorHandler(response);
@@ -112,6 +123,7 @@ export class SliceAPI {
         const response = await fetch(`${this.baseUrl}/slices/${sliceId}`, {
             method: "GET",
             headers: this.headers,
+            agent: this.agent,
         });
 
         errorHandler(response);
@@ -125,6 +137,7 @@ export class SliceAPI {
             {
                 method: "POST",
                 headers: this.headers,
+                agent: this.agent,
             }
         );
 
@@ -139,6 +152,7 @@ export class SliceAPI {
             {
                 method: "POST",
                 headers: this.headers,
+                agent: this.agent,
             }
         );
 
@@ -151,6 +165,7 @@ export class SliceAPI {
         const response = await fetch(`${this.baseUrl}/slices/${sliceId}`, {
             method: "DELETE",
             headers: this.headers,
+            agent: this.agent,
         });
 
         errorHandler(response);
@@ -170,6 +185,7 @@ export class SliceAPI {
 export class AttachAPI {
     private baseUrl: string;
     private headers: HeadersInit;
+    private agent: ProxyAgent;
 
     /**
  *  The class takes rapidHost, rapidKey, and baseUrl.
@@ -179,13 +195,19 @@ export class AttachAPI {
             baseUrl (str): URL for
     */
 
-    constructor(baseURL: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
+    constructor(
+        baseURL: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent
+    ) {
         this.baseUrl = baseURL;
         this.headers = {
             "X-RapidAPI-Host": rapidHost,
             "X-RapidAPI-Key": rapidKey,
             "content-type": "application/json",
         };
+        this.agent = agent;
     }
 
     async attach(
@@ -201,6 +223,7 @@ export class AttachAPI {
                 notificationUrl,
                 notificationAuthToken,
             }),
+            agent: this.agent,
         });
 
         errorHandler(res);
@@ -219,6 +242,7 @@ export class AttachAPI {
                 notificationUrl,
                 notificationAuthToken,
             }),
+            agent: this.agent,
         });
 
         errorHandler(res);

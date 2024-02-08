@@ -59,7 +59,7 @@ export class Slices extends Namespace {
             optionalArgs
         );
 
-        const newSlice = await this.api.slicing.create(
+        const newSlice: any = await this.api.slicing.create(
             networkId,
             sliceInfo,
             notificationUrl,
@@ -83,7 +83,7 @@ export class Slices extends Namespace {
             fetchedSlices = nac_client.slices.getAll()
  */
     async getAll(): Promise<Slice[]> {
-        const data = await this.api.slicing.getAll();
+        const data: any = await this.api.slicing.getAll();
 
         let slices: Slice[] = [];
         data.forEach((slice: any) => {
@@ -124,7 +124,7 @@ export class Slices extends Namespace {
            fetchedSlice = nac_client.slices.get(id)
  */
     async get(id: string): Promise<Slice> {
-        const data = await this.api.slicing.get(id);
+        const data: any = await this.api.slicing.get(id);
 
         let slice: Slice = new Slice(
             this.api,
