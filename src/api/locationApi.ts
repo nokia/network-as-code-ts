@@ -47,7 +47,7 @@ class LocationVerifyAPI {
             agent: this.agent
         });
 
-        //errorHandler(response);
+        errorHandler(response);
 
         const data: any = await response.json();
         return data.verificationResult === "TRUE";

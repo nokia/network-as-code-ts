@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
+import { AuthenticationError } from "../src/errors";
 
 jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
 const fetchMock = (fetch as unknown) as FetchMockStatic;
@@ -219,5 +220,14 @@ describe("Device", () => {
         const result = await device.verifyLocation(0, 0, 5000, 60);
 
         expect(result).toBe(false);
+    });
+
+    it("should raise exception if status code indicates error", async () => {
+        fetchMock.post(
+            "https://location-verification.p-eu.rapidapi.com/verify",
+            403
+        );
+
+        await expect(device.verifyLocation(0, 0, 5000, 60)).rejects.toThrow(new AuthenticationError("403 - Forbidden"));
     });
 });
