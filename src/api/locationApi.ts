@@ -1,18 +1,23 @@
 import { Device } from "../models/device";
 import { Location } from "../models/location";
 import { errorHandler } from "../errors";
+import { ProxyAgent } from "proxy-agent";
+
+import fetch from "node-fetch";
 
 class LocationVerifyAPI {
     private baseUrl: string;
     private headers: HeadersInit;
+    private agent: ProxyAgent;
 
-    constructor(baseUrl: string, rapidKey: string, rapidHost: string) {
+    constructor(baseUrl: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
         this.baseUrl = baseUrl;
         this.headers = {
             "Content-Type": "application/json",
             "X-RapidAPI-Host": rapidHost,
             "X-RapidAPI-Key": rapidKey,
         };
+        this.agent = agent;
     }
 
     async verifyLocation(
@@ -39,11 +44,12 @@ class LocationVerifyAPI {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
+            agent: this.agent
         });
 
-        errorHandler(response);
+        //errorHandler(response);
 
-        const data = await response.json();
+        const data: any = await response.json();
         return data.verificationResult === "TRUE";
     }
 }
@@ -51,14 +57,16 @@ class LocationVerifyAPI {
 class LocationRetrievalAPI {
     private baseUrl: string;
     private headers: HeadersInit;
+    private agent: ProxyAgent;
 
-    constructor(baseUrl: string, rapidKey: string, rapidHost: string) {
+    constructor(baseUrl: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
         this.baseUrl = baseUrl;
         this.headers = {
             "Content-Type": "application/json",
             "X-RapidAPI-Host": rapidHost,
             "X-RapidAPI-Key": rapidKey,
         };
+        this.agent = agent;
     }
 
     async getLocation(device: Device, maxAge?: number): Promise<Location> {
@@ -72,11 +80,12 @@ class LocationRetrievalAPI {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
+            agent: this.agent
         });
 
         errorHandler(response);
 
-        const jsonData = await response.json();
+        const jsonData: any = await response.json();
 
         return {
             latitude: jsonData.area.center.latitude,

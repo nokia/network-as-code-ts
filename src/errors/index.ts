@@ -1,3 +1,6 @@
+
+import { Response as FetchResponse } from "node-fetch" ;
+
 /**
  *Network as Code base exception.
  */
@@ -38,7 +41,7 @@ export class ServiceError extends Error {}
  */
 class InvalidParameterError extends Error {}
 
-export function errorHandler({ ok, status, statusText }: Response) {
+export function errorHandler({ ok, status, statusText }: Response | FetchResponse) {
     try {
         if (!ok) {
             throw new NaCError();

@@ -1,9 +1,11 @@
-import fetchMock from "jest-fetch-mock";
+import type { FetchMockStatic } from 'fetch-mock';
+import fetch from 'node-fetch';
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
 
-fetchMock.enableMocks();
+jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
+const fetchMock = (fetch as unknown) as FetchMockStatic;
 
 let client: NetworkAsCodeClient;
 
@@ -21,14 +23,33 @@ beforeAll((): any => {
 
 // Tests
 beforeEach(() => {
-    fetchMock.resetMocks();
+    fetchMock.reset();
 });
 
 describe("Device", () => {
+    it("should use mocks correctly", async () => {
+        fetchMock.get(
+            'https://example.com/test',
+            {
+                status: 200,
+                body: {
+                  status: 'ok'
+                }
+            },
+        );
+
+        const response = await fetch("https://example.com/test", {
+            method: "GET"
+        })
+
+        expect(await response.json()).toEqual({ status: 'ok'});
+        expect(response.status).toBe(200);
+    })
+
     it("should send location retrieval request to the right URL with right parameters", async () => {
-        fetchMock.mockIf(
+        fetchMock.post(
             "https://location-retrieval.p-eu.rapidapi.com/retrieve",
-            (req: any): any => {
+            (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     device: {
                         networkAccessIdentifier: "test-device@testcsp.net",
@@ -69,7 +90,7 @@ describe("Device", () => {
     });
 
     it("should get location from a valid response", async () => {
-        fetchMock.mockResponseOnce(
+        fetchMock.post("https://location-retrieval.p-eu.rapidapi.com/retrieve",
             JSON.stringify({
                 area: {
                     center: {
@@ -97,7 +118,7 @@ describe("Device", () => {
     });
 
     it("can omit maxAge if 60 seconds is fine", async () => {
-        fetchMock.mockResponseOnce(
+        fetchMock.post("https://location-retrieval.p-eu.rapidapi.com/retrieve",
             JSON.stringify({
                 area: {
                     center: {
@@ -125,9 +146,9 @@ describe("Device", () => {
     });
 
     it("should send location verification request to the right URL with right parameters", async () => {
-        fetchMock.mockIf(
+        fetchMock.post(
             "https://location-verification.p-eu.rapidapi.com/verify",
-            (req: any): any => {
+            (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     device: {
                         networkAccessIdentifier: "test-device@testcsp.net",
@@ -162,7 +183,8 @@ describe("Device", () => {
     });
 
     it("should return true if location verification response is TRUE", async () => {
-        fetchMock.mockResponseOnce(
+        fetchMock.post(
+            "https://location-verification.p-eu.rapidapi.com/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
             })
@@ -174,7 +196,8 @@ describe("Device", () => {
     });
 
     it("should verify location with possibility to omit maxAge if 60 seconds is fine", async () => {
-        fetchMock.mockResponseOnce(
+        fetchMock.post(
+            "https://location-verification.p-eu.rapidapi.com/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
             })
@@ -186,7 +209,8 @@ describe("Device", () => {
     });
 
     it("should return false if location verification response is FALSE", async () => {
-        fetchMock.mockResponseOnce(
+        fetchMock.post(
+            "https://location-verification.p-eu.rapidapi.com/verify",
             JSON.stringify({
                 verificationResult: "FALSE",
             })

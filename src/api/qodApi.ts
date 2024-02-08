@@ -1,6 +1,9 @@
 import { Device, DeviceIpv4Addr } from "../models/device";
 import { errorHandler } from "../errors";
 import { PortSpec } from "../models/session";
+import { ProxyAgent } from "proxy-agent";
+import fetch from "node-fetch";
+
 /**
  *  Qod API, that sends requests to the API via httpx calls
  */
@@ -14,13 +17,16 @@ export class QodAPI {
     */
     private headers: HeadersInit;
     private baseUrl: string;
-    constructor(baseURL: string, rapidKey: string, rapidHost: string) {
+    private agent: ProxyAgent;
+    
+    constructor(baseURL: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
         this.baseUrl = baseURL;
         this.headers = {
             "X-RapidAPI-Host": rapidHost,
             "X-RapidAPI-Key": rapidKey,
             "content-type": "application/json",
         };
+        this.agent = agent;
     }
 
     /**
@@ -112,12 +118,12 @@ export class QodAPI {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(sessionPayload),
+            agent: this.agent
         });
 
         errorHandler(response);
 
-        response = await response.json();
-        return response;
+        return response.json() as Promise<any>;
     }
 
     /**
@@ -140,12 +146,12 @@ export class QodAPI {
         let response = await fetch(this.baseUrl + url, {
             method: "GET",
             headers: this.headers,
+            agent: this.agent
         });
 
         errorHandler(response);
 
-        response = await response.json();
-        return response;
+        return response.json() as Promise<any>;
     }
 
     /**
@@ -161,12 +167,12 @@ export class QodAPI {
         let response = await fetch(this.baseUrl + url, {
             method: "GET",
             headers: this.headers,
+            agent: this.agent
         });
 
         errorHandler(response);
 
-        response = await response.json();
-        return response;
+        return response.json() as Promise<any>;
     }
 
     /**
@@ -179,6 +185,7 @@ export class QodAPI {
         let response = await fetch(this.baseUrl + url, {
             method: "DELETE",
             headers: this.headers,
+            agent: this.agent
         });
 
         errorHandler(response);

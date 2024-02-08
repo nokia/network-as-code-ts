@@ -1,9 +1,11 @@
-import fetchMock from "jest-fetch-mock";
+import type { FetchMockStatic } from 'fetch-mock';
+import fetch from 'node-fetch';
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
 
-fetchMock.enableMocks();
+jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
+const fetchMock = (fetch as unknown) as FetchMockStatic;
 
 let client: NetworkAsCodeClient;
 let device: Device;
@@ -18,12 +20,13 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-    fetchMock.resetMocks();
+    fetchMock.reset();
 });
 
 describe("Device Status", () => {
     it("can invoke subscription to CONNECTIVITY updates", async () => {
-        fetchMock.mockResponseOnce(
+        fetchMock.post(
+            "https://device-status.p-eu.rapidapi.com/event-subscriptions",
             JSON.stringify({
                 eventSubscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                 subscriptionDetail: {
@@ -54,7 +57,8 @@ describe("Device Status", () => {
     });
 
     it("sends a request out on subscribe", async () => {
-        fetchMock.mockResponseOnce(
+        fetchMock.post(
+            "https://device-status.p-eu.rapidapi.com/event-subscriptions",
             JSON.stringify({
                 eventSubscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                 subscriptionDetail: {
@@ -81,11 +85,12 @@ describe("Device Status", () => {
             "https://example.com/notify"
         );
 
-        expect(fetchMock.mock.calls.length).toBe(1);
+        expect(fetchMock.calls().length).toBe(1);
     });
 
     it("uses the returned response to fill the subscription object", async () => {
-        fetchMock.mockResponseOnce(
+        fetchMock.post(
+            "https://device-status.p-eu.rapidapi.com/event-subscriptions",
             JSON.stringify({
                 eventSubscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                 subscriptionDetail: {
@@ -120,9 +125,9 @@ describe("Device Status", () => {
     });
 
     it("sends the right body to the correct URL for subscription", async () => {
-        fetchMock.mockOnceIf(
+        fetchMock.post(
             "https://device-status.p-eu.rapidapi.com/event-subscriptions",
-            (req: any): any => {
+            (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     subscriptionDetail: {
                         device: {
@@ -173,9 +178,9 @@ describe("Device Status", () => {
     });
 
     it("handles optional parameters in subscription", async () => {
-        fetchMock.mockOnceIf(
+        fetchMock.post(
             "https://device-status.p-eu.rapidapi.com/event-subscriptions",
-            (req: any): any => {
+            (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     subscriptionDetail: {
                         device: {
@@ -238,7 +243,8 @@ describe("Device Status", () => {
     });
 
     it("can delete a subscription", async () => {
-        fetchMock.mockResponseOnce(
+        fetchMock.post(
+            "https://device-status.p-eu.rapidapi.com/event-subscriptions",
             JSON.stringify({
                 eventSubscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                 subscriptionDetail: {
@@ -265,9 +271,9 @@ describe("Device Status", () => {
             "https://example.com/notify"
         );
 
-        fetchMock.mockOnceIf(
+        fetchMock.delete(
             "https://device-status.p-eu.rapidapi.com/event-subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
-            (req: any): any => {
+            (_: any, req: any): any => {
                 expect(req.method).toBe("DELETE");
 
                 return Promise.resolve({
@@ -278,13 +284,13 @@ describe("Device Status", () => {
 
         await subscription.delete();
 
-        expect(fetchMock.mock.calls.length).toBe(2);
+        expect(fetchMock.calls().length).toBe(2);
     });
 
     it("can fetch a subscription by id", async () => {
-        fetchMock.mockOnceIf(
+        fetchMock.get(
             "https://device-status.p-eu.rapidapi.com/event-subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
-            (req: any): any => {
+            (_: any, req: any): any => {
                 expect(req.method).toBe("GET");
 
                 return Promise.resolve({
