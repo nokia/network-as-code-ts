@@ -223,14 +223,9 @@ describe("Device", () => {
     });
 
     it("should raise exception if status code indicates error", async () => {
-        fetchMock.mockResponseOnce(
-            JSON.stringify({
-                verificationResult: "FALSE",
-            }),
-            {
-                status: 403,
-                statusText: "Forbidden"
-            }
+        fetchMock.post(
+            "https://location-verification.p-eu.rapidapi.com/verify",
+            403
         );
 
         await expect(device.verifyLocation(0, 0, 5000, 60)).rejects.toThrow(new AuthenticationError("403 - Forbidden"));
