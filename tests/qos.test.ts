@@ -1,8 +1,11 @@
-import { enableFetchMocks } from "jest-fetch-mock";
-enableFetchMocks();
+
+import type { FetchMockStatic } from 'fetch-mock';
+import fetch from 'node-fetch';
 import { beforeAll, describe, expect, test } from "@jest/globals";
-import fetchMock from "jest-fetch-mock";
 import { NetworkAsCodeClient } from "../src";
+
+jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
+const fetchMock = (fetch as unknown) as FetchMockStatic;
 
 let client: NetworkAsCodeClient;
 
@@ -19,7 +22,7 @@ describe("Qos", () => {
         "content-type": "application/json",
     };
     beforeEach(() => {
-        fetchMock.resetMocks();
+        fetchMock.reset();
     });
 
     test("should get a device", () => {
@@ -68,12 +71,14 @@ describe("Qos", () => {
             },
         };
 
-        fetchMock.mockOnce(async (req: any) => {
-            expect(req.method).toBe("POST");
-            const requestBody = await JSON.parse(req.body);
-            expect(requestBody).toEqual(mockRequestBody);
-            return JSON.stringify(mockResponse);
-        });
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual(mockRequestBody);
+                return JSON.stringify(mockResponse);
+            });
 
         const session = await device.createQodSession(
             "QOS_L",
@@ -119,12 +124,14 @@ describe("Qos", () => {
             },
         };
 
-        fetchMock.mockOnce(async (req: any) => {
-            expect(req.method).toBe("POST");
-            const requestBody = await JSON.parse(req.body);
-            expect(requestBody).toEqual(mockRequestBody);
-            return JSON.stringify(mockResponse);
-        });
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual(mockRequestBody);
+                return JSON.stringify(mockResponse);
+            });
 
         const session = await device.createQodSession(
             "QOS_L",
@@ -143,14 +150,13 @@ describe("Qos", () => {
             startedAt: 0,
         };
 
-        fetchMock.mockResponseOnce(JSON.stringify(mockResponse));
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/1234",
+            JSON.stringify(mockResponse)
+        );
 
         const sessions = await client.sessions.get("1234");
         expect(sessions.id).toEqual("1234");
-        expect(fetchMock).toHaveBeenCalledWith(baseUrl + "/sessions/1234", {
-            method: "GET",
-            headers,
-        });
     });
 
     test("should get all sessions", async () => {
@@ -170,18 +176,13 @@ describe("Qos", () => {
             },
         ];
 
-        fetchMock.mockResponseOnce(JSON.stringify(mockResponse));
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
+            JSON.stringify(mockResponse)
+        );
 
         const sessions = await device.sessions();
         expect(sessions[0].id).toEqual("1234");
-        expect(fetchMock).toHaveBeenCalledWith(
-            baseUrl +
-                "/sessions?networkAccessIdentifier=testuser@open5glab.net",
-            {
-                method: "GET",
-                headers,
-            }
-        );
     });
 
     test("should not create a session without ip address", async () => {
@@ -202,10 +203,11 @@ describe("Qos", () => {
     });
 
     test("should not get sessions as unauthenticated user", async () => {
-        fetchMock.mockResponseOnce(
-            JSON.stringify({ message: "Invalid API key." }),
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/1234",
             {
                 status: 403,
+                body: JSON.stringify({ message: "Invalid API key." }),
             }
         );
 

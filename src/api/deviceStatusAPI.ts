@@ -1,4 +1,6 @@
 import { ProxyAgent } from "proxy-agent";
+import fetch from 'node-fetch';
+
 import { errorHandler } from "../errors";
 import { Device } from "../models/device";
 import { Subscription } from "../models/deviceStatus";
@@ -7,6 +9,7 @@ import { SubscribeOptionalArgs } from "../namespaces/deviceStatus";
 export class DeviceStatusAPI {
     private baseUrl: string;
     private headers: HeadersInit;
+    private agent: ProxyAgent;
 
     constructor(baseUrl: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
         this.baseUrl = baseUrl;
@@ -15,6 +18,7 @@ export class DeviceStatusAPI {
             "X-RapidAPI-Host": rapidHost,
             "X-RapidAPI-Key": rapidKey,
         };
+        this.agent = agent;
     }
 
     async subscribe(
@@ -22,7 +26,7 @@ export class DeviceStatusAPI {
         eventType: string,
         notificationUrl: string,
         optionalArgs?: SubscribeOptionalArgs
-    ): Promise<Subscription> {
+    ): Promise<any> {
         const body: any = {
             subscriptionDetail: {
                 device: device.toJson(),
@@ -53,11 +57,12 @@ export class DeviceStatusAPI {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
+            agent: this.agent
         });
 
         errorHandler(response);
 
-        return response.json();
+        return response.json() as Promise<any>;
     }
 
     async delete(eventSubscriptionId: string) {
@@ -66,6 +71,7 @@ export class DeviceStatusAPI {
             {
                 method: "DELETE",
                 headers: this.headers,
+                agent: this.agent
             }
         );
 
@@ -78,11 +84,12 @@ export class DeviceStatusAPI {
             {
                 method: "GET",
                 headers: this.headers,
+                agent: this.agent
             }
         );
 
         errorHandler(response);
 
-        return response.json();
+        return response.json() as Promise<any>;
     }
 }
