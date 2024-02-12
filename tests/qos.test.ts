@@ -26,11 +26,15 @@ describe("Qos", () => {
     });
 
     test("should get a device", () => {
-        let device = client.devices.get("testuser@open5glab.net", {
-            publicAddress: "1.1.1.2",
-            privateAddress: "1.1.1.2",
-            publicPort: 80,
-        });
+        let device = client.devices.get(
+            "testuser@open5glab.net",
+            {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            undefined
+        );
         expect(device.networkAccessIdentifier).toEqual(
             "testuser@open5glab.net"
         );
@@ -80,11 +84,13 @@ describe("Qos", () => {
                 return JSON.stringify(mockResponse);
             });
 
-        const session = await device.createQodSession(
-            "QOS_L",
-            "5.6.7.8",
-        );
+        const session = await device.createQodSession("QOS_L", "5.6.7.8");
+        const durationInSecond =
+            (new Date(mockResponse.expiresAt).getTime() -
+                new Date(mockResponse.startedAt).getTime()) /
+            1000;
         expect(session.status).toEqual(mockResponse["qosStatus"]);
+        expect(session.duration()).toEqual(durationInSecond);
     });
 
     test("should create a session with ipv6", async () => {
@@ -160,11 +166,15 @@ describe("Qos", () => {
     });
 
     test("should get all sessions", async () => {
-        let device = client.devices.get("testuser@open5glab.net", {
-            publicAddress: "1.1.1.2",
-            privateAddress: "1.1.1.2",
-            publicPort: 80,
-        });
+        let device = client.devices.get(
+            "testuser@open5glab.net",
+            {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            undefined
+        );
 
         let mockResponse = [
             {
