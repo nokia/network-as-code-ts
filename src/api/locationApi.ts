@@ -10,7 +10,12 @@ class LocationVerifyAPI {
     private headers: HeadersInit;
     private agent: ProxyAgent;
 
-    constructor(baseUrl: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent
+    ) {
         this.baseUrl = baseUrl;
         this.headers = {
             "Content-Type": "application/json",
@@ -25,7 +30,7 @@ class LocationVerifyAPI {
         longitude: number,
         device: Device,
         radius: number,
-        maxAge?: number
+        maxAge = 60
     ): Promise<boolean> {
         const body: any = {
             device: device.toJson(),
@@ -34,17 +39,14 @@ class LocationVerifyAPI {
                 center: { latitude: latitude, longitude: longitude },
                 radius: radius,
             },
+            maxAge,
         };
-
-        if (maxAge) {
-            body.maxAge = maxAge;
-        }
 
         const response = await fetch(`${this.baseUrl}/verify`, {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
-            agent: this.agent
+            agent: this.agent,
         });
 
         errorHandler(response);
@@ -59,7 +61,12 @@ class LocationRetrievalAPI {
     private headers: HeadersInit;
     private agent: ProxyAgent;
 
-    constructor(baseUrl: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent
+    ) {
         this.baseUrl = baseUrl;
         this.headers = {
             "Content-Type": "application/json",
@@ -69,18 +76,14 @@ class LocationRetrievalAPI {
         this.agent = agent;
     }
 
-    async getLocation(device: Device, maxAge?: number): Promise<Location> {
-        const body: any = { device: device.toJson() };
-
-        if (maxAge) {
-            body.maxAge = maxAge;
-        }
+    async getLocation(device: Device, maxAge = 60): Promise<Location> {
+        const body: any = { device: device.toJson(), maxAge };
 
         const response = await fetch(`${this.baseUrl}/retrieve`, {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
-            agent: this.agent
+            agent: this.agent,
         });
 
         errorHandler(response);

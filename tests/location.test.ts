@@ -1,12 +1,12 @@
-import type { FetchMockStatic } from 'fetch-mock';
-import fetch from 'node-fetch';
+import type { FetchMockStatic } from "fetch-mock";
+import fetch from "node-fetch";
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
 import { AuthenticationError } from "../src/errors";
 
 jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
-const fetchMock = (fetch as unknown) as FetchMockStatic;
+const fetchMock = fetch as unknown as FetchMockStatic;
 
 let client: NetworkAsCodeClient;
 
@@ -29,23 +29,20 @@ beforeEach(() => {
 
 describe("Device", () => {
     it("should use mocks correctly", async () => {
-        fetchMock.get(
-            'https://example.com/test',
-            {
-                status: 200,
-                body: {
-                  status: 'ok'
-                }
+        fetchMock.get("https://example.com/test", {
+            status: 200,
+            body: {
+                status: "ok",
             },
-        );
+        });
 
         const response = await fetch("https://example.com/test", {
-            method: "GET"
-        })
+            method: "GET",
+        });
 
-        expect(await response.json()).toEqual({ status: 'ok'});
+        expect(await response.json()).toEqual({ status: "ok" });
         expect(response.status).toBe(200);
-    })
+    });
 
     it("should send location retrieval request to the right URL with right parameters", async () => {
         fetchMock.post(
@@ -91,7 +88,8 @@ describe("Device", () => {
     });
 
     it("should get location from a valid response", async () => {
-        fetchMock.post("https://location-retrieval.p-eu.rapidapi.com/retrieve",
+        fetchMock.post(
+            "https://location-retrieval.p-eu.rapidapi.com/retrieve",
             JSON.stringify({
                 area: {
                     center: {
@@ -119,7 +117,8 @@ describe("Device", () => {
     });
 
     it("can omit maxAge if 60 seconds is fine", async () => {
-        fetchMock.post("https://location-retrieval.p-eu.rapidapi.com/retrieve",
+        fetchMock.post(
+            "https://location-retrieval.p-eu.rapidapi.com/retrieve",
             JSON.stringify({
                 area: {
                     center: {
@@ -178,7 +177,7 @@ describe("Device", () => {
             }
         );
 
-        const location = await device.verifyLocation(0, 0, 10_000, 60);
+        const location = await device.verifyLocation(0, 0, 10_000);
 
         expect(location).toBeDefined();
     });
@@ -191,7 +190,7 @@ describe("Device", () => {
             })
         );
 
-        const result = await device.verifyLocation(0, 0, 5000, 60);
+        const result = await device.verifyLocation(0, 0, 5000);
 
         expect(result).toBe(true);
     });
@@ -217,7 +216,7 @@ describe("Device", () => {
             })
         );
 
-        const result = await device.verifyLocation(0, 0, 5000, 60);
+        const result = await device.verifyLocation(0, 0, 5000);
 
         expect(result).toBe(false);
     });
@@ -228,6 +227,8 @@ describe("Device", () => {
             403
         );
 
-        await expect(device.verifyLocation(0, 0, 5000, 60)).rejects.toThrow(new AuthenticationError("403 - Forbidden"));
+        await expect(device.verifyLocation(0, 0, 5000)).rejects.toThrow(
+            new AuthenticationError("403 - Forbidden")
+        );
     });
 });

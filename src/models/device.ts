@@ -198,7 +198,7 @@ export class Device {
         latitude: number,
         longitude: number,
         radius: number,
-        maxAge: number = 60
+        maxAge = 60
     ): Promise<boolean> {
         return this._api.locationVerify.verifyLocation(
             latitude,
