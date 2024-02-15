@@ -55,8 +55,8 @@ describe("Qos", () => {
             sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
             qosProfile: "QOS_L",
             qosStatus: "REQUESTED",
-            startedAt: 1691671102,
-            expiresAt: 1691757502,
+            startedAt: new Date(2024, 1, 1, 0, 0).getTime(),
+            expiresAt: new Date(2024, 1, 1, 0, 1).getTime(),
         };
 
         let mockRequestBody = {
@@ -85,12 +85,8 @@ describe("Qos", () => {
             });
 
         const session = await device.createQodSession("QOS_L", "5.6.7.8");
-        const durationInSecond =
-            (new Date(mockResponse.expiresAt).getTime() -
-                new Date(mockResponse.startedAt).getTime()) /
-            1000;
         expect(session.status).toEqual(mockResponse["qosStatus"]);
-        expect(session.duration()).toEqual(durationInSecond);
+        expect(session.duration()).toEqual(60);
     });
 
     test("should create a session with ipv6", async () => {

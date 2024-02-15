@@ -97,10 +97,10 @@ export class QoDSession {
         session: any
     ): QoDSession {
         let startedAt = session["startedAt"]
-            ? new Date(session["startedAt"])
+            ? new Date(session["startedAt"] * 1000)
             : null;
         let expiresAt = session["expiresAt"]
-            ? new Date(session["expiresAt"])
+            ? new Date(session["expiresAt"] * 1000)
             : null;
 
         return new QoDSession((api = api), {
