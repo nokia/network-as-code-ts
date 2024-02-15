@@ -208,6 +208,19 @@ describe("Device", () => {
         expect(result).toBe(true);
     });
 
+    it("should still return true with non-default maxAge value", async () => {
+        fetchMock.post(
+            "https://location-verification.p-eu.rapidapi.com/verify",
+            JSON.stringify({
+                verificationResult: "TRUE",
+            })
+        );
+
+        const result = await device.verifyLocation(0, 0, 5000, 80);
+
+        expect(result).toBe(true);
+    });
+
     it("should return false if location verification response is FALSE", async () => {
         fetchMock.post(
             "https://location-verification.p-eu.rapidapi.com/verify",

@@ -50,7 +50,8 @@ describe("Location retrieval and verification", () => {
         let isHere = await device.verifyLocation(
             47.48627616952785,
             19.07915612501993,
-            10_000
+            10_000,
+            70
         );
 
         expect(isHere).toBeTruthy();
