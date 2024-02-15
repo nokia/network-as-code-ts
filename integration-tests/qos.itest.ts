@@ -63,6 +63,20 @@ describe("Qos", () => {
         }
     });
 
+    test("should get all sessions", async () => {
+        const newSession = await device.createQodSession(
+            "QOS_L",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B"
+        );
+
+        const sessions = await device.sessions();
+
+        expect(sessions.length).toBeGreaterThan(0);
+
+        await device.clearSessions();
+    })
+
     test("should create a session with service port", async () => {
         const session = await device.createQodSession(
             "QOS_L",
