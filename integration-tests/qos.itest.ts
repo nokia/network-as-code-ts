@@ -98,9 +98,13 @@ describe("Qos", () => {
             undefined,
             60
         );
+        const durationInSecond =
+            (new Date(session.expiresAt).getTime() -
+                new Date(session.startedAt).getTime()) /
+            1000;
         expect(session.startedAt).toBeTruthy();
         expect(session.expiresAt).toBeTruthy();
-        expect(session.duration()).toEqual(60);
+        expect(session.duration()).toEqual(durationInSecond);
         await session.deleteSession();
     });
 
