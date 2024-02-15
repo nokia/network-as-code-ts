@@ -55,8 +55,8 @@ describe("Qos", () => {
             sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
             qosProfile: "QOS_L",
             qosStatus: "REQUESTED",
-            startedAt: new Date(2024, 1, 1, 0, 0).getTime(),
-            expiresAt: new Date(2024, 1, 1, 0, 1).getTime(),
+            startedAt: new Date(2024, 1, 1, 0, 0).getTime() / 1000,
+            expiresAt: new Date(2024, 1, 1, 0, 1).getTime() / 1000,
         };
 
         let mockRequestBody = {
