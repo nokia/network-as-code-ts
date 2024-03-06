@@ -264,6 +264,11 @@ describe("Slicing", () => {
             3
         );
         expect(slice.maxDataConnections).toEqual(12);
+        expect(slice.maxDevices).toEqual(3);
+        expect(slice.sliceUplinkThroughput).toBeTruthy();
+        expect(slice.sliceDownlinkThroughput).toBeTruthy();
+        expect(slice.deviceUplinkThroughput).toBeTruthy();
+        expect(slice.deviceDownlinkThroughput).toBeTruthy();
     });
 
     it("should get all slices", async () => {

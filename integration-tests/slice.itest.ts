@@ -47,6 +47,35 @@ describe("Slicing", () => {
         expect(slice.name).toEqual("sdk-integration-slice-2");
     });
 
+    test.failing("should modify a slice", async () => {
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { service_type: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: "sdk-integration-slice-2",
+                notificationAuthToken: "my-token",
+            }
+        );
+
+        expect(slice.maxDataConnections).toBeUndefined();
+        expect(slice.maxDevices).toBeUndefined();
+        slice.modify(
+            { guaranteed: 10, maximum: 10 },
+            { guaranteed: 10, maximum: 10 },
+            { guaranteed: 10, maximum: 10 },
+            { guaranteed: 10, maximum: 10 },
+            12,
+            3
+        );
+        expect(slice.maxDataConnections).toEqual(12);
+        expect(slice.maxDevices).toEqual(3);
+        expect(slice.sliceUplinkThroughput).toBeTruthy();
+        expect(slice.sliceDownlinkThroughput).toBeTruthy();
+        expect(slice.deviceUplinkThroughput).toBeTruthy();
+        expect(slice.deviceDownlinkThroughput).toBeTruthy();
+    });
+
     test("should get slices", async () => {
         const slices = await client.slices.getAll();
         expect(slices.length).toBeGreaterThanOrEqual(0);
@@ -119,76 +148,83 @@ describe("Slicing", () => {
         expect(newSlice.sid).toEqual(fetchedSlice.sid);
     });
 
-    test.failing("should mark a deleted slice's state as 'Deleted'", async () => {
-        const slice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { service_type: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
-            {
-                name: "sdk-integration-slice-3",
-                notificationAuthToken: "my-token",
-            }
-        );
+    test.failing(
+        "should mark a deleted slice's state as 'Deleted'",
+        async () => {
+            const slice = await client.slices.create(
+                { mcc: "236", mnc: "30" },
+                { service_type: "eMBB", differentiator: "444444" },
+                "https://notify.me/here",
+                {
+                    name: "sdk-integration-slice-3",
+                    notificationAuthToken: "my-token",
+                }
+            );
 
-        await slice.delete();
+            await slice.delete();
 
-        await slice.refresh();
+            await slice.refresh();
 
-        expect(slice.state).toEqual("DELETED");
-    });
+            expect(slice.state).toEqual("DELETED");
+        }
+    );
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test.failing("should deactivate and delete", async () => {
-        const slice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { service_type: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
-            {
-                name: "sdk-integration-slice-3",
-                notificationAuthToken: "my-token",
+    test.failing(
+        "should deactivate and delete",
+        async () => {
+            const slice = await client.slices.create(
+                { mcc: "236", mnc: "30" },
+                { service_type: "eMBB", differentiator: "444444" },
+                "https://notify.me/here",
+                {
+                    name: "sdk-integration-slice-3",
+                    notificationAuthToken: "my-token",
+                }
+            );
+
+            const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
+
+            let counter = 0;
+            while (slice.state == "PENDING" && counter < 5) {
+                await slice.refresh();
+
+                await sleep(30000);
+
+                counter++;
             }
-        );
 
-        const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
+            expect(slice.state).toEqual("AVAILABLE");
 
-        let counter = 0;
-        while (slice.state == "PENDING" && counter < 5) {
-            await slice.refresh();
+            await slice.activate();
 
-            await sleep(30000);
+            counter = 0;
+            while (slice.state == "AVAILABLE" && counter < 5) {
+                await slice.refresh();
 
-            counter++;
-        }
+                await sleep(30000);
 
-        expect(slice.state).toEqual("AVAILABLE");
+                counter++;
+            }
 
-        await slice.activate();
+            expect(slice.state).toEqual("OPERATING");
 
-        counter = 0;
-        while (slice.state == "AVAILABLE" && counter < 5) {
-            await slice.refresh();
+            await slice.deactivate();
 
-            await sleep(30000);
+            counter = 0;
+            while (slice.state == "OPERATING" && counter < 5) {
+                await slice.refresh();
 
-            counter++;
-        }
+                await sleep(30000);
 
-        expect(slice.state).toEqual("OPERATING");
+                counter++;
+            }
 
-        await slice.deactivate();
+            expect(slice.state).toEqual("AVAILABLE");
 
-        counter = 0;
-        while (slice.state == "OPERATING" && counter < 5) {
-            await slice.refresh();
-
-            await sleep(30000);
-
-            counter++;
-        }
-
-        expect(slice.state).toEqual("AVAILABLE");
-
-        await slice.delete();
-    }, 720000);
+            await slice.delete();
+        },
+        720000
+    );
 });
