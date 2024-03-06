@@ -68,6 +68,15 @@ export interface SliceOptionalArgs {
     deviceUplinkThroughput?: Throughput;
 }
 
+export interface SliceModifyOptionalArgs {
+    sliceDownlinkThroughput?: Throughput;
+    sliceUplinkThroughput?: Throughput;
+    deviceDownlinkThroughput?: Throughput;
+    deviceUplinkThroughput?: Throughput;
+    maxDataConnections?: number;
+    maxDevices?: number;
+}
+
 /**
  *  A class representing the `Slice` model.
  * #### Private Attributes:
@@ -184,25 +193,14 @@ export class Slice {
         }
     }
 
-    _to_api_throughput(
-        throughput: Throughput | undefined
-    ): Throughput | undefined {
-        if (throughput) {
-            return {
-                guaranteed: throughput.guaranteed,
-                maximum: throughput.maximum,
-            };
-        }
-    }
-
-    modify(
-        sliceDownlinkThroughput?: Throughput,
-        sliceUplinkThroughput?: Throughput,
-        deviceDownlinkThroughput?: Throughput,
-        deviceUplinkThroughput?: Throughput,
-        maxDataConnections?: number,
-        maxDevices?: number
-    ) {
+    modify({
+        sliceDownlinkThroughput,
+        sliceUplinkThroughput,
+        deviceDownlinkThroughput,
+        deviceUplinkThroughput,
+        maxDataConnections,
+        maxDevices,
+    }: SliceModifyOptionalArgs) {
         this._api.slicing.create(
             this.networkIdentifier,
             this.sliceInfo,
@@ -211,18 +209,10 @@ export class Slice {
                 notificationAuthToken: this.notificationAuthToken,
                 name: this.name,
                 areaOfService: this.areaOfService,
-                sliceDownlinkThroughput: this._to_api_throughput(
-                    sliceDownlinkThroughput
-                ),
-                sliceUplinkThroughput: this._to_api_throughput(
-                    sliceUplinkThroughput
-                ),
-                deviceDownlinkThroughput: this._to_api_throughput(
-                    deviceDownlinkThroughput
-                ),
-                deviceUplinkThroughput: this._to_api_throughput(
-                    deviceUplinkThroughput
-                ),
+                sliceDownlinkThroughput: sliceDownlinkThroughput,
+                sliceUplinkThroughput: sliceUplinkThroughput,
+                deviceDownlinkThroughput: deviceDownlinkThroughput,
+                deviceUplinkThroughput: deviceUplinkThroughput,
                 maxDataConnections: maxDataConnections,
                 maxDevices: maxDevices,
             },

@@ -255,14 +255,14 @@ describe("Slicing", () => {
                 });
             }
         );
-        slice.modify(
-            { guaranteed: 10, maximum: 10 },
-            { guaranteed: 10, maximum: 10 },
-            { guaranteed: 10, maximum: 10 },
-            { guaranteed: 10, maximum: 10 },
-            12,
-            3
-        );
+        slice.modify({
+            sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+            sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+            deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+            deviceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+            maxDataConnections: 12,
+            maxDevices: 3,
+        });
         expect(slice.maxDataConnections).toEqual(12);
         expect(slice.maxDevices).toEqual(3);
         expect(slice.sliceUplinkThroughput).toBeTruthy();
