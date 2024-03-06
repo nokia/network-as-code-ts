@@ -11,6 +11,7 @@ import { Device } from "../models/device";
 import { ProxyAgent } from "proxy-agent";
 
 import fetch from "node-fetch";
+import { Response as FetchResponse } from "node-fetch";
 
 export class SliceAPI {
     private baseUrl: string;
@@ -44,7 +45,8 @@ export class SliceAPI {
         networkId: NetworkIdentifier,
         sliceInfo: SliceInfo,
         notificationUrl: string,
-        optionalArgs?: SliceOptionalArgs
+        optionalArgs?: SliceOptionalArgs,
+        modify = false
     ) {
         const body: any = {
             networkIdentifier: networkId,
@@ -94,17 +96,38 @@ export class SliceAPI {
                     optionalArgs.deviceUplinkThroughput;
             }
         }
+        let response: FetchResponse;
 
-        const response = await fetch(`${this.baseUrl}/slices`, {
-            method: "POST",
-            headers: this.headers,
-            body: JSON.stringify(body),
-            agent: this.agent,
-        });
+        if (modify) {
+            if (!optionalArgs?.name) {
+                throw new Error("Name is mandatory for modify");
+            }
 
-        errorHandler(response);
+            response = await fetch(
+                `${this.baseUrl}/slices/${optionalArgs.name}`,
+                {
+                    method: "PUT",
+                    headers: this.headers,
+                    body: JSON.stringify(body),
+                    agent: this.agent,
+                }
+            );
 
-        return await response.json();
+            errorHandler(response);
+
+            return await response.json();
+        } else {
+            response = await fetch(`${this.baseUrl}/slices`, {
+                method: "POST",
+                headers: this.headers,
+                body: JSON.stringify(body),
+                agent: this.agent,
+            });
+
+            errorHandler(response);
+
+            return await response.json();
+        }
     }
 
     async getAll() {

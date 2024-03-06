@@ -115,12 +115,15 @@ export class Slice {
     sliceUplinkThroughput?: Throughput;
     deviceDownlinkThroughput?: Throughput;
     deviceUplinkThroughput?: Throughput;
+    notificationUrl: string;
+    notificationAuthToken?: string;
 
     constructor(
         api: APIClient,
         state: string,
         sliceInfo: SliceInfo,
         networkIdentifier: NetworkIdentifier,
+        notificationUrl: string,
         sliceOptionalArgs?: SliceOptionalArgs
     ) {
         this._api = api;
@@ -128,6 +131,7 @@ export class Slice {
         this.state = state;
         this.sliceInfo = sliceInfo;
         this.networkIdentifier = networkIdentifier;
+        this.notificationUrl = notificationUrl;
         if (sliceOptionalArgs) {
             const {
                 sid,
@@ -178,6 +182,60 @@ export class Slice {
         if (this.name) {
             return await this._api.slicing.deactivate(this.name);
         }
+    }
+
+    _to_api_throughput(
+        throughput: Throughput | undefined
+    ): Throughput | undefined {
+        if (throughput) {
+            return {
+                guaranteed: throughput.guaranteed,
+                maximum: throughput.maximum,
+            };
+        }
+    }
+
+    modify(
+        sliceDownlinkThroughput?: Throughput,
+        sliceUplinkThroughput?: Throughput,
+        deviceDownlinkThroughput?: Throughput,
+        deviceUplinkThroughput?: Throughput,
+        maxDataConnections?: number,
+        maxDevices?: number
+    ) {
+        this._api.slicing.create(
+            this.networkIdentifier,
+            this.sliceInfo,
+            this.notificationUrl,
+            {
+                notificationAuthToken: this.notificationAuthToken,
+                name: this.name,
+                areaOfService: this.areaOfService,
+                sliceDownlinkThroughput: this._to_api_throughput(
+                    sliceDownlinkThroughput
+                ),
+                sliceUplinkThroughput: this._to_api_throughput(
+                    sliceUplinkThroughput
+                ),
+                deviceDownlinkThroughput: this._to_api_throughput(
+                    deviceDownlinkThroughput
+                ),
+                deviceUplinkThroughput: this._to_api_throughput(
+                    deviceUplinkThroughput
+                ),
+                maxDataConnections: maxDataConnections,
+                maxDevices: maxDevices,
+            },
+            true
+        );
+
+        // Update model (if no exception on modify)
+        this.sliceDownlinkThroughput = sliceDownlinkThroughput;
+        this.sliceUplinkThroughput = sliceUplinkThroughput;
+        this.deviceDownlinkThroughput = deviceDownlinkThroughput;
+        this.deviceUplinkThroughput = deviceUplinkThroughput;
+        this.maxDataConnections = maxDataConnections;
+        this.maxDevices = maxDevices;
     }
 
     /**
