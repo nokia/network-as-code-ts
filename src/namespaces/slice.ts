@@ -56,6 +56,7 @@ export class Slices extends Namespace {
             "NOT_SUBMITED",
             sliceInfo,
             networkId,
+            notificationUrl,
             optionalArgs
         );
 
@@ -93,6 +94,7 @@ export class Slices extends Namespace {
                     slice.state,
                     slice.slice.slice_info,
                     slice.slice.networkIdentifier,
+                    slice.slice.notificationUrl,
                     {
                         name: slice.slice.name,
                         areaOfService: slice.slice.areaOfService,
@@ -131,6 +133,7 @@ export class Slices extends Namespace {
             data.state,
             data.slice.slice_info,
             data.slice.networkIdentifier,
+            data.slice.notificationUrl,
             {
                 sid: data.csi_id,
                 name: data.slice.name,
