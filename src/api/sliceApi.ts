@@ -104,7 +104,7 @@ export class SliceAPI {
             }
 
             response = await fetch(
-                `${this.baseUrl}/slices/${optionalArgs.name}`,
+                `${this.baseUrl}/slices`,
                 {
                     method: "PUT",
                     headers: this.headers,

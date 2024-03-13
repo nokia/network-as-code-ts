@@ -20,7 +20,7 @@ export interface NetworkIdentifier {
             @param differentiator (Optional[string]): the differentiator of a slice object.
  */
 export interface SliceInfo {
-    service_type: string;
+    serviceType: string;
     differentiator?: string;
 }
 

@@ -27,7 +27,7 @@ const MOCK_SLICE = {
             mnc: "30",
         },
         sliceInfo: {
-            service_type: 1,
+            serviceType: 1,
             differentiator: "AAABBB",
         },
         areaOfService: {
@@ -103,7 +103,7 @@ describe("Slicing", () => {
 
         const newSlice = await client.slices.create(
             { mcc: "236", mnc: "30" },
-            { service_type: "eMBB", differentiator: "AAABBB" },
+            { serviceType: "eMBB", differentiator: "AAABBB" },
             "https://example.com/notify",
             { name: "sliceone" }
         );
@@ -119,7 +119,7 @@ describe("Slicing", () => {
                 mcc: "236",
             },
             sliceInfo: {
-                service_type: "eMBB",
+                serviceType: "eMBB",
                 differentiator: "AAABBB",
             },
             notificationUrl: "https://example.com/notify",
@@ -136,7 +136,7 @@ describe("Slicing", () => {
                     mnc: "30",
                 },
                 sliceInfo: {
-                    service_type: "eMBB",
+                    serviceType: "eMBB",
                     differentiator: "AAABBB",
                 },
                 maxDataConnections: 12,
@@ -155,7 +155,7 @@ describe("Slicing", () => {
                 mcc: "236",
             },
             sliceInfo: {
-                service_type: "eMBB",
+                serviceType: "eMBB",
                 differentiator: "AAABBB",
             },
             notificationUrl: "https://example.com/notify",
@@ -190,7 +190,7 @@ describe("Slicing", () => {
                     mnc: "30",
                 },
                 sliceInfo: {
-                    service_type: "eMBB",
+                    serviceType: "eMBB",
                     differentiator: "AAABBB",
                 },
                 maxDataConnections: 12,
@@ -235,7 +235,7 @@ describe("Slicing", () => {
                 mnc: "30",
                 mcc: "236",
             },
-            { service_type: "eMBB", differentiator: "AAABBB" },
+            { serviceType: "eMBB", differentiator: "AAABBB" },
             "https://example.com/notify",
             { name: "slicefour" }
         );
@@ -303,7 +303,7 @@ describe("Slicing", () => {
             client.api,
             "NOT_SUBMITTED",
             {
-                service_type: "eMBB",
+                serviceType: "eMBB",
                 differentiator: "AAABBB",
             },
             { mcc: "236", mnc: "30" },
@@ -328,7 +328,7 @@ describe("Slicing", () => {
             client.api,
             "NOT_SUBMITTED",
             {
-                service_type: "eMBB",
+                serviceType: "eMBB",
                 differentiator: "AAABBB",
             },
             { mcc: "236", mnc: "30" },
@@ -353,7 +353,7 @@ describe("Slicing", () => {
             client.api,
             "NOT_SUBMITTED",
             {
-                service_type: "eMBB",
+                serviceType: "eMBB",
                 differentiator: "AAABBB",
             },
             { mcc: "236", mnc: "30" },
@@ -453,7 +453,7 @@ describe("Slicing", () => {
         try {
             await client.slices.create(
                 { mcc: "236", mnc: "30" },
-                { service_type: "eMBB", differentiator: "AAABBB" },
+                { serviceType: "eMBB", differentiator: "AAABBB" },
                 "https://example.com/notify",
                 { name: "sliceone" }
             );
@@ -471,7 +471,7 @@ describe("Slicing", () => {
         try {
             await client.slices.create(
                 { mcc: "236", mnc: "30" },
-                { service_type: "eMBB", differentiator: "AAABBB" },
+                { serviceType: "eMBB", differentiator: "AAABBB" },
                 "https://example.com/notify",
                 { name: "sliceone" }
             );
@@ -489,7 +489,7 @@ describe("Slicing", () => {
         try {
             await client.slices.create(
                 { mcc: "236", mnc: "30" },
-                { service_type: "eMBB", differentiator: "AAABBB" },
+                { serviceType: "eMBB", differentiator: "AAABBB" },
                 "https://example.com/notify",
                 { name: "sliceone" }
             );
@@ -506,7 +506,7 @@ describe("Slicing", () => {
         try {
             await client.slices.create(
                 { mcc: "236", mnc: "30" },
-                { service_type: "eMBB", differentiator: "AAABBB" },
+                { serviceType: "eMBB", differentiator: "AAABBB" },
                 "https://example.com/notify",
                 { name: "sliceone" }
             );
