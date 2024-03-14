@@ -255,7 +255,7 @@ describe("Slicing", () => {
                 });
             }
         );
-        slice.modify({
+        await slice.modify({
             sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
             sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
             deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
