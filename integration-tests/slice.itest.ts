@@ -33,10 +33,10 @@ describe("Slicing", () => {
         );
     });
 
-    test.failing("should create a slice", async () => {
+    test("should create a slice", async () => {
         const slice = await client.slices.create(
             { mcc: "236", mnc: "30" },
-            { service_type: "eMBB", differentiator: "444444" },
+            { serviceType: "eMBB", differentiator: "444444" },
             "https://notify.me/here",
             {
                 name: "sdk-integration-slice-2",
@@ -50,7 +50,7 @@ describe("Slicing", () => {
     test.failing("should modify a slice", async () => {
         const slice = await client.slices.create(
             { mcc: "236", mnc: "30" },
-            { service_type: "eMBB", differentiator: "444444" },
+            { serviceType: "eMBB", differentiator: "444444" },
             "https://notify.me/here",
             {
                 name: "sdk-integration-slice-2",
@@ -60,7 +60,8 @@ describe("Slicing", () => {
 
         expect(slice.maxDataConnections).toBeUndefined();
         expect(slice.maxDevices).toBeUndefined();
-        slice.modify({
+
+        await slice.modify({
             sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
             sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
             deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
@@ -68,6 +69,7 @@ describe("Slicing", () => {
             maxDataConnections: 12,
             maxDevices: 3,
         });
+
         expect(slice.maxDataConnections).toEqual(12);
         expect(slice.maxDevices).toEqual(3);
         expect(slice.sliceUplinkThroughput).toBeTruthy();
@@ -81,10 +83,10 @@ describe("Slicing", () => {
         expect(slices.length).toBeGreaterThanOrEqual(0);
     });
 
-    test.failing("should create a slice with other optional args", async () => {
+    test("should create a slice with other optional args", async () => {
         const slice = await client.slices.create(
             { mcc: "236", mnc: "30" },
-            { service_type: "eMBB", differentiator: "444444" },
+            { serviceType: "eMBB", differentiator: "444444" },
             "https://notify.me/here",
             {
                 name: "sdk-integration-slice-2",
@@ -133,10 +135,10 @@ describe("Slicing", () => {
         expect(slice.name).toEqual("sdk-integration-slice-2");
     });
 
-    test.failing("should get a slice", async () => {
+    test("should get a slice", async () => {
         const newSlice = await client.slices.create(
             { mcc: "236", mnc: "30" },
-            { service_type: "eMBB", differentiator: "444444" },
+            { serviceType: "eMBB", differentiator: "444444" },
             "https://notify.me/here",
             {
                 name: "sdk-integration-slice-3",
@@ -148,12 +150,12 @@ describe("Slicing", () => {
         expect(newSlice.sid).toEqual(fetchedSlice.sid);
     });
 
-    test.failing(
+    test(
         "should mark a deleted slice's state as 'Deleted'",
         async () => {
             const slice = await client.slices.create(
                 { mcc: "236", mnc: "30" },
-                { service_type: "eMBB", differentiator: "444444" },
+                { serviceType: "eMBB", differentiator: "444444" },
                 "https://notify.me/here",
                 {
                     name: "sdk-integration-slice-3",
@@ -171,12 +173,12 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test.failing(
+    test(
         "should deactivate and delete",
         async () => {
             const slice = await client.slices.create(
                 { mcc: "236", mnc: "30" },
-                { service_type: "eMBB", differentiator: "444444" },
+                { serviceType: "eMBB", differentiator: "444444" },
                 "https://notify.me/here",
                 {
                     name: "sdk-integration-slice-3",

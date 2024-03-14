@@ -7,7 +7,7 @@
     "build": "tsc",
     "lint": "eslint . --ext .ts",
     "test": "jest",
-    "integration": "jest -c jest.config.integration.ts --runInBand"
+    "integration": "jest -c jest.config.integration.ts"
   },
   "repository": {
     "type": "git",

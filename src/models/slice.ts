@@ -20,7 +20,7 @@ export interface NetworkIdentifier {
             @param differentiator (Optional[string]): the differentiator of a slice object.
  */
 export interface SliceInfo {
-    service_type: string;
+    serviceType: string;
     differentiator?: string;
 }
 
@@ -193,7 +193,7 @@ export class Slice {
         }
     }
 
-    modify({
+    async modify({
         sliceDownlinkThroughput,
         sliceUplinkThroughput,
         deviceDownlinkThroughput,
@@ -201,7 +201,7 @@ export class Slice {
         maxDataConnections,
         maxDevices,
     }: SliceModifyOptionalArgs) {
-        this._api.slicing.create(
+        await this._api.slicing.create(
             this.networkIdentifier,
             this.sliceInfo,
             this.notificationUrl,
