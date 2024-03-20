@@ -8,7 +8,7 @@ import {
     ServiceError,
 } from "../src/errors";
 import { NetworkAsCodeClient } from "../src";
-import { Device } from "../src/models/device";
+import { Device, DeviceIpv4Addr } from "../src/models/device";
 import { Slice } from "../src/models/slice";
 
 jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
@@ -374,28 +374,72 @@ describe("Slicing", () => {
             JSON.stringify(MOCK_SLICE)
         );
 
+        // fetchMock.get(
+        //     `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+        //     JSON.stringify([
+        //         {
+        //             id: "attachment-1",
+        //             device: {
+        //                 phoneNumber: device.phoneNumber,
+        //             },
+        //             slice: {
+        //                 name: "sliceone",
+        //             },
+        //         },
+        //     ])
+        // );
+
         const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
 
         fetchMock.post(
-            `https://network-slice-device-attach-norc.p-eu.rapidapi.com/slice/${slice.name}/attach`,
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+12065550100",
-                    notificationUrl: "https://notify.me/here",
+                    device: {
+                        phoneNumber: device.phoneNumber,
+                        ipv4Address: {
+                            publicAddress: (
+                                device.ipv4Address as DeviceIpv4Addr
+                            ).publicAddress,
+                            privateAddress: (
+                                device.ipv4Address as DeviceIpv4Addr
+                            ).privateAddress,
+                            publicPort: (device.ipv4Address as DeviceIpv4Addr)
+                                .publicPort,
+                        },
+                    },
+                    sliceId: "sliceone",
+                    trafficCategories: {
+                        apps: {
+                            os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
+                            apps: ["ENTERPRISE"],
+                        },
+                    },
+                    webhook: {
+                        notificationUrl: "https://example.com/notifications",
+                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
+                    },
                 });
+
                 return Promise.resolve({
                     body: JSON.stringify({
-                        id: "string",
-                        phoneNumber: "string",
-                        deviceStatus: "ATTACHED",
-                        progress: "INPROGRESS",
-                        slice_id: "string",
+                        nac_resource_id: "attachment-1",
                     }),
                 });
             }
         );
 
-        await slice.attach(device, "https://notify.me/here");
+        await slice.attach(
+            device,
+            "c8974e592c2fa383d4a3960714",
+            "https://example.com/notifications",
+            {
+                apps: {
+                    os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
+                    apps: ["ENTERPRISE"],
+                },
+            }
+        );
     });
 
     it("should detach a device from slice", async () => {
@@ -407,25 +451,60 @@ describe("Slicing", () => {
         const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
 
         fetchMock.post(
-            `https://network-slice-device-attach-norc.p-eu.rapidapi.com/slice/${slice.name}/detach`,
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+12065550100",
-                    notificationUrl: "https://notify.me/here",
+                    device: {
+                        phoneNumber: device.phoneNumber,
+                        ipv4Address: {
+                            publicAddress: (
+                                device.ipv4Address as DeviceIpv4Addr
+                            ).publicAddress,
+                            privateAddress: (
+                                device.ipv4Address as DeviceIpv4Addr
+                            ).privateAddress,
+                            publicPort: (device.ipv4Address as DeviceIpv4Addr)
+                                .publicPort,
+                        },
+                    },
+                    sliceId: "sliceone",
+                    trafficCategories: {
+                        apps: {
+                            os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
+                            apps: ["ENTERPRISE"],
+                        },
+                    },
+                    webhook: {
+                        notificationUrl: "https://example.com/notifications",
+                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
+                    },
                 });
-                return Promise.resolve(
-                    JSON.stringify({
-                        id: "string",
-                        phoneNumber: "string",
-                        deviceStatus: "ATTACHED",
-                        progress: "INPROGRESS",
-                        slice_id: "string",
-                    })
-                );
+                return Promise.resolve({
+                    body: JSON.stringify({
+                        nac_resource_id: "attachment-1",
+                    }),
+                });
             }
         );
 
-        await slice.detach(device, "https://notify.me/here");
+        await slice.attach(
+            device,
+            "c8974e592c2fa383d4a3960714",
+            "https://example.com/notifications",
+            {
+                apps: {
+                    os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
+                    apps: ["ENTERPRISE"],
+                },
+            }
+        );
+
+        fetchMock.delete(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments/attachment-1`,
+            JSON.stringify({})
+        );
+
+        await slice.detach(device);
     });
 
     test("should throw NotFound Error for 404 HTTPError", async () => {

@@ -5,9 +5,10 @@ import {
     Slice,
     SliceInfo,
     SliceOptionalArgs,
+    TrafficCategories,
 } from "../models/slice";
 import { errorHandler } from "../errors";
-import { Device } from "../models/device";
+import { Device, DeviceIpv4Addr } from "../models/device";
 import { ProxyAgent } from "proxy-agent";
 
 import fetch from "node-fetch";
@@ -236,38 +237,58 @@ export class AttachAPI {
     async attach(
         device: Device,
         sliceId: string,
-        notificationUrl: string,
-        notificationAuthToken?: string
+        notificationAuthToken: string,
+        notificationUrl?: string,
+        trafficCategories?: TrafficCategories
     ) {
-        const res = await fetch(`${this.baseUrl}/slice/${sliceId}/attach`, {
-            method: "POST",
-            body: JSON.stringify({
+        let payload = {
+            device: {
                 phoneNumber: device.phoneNumber,
-                notificationUrl,
-                notificationAuthToken,
-            }),
+                ipv4Address: {
+                    publicAddress: (device.ipv4Address as DeviceIpv4Addr)
+                        .publicAddress,
+                    privateAddress: (device.ipv4Address as DeviceIpv4Addr)
+                        .privateAddress,
+                    publicPort: (device.ipv4Address as DeviceIpv4Addr)
+                        .publicPort,
+                },
+                ipv6Address: device.ipv6Address,
+            },
+            sliceId,
+            trafficCategories,
+            webhook: {
+                notificationUrl: notificationUrl,
+                notificationAuthToken: notificationAuthToken,
+            },
+        };
+
+        const res = await fetch(`${this.baseUrl}/attachments`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+            agent: this.agent,
+        });
+
+        errorHandler(res);
+        return await res.json();
+    }
+
+    async detach(id: string) {
+        const res = await fetch(`${this.baseUrl}/attachments/${id}`, {
+            method: "DELETE",
             agent: this.agent,
         });
 
         errorHandler(res);
     }
 
-    async detach(
-        device: Device,
-        sliceId: string,
-        notificationUrl: string,
-        notificationAuthToken?: string
-    ) {
-        const res = await fetch(`${this.baseUrl}/slice/${sliceId}/detach`, {
-            method: "POST",
-            body: JSON.stringify({
-                phoneNumber: device.phoneNumber,
-                notificationUrl,
-                notificationAuthToken,
-            }),
+    async getAttachments() {
+        const res = await fetch(`${this.baseUrl}/attachments`, {
+            method: "GET",
             agent: this.agent,
         });
 
         errorHandler(res);
+
+        return res;
     }
 }

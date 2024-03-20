@@ -1,10 +1,9 @@
-import { ProxyAgent } from 'proxy-agent';
+import { ProxyAgent } from "proxy-agent";
 
 import { QodAPI } from "./qodApi";
 import { LocationRetrievalAPI, LocationVerifyAPI } from "./locationApi";
 import { DeviceStatusAPI } from "./deviceStatusAPI";
 import { AttachAPI, SliceAPI } from "./sliceApi";
-
 
 const QOS_BASE_URL_PROD =
     "https://quality-of-service-on-demand.p-eu.rapidapi.com";
@@ -27,9 +26,9 @@ const SLICE_BASE_URL_PROD = "https://network-slicing.p-eu.rapidapi.com";
 const SLICE_BASE_URL_DEV = "https://network-slicing2.p-eu.rapidapi.com";
 
 const SLICE_ATTACH_BASE_URL_PROD =
-    "https://network-slice-device-attach-norc.p-eu.rapidapi.com";
+    "https://device-application-attach.p-eu.rapidapi.com";
 const SLICE_ATTACH_BASE_URL_DEV =
-    "https://device-attach-norc1.p-eu.rapidapi.com";
+    "https://device-application-attach.p-eu.rapidapi.com";
 
 const agent = new ProxyAgent();
 
@@ -77,11 +76,11 @@ export class APIClient {
             token,
             devMode
                 ? locationRetrievalBaseUrl
-                    .replace("https://", "")
-                    .replace("p-eu", "nokia-dev")
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
                 : locationRetrievalBaseUrl
-                    .replace("https://", "")
-                    .replace("p-eu", "nokia"),
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
             agent
         );
 
@@ -94,11 +93,11 @@ export class APIClient {
             token,
             devMode
                 ? locationVerifyBaseUrl
-                    .replace("https://", "")
-                    .replace("p-eu", "nokia-dev")
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
                 : locationVerifyBaseUrl
-                    .replace("https://", "")
-                    .replace("p-eu", "nokia"),
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
             agent
         );
 
@@ -111,11 +110,11 @@ export class APIClient {
             token,
             devMode
                 ? deviceStatusBaseUrl
-                    .replace("https://", "")
-                    .replace("p-eu", "nokia-dev")
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
                 : deviceStatusBaseUrl
-                    .replace("https://", "")
-                    .replace("p-eu", "nokia"),
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
             agent
         );
 
@@ -135,7 +134,7 @@ export class APIClient {
         );
 
         if (devMode && sliceAttachBaseUrl == SLICE_BASE_URL_PROD) {
-            sliceAttachBaseUrl = SLICE_BASE_URL_DEV;
+            sliceAttachBaseUrl = SLICE_ATTACH_BASE_URL_DEV;
         }
 
         this.sliceAttach = new AttachAPI(
@@ -143,11 +142,11 @@ export class APIClient {
             token,
             devMode
                 ? sliceAttachBaseUrl
-                    .replace("https://", "")
-                    .replace("p-eu", "nokia-dev")
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
                 : sliceAttachBaseUrl
-                    .replace("https://", "")
-                    .replace("p-eu", "nokia"),
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
             agent
         );
     }

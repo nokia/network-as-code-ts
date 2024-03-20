@@ -146,6 +146,12 @@ export class Slices extends Namespace {
                 deviceUplinkThroughput: data.slice.deviceUplinkThroughput,
             }
         );
+
+        // const attachments = (
+        //     await this.api.sliceAttach.getAttachments()
+        // ).json();
+
+
         return slice;
     }
 }
