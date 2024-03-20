@@ -294,6 +294,15 @@ export class Slice {
         this.state = sliceData["state"];
     }
 
+    setAttachments(attachments: any) {
+        attachments.forEach((attachment: any) => {
+            this._attachments.push({
+                phoneNumber: attachment.device.phoneNumber,
+                attachmentId: attachment.id,
+            });
+        });
+    }
+
     /**
  *  Attach network slice.
  * #### Args:
