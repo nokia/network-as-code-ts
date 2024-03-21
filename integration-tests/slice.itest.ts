@@ -278,8 +278,6 @@ describe("Slicing", () => {
 
         await slice.detach(device);
 
-        await sleep(30000);
-
         slice.deactivate();
 
         counter = 0;

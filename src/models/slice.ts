@@ -87,30 +87,22 @@ export interface TrafficCategories {
     apps: Apps;
 }
 
-export interface DeviceAttachment {
-    networkAccessIdentifier?: string;
-    phoneNumber?: string;
-    attachmentId: string;
-}
+export class DeviceAttachment {
+    private _api: APIClient;
+    devicePhoneNumber: string;
+    id: string;
 
-function fetchAndRemove(
-    sliceAttachments: DeviceAttachment[],
-    device: Device
-): string | null {
-    if (sliceAttachments.length > 0) {
-        for (let i = 0; i < sliceAttachments.length; i++) {
-            const attachment = sliceAttachments[i];
-            if (
-                attachment.networkAccessIdentifier === device.networkAccessId ||
-                attachment.phoneNumber === device.phoneNumber
-            ) {
-                const attachmentId = attachment.attachmentId;
-                sliceAttachments.splice(i, 1);
-                return attachmentId;
-            }
+    constructor(api: APIClient, id: string, devicePhoneNumber: string) {
+        this.devicePhoneNumber = devicePhoneNumber;
+        this.id = id;
+        this._api = api;
+    }
+
+    delete() {
+        if (this.id) {
+            return this._api.sliceAttach.detach(this.id);
         }
     }
-    return null;
 }
 
 /**
@@ -294,15 +286,6 @@ export class Slice {
         this.state = sliceData["state"];
     }
 
-    setAttachments(attachments: any) {
-        attachments.forEach((attachment: any) => {
-            this._attachments.push({
-                phoneNumber: attachment.device.phoneNumber,
-                attachmentId: attachment.id,
-            });
-        });
-    }
-
     /**
  *  Attach network slice.
  * #### Args:
@@ -318,7 +301,7 @@ export class Slice {
         notificationUrl?: string,
         trafficCategories?: TrafficCategories
     ) {
-        const res: any = await this._api.sliceAttach.attach(
+        const newAttachment: any = await this._api.sliceAttach.attach(
             device,
             this.name as string,
             notificationAuthToken,
@@ -326,11 +309,15 @@ export class Slice {
             trafficCategories
         );
 
-        this._attachments.push({
-            networkAccessIdentifier: device.networkAccessId,
-            phoneNumber: device.phoneNumber,
-            attachmentId: res.nac_resource_id,
-        });
+        this._attachments.push(
+            new DeviceAttachment(
+                this._api,
+                newAttachment.nac_resource_id,
+                device.phoneNumber as string
+            )
+        );
+
+        return newAttachment;
     }
 
     /**
@@ -344,9 +331,10 @@ export class Slice {
             slice.detach(device)
  */
     async detach(device: Device) {
-        const attachmentId = fetchAndRemove(this._attachments, device);
-        if (attachmentId) {
-            await this._api.sliceAttach.detach(attachmentId);
+        const attachment = this._attachments.filter(
+            (attachment) => attachment.devicePhoneNumber === device.phoneNumber
+        );
+        if (attachment.length > 0) {
         } else {
             throw new NotFoundError("Attachment not found");
         }

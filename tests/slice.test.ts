@@ -374,21 +374,6 @@ describe("Slicing", () => {
             JSON.stringify(MOCK_SLICE)
         );
 
-        // fetchMock.get(
-        //     `https://device-application-attach.p-eu.rapidapi.com/attachments`,
-        //     JSON.stringify([
-        //         {
-        //             id: "attachment-1",
-        //             device: {
-        //                 phoneNumber: device.phoneNumber,
-        //             },
-        //             slice: {
-        //                 name: "sliceone",
-        //             },
-        //         },
-        //     ])
-        // );
-
         const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
 
         fetchMock.post(
