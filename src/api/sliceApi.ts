@@ -262,11 +262,15 @@ export class AttachAPI {
             },
         };
 
-        const res = await fetch(`${this.baseUrl}/attachments`, {
-            method: "POST",
-            body: JSON.stringify(payload),
-            agent: this.agent,
-        });
+        const res = await fetch(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+            {
+                method: "POST",
+                headers: this.headers,
+                body: JSON.stringify(payload),
+                agent: this.agent,
+            }
+        );
 
         errorHandler(res);
         return await res.json();
@@ -275,6 +279,7 @@ export class AttachAPI {
     async detach(id: string) {
         const res = await fetch(`${this.baseUrl}/attachments/${id}`, {
             method: "DELETE",
+            headers: this.headers,
             agent: this.agent,
         });
 
@@ -284,6 +289,7 @@ export class AttachAPI {
     async getAttachments() {
         const res = await fetch(`${this.baseUrl}/attachments`, {
             method: "GET",
+            headers: this.headers,
             agent: this.agent,
         });
 

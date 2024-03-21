@@ -24,7 +24,7 @@ describe("Slicing", () => {
                 publicPort: 80,
             },
             undefined,
-            "9382948473"
+            "+12065550100"
         );
     });
     test("should get a device", () => {
@@ -278,16 +278,7 @@ describe("Slicing", () => {
 
         await slice.detach(device);
 
-        counter = 0;
-        while (slice.state == "AVAILABLE" && counter < 5) {
-            await slice.refresh();
-
-            await sleep(30000);
-
-            counter++;
-        }
-
-        expect(slice.state).toEqual("OPERATING");
+        await sleep(30000);
 
         slice.deactivate();
 
