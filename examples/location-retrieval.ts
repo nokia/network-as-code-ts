@@ -1,4 +1,4 @@
-import { NetworkAsCodeClient } from 'network-as-code';
+import { NetworkAsCodeClient } from "network-as-code";
 import { Device, DeviceIpv4Addr } from "network-as-code/models/device";
 import { CivicAddress, Location } from "network-as-code/models/location";
 
@@ -19,10 +19,19 @@ const main = async () => {
         "36721601234567"
     );
 
+    // Specify the maximum amount of time accepted
+    // to get location information, it's a mandatory parameter.
+    // The value (integer in seconds) can be passed directly.
+    const location = await myDevice.getLocation(3600);
+
+    console.log(location.latitude);
+    console.log(location.longitude);
+    console.log(location.civicAddress);
+
     // For estimations, use the `verifyLocation()` method
     // with the geo-coordinates and maximum age in seconds.
     // Integers can be passed directly in TypeScript.
     if (await myDevice.verifyLocation(60.252, 25.227, 1_000, 3600)) {
         console.log("Our device is near Helsinki!");
     }
-}
+};
