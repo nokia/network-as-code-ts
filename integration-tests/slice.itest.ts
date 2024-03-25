@@ -24,7 +24,7 @@ describe("Slicing", () => {
                 publicPort: 80,
             },
             undefined,
-            "9382948473"
+            "+12065550100"
         );
     });
     test("should get a device", () => {
@@ -150,83 +150,161 @@ describe("Slicing", () => {
         expect(newSlice.sid).toEqual(fetchedSlice.sid);
     });
 
-    test(
-        "should mark a deleted slice's state as 'Deleted'",
-        async () => {
-            const slice = await client.slices.create(
-                { mcc: "236", mnc: "30" },
-                { serviceType: "eMBB", differentiator: "444444" },
-                "https://notify.me/here",
-                {
-                    name: "sdk-integration-slice-3",
-                    notificationAuthToken: "my-token",
-                }
-            );
+    test("should mark a deleted slice's state as 'Deleted'", async () => {
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: "sdk-integration-slice-3",
+                notificationAuthToken: "my-token",
+            }
+        );
 
-            await slice.delete();
+        await slice.delete();
 
-            await slice.refresh();
+        await slice.refresh();
 
-            expect(slice.state).toEqual("DELETED");
-        }
-    );
+        expect(slice.state).toEqual("DELETED");
+    });
+
+    test("should get attachments", async () => {
+        const attachments: any = await client.slices.getAllAttachments();
+        expect(attachments.length).toBeGreaterThanOrEqual(0);
+    });
+
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test(
-        "should deactivate and delete",
-        async () => {
-            const slice = await client.slices.create(
-                { mcc: "236", mnc: "30" },
-                { serviceType: "eMBB", differentiator: "444444" },
-                "https://notify.me/here",
-                {
-                    name: "sdk-integration-slice-3",
-                    notificationAuthToken: "my-token",
-                }
-            );
-
-            const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
-
-            let counter = 0;
-            while (slice.state == "PENDING" && counter < 5) {
-                await slice.refresh();
-
-                await sleep(30000);
-
-                counter++;
+    test("should deactivate and delete", async () => {
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: "sdk-integration-slice-3",
+                notificationAuthToken: "my-token",
             }
+        );
 
-            expect(slice.state).toEqual("AVAILABLE");
+        const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
-            await slice.activate();
+        let counter = 0;
+        while (slice.state == "PENDING" && counter < 5) {
+            await slice.refresh();
 
-            counter = 0;
-            while (slice.state == "AVAILABLE" && counter < 5) {
-                await slice.refresh();
+            await sleep(30000);
 
-                await sleep(30000);
+            counter++;
+        }
 
-                counter++;
+        expect(slice.state).toEqual("AVAILABLE");
+
+        await slice.activate();
+
+        counter = 0;
+        while (slice.state == "AVAILABLE" && counter < 5) {
+            await slice.refresh();
+
+            await sleep(30000);
+
+            counter++;
+        }
+
+        expect(slice.state).toEqual("OPERATING");
+
+        await slice.deactivate();
+
+        counter = 0;
+        while (slice.state == "OPERATING" && counter < 5) {
+            await slice.refresh();
+
+            await sleep(30000);
+
+            counter++;
+        }
+
+        expect(slice.state).toEqual("AVAILABLE");
+
+        await slice.delete();
+    }, 720000);
+
+    // NOTE: This test takes a long time to execute, since it must wait for slice updates
+    // if you are in a rush, add a temporary skip here
+    test("should attach device to slice and detach", async () => {
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: "sdk-integration-slice-3",
+                notificationAuthToken: "my-token",
             }
+        );
 
-            expect(slice.state).toEqual("OPERATING");
+        const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
-            await slice.deactivate();
+        let counter = 0;
+        while (slice.state == "PENDING" && counter < 5) {
+            await slice.refresh();
 
-            counter = 0;
-            while (slice.state == "OPERATING" && counter < 5) {
-                await slice.refresh();
+            await sleep(30000);
 
-                await sleep(30000);
+            counter++;
+        }
 
-                counter++;
+        expect(slice.state).toEqual("AVAILABLE");
+
+        await slice.activate();
+
+        counter = 0;
+        while (slice.state == "AVAILABLE" && counter < 5) {
+            await slice.refresh();
+
+            await sleep(30000);
+
+            counter++;
+        }
+
+        expect(slice.state).toEqual("OPERATING");
+
+        const newAttachment = await slice.attach(
+            device,
+            "c8974e592c2fa383d4a3960714",
+            "https://example.com/notifications",
+            {
+                apps: {
+                    os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
+                    apps: ["ENTERPRISE"],
+                },
             }
+        );
 
-            expect(slice.state).toEqual("AVAILABLE");
+        await sleep(30000);
 
-            await slice.delete();
-        },
-        720000
-    );
+        const attachment: any = await client.slices.getAttachment(
+            newAttachment["nac_resource_id"]
+        );
+
+        expect(attachment["nac_resource_id"]).toEqual(
+            newAttachment["nac_resource_id"]
+        );
+
+        await slice.detach(device);
+
+        slice.deactivate();
+
+        counter = 0;
+        while (slice.state == "OPERATING" && counter < 5) {
+            await slice.refresh();
+
+            await sleep(30000);
+
+            counter++;
+        }
+
+        expect(slice.state).toEqual("AVAILABLE");
+
+        await slice.delete();
+    }, 720000);
 });

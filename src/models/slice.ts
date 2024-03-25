@@ -1,4 +1,5 @@
 import { APIClient } from "../api/client";
+import { NotFoundError } from "../errors";
 import { Device } from "./device";
 import { QoDSession } from "./session";
 
@@ -77,11 +78,41 @@ export interface SliceModifyOptionalArgs {
     maxDevices?: number;
 }
 
+export interface Apps {
+    os: string;
+    apps: string[];
+}
+
+export interface TrafficCategories {
+    apps: Apps;
+}
+
+export interface DeviceAttachment {
+    devicePhoneNumber: string;
+    attachmentId: string;
+}
+
+function fetchAndRemove(
+    sliceAttachments: DeviceAttachment[],
+    device: Device
+): string | null {
+    for (let i = 0; i < sliceAttachments.length; i++) {
+        const attachment = sliceAttachments[i];
+        if (attachment.devicePhoneNumber === device.phoneNumber) {
+            const attachmentId = attachment.attachmentId;
+            sliceAttachments.splice(i, 1);
+            return attachmentId;
+        }
+    }
+    return null;
+}
+
 /**
  *  A class representing the `Slice` model.
  * #### Private Attributes:
        @param _api(APIClient): An API client object.
        @param _sessions(List[Session]): List of device session instances.
+       @param _attachments(DeviceAttachment[]): List of device attachments
 
     #### Public Attributes:
        @param sid (optional): String ID of the slice
@@ -112,6 +143,7 @@ export interface SliceModifyOptionalArgs {
 export class Slice {
     private _api: APIClient;
     private _sessions: QoDSession[];
+    private _attachments: DeviceAttachment[];
     state: string;
     sliceInfo: SliceInfo;
     networkIdentifier: NetworkIdentifier;
@@ -137,6 +169,7 @@ export class Slice {
     ) {
         this._api = api;
         this._sessions = [];
+        this._attachments = [];
         this.state = state;
         this.sliceInfo = sliceInfo;
         this.networkIdentifier = networkIdentifier;
@@ -255,6 +288,18 @@ export class Slice {
         this.state = sliceData["state"];
     }
 
+    setAttachments(attachments: any): any {
+        if (attachments.length > 0) {
+            this._attachments = [];
+            attachments.forEach((attachment: any) => {
+                this._attachments.push({
+                    devicePhoneNumber: attachment.resource.device.phoneNumber,
+                    attachmentId: attachment.nac_resource_id,
+                });
+            });
+        }
+    }
+
     /**
  *  Attach network slice.
  * #### Args:
@@ -266,15 +311,24 @@ export class Slice {
  */
     async attach(
         device: Device,
-        notificationUrl: string,
-        notificationAuthToken?: string
+        notificationAuthToken: string,
+        notificationUrl?: string,
+        trafficCategories?: TrafficCategories
     ) {
-        await this._api.sliceAttach.attach(
+        const newAttachment: any = await this._api.sliceAttach.attach(
             device,
             this.name as string,
+            notificationAuthToken,
             notificationUrl,
-            notificationAuthToken
+            trafficCategories
         );
+
+        this._attachments.push({
+            attachmentId: newAttachment.nac_resource_id,
+            devicePhoneNumber: device.phoneNumber as string,
+        });
+
+        return newAttachment;
     }
 
     /**
@@ -285,18 +339,14 @@ export class Slice {
     #### Example:
             device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80})
             slice.attach(device)
-            slice.detach()
+            slice.detach(device)
  */
-    async detach(
-        device: Device,
-        notificationUrl: string,
-        notificationAuthToken?: string
-    ) {
-        await this._api.sliceAttach.detach(
-            device,
-            this.name as string,
-            notificationUrl,
-            notificationAuthToken
-        );
+    async detach(device: Device) {
+        const attachmentId = fetchAndRemove(this._attachments, device);
+        if (attachmentId) {
+            this._api.sliceAttach.detach(attachmentId);
+        } else {
+            throw new NotFoundError("Attachment not found");
+        }
     }
 }

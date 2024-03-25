@@ -8,7 +8,7 @@ import {
     ServiceError,
 } from "../src/errors";
 import { NetworkAsCodeClient } from "../src";
-import { Device } from "../src/models/device";
+import { Device, DeviceIpv4Addr } from "../src/models/device";
 import { Slice } from "../src/models/slice";
 
 jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
@@ -275,6 +275,39 @@ describe("Slicing", () => {
         const mockSlices = [MOCK_SLICE];
 
         fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-2",
+                    resource: {
+                        device: {
+                            phoneNumber: "09213284343",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-3",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sdk-integration-slice-5",
+                    },
+                },
+            ])
+        );
+
+        fetchMock.get(
             "https://network-slicing.p-eu.rapidapi.com/slices",
             JSON.stringify(mockSlices)
         );
@@ -287,6 +320,39 @@ describe("Slicing", () => {
         fetchMock.get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE)
+        );
+
+        fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-2",
+                    resource: {
+                        device: {
+                            phoneNumber: "09213284343",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-3",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sdk-integration-slice-5",
+                    },
+                },
+            ])
         );
 
         const slice = await client.slices.get(MOCK_SLICE.slice.name);
@@ -374,28 +440,90 @@ describe("Slicing", () => {
             JSON.stringify(MOCK_SLICE)
         );
 
+        fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-2",
+                    resource: {
+                        device: {
+                            phoneNumber: "09213284343",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-3",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sdk-integration-slice-5",
+                    },
+                },
+            ])
+        );
+
         const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
 
         fetchMock.post(
-            `https://network-slice-device-attach-norc.p-eu.rapidapi.com/slice/${slice.name}/attach`,
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+12065550100",
-                    notificationUrl: "https://notify.me/here",
+                    device: {
+                        phoneNumber: device.phoneNumber,
+                        ipv4Address: {
+                            publicAddress: (
+                                device.ipv4Address as DeviceIpv4Addr
+                            ).publicAddress,
+                            privateAddress: (
+                                device.ipv4Address as DeviceIpv4Addr
+                            ).privateAddress,
+                            publicPort: (device.ipv4Address as DeviceIpv4Addr)
+                                .publicPort,
+                        },
+                    },
+                    sliceId: "sliceone",
+                    trafficCategories: {
+                        apps: {
+                            os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
+                            apps: ["ENTERPRISE"],
+                        },
+                    },
+                    webhook: {
+                        notificationUrl: "https://example.com/notifications",
+                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
+                    },
                 });
+
                 return Promise.resolve({
                     body: JSON.stringify({
-                        id: "string",
-                        phoneNumber: "string",
-                        deviceStatus: "ATTACHED",
-                        progress: "INPROGRESS",
-                        slice_id: "string",
+                        nac_resource_id: "attachment-1",
                     }),
                 });
             }
         );
 
-        await slice.attach(device, "https://notify.me/here");
+        await slice.attach(
+            device,
+            "c8974e592c2fa383d4a3960714",
+            "https://example.com/notifications",
+            {
+                apps: {
+                    os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
+                    apps: ["ENTERPRISE"],
+                },
+            }
+        );
     });
 
     it("should detach a device from slice", async () => {
@@ -404,28 +532,101 @@ describe("Slicing", () => {
             JSON.stringify(MOCK_SLICE)
         );
 
-        const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
-
-        fetchMock.post(
-            `https://network-slice-device-attach-norc.p-eu.rapidapi.com/slice/${slice.name}/detach`,
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+12065550100",
-                    notificationUrl: "https://notify.me/here",
-                });
-                return Promise.resolve(
-                    JSON.stringify({
-                        id: "string",
-                        phoneNumber: "string",
-                        deviceStatus: "ATTACHED",
-                        progress: "INPROGRESS",
-                        slice_id: "string",
-                    })
-                );
-            }
+        fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-2",
+                    resource: {
+                        device: {
+                            phoneNumber: "09213284343",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-3",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sdk-integration-slice-5",
+                    },
+                },
+            ])
         );
 
-        await slice.detach(device, "https://notify.me/here");
+        const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
+
+        fetchMock.delete(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments/attachment-1`,
+            JSON.stringify({})
+        );
+
+        await slice.detach(device);
+    });
+
+    it("should get application attachment", async () => {
+        fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments/4f11d02d-e661-4e4b-b623-55292a431c60`,
+            JSON.stringify({
+                nac_resource_id: "4f11d02d-e661-4e4b-b623-55292a431c60",
+            })
+        );
+
+        const response: any = await client.slices.getAttachment(
+            "4f11d02d-e661-4e4b-b623-55292a431c60"
+        );
+        expect(response.nac_resource_id).toEqual(
+            "4f11d02d-e661-4e4b-b623-55292a431c60"
+        );
+    });
+
+    it("should get all application attachments", async () => {
+        fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-2",
+                    resource: {
+                        device: {
+                            phoneNumber: "09213284343",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-3",
+                    resource: {
+                        device: {
+                            phoneNumber: "12065550100",
+                        },
+                        sliceId: "sdk-integration-slice-5",
+                    },
+                },
+            ])
+        );
+
+        const response: any = await client.slices.getAllAttachments();
+        expect(response.length).toEqual(3);
     });
 
     test("should throw NotFound Error for 404 HTTPError", async () => {
