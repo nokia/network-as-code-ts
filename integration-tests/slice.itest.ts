@@ -262,7 +262,7 @@ describe("Slicing", () => {
 
         expect(slice.state).toEqual("OPERATING");
 
-        await slice.attach(
+        const newAttachment = await slice.attach(
             device,
             "c8974e592c2fa383d4a3960714",
             "https://example.com/notifications",
@@ -275,6 +275,14 @@ describe("Slicing", () => {
         );
 
         await sleep(30000);
+
+        const attachment: any = await slice.getAttachment(
+            newAttachment["nac_resource_id"]
+        );
+
+        expect(attachment["nac_resource_id"]).toEqual(
+            newAttachment["nac_resource_id"]
+        );
 
         await slice.detach(device);
 

@@ -492,6 +492,35 @@ describe("Slicing", () => {
         await slice.detach(device);
     });
 
+    it("should get application attachment", async () => {
+        fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments/4f11d02d-e661-4e4b-b623-55292a431c60`,
+            JSON.stringify({
+                nac_resource_id: "4f11d02d-e661-4e4b-b623-55292a431c60",
+            })
+        );
+
+        const slice = new Slice(
+            client.api,
+            "NOT_SUBMITTED",
+            {
+                serviceType: "eMBB",
+                differentiator: "AAABBB",
+            },
+            { mcc: "236", mnc: "30" },
+            "https://example.com/notify",
+            {
+                name: "sliceone",
+            }
+        );
+        const response: any = await slice.getAttachment(
+            "4f11d02d-e661-4e4b-b623-55292a431c60"
+        );
+        expect(response.nac_resource_id).toEqual(
+            "4f11d02d-e661-4e4b-b623-55292a431c60"
+        );
+    });
+
     test("should throw NotFound Error for 404 HTTPError", async () => {
         fetchMock.get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,

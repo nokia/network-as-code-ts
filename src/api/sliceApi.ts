@@ -286,6 +286,18 @@ export class AttachAPI {
         errorHandler(res);
     }
 
+    async get(id: string) {
+        const res = await fetch(`${this.baseUrl}/attachments/${id}`, {
+            method: "GET",
+            headers: this.headers,
+            agent: this.agent,
+        });
+
+        errorHandler(res);
+
+        return await res.json();
+    }
+
     async getAttachments() {
         const res = await fetch(`${this.baseUrl}/attachments`, {
             method: "GET",
