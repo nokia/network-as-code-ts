@@ -87,22 +87,24 @@ export interface TrafficCategories {
     apps: Apps;
 }
 
-export class DeviceAttachment {
-    private _api: APIClient;
+export interface DeviceAttachment {
     devicePhoneNumber: string;
-    id: string;
+    attachmentId: string;
+}
 
-    constructor(api: APIClient, id: string, devicePhoneNumber: string) {
-        this.devicePhoneNumber = devicePhoneNumber;
-        this.id = id;
-        this._api = api;
-    }
-
-    delete() {
-        if (this.id) {
-            return this._api.sliceAttach.detach(this.id);
+function fetchAndRemove(
+    sliceAttachments: DeviceAttachment[],
+    device: Device
+): string | null {
+    for (let i = 0; i < sliceAttachments.length; i++) {
+        const attachment = sliceAttachments[i];
+        if (attachment.devicePhoneNumber === device.phoneNumber) {
+            const attachmentId = attachment.attachmentId;
+            sliceAttachments.splice(i, 1);
+            return attachmentId;
         }
     }
+    return null;
 }
 
 /**
@@ -286,6 +288,18 @@ export class Slice {
         this.state = sliceData["state"];
     }
 
+    setAttachments(attachments: any): any {
+        if (attachments.length > 0) {
+            this._attachments = [];
+            attachments.forEach((attachment: any) => {
+                this._attachments.push({
+                    devicePhoneNumber: attachment.resource.device.phoneNumber,
+                    attachmentId: attachment.nac_resource_id,
+                });
+            });
+        }
+    }
+
     /**
  *  Attach network slice.
  * #### Args:
@@ -309,13 +323,10 @@ export class Slice {
             trafficCategories
         );
 
-        this._attachments.push(
-            new DeviceAttachment(
-                this._api,
-                newAttachment.nac_resource_id,
-                device.phoneNumber as string
-            )
-        );
+        this._attachments.push({
+            attachmentId: newAttachment.nac_resource_id,
+            devicePhoneNumber: device.phoneNumber as string,
+        });
 
         return newAttachment;
     }
@@ -331,14 +342,11 @@ export class Slice {
             slice.detach(device)
  */
     async detach(device: Device) {
-        const attachment = this._attachments.filter(
-            (attachment) => attachment.devicePhoneNumber === device.phoneNumber
-        );
-        if (attachment.length > 0) {
+        const attachmentId = fetchAndRemove(this._attachments, device);
+        if (attachmentId) {
+            this._api.sliceAttach.detach(attachmentId);
         } else {
             throw new NotFoundError("Attachment not found");
         }
     }
-
-   
 }

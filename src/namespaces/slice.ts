@@ -87,30 +87,37 @@ export class Slices extends Namespace {
         const data: any = await this.api.slicing.getAll();
 
         let slices: Slice[] = [];
-        data.forEach((slice: any) => {
-            slices.push(
-                new Slice(
-                    this.api,
-                    slice.state,
-                    slice.slice.slice_info,
-                    slice.slice.networkIdentifier,
-                    slice.slice.notificationUrl,
-                    {
-                        name: slice.slice.name,
-                        areaOfService: slice.slice.areaOfService,
-                        maxDataConnections: slice.slice.maxDataConnections,
-                        maxDevices: slice.slice.maxDevices,
-                        sliceDownlinkThroughput:
-                            slice.slice.sliceDownlinkThroughput,
-                        sliceUplinkThroughput:
-                            slice.slice.sliceUplinkThroughput,
-                        deviceDownlinkThroughput:
-                            slice.slice.deviceDownlinkThroughput,
-                        deviceUplinkThroughput:
-                            slice.slice.deviceUplinkThroughput,
-                    }
-                )
+        data.forEach(async (slice: any) => {
+            const slice_instance = new Slice(
+                this.api,
+                slice.state,
+                slice.slice.slice_info,
+                slice.slice.networkIdentifier,
+                slice.slice.notificationUrl,
+                {
+                    name: slice.slice.name,
+                    areaOfService: slice.slice.areaOfService,
+                    maxDataConnections: slice.slice.maxDataConnections,
+                    maxDevices: slice.slice.maxDevices,
+                    sliceDownlinkThroughput:
+                        slice.slice.sliceDownlinkThroughput,
+                    sliceUplinkThroughput: slice.slice.sliceUplinkThroughput,
+                    deviceDownlinkThroughput:
+                        slice.slice.deviceDownlinkThroughput,
+                    deviceUplinkThroughput: slice.slice.deviceUplinkThroughput,
+                }
             );
+            slices.push(slice_instance);
+            const attachments: any =
+                await this.api.sliceAttach.getAttachments();
+
+            if (attachments.length > 0) {
+                const sliceAttachments = attachments.filter(
+                    (attachment: any) =>
+                        attachment.resource.sliceId == slice_instance.name
+                );
+                slice_instance.setAttachments(sliceAttachments);
+            }
         });
         return slices;
     }
@@ -147,8 +154,14 @@ export class Slices extends Namespace {
             }
         );
 
-        // const attachments = await this.api.sliceAttach.getAttachments();
+        const attachments: any = await this.api.sliceAttach.getAttachments();
 
+        if (attachments.length > 0) {
+            const sliceAttachments = attachments.filter(
+                (attachment: any) => attachment.resource.sliceId == slice.name
+            );
+            slice.setAttachments(sliceAttachments);
+        }
 
         return slice;
     }
