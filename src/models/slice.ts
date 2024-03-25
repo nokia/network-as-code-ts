@@ -340,15 +340,5 @@ export class Slice {
         }
     }
 
-    /**
- *  Get Application Attachment Instance
- * #### Args:
-            id (string): Application Attachment Id
-
-    #### Example:
-            attachment = slice.get_attachment(id)
- */
-    async getAttachment(id: string) {
-        return await this._api.sliceAttach.get(id);
-    }
+   
 }

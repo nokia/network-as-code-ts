@@ -500,20 +500,7 @@ describe("Slicing", () => {
             })
         );
 
-        const slice = new Slice(
-            client.api,
-            "NOT_SUBMITTED",
-            {
-                serviceType: "eMBB",
-                differentiator: "AAABBB",
-            },
-            { mcc: "236", mnc: "30" },
-            "https://example.com/notify",
-            {
-                name: "sliceone",
-            }
-        );
-        const response: any = await slice.getAttachment(
+        const response: any = await client.slices.getAttachment(
             "4f11d02d-e661-4e4b-b623-55292a431c60"
         );
         expect(response.nac_resource_id).toEqual(

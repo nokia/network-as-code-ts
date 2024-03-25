@@ -151,7 +151,18 @@ export class Slices extends Namespace {
         //     await this.api.sliceAttach.getAttachments()
         // ).json();
 
-
         return slice;
+    }
+
+    /**
+ *  Get Application Attachment Instance
+ * #### Args:
+            id (string): Application Attachment Id
+
+    #### Example:
+            attachment = slice.get_attachment(id)
+ */
+    async getAttachment(id: string) {
+        return await this.api.sliceAttach.get(id);
     }
 }

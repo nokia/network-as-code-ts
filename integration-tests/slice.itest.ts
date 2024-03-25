@@ -276,7 +276,7 @@ describe("Slicing", () => {
 
         await sleep(30000);
 
-        const attachment: any = await slice.getAttachment(
+        const attachment: any = await client.slices.getAttachment(
             newAttachment["nac_resource_id"]
         );
 
