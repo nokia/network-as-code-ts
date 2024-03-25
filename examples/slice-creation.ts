@@ -1,5 +1,7 @@
 import { NetworkAsCodeClient } from "network-as-code";
 
+import { Device, DeviceIpv4Addr } from "network-as-code/models/device";
+
 import {
     AreaOfService,
     NetworkIdentifier,
@@ -10,7 +12,7 @@ import {
 } from "network-as-code/models/slice";
 
 const main = async () => {
-    const client = new NetworkAsCodeClient(...);
+    const client = new NetworkAsCodeClient("<your-application-key-here>");
 
     // Creation of a slice:
     // We use the country code (MCC) and network code (MNC) to identify the network
@@ -55,4 +57,35 @@ const main = async () => {
             }
         }
     );
+
+    // Get a slice by using an index
+    // or remove the index '[0]' to get all slices
+    const sliceByIndex = await client.slices.getAll()[0];
+
+    // Get a slice using the ID parameter
+    const sliceByName = await client.slices.get(mySlice.name);
+
+    // Modify a slice:
+    // Remember to reconfigure all the parameters you wish to modify,
+    // The modify() method does not preserve previously configure ones.
+    mySlice.modify(
+        {
+            sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+            sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+            deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+            deviceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+            maxDataConnections: 12,
+            maxDevices: 3
+        }
+    );
+
+    // Then, activate a slice
+    mySlice.activate();
+
+    // Or deactivate it
+    mySlice.deactivate();
+
+    // Finally, you can also delete it like so:
+    // Remember to deactivate it first.
+    await mySlice.delete();
 };
