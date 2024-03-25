@@ -508,6 +508,44 @@ describe("Slicing", () => {
         );
     });
 
+    it("should get all application attachments", async () => {
+        fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-2",
+                    resource: {
+                        device: {
+                            phoneNumber: "09213284343",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-3",
+                    resource: {
+                        device: {
+                            phoneNumber: "12065550100",
+                        },
+                        sliceId: "sdk-integration-slice-5",
+                    },
+                },
+            ])
+        );
+
+        const response: any = await client.slices.getAllAttachments();
+        expect(response.length).toEqual(3);
+    });
+
     test("should throw NotFound Error for 404 HTTPError", async () => {
         fetchMock.get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,

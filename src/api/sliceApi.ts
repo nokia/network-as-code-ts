@@ -307,6 +307,6 @@ export class AttachAPI {
 
         errorHandler(res);
 
-        return res;
+        return await res.json();
     }
 }

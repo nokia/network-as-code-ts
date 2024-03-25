@@ -168,6 +168,12 @@ describe("Slicing", () => {
         expect(slice.state).toEqual("DELETED");
     });
 
+    test("should get attachments", async () => {
+        const attachments: any = await client.slices.getAllAttachments();
+        expect(attachments.length).toBeGreaterThanOrEqual(0);
+    });
+
+
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
     test("should deactivate and delete", async () => {

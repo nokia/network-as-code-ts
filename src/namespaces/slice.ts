@@ -147,9 +147,8 @@ export class Slices extends Namespace {
             }
         );
 
-        // const attachments = (
-        //     await this.api.sliceAttach.getAttachments()
-        // ).json();
+        // const attachments = await this.api.sliceAttach.getAttachments();
+
 
         return slice;
     }
@@ -160,9 +159,21 @@ export class Slices extends Namespace {
             id (string): Application Attachment Id
 
     #### Example:
-            attachment = slice.get_attachment(id)
+            attachment = nac_client.slices.get_attachment(id)
  */
     async getAttachment(id: string) {
         return await this.api.sliceAttach.get(id);
+    }
+
+    /**
+ *  Get All Application Attachments
+ * #### Args:
+            None
+
+    #### Example:
+            attachment = nac_client.slices.get_attachment(id)
+ */
+    async getAllAttachments() {
+        return await this.api.sliceAttach.getAttachments();
     }
 }
