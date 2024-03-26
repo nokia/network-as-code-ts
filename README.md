@@ -1,6 +1,32 @@
 # Network as Code
 
-TypeScript SDK for Network as Code
+This repository contains the TypeScript library for Nokia's Network as Code platform,
+allowing Python programs to easily call network APIs to query information or to
+manage mobile network elements.
+
+## What is Network as Code?
+
+Network as Code is a network API aggregator platform developed by Nokia to expose
+network capabilities of mobile networks to applications. It provides numerous
+capabilities ranging from quality-of-service to network-based location services
+and analytics.
+
+You can find more information over [at the Nokia home page](https://www.nokia.com/networks/network-as-code/) 
+or by going directly to the developer portal: https://developer.networkascode.nokia.io/
+
+## Getting started
+
+You can find a full Getting Started guide on the developer portal: https://developer.networkascode.nokia.io/docs/getting-started
+
+## Documentation and Examples
+
+Full documentation is available on the developer portal: https://developer.networkascode.nokia.io/docs
+
+We also provide some basic usage examples in the [examples](./examples) directory. 
+
+## License
+
+The Network as Code TypeScript SDK is open-source software available under the Apache 2.0 license.
 
 ## Development
 
