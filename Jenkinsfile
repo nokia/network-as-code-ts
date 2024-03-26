@@ -61,7 +61,7 @@ pipeline {
         container('narwhal') {
           script {
             sh """
-              npm i
+              https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm i
             """
           }
         }        
@@ -73,6 +73,17 @@ pipeline {
           script {
             sh """
               npm test
+            """
+          }
+        }        
+      }
+    }
+    stage('Audit') {
+      steps {
+        container('narwhal') {
+          script {
+            sh """
+              https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm audit
             """
           }
         }        
