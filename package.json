@@ -2,19 +2,13 @@
   "name": "network-as-code",
   "version": "1.0.0",
   "description": "Network as Code SDK for TypeScript",
-  "main": "dist/index.js",
-  "exports": {
-    "./*": {
-      "types": "./dist/types/*.d.ts",
-      "require": "./dist/cjs/*.js",
-      "import": "./dist/esm/*.js",
-      "default": "./dist/esm/*.js"
-    }
-  },
+  "main": "dist/esm/index.js",
+  "types": "dist/@types/index.d.ts",
+  "type": "module",
   "scripts": {
-    "compile": "tsc -b ./tsconfig.cjs.json ./tsconfig.esm.json ./tsconfig.types.json",
-    "build:clean": "rm -rf ./dist",
-    "build": "npm-run-all build:clean compile && node ./scripts/prepare-package-json",
+    "build": "npm run build:esm && npm run build:types",
+    "build:esm": "tsc -p config/tsconfig.esm.json",
+    "build:types": "tsc -p config/tsconfig.types.json",
     "lint": "eslint . --ext .ts",
     "test": "jest",
     "integration": "jest -c jest.config.integration.ts"
