@@ -84,3 +84,27 @@ communicate functionality and changes to the documentation writers. If
 no technical writer is present then the responsibility of writing documentation 
 falls on the developers. Developers also need to be able to provide input
 to the technical writers to ensure accurate and high-quality documentation.
+
+The branching strategy is based on a split between new releases and
+bug fixes. The main branch should contain functionality that either
+has been released or will be released shortly + bug fixes. For
+unreleased features a specific release branch for that release will be
+used and merged to main on release. This way the main branch can be
+kept in sync between GitHub and internal GitLab without worrying about
+unreleased content.
+
+The overall workflow for a release content is like so:
+
+1. When new release is started, a release-YY.M branch is created from main
+2. All planned features will be created on feature branches and MR'd towards the release branch
+3. Bug fixes affecting existing releases will be MR'd towards main branch and release branch rebased on main
+4. Bug fix releases can be tagged from main, these bug fixes should also be pushed to GitHub
+5. Once release content is ready, the release branch is MR'd to main
+6. Main should be synchronized with GitHub
+7. New release is tagged from main
+
+Bug fixes and new features originating from GitHub should follow the same
+process, except the GitHub release branch will not contain internal, unfinished
+code. This branch should be created when a PR is first created for the
+GitHub repository and will be merged with main after step 6. Bug fixes can
+be merged directly to main and synchronized with internal GitLab.
