@@ -22,7 +22,7 @@ describe("Device Status", () => {
     it("can create a connectivity subscription and delete it", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY",
+            "org.camaraproject.device-status.v0.connectivity-data",
             "https://example.com/notify"
         );
 
@@ -34,7 +34,7 @@ describe("Device Status", () => {
     it("can get a subscription by id", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY",
+            "org.camaraproject.device-status.v0.connectivity-data",
             "https://example.com/notify"
         );
 

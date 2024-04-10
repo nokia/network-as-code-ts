@@ -50,7 +50,7 @@ export class DeviceStatus extends Namespace {
 
         return new Subscription(
             this.api,
-            jsonData.eventSubscriptionId,
+            jsonData.subscriptionId,
             device,
             eventType,
             notificationUrl,
@@ -82,10 +82,36 @@ export class DeviceStatus extends Namespace {
             this.api,
             eventSubscriptionId,
             device,
-            jsonData.subscriptionDetail.eventType,
+            jsonData.subscriptionDetail["type"],
             jsonData.webhook.notificationUrl,
             jsonData.startsAt,
             jsonData.expiresAt
         );
+    }
+
+    async getSubscriptions(): Promise<Subscription[]> {
+        const jsonData = await this.api.deviceStatus.getSubscriptions();
+
+        return jsonData.map((entry: any) => {
+            const deviceDetails = entry.subscriptionDetail.device;
+
+            const device = new Device(
+                this.api,
+                deviceDetails.networkAccessIdentifier,
+                deviceDetails.ipv4Address,
+                deviceDetails.ipv6Address,
+                deviceDetails.phoneNumber
+            );
+
+            return new Subscription(
+                this.api,
+                entry.subscriptionId,
+                device,
+                entry.subscriptionDetail["type"],
+                entry.webhook.notificationUrl,
+                entry.startsAt,
+                entry.expiresAt
+            )
+        })
     }
 }
