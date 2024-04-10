@@ -46,7 +46,7 @@ export class DeviceStatusAPI {
         const body: any = {
             subscriptionDetail: {
                 device: device.toJson(),
-                eventType: eventType,
+                "type": eventType,
             },
             webhook: {
                 notificationUrl: notificationUrl,
@@ -69,7 +69,7 @@ export class DeviceStatusAPI {
             }
         }
 
-        const response = await fetch(`${this.baseUrl}/event-subscriptions`, {
+        const response = await fetch(`${this.baseUrl}/subscriptions`, {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
@@ -83,7 +83,7 @@ export class DeviceStatusAPI {
 
     async delete(eventSubscriptionId: string) {
         const response = await fetch(
-            `${this.baseUrl}/event-subscriptions/${eventSubscriptionId}`,
+            `${this.baseUrl}/subscriptions/${eventSubscriptionId}`,
             {
                 method: "DELETE",
                 headers: this.headers,
@@ -96,7 +96,22 @@ export class DeviceStatusAPI {
 
     async get(eventSubscriptionId: string) {
         const response = await fetch(
-            `${this.baseUrl}/event-subscriptions/${eventSubscriptionId}`,
+            `${this.baseUrl}/subscriptions/${eventSubscriptionId}`,
+            {
+                method: "GET",
+                headers: this.headers,
+                agent: this.agent
+            }
+        );
+
+        errorHandler(response);
+
+        return response.json() as Promise<any>;
+    }
+
+    async getSubscriptions() {
+        const response = await fetch(
+            `${this.baseUrl}/subscriptions`,
             {
                 method: "GET",
                 headers: this.headers,
