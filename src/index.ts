@@ -15,6 +15,7 @@
  */
 
 import { APIClient } from "./api/client";
+import { CongestionInsights } from "./namespaces/congestionInsights";
 import { Devices } from "./namespaces/device";
 import { DeviceStatus } from "./namespaces/deviceStatus";
 import { Sessions } from "./namespaces/session";
@@ -38,6 +39,7 @@ export class NetworkAsCodeClient {
     private _sessions: Sessions;
     private _deviceStatus: DeviceStatus;
     private _slices: Slices;
+    private _insights: CongestionInsights;
 
     constructor(token: string, devMode?: boolean) {
         this._api = new APIClient(
@@ -54,6 +56,7 @@ export class NetworkAsCodeClient {
         this._sessions = new Sessions(this._api);
         this._deviceStatus = new DeviceStatus(this._api);
         this._slices = new Slices(this._api);
+        this._insights = new CongestionInsights(this._api);
     }
 
     /**
@@ -86,6 +89,14 @@ export class NetworkAsCodeClient {
      */
     get slices() {
         return this._slices;
+    }
+
+    /**
+     * Namespace containing functionalities related to congestion insights.
+     * @returns NAC congestion insights
+     */
+    get insights() {
+        return this._insights;
     }
 
     /**
