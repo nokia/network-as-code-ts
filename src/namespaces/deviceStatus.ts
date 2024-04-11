@@ -89,6 +89,11 @@ export class DeviceStatus extends Namespace {
         );
     }
 
+    /**
+     *  Get a list of active subscriptions
+     * 
+            @returns Promise<Subscription[]>
+    */
     async getSubscriptions(): Promise<Subscription[]> {
         const jsonData = await this.api.deviceStatus.getSubscriptions();
 
