@@ -18,7 +18,7 @@ import { ProxyAgent } from "proxy-agent";
 import fetch from 'node-fetch';
 
 import { errorHandler } from "../errors";
-import { Device } from "../models/device";
+import { Device, RoamingStatus } from "../models/device";
 import { Subscription } from "../models/deviceStatus";
 import { SubscribeOptionalArgs } from "../namespaces/deviceStatus";
 
@@ -122,5 +122,41 @@ export class DeviceStatusAPI {
         errorHandler(response);
 
         return response.json() as Promise<any>;
+    }
+
+    async getConnectivity(device: Device) {
+        const response = await fetch(
+            `${this.baseUrl}/connectivity`,
+            {
+                method: "POST",
+                headers: this.headers,
+                agent: this.agent,
+                body: JSON.stringify({
+                    device: device.toJson()
+                })
+            }
+        )
+
+        errorHandler(response);
+
+        return response.json() as Promise<any>;
+    }
+
+    async getRoaming(device: Device) {
+        const response = await fetch(
+            `${this.baseUrl}/roaming`,
+            {
+                method: "POST",
+                headers: this.headers,
+                agent: this.agent,
+                body: JSON.stringify({
+                    device: device.toJson()
+                })
+            }
+        )
+
+        errorHandler(response);
+
+        return response.json() as Promise<RoamingStatus>;
     }
 }

@@ -424,4 +424,70 @@ describe("Device Status", () => {
 
         expect(subscriptions.length).toBe(4)
     })
+
+    it("allows polling device connectivity", async () => {
+        fetchMock.post(
+            "https://device-status.p-eu.rapidapi.com/connectivity",
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body)).toStrictEqual({
+                    device: {
+                        networkAccessIdentifier:
+                        "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    }
+                });
+
+                return Promise.resolve({
+                    status: 200,
+                    body: JSON.stringify({
+                        connectivityStatus: "CONNECTED_DATA"
+                    })
+                });
+            }
+        )
+
+        const status = await device.getConnectivity();
+
+        expect(status).toBe("CONNECTED_DATA");
+    })
+
+    it("allows polling device roaming status", async () => {
+        fetchMock.post(
+            "https://device-status.p-eu.rapidapi.com/roaming",
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body)).toStrictEqual({
+                    device: {
+                        networkAccessIdentifier:
+                        "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    }
+                });
+
+                return Promise.resolve({
+                    status: 200,
+                    body: JSON.stringify({
+                        roaming: true,
+                        countryCode: 358,
+                        countryName: ["Finland"]
+                    })
+                });
+            }
+        )
+
+        const status = await device.getRoaming();
+
+        expect(status).toStrictEqual({
+            roaming: true,
+            countryCode: 358,
+            countryName: ["Finland"]
+        });
+    })
 });
