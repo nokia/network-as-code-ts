@@ -47,6 +47,7 @@ pipeline {
   }
   environment {
     NAC_TOKEN = credentials('NAC_TOKEN')
+    TEAMS_WEBHOOK = credentials('TEAMS_WEBHOOK')
   }
   options {
     gitLabConnection('gitlab-ee2')  // the GitLab connection name defined in Jenkins, check the value from pipeline configure UI
@@ -118,6 +119,7 @@ pipeline {
       updateGitlabCommitStatus name: 'build', state: 'success'
     }
     failure{
+      postToTeams("Jenkins build failed see ${env.BUILD_URL} for more.", "${TEAMS_WEBHOOK}")
       updateGitlabCommitStatus name: 'build', state: 'failed'
     }
   }
