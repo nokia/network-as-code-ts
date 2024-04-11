@@ -32,16 +32,19 @@ describe("Device Status", () => {
     });
 
     it("can create a connectivity subscription with expiry", async () => {
+        const tomorrowDate = new Date(Date.now() + 24*60*60*1000);
+        tomorrowDate.setMilliseconds(0);
+        
         const subscription = await client.deviceStatus.subscribe(
             device,
             "org.camaraproject.device-status.v0.connectivity-data",
             "https://example.com/notify",
             {
-                subscriptionExpireTime: "2025-04-11T11:12:45+03:00"
+                subscriptionExpireTime: tomorrowDate
             }
         );
 
-        expect(subscription.expiresAt).toBe("2025-04-11T11:12:45+03:00");
+        expect(subscription.expiresAt).toBe(tomorrowDate.toISOString().replace(".000", ""));
 
         subscription.delete();
     });
