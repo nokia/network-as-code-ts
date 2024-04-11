@@ -177,6 +177,63 @@ describe("Device Status", () => {
         );
     });
 
+    it("can handle a subscriptionExpireTime given as a Date", async () => {
+        fetchMock.post(
+            "https://device-status.p-eu.rapidapi.com/subscriptions",
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            },
+                        },
+                        type: "org.camaraproject.device-status.v0.connectivity-data",
+                    },
+                    subscriptionExpireTime: "2024-01-11T11:53:20.000Z",
+                    webhook: {
+                        notificationUrl: "https://example.com/notify",
+                    },
+                });
+
+                return Promise.resolve(
+                    JSON.stringify({
+                        subscriptionId:
+                            "89cc1355-2ff1-4091-a935-54817c821260",
+                        subscriptionDetail: {
+                            device: {
+                                networkAccessIdentifier:
+                                    "test-device@testcsp.net",
+                                ipv4Address: {
+                                    publicAddress: "1.1.1.2",
+                                    privateAddress: "1.1.1.2",
+                                    publicPort: 80,
+                                },
+                            },
+                            type: "org.camaraproject.device-status.v0.connectivity-data",
+                        },
+                        webhook: {
+                            notificationUrl: "https://example.com/notify",
+                        },
+                        startsAt: "2024-01-11T11:53:20.293671Z",
+                    })
+                );
+            }
+        );
+
+        await client.deviceStatus.subscribe(
+            device,
+            "org.camaraproject.device-status.v0.connectivity-data",
+            "https://example.com/notify",
+            {
+                subscriptionExpireTime: new Date("2024-01-11T11:53:20.000Z")
+            }
+        );
+    })
+
     it("handles optional parameters in subscription", async () => {
         fetchMock.post(
             "https://device-status.p-eu.rapidapi.com/subscriptions",
