@@ -19,7 +19,7 @@ import { Subscription } from "../models/deviceStatus";
 import { Namespace } from "./namespace";
 
 export interface SubscribeOptionalArgs {
-    subscriptionExpireTime?: string;
+    subscriptionExpireTime?: Date | string;
     maxNumberOfReports?: number;
     notificationAuthToken?: string;
 }
@@ -41,16 +41,21 @@ export class DeviceStatus extends Namespace {
         notificationUrl: string,
         optionalArgs?: SubscribeOptionalArgs
     ): Promise<Subscription> {
+        const subscriptionExpireTime = optionalArgs?.subscriptionExpireTime;
+
         const jsonData = await this.api.deviceStatus.subscribe(
             device,
             eventType,
             notificationUrl,
-            optionalArgs
+            {
+                subscriptionExpireTime: (subscriptionExpireTime instanceof Date) ? subscriptionExpireTime.toISOString() : subscriptionExpireTime,
+                ...optionalArgs
+            }
         );
 
         return new Subscription(
             this.api,
-            jsonData.eventSubscriptionId,
+            jsonData.subscriptionId,
             device,
             eventType,
             notificationUrl,
@@ -82,10 +87,41 @@ export class DeviceStatus extends Namespace {
             this.api,
             eventSubscriptionId,
             device,
-            jsonData.subscriptionDetail.eventType,
+            jsonData.subscriptionDetail["type"],
             jsonData.webhook.notificationUrl,
             jsonData.startsAt,
             jsonData.expiresAt
         );
+    }
+
+    /**
+     *  Get a list of active subscriptions
+     * 
+            @returns Promise<Subscription[]>
+    */
+    async getSubscriptions(): Promise<Subscription[]> {
+        const jsonData = await this.api.deviceStatus.getSubscriptions();
+
+        return jsonData.map((entry: any) => {
+            const deviceDetails = entry.subscriptionDetail.device;
+
+            const device = new Device(
+                this.api,
+                deviceDetails.networkAccessIdentifier,
+                deviceDetails.ipv4Address,
+                deviceDetails.ipv6Address,
+                deviceDetails.phoneNumber
+            );
+
+            return new Subscription(
+                this.api,
+                entry.subscriptionId,
+                device,
+                entry.subscriptionDetail["type"],
+                entry.webhook.notificationUrl,
+                entry.startsAt,
+                entry.expiresAt
+            )
+        })
     }
 }

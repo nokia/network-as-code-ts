@@ -22,7 +22,7 @@ describe("Device Status", () => {
     it("can create a connectivity subscription and delete it", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY",
+            "org.camaraproject.device-status.v0.connectivity-data",
             "https://example.com/notify"
         );
 
@@ -31,10 +31,28 @@ describe("Device Status", () => {
         subscription.delete();
     });
 
+    it("can create a connectivity subscription with expiry", async () => {
+        const tomorrowDate = new Date(Date.now() + 24*60*60*1000);
+        tomorrowDate.setMilliseconds(0);
+        
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            "org.camaraproject.device-status.v0.connectivity-data",
+            "https://example.com/notify",
+            {
+                subscriptionExpireTime: tomorrowDate
+            }
+        );
+
+        expect(subscription.expiresAt).toBe(tomorrowDate.toISOString().replace(".000", ""));
+
+        subscription.delete();
+    });
+
     it("can get a subscription by id", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY",
+            "org.camaraproject.device-status.v0.connectivity-data",
             "https://example.com/notify"
         );
 
@@ -46,4 +64,32 @@ describe("Device Status", () => {
 
         subscription.delete();
     });
+
+    it("can get a list of subscriptions", async () => {
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            "org.camaraproject.device-status.v0.connectivity-data",
+            "https://example.com/notify"
+        );
+
+        const subscriptions = await client.deviceStatus.getSubscriptions();
+
+        expect(subscriptions.length).toBeGreaterThan(0);
+
+        expect(subscriptions.filter((entry) => entry.eventSubscriptionId == subscription.eventSubscriptionId).length).toBe(1);
+
+        subscription.delete();
+    });
+
+    it("can poll device connectivity", async () => {
+        const status = await device.getConnectivity();
+
+        expect(status).toBe("CONNECTED_DATA");
+    })
+
+    it("can poll device roaming status", async () => {
+        const status = await device.getRoaming();
+
+        expect(status.roaming).toBeTruthy();
+    })
 });

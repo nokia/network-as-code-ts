@@ -43,6 +43,19 @@ export interface DeviceIpv4Addr {
 }
 
 /**
+ * An interface representing roaming status
+ * #### Public attributes
+ *          roaming (boolean): indicates whether this device is currently roaming
+ *          countryCode (number): code for the country in which the roaming is happening
+ *          countryName (string[]): list of country names, if any, for this country code
+ */
+export interface RoamingStatus {
+    roaming: boolean;
+    countryCode?: number;
+    countryName?: string[];
+}
+
+/**
  *  A class representing the `Device` model.
  * #### Private Attributes:
         _api(APIClient): An API client object.
@@ -223,6 +236,24 @@ export class Device {
             radius,
             maxAge
         );
+    }
+
+    /**
+     * Retrieves the current connectivity status of the device
+     * @returns Promise<string>: The connectivity status, e.g. "CONNECTED_DATA" 
+     */
+    async getConnectivity(): Promise<string> {
+        const json = await this._api.deviceStatus.getConnectivity(this);
+
+        return json["connectivityStatus"];
+    }
+
+    /**
+     * Retrieves the current connectivity status of the device
+     * @returns Promise<RoamingStatus>: The roaming status for whether the device is roaming and in what network
+     */
+    async getRoaming(): Promise<RoamingStatus> {
+        return this._api.deviceStatus.getRoaming(this);
     }
 
     toJson(): any {
