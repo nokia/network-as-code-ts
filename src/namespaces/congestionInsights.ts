@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Device } from "../models/device";
+import { Device, DeviceIpv4Addr } from "../models/device";
 import { CongestionInsightsSubscription } from "../models/congestionInsights";
 import { Namespace } from "./namespace";
 
@@ -31,10 +31,58 @@ export class CongestionInsights extends Namespace {
 
     async subscribe_to_congestion_info(
         device: Device,
-        subscriptionExpireTime: Date,
+        subscriptionExpireTime: Date | string,
         notificationUrl: string,
-        notificationAuthToken?: string
+        notificationAuthToken: string
     ): Promise<CongestionInsightsSubscription> {
-        
+        const res = await this.api.insights.subscribe(
+            device,
+            subscriptionExpireTime instanceof Date
+                ? subscriptionExpireTime.toISOString()
+                : subscriptionExpireTime,
+            notificationUrl,
+            notificationAuthToken
+        );
+
+        return new CongestionInsightsSubscription(
+            this.api,
+            res.subscriptionId,
+            res.startsAt,
+            res.expiresAt
+        );
+    }
+
+    /**
+     *  Get a subscription by its ID.
+     * 
+            @param subscriptionId (string): Resource ID
+            @returns Promise CongestionInsightsSubscription
+    */
+    async get(subscriptionId: string): Promise<CongestionInsightsSubscription> {
+        const res = await this.api.insights.get(subscriptionId);
+
+        return new CongestionInsightsSubscription(
+            this.api,
+            res.subscriptionId,
+            res.startsAt,
+            res.expiresAt
+        );
+    }
+
+    /**
+     *  Get all active subscriptions of Congestion Insights
+     *
+     */
+    async getSubscriptions(): Promise<CongestionInsightsSubscription[]> {
+        const res = await this.api.insights.getAll();
+
+        return res.map((subscription: any) => {
+            return new CongestionInsightsSubscription(
+                this.api,
+                subscription.subscriptionId,
+                subscription.startsAt,
+                subscription.expiresAt
+            );
+        });
     }
 }

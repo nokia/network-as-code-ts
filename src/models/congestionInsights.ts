@@ -15,6 +15,29 @@
  */
 
 import { APIClient } from "../api";
-import { Device } from "./device";
 
-export class CongestionInsightsSubscription {}
+export class CongestionInsightsSubscription {
+    private api: APIClient;
+    subscriptionId: string;
+    startsAt: string;
+    expiresAt?: string;
+
+    constructor(
+        api: APIClient,
+        subscriptionId: string,
+        startsAt: string,
+        expiresAt?: string
+    ) {
+        this.api = api;
+        this.subscriptionId = subscriptionId;
+        this.startsAt = startsAt;
+        this.expiresAt = expiresAt;
+    }
+
+    /**
+     *  Delete congestion insights subscription
+     */
+    async delete() {
+        this.api.insights.delete(this.subscriptionId);
+    }
+}
