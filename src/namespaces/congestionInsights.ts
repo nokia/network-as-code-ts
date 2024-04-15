@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-import { Device, DeviceIpv4Addr } from "../models/device";
-import { CongestionInsightsSubscription } from "../models/congestionInsights";
+import { Device } from "../models/device";
+import {
+    Congestion,
+    CongestionInsightsSubscription,
+} from "../models/congestionInsights";
 import { Namespace } from "./namespace";
 
 export class CongestionInsights extends Namespace {
@@ -29,7 +32,7 @@ export class CongestionInsights extends Namespace {
             @returns Promise Subscription
     */
 
-    async subscribe_to_congestion_info(
+    async subscribeToCongestionInfo(
         device: Device,
         subscriptionExpireTime: Date | string,
         notificationUrl: string,
@@ -84,5 +87,23 @@ export class CongestionInsights extends Namespace {
                 subscription.expiresAt
             );
         });
+    }
+
+    /**
+     *  Polling current congestion level relevant to a given device
+     *
+     */
+    async getCongestion(
+        device: Device,
+        start?: Date | string,
+        end?: Date | string
+    ): Promise<Congestion> {
+        const res: Congestion = await this.api.insights.getCongestion(
+            device,
+            start,
+            end
+        );
+
+        return res;
     }
 }

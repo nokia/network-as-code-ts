@@ -16,11 +16,16 @@
 
 import { APIClient } from "../api";
 
+export interface Congestion {
+    level: string;
+}
+
 export class CongestionInsightsSubscription {
     private api: APIClient;
     subscriptionId: string;
     startsAt: string;
     expiresAt?: string;
+    level?: string;
 
     constructor(
         api: APIClient,
