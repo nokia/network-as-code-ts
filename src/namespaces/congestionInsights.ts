@@ -88,22 +88,4 @@ export class CongestionInsights extends Namespace {
             );
         });
     }
-
-    /**
-     *  Polling current congestion level relevant to a given device
-     *
-     */
-    async getCongestion(
-        device: Device,
-        start?: Date | string,
-        end?: Date | string
-    ): Promise<Congestion> {
-        const res: Congestion = await this.api.insights.getCongestion(
-            device,
-            start,
-            end
-        );
-
-        return res;
-    }
 }

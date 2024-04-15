@@ -17,6 +17,7 @@
 import { APIClient } from "../api/client";
 import { PortSpec, QoDSession } from "./session";
 import { Location } from "./location";
+import { Congestion } from "./congestionInsights";
 
 /**
  * An interface representing the `Event` model.
@@ -240,7 +241,7 @@ export class Device {
 
     /**
      * Retrieves the current connectivity status of the device
-     * @returns Promise<string>: The connectivity status, e.g. "CONNECTED_DATA" 
+     * @returns Promise<string>: The connectivity status, e.g. "CONNECTED_DATA"
      */
     async getConnectivity(): Promise<string> {
         const json = await this._api.deviceStatus.getConnectivity(this);
@@ -263,5 +264,22 @@ export class Device {
             ipv4Address: this.ipv4Address,
             ipv6Address: this.ipv6Address,
         };
+    }
+
+    /**
+     * Retrieves the current congestion insight of a device
+     * @returns Congestion
+     */
+    async getCongestion(
+        start?: Date | string,
+        end?: Date | string
+    ): Promise<Congestion> {
+        const congestionInfo = await this._api.insights.getCongestion(
+            this,
+            start,
+            end
+        );
+
+        return congestionInfo;
     }
 }

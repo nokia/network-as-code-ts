@@ -233,8 +233,7 @@ describe("Congestion Insights", () => {
             }
         );
 
-        const congestion = await client.insights.getCongestion(
-            device,
+        const congestion = await device.getCongestion(
             "2024-04-15T05:11:30.961136Z",
             "2024-04-16T05:11:30Z"
         );
