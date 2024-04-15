@@ -50,6 +50,7 @@ export class NetworkAsCodeClient {
             undefined,
             undefined,
             undefined,
+            undefined,
             devMode
         );
         this._devices = new Devices(this._api);
