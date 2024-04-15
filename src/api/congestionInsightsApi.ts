@@ -112,4 +112,31 @@ export class CongestionInsightsAPI {
 
         return response.json() as Promise<any>;
     }
+
+    async getCongestion(
+        device: Device,
+        start?: Date | string,
+        end?: Date | string
+    ) {
+        
+        const response = await fetch(`${this.baseUrl}/device`, {
+            method: "POST",
+            body: JSON.stringify({
+                device: {
+                    phoneNumber: device.phoneNumber,
+                    networkAccessIdentifier: device.networkAccessIdentifier,
+                    ipv4Address: device.ipv4Address,
+                    ipv6Address: device.ipv6Address,
+                },
+                start,
+                end,
+            }),
+            headers: this.headers,
+            agent: this.agent,
+        });
+
+        errorHandler(response);
+
+        return response.json() as Promise<any>;
+    }
 }

@@ -22,7 +22,7 @@ describe("Congestion Insights", () => {
     const tomorrowDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
     tomorrowDate.setMilliseconds(0);
     it("can create subscription for congestion insights", async () => {
-        const subscription = await client.insights.subscribe_to_congestion_info(
+        const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             tomorrowDate,
             "https://example.com/notify",
@@ -37,7 +37,7 @@ describe("Congestion Insights", () => {
     });
 
     it("can get a subscription by id", async () => {
-        const subscription = await client.insights.subscribe_to_congestion_info(
+        const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             tomorrowDate,
             "https://example.com/notify",
@@ -54,7 +54,7 @@ describe("Congestion Insights", () => {
     });
 
     it("can get a list of subscriptions", async () => {
-        const subscription = await client.insights.subscribe_to_congestion_info(
+        const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             tomorrowDate,
             "https://example.com/notify",
@@ -72,5 +72,19 @@ describe("Congestion Insights", () => {
         ).toBe(1);
 
         subscription.delete();
+    });
+
+    it("should fetch current congestion level relevant to a given device", async () => {
+        const subscription = await client.insights.getCongestion(device);
+        expect(subscription.level).toBeTruthy();
+    });
+
+    it("should fetch prediction/historical data between two time stamps:", async () => {
+        const subscription = await client.insights.getCongestion(
+            device,
+            "2024-04-15T05:11:30.961136Z",
+            "2024-04-16T05:11:30Z"
+        );
+        expect(subscription.level).toBeTruthy();
     });
 });

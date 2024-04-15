@@ -37,7 +37,7 @@ describe("Congestion Insights", () => {
             })
         );
 
-        const subscription = await client.insights.subscribe_to_congestion_info(
+        const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             "2024-01-11T11:53:20.293671Z",
             "https://example.com/notifications",
@@ -77,7 +77,7 @@ describe("Congestion Insights", () => {
             }
         );
 
-        await client.insights.subscribe_to_congestion_info(
+        await client.insights.subscribeToCongestionInfo(
             device,
             "2024-04-20T00:00:00Z",
             "https://example.com/notify",
@@ -168,7 +168,7 @@ describe("Congestion Insights", () => {
             }
         );
 
-        await client.insights.subscribe_to_congestion_info(
+        await client.insights.subscribeToCongestionInfo(
             device,
             new Date("2024-01-11T11:53:20.000Z"),
             "https://example.com/notify",
@@ -186,7 +186,7 @@ describe("Congestion Insights", () => {
             })
         );
 
-        const subscription = await client.insights.subscribe_to_congestion_info(
+        const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             new Date("2024-01-11T11:53:20.000Z"),
             "https://example.com/notify",
@@ -207,5 +207,37 @@ describe("Congestion Insights", () => {
         await subscription.delete();
 
         expect(fetchMock.calls().length).toBe(2);
+    });
+
+    it("should polling current congestion level ", async () => {
+        fetchMock.post(
+            "https://congestion-insights.p-eu.rapidapi.com/device",
+            (_: any, req: any): any => {
+                expect(req.method).toBe("POST");
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    start: "2024-04-15T05:11:30.961136Z",
+                    end: "2024-04-16T05:11:30Z",
+                });
+
+                return Promise.resolve({
+                    level: "low",
+                });
+            }
+        );
+
+        const congestion = await client.insights.getCongestion(
+            device,
+            "2024-04-15T05:11:30.961136Z",
+            "2024-04-16T05:11:30Z"
+        );
+        expect(congestion.level).toEqual("low");
     });
 });
