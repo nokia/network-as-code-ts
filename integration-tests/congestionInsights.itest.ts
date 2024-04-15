@@ -75,13 +75,12 @@ describe("Congestion Insights", () => {
     });
 
     it("should fetch current congestion level relevant to a given device", async () => {
-        const subscription = await client.insights.getCongestion(device);
+        const subscription = await device.getCongestion();
         expect(subscription.level).toBeTruthy();
     });
 
     it("should fetch prediction/historical data between two time stamps:", async () => {
-        const subscription = await client.insights.getCongestion(
-            device,
+        const subscription = await device.getCongestion(
             "2024-04-15T05:11:30.961136Z",
             "2024-04-16T05:11:30Z"
         );
