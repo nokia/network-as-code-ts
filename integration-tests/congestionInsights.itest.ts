@@ -75,15 +75,19 @@ describe("Congestion Insights", () => {
     });
 
     it("should fetch current congestion level relevant to a given device", async () => {
-        const subscription = await device.getCongestion();
-        expect(subscription.level).toBeTruthy();
+        const congestion = await device.getCongestion();
+        expect(
+            ["none", "low", "medium", "high"].includes(congestion.level)
+        ).toBe(true);
     });
 
     it("should fetch prediction/historical data between two time stamps:", async () => {
-        const subscription = await device.getCongestion(
+        const congestion = await device.getCongestion(
             "2024-04-15T05:11:30.961136Z",
             "2024-04-16T05:11:30Z"
         );
-        expect(subscription.level).toBeTruthy();
+        expect(
+            ["none", "low", "medium", "high"].includes(congestion.level)
+        ).toBe(true);
     });
 });
