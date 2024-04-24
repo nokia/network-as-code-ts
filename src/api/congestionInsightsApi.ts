@@ -44,7 +44,7 @@ export class CongestionInsightsAPI {
         device: Device,
         subscriptionExpireTime: Date | string,
         notificationUrl: string,
-        notificationAuthToken: string
+        notificationAuthToken?: string
     ): Promise<any> {
         const body: any = {
             device: {
@@ -118,7 +118,6 @@ export class CongestionInsightsAPI {
         start?: Date | string,
         end?: Date | string
     ) {
-        
         const response = await fetch(`${this.baseUrl}/device`, {
             method: "POST",
             body: JSON.stringify({

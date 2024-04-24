@@ -36,7 +36,7 @@ export class CongestionInsights extends Namespace {
         device: Device,
         subscriptionExpireTime: Date | string,
         notificationUrl: string,
-        notificationAuthToken: string
+        notificationAuthToken?: string
     ): Promise<CongestionInsightsSubscription> {
         const res = await this.api.insights.subscribe(
             device,

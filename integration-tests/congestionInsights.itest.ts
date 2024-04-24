@@ -36,6 +36,20 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
+    it("can create subscription for congestion insights without auth token", async () => {
+        const subscription = await client.insights.subscribeToCongestionInfo(
+            device,
+            tomorrowDate,
+            "https://example.com/notify"
+        );
+
+        expect(subscription.expiresAt).toBe(
+            tomorrowDate.toISOString().replace(".000", "")
+        );
+
+        subscription.delete();
+    });
+
     it("can get a subscription by id", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
