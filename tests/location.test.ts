@@ -27,7 +27,7 @@ beforeEach(() => {
     fetchMock.reset();
 });
 
-describe("Device", () => {
+describe("Location", () => {
     it("should use mocks correctly", async () => {
         fetchMock.get("https://example.com/test", {
             status: 200,

@@ -17,6 +17,7 @@
 import { APIClient } from "../api/client";
 import { PortSpec, QoDSession } from "./session";
 import { Location } from "./location";
+import { Congestion } from "./congestionInsights";
 
 /**
  * An interface representing the `Event` model.
@@ -40,6 +41,19 @@ export interface DeviceIpv4Addr {
     publicAddress?: string;
     privateAddress?: string;
     publicPort?: number;
+}
+
+/**
+ * An interface representing roaming status
+ * #### Public attributes
+ *          roaming (boolean): indicates whether this device is currently roaming
+ *          countryCode (number): code for the country in which the roaming is happening
+ *          countryName (string[]): list of country names, if any, for this country code
+ */
+export interface RoamingStatus {
+    roaming: boolean;
+    countryCode?: number;
+    countryName?: string[];
 }
 
 /**
@@ -225,6 +239,24 @@ export class Device {
         );
     }
 
+    /**
+     * Retrieves the current connectivity status of the device
+     * @returns Promise<string>: The connectivity status, e.g. "CONNECTED_DATA"
+     */
+    async getConnectivity(): Promise<string> {
+        const json = await this._api.deviceStatus.getConnectivity(this);
+
+        return json["connectivityStatus"];
+    }
+
+    /**
+     * Retrieves the current connectivity status of the device
+     * @returns Promise<RoamingStatus>: The roaming status for whether the device is roaming and in what network
+     */
+    async getRoaming(): Promise<RoamingStatus> {
+        return this._api.deviceStatus.getRoaming(this);
+    }
+
     toJson(): any {
         return {
             networkAccessIdentifier: this.networkAccessId,
@@ -232,5 +264,22 @@ export class Device {
             ipv4Address: this.ipv4Address,
             ipv6Address: this.ipv6Address,
         };
+    }
+
+    /**
+     * Retrieves the current congestion insight of a device
+     * @returns Congestion
+     */
+    async getCongestion(
+        start?: Date | string,
+        end?: Date | string
+    ): Promise<Congestion> {
+        const congestionInfo = await this._api.insights.getCongestion(
+            this,
+            start,
+            end
+        );
+
+        return congestionInfo;
     }
 }

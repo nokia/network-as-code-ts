@@ -1,6 +1,6 @@
 {
   "name": "network-as-code",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Network as Code SDK for TypeScript",
   "main": "dist/esm/index.js",
   "types": "dist/@types/index.d.ts",

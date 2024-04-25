@@ -20,6 +20,7 @@ import { QodAPI } from "./qodApi";
 import { LocationRetrievalAPI, LocationVerifyAPI } from "./locationApi";
 import { DeviceStatusAPI } from "./deviceStatusAPI";
 import { AttachAPI, SliceAPI } from "./sliceApi";
+import { CongestionInsightsAPI } from "./congestionInsightsApi";
 
 const QOS_BASE_URL_PROD =
     "https://quality-of-service-on-demand.p-eu.rapidapi.com";
@@ -46,6 +47,11 @@ const SLICE_ATTACH_BASE_URL_PROD =
 const SLICE_ATTACH_BASE_URL_DEV =
     "https://device-application-attach.p-eu.rapidapi.com";
 
+const CONGESTION_INSIGHTS_BASE_URL_PROD =
+    "https://congestion-insights.p-eu.rapidapi.com";
+const CONGESTION_INSIGHTS_BASE_URL_DEV =
+    "https://congestion-insights.p-eu.rapidapi.com";
+
 const agent = new ProxyAgent();
 
 export class APIClient {
@@ -55,6 +61,7 @@ export class APIClient {
     deviceStatus: DeviceStatusAPI;
     slicing: SliceAPI;
     sliceAttach: AttachAPI;
+    insights: CongestionInsightsAPI;
 
     constructor(
         token: string,
@@ -64,6 +71,7 @@ export class APIClient {
         deviceStatusBaseUrl: string = DEVICE_STATUS_BASE_URL_PROD,
         sliceBaseUrl: string = SLICE_BASE_URL_PROD,
         sliceAttachBaseUrl: string = SLICE_ATTACH_BASE_URL_PROD,
+        congestionInsightsBaseUrl: string = CONGESTION_INSIGHTS_BASE_URL_PROD,
         devMode: boolean = false
     ) {
         if (devMode && qosBaseUrl == QOS_BASE_URL_PROD) {
@@ -161,6 +169,26 @@ export class APIClient {
                       .replace("https://", "")
                       .replace("p-eu", "nokia-dev")
                 : sliceAttachBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
+            agent
+        );
+
+        if (
+            devMode &&
+            congestionInsightsBaseUrl == CONGESTION_INSIGHTS_BASE_URL_PROD
+        ) {
+            congestionInsightsBaseUrl = CONGESTION_INSIGHTS_BASE_URL_DEV;
+        }
+
+        this.insights = new CongestionInsightsAPI(
+            congestionInsightsBaseUrl,
+            token,
+            devMode
+                ? congestionInsightsBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
+                : congestionInsightsBaseUrl
                       .replace("https://", "")
                       .replace("p-eu", "nokia"),
             agent
