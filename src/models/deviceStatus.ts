@@ -23,8 +23,8 @@ export class Subscription {
     device: Device;
     eventType: string;
     notificationUrl: string;
-    startsAt: string;
-    expiresAt?: string;
+    startsAt?: Date;
+    expiresAt?: Date;
 
     constructor(
         api: APIClient,
@@ -32,8 +32,8 @@ export class Subscription {
         device: Device,
         eventType: string,
         notificationUrl: string,
-        startsAt: string,
-        expiresAt?: string
+        startsAt?: Date,
+        expiresAt?: Date
     ) {
         this.api = api;
         this.eventSubscriptionId = eventSubscriptionId;

@@ -15,10 +15,7 @@
  */
 
 import { Device } from "../models/device";
-import {
-    Congestion,
-    CongestionInsightsSubscription,
-} from "../models/congestionInsights";
+import { CongestionInsightsSubscription } from "../models/congestionInsights";
 import { Namespace } from "./namespace";
 
 export class CongestionInsights extends Namespace {
