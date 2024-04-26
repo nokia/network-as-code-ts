@@ -1,0 +1,5 @@
+src/
+Jenkinsfile
+jest.config.*
+babel.config*
+tsconfig.json

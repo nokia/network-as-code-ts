@@ -48,6 +48,7 @@ pipeline {
   environment {
     NAC_TOKEN = credentials('NAC_TOKEN')
     TEAMS_WEBHOOK = credentials('TEAMS_WEBHOOK')
+    NPM_AUTH_TOKEN = credentials('NPM_AUTH_TOKEN')
   }
   options {
     gitLabConnection('gitlab-ee2')  // the GitLab connection name defined in Jenkins, check the value from pipeline configure UI
@@ -108,11 +109,27 @@ pipeline {
         container('narwhal') {
           script {
             sh """
+              npm run build
             """
           }
         }
       }
     }
+    stage('Publish') {
+        when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabTargetBranch.contains("release-")} }
+            steps {
+                container('narwhal') {
+                    script {
+                        if(env.gitlabActionType == "TAG_PUSH" && env.gitlabTargetBranch.contains("release-")) {
+                            sh '''
+                                npm config set -- '//registry.npmjs.org/:_authToken' "${NPM_AUTH_TOKEN}"
+                                https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm publish --verbose
+                            '''
+                        }
+                    }
+                }
+            }
+        }
   }
   post {
     success{
