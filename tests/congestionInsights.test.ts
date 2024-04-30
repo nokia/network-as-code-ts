@@ -168,12 +168,15 @@ describe("Congestion Insights", () => {
             }
         );
 
-        await client.insights.subscribeToCongestionInfo(
+        const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             new Date("2024-01-11T11:53:20.000Z"),
             "https://example.com/notify",
             "c8974e592c2fa383d4a3960714"
         );
+
+        expect(subscription.startsAt instanceof Date).toBeTruthy()
+        expect(subscription.expiresAt instanceof Date).toBeTruthy()
     });
 
     it("can delete a subscription", async () => {

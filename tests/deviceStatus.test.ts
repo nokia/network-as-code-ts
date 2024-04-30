@@ -296,6 +296,9 @@ describe("Device Status", () => {
             }
         );
 
+        expect(subscription.startsAt instanceof Date).toBeTruthy();
+        expect(subscription.expiresAt instanceof Date).toBeTruthy();
+
         expect(subscription.expiresAt).toBe("2024-01-11T11:53:20.293671Z");
     });
 
