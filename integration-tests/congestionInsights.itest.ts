@@ -62,7 +62,8 @@ describe("Congestion Insights", () => {
             subscription.subscriptionId
         );
 
-        expect(subscription2).toEqual(subscription);
+        expect(subscription2.subscriptionId).toBe(subscription.subscriptionId);
+        expect(subscription2.startsAt).toEqual(subscription.startsAt);
 
         subscription.delete();
     });

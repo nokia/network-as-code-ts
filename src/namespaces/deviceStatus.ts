@@ -48,8 +48,11 @@ export class DeviceStatus extends Namespace {
             eventType,
             notificationUrl,
             {
-                subscriptionExpireTime: (subscriptionExpireTime instanceof Date) ? subscriptionExpireTime.toISOString() : subscriptionExpireTime,
-                ...optionalArgs
+                subscriptionExpireTime:
+                    subscriptionExpireTime instanceof Date
+                        ? subscriptionExpireTime.toISOString()
+                        : subscriptionExpireTime,
+                ...optionalArgs,
             }
         );
 
@@ -89,8 +92,8 @@ export class DeviceStatus extends Namespace {
             device,
             jsonData.subscriptionDetail["type"],
             jsonData.webhook.notificationUrl,
-            jsonData.startsAt,
-            jsonData.expiresAt
+            jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
+            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
         );
     }
 
@@ -119,9 +122,9 @@ export class DeviceStatus extends Namespace {
                 device,
                 entry.subscriptionDetail["type"],
                 entry.webhook.notificationUrl,
-                entry.startsAt,
-                entry.expiresAt
-            )
-        })
+                entry.startsAt ? new Date(entry.startsAt) : undefined,
+                entry.expiresAt ? new Date(entry.expiresAt) : undefined
+            );
+        });
     }
 }

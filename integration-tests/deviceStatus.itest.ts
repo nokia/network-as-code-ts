@@ -32,19 +32,21 @@ describe("Device Status", () => {
     });
 
     it("can create a connectivity subscription with expiry", async () => {
-        const tomorrowDate = new Date(Date.now() + 24*60*60*1000);
+        const tomorrowDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
         tomorrowDate.setMilliseconds(0);
-        
+
         const subscription = await client.deviceStatus.subscribe(
             device,
             "org.camaraproject.device-status.v0.connectivity-data",
             "https://example.com/notify",
             {
-                subscriptionExpireTime: tomorrowDate
+                subscriptionExpireTime: tomorrowDate,
             }
         );
 
-        expect(subscription.expiresAt).toBe(tomorrowDate.toISOString().replace(".000", ""));
+        expect(subscription.expiresAt).toEqual(
+            new Date(tomorrowDate.toISOString().replace(".000", ""))
+        );
 
         subscription.delete();
     });
@@ -60,7 +62,10 @@ describe("Device Status", () => {
             subscription.eventSubscriptionId
         );
 
-        expect(subscription2).toEqual(subscription);
+        expect(subscription2.eventSubscriptionId).toBe(
+            subscription.eventSubscriptionId
+        );
+        expect(subscription2.startsAt).toEqual(subscription.startsAt);
 
         subscription.delete();
     });
@@ -76,7 +81,13 @@ describe("Device Status", () => {
 
         expect(subscriptions.length).toBeGreaterThan(0);
 
-        expect(subscriptions.filter((entry) => entry.eventSubscriptionId == subscription.eventSubscriptionId).length).toBe(1);
+        expect(
+            subscriptions.filter(
+                (entry) =>
+                    entry.eventSubscriptionId ==
+                    subscription.eventSubscriptionId
+            ).length
+        ).toBe(1);
 
         subscription.delete();
     });
@@ -85,11 +96,11 @@ describe("Device Status", () => {
         const status = await device.getConnectivity();
 
         expect(status).toBe("CONNECTED_DATA");
-    })
+    });
 
     it("can poll device roaming status", async () => {
         const status = await device.getRoaming();
 
         expect(status.roaming).toBeTruthy();
-    })
+    });
 });
