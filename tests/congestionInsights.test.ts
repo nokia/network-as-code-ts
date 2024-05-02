@@ -43,8 +43,12 @@ describe("Congestion Insights", () => {
             "https://example.com/notifications",
             "c8974e592c2fa383d4a3960714"
         );
-        expect(subscription.startsAt).toEqual("2024-04-12T08:45:37.210563Z");
-        expect(subscription.expiresAt).toEqual("2024-04-20T00:00:00Z");
+        expect(subscription.startsAt).toEqual(
+            new Date("2024-04-12T08:45:37.210563Z")
+        );
+        expect(subscription.expiresAt).toEqual(
+            new Date("2024-04-20T00:00:00Z")
+        );
     });
 
     it("should send correct payload", async () => {
@@ -175,8 +179,8 @@ describe("Congestion Insights", () => {
             "c8974e592c2fa383d4a3960714"
         );
 
-        expect(subscription.startsAt instanceof Date).toBeTruthy()
-        expect(subscription.expiresAt instanceof Date).toBeTruthy()
+        expect(subscription.startsAt instanceof Date).toBeTruthy();
+        expect(subscription.expiresAt instanceof Date).toBeTruthy();
     });
 
     it("can delete a subscription", async () => {

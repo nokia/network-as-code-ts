@@ -59,8 +59,8 @@ export class DeviceStatus extends Namespace {
             device,
             eventType,
             notificationUrl,
-            jsonData.startsAt,
-            jsonData.expiresAt
+            jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
+            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
         );
     }
 
