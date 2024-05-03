@@ -116,7 +116,7 @@ describe("Location", () => {
         expect(location.civicAddress).toBeDefined();
     });
 
-    it("can omit maxAge if 60 seconds is fine", async () => {
+    it("should get location without civic address", async () => {
         fetchMock.post(
             "https://location-retrieval.p-eu.rapidapi.com/retrieve",
             JSON.stringify({
@@ -138,11 +138,32 @@ describe("Location", () => {
             })
         );
 
-        const location = await device.getLocation();
+        const location = await device.getLocation(60);
 
         expect(location.longitude).toBe(0.0);
         expect(location.latitude).toBe(0.0);
         expect(location.civicAddress).toBeDefined();
+    });
+
+
+    it("can omit maxAge if 60 seconds is fine", async () => {
+        fetchMock.post(
+            "https://location-retrieval.p-eu.rapidapi.com/retrieve",
+            JSON.stringify({
+                area: {
+                    center: {
+                        longitude: 0.0,
+                        latitude: 0.0,
+                    },
+                }
+            })
+        );
+
+        const location = await device.getLocation();
+
+        expect(location.longitude).toBe(0.0);
+        expect(location.latitude).toBe(0.0);
+        expect(location.civicAddress).toBeUndefined();
     });
 
     it("should send location verification request to the right URL with right parameters", async () => {
