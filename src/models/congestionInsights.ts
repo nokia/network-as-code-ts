@@ -23,15 +23,14 @@ export interface Congestion {
 export class CongestionInsightsSubscription {
     private api: APIClient;
     subscriptionId: string;
-    startsAt: string;
-    expiresAt?: string;
-    level?: string;
+    startsAt?: Date;
+    expiresAt?: Date;
 
     constructor(
         api: APIClient,
         subscriptionId: string,
-        startsAt: string,
-        expiresAt?: string
+        startsAt?: Date,
+        expiresAt?: Date
     ) {
         this.api = api;
         this.subscriptionId = subscriptionId;
