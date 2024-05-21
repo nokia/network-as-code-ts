@@ -121,7 +121,7 @@ pipeline {
                               export PATH=$PATH:${SONAR_PATH}
                               sonar-scanner \
                                   -Dsonar.projectKey=nac-sdk-ts \
-                                  -Dsonar.sources=./network_as_code \
+                                  -Dsonar.sources=./src \
                                   -Dsonar.tests=./tests \
                                   -Dsonar.host.url=${SONARQUBE_HTTPS_URL} \
                                   -Dsonar.login=${sonar_login} \
