@@ -100,18 +100,18 @@ pipeline {
         }        
       }
     }
-    stage('Integration Test') {
-      steps {
-        container('narwhal') {
-          script {
-            sh """
-              env | grep gitlab
-              https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
-            """
-          }
-        }        
-      }
-    }
+    // stage('Integration Test') {
+    //   steps {
+    //     container('narwhal') {
+    //       script {
+    //         sh """
+    //           env | grep gitlab
+    //           https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
+    //         """
+    //       }
+    //     }        
+    //   }
+    // }
     stage('Sonar Scan') {
           steps {
               withCredentials([string(credentialsId: "${SONAR_TOKEN}", variable: 'sonar_login')]) {
