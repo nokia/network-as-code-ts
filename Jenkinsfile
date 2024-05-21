@@ -125,6 +125,7 @@ pipeline {
                                   -Dsonar.tests=./tests \
                                   -Dsonar.host.url=${SONARQUBE_HTTPS_URL} \
                                   -Dsonar.login=${sonar_login} \
+                                  -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
                           """
                       }
                   }
