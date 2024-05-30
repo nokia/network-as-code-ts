@@ -10,7 +10,7 @@
     "build:esm": "node config/cleanup esm && tsc -p config/tsconfig.esm.json",
     "build:types": "node config/cleanup @types && tsc -p config/tsconfig.types.json",
     "addjsextension": "ts-add-js-extension --dir=dist/esm",
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint src/**/* --ext .ts",
     "test": "jest",
     "integration": "jest -c jest.config.integration.ts"
   },
