@@ -1,6 +1,15 @@
 
 # Changelog
 
+## Version 1.1.1
+
+Breaking changes:
+- None!
+
+Changes:
+- Minor refactors and bug fixes
+- Updated dependencies
+
 ## Version 1.1.0
 
 Breaking changes:

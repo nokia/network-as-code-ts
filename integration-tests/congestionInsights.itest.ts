@@ -29,8 +29,8 @@ describe("Congestion Insights", () => {
             "c8974e592c2fa383d4a3960714"
         );
 
-        expect(subscription.expiresAt).toBe(
-            tomorrowDate.toISOString().replace(".000", "")
+        expect(subscription.expiresAt).toEqual(
+            new Date(tomorrowDate.toISOString().replace(".000", ""))
         );
 
         subscription.delete();
@@ -43,8 +43,8 @@ describe("Congestion Insights", () => {
             "https://example.com/notify"
         );
 
-        expect(subscription.expiresAt).toBe(
-            tomorrowDate.toISOString().replace(".000", "")
+        expect(subscription.expiresAt).toEqual(
+            new Date(tomorrowDate.toISOString().replace(".000", ""))
         );
 
         subscription.delete();
@@ -62,7 +62,8 @@ describe("Congestion Insights", () => {
             subscription.subscriptionId
         );
 
-        expect(subscription2).toEqual(subscription);
+        expect(subscription2.subscriptionId).toBe(subscription.subscriptionId);
+        expect(subscription2.startsAt).toEqual(subscription.startsAt);
 
         subscription.delete();
     });

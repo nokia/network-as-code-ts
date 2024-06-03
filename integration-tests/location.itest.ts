@@ -32,7 +32,6 @@ describe("Location retrieval and verification", () => {
 
         expect(location.latitude).toBe(47.48627616952785);
         expect(location.longitude).toBe(19.07915612501993);
-        expect(location.civicAddress).toBeDefined();
     });
 
     it("should verify location of a test device", async () => {

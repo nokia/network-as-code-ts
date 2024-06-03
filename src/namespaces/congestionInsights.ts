@@ -15,10 +15,7 @@
  */
 
 import { Device } from "../models/device";
-import {
-    Congestion,
-    CongestionInsightsSubscription,
-} from "../models/congestionInsights";
+import { CongestionInsightsSubscription } from "../models/congestionInsights";
 import { Namespace } from "./namespace";
 
 export class CongestionInsights extends Namespace {
@@ -50,8 +47,8 @@ export class CongestionInsights extends Namespace {
         return new CongestionInsightsSubscription(
             this.api,
             res.subscriptionId,
-            res.startsAt,
-            res.expiresAt
+            res.startsAt ? new Date(res.startsAt) : undefined,
+            res.expiresAt ? new Date(res.expiresAt) : undefined
         );
     }
 
@@ -67,8 +64,8 @@ export class CongestionInsights extends Namespace {
         return new CongestionInsightsSubscription(
             this.api,
             res.subscriptionId,
-            res.startsAt,
-            res.expiresAt
+            res.startsAt ? new Date(res.startsAt) : undefined,
+            res.expiresAt ? new Date(res.expiresAt) : undefined
         );
     }
 
