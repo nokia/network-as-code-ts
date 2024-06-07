@@ -127,9 +127,9 @@ export class Device {
         serviceIpv6: string | undefined = undefined,
         devicePorts: PortSpec | undefined = undefined,
         servicePorts: PortSpec | undefined = undefined,
-        duration = undefined,
-        notificationUrl = undefined,
-        notificationAuthToken = undefined
+        duration: number | undefined = undefined,
+        notificationUrl: string | undefined = undefined,
+        notificationAuthToken: string | undefined = undefined
     ): Promise<QoDSession> {
         // Checks if at least one parameter is set
         if (!serviceIpv4 && !serviceIpv6) {

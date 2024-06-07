@@ -34,8 +34,13 @@ export class QodAPI {
     private headers: HeadersInit;
     private baseUrl: string;
     private agent: ProxyAgent;
-    
-    constructor(baseURL: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
+
+    constructor(
+        baseURL: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent
+    ) {
         this.baseUrl = baseURL;
         this.headers = {
             "X-RapidAPI-Host": rapidHost,
@@ -71,9 +76,9 @@ export class QodAPI {
         ipv6Address?: string | undefined,
         devicePorts: PortSpec | undefined = undefined,
         servicePorts: PortSpec | undefined = undefined,
-        duration = undefined,
-        notificationUrl = undefined,
-        notificationAuthToken = undefined
+        duration: number | undefined = undefined,
+        notificationUrl: string | undefined = undefined,
+        notificationAuthToken: string | undefined = undefined
     ) {
         let sessionPayload: any = {
             qosProfile: profile,
@@ -134,7 +139,7 @@ export class QodAPI {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(sessionPayload),
-            agent: this.agent
+            agent: this.agent,
         });
 
         errorHandler(response);
@@ -162,7 +167,7 @@ export class QodAPI {
         let response = await fetch(this.baseUrl + url, {
             method: "GET",
             headers: this.headers,
-            agent: this.agent
+            agent: this.agent,
         });
 
         errorHandler(response);
@@ -183,7 +188,7 @@ export class QodAPI {
         let response = await fetch(this.baseUrl + url, {
             method: "GET",
             headers: this.headers,
-            agent: this.agent
+            agent: this.agent,
         });
 
         errorHandler(response);
@@ -201,7 +206,7 @@ export class QodAPI {
         let response = await fetch(this.baseUrl + url, {
             method: "DELETE",
             headers: this.headers,
-            agent: this.agent
+            agent: this.agent,
         });
 
         errorHandler(response);
