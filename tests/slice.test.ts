@@ -73,7 +73,7 @@ const MOCK_SLICE = {
     csi_id: "csi_368",
     order_id: "6ed9b1b3-a6c5-49c2-8fa7-5cf70ba8fc23",
     administrativeState: undefined,
-    state: "inProgress",
+    state: "PENDING",
 };
 
 beforeAll(() => {
@@ -358,6 +358,144 @@ describe("Slicing", () => {
         const slice = await client.slices.get(MOCK_SLICE.slice.name);
         expect(slice.sid).toEqual(MOCK_SLICE.csi_id);
     });
+
+    it("should get wait until polling completion", async () => {
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            JSON.stringify(MOCK_SLICE),
+            { repeat: 1 }
+        );
+
+        fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-2",
+                    resource: {
+                        device: {
+                            phoneNumber: "09213284343",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-3",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sdk-integration-slice-5",
+                    },
+                },
+            ])
+        );
+
+        const slice = await client.slices.get(MOCK_SLICE.slice.name);
+
+        expect(slice.state).toEqual("PENDING");
+
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            JSON.stringify(MOCK_SLICE),
+            { overwriteRoutes: false, repeat: 1 }
+        );
+
+        let modifiedSlice = { ...slice, state: "AVAILABLE" };
+
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            JSON.stringify(modifiedSlice),
+            { overwriteRoutes: false, repeat: 1 }
+        );
+
+        await slice.waitDone();
+
+        expect(slice.state).toEqual("AVAILABLE");
+    }, 72000);
+
+    it("should get wait for other states than AVAILABLE", async () => {
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            JSON.stringify(MOCK_SLICE),
+            { repeat: 1 }
+        );
+
+        fetchMock.get(
+            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-2",
+                    resource: {
+                        device: {
+                            phoneNumber: "09213284343",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+                {
+                    nac_resource_id: "attachment-3",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sdk-integration-slice-5",
+                    },
+                },
+            ])
+        );
+
+        const slice = await client.slices.get(MOCK_SLICE.slice.name);
+
+        expect(slice.state).toEqual("PENDING");
+
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            JSON.stringify(MOCK_SLICE),
+            { overwriteRoutes: false, repeat: 1 }
+        );
+
+        let modifiedSlice = { ...slice, state: "AVAILABLE" };
+
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            JSON.stringify(modifiedSlice),
+            { overwriteRoutes: false, repeat: 1 }
+        );
+
+        await slice.waitDone();
+
+        expect(slice.state).toEqual("AVAILABLE");
+
+        modifiedSlice = { ...slice, state: "OPERATING" };
+
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            JSON.stringify(modifiedSlice),
+            { overwriteRoutes: false, repeat: 1 }
+        );
+
+        await slice.waitDone(undefined, undefined, "OPERATING");
+
+        expect(slice.state).toEqual("OPERATING");
+    }, 72000);
 
     it("should activate a slice", async () => {
         fetchMock.post(
