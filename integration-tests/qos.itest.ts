@@ -117,14 +117,14 @@ describe("Qos", () => {
 
     test("should create a session with port range", async () => {
         const session = await device.createQodSession(
-            "QOS_L",
+            "QOS_M",
             "5.6.7.8",
             "2041:0000:140F::875B:131B",
             undefined,
             { ranges: [{ from: 80, to: 443 }] }
         );
         expect(session.status).toEqual("REQUESTED");
-        expect(session.profile).toEqual("QOS_L");
+        expect(session.profile).toEqual("QOS_M");
         await session.deleteSession();
     });
 
@@ -145,7 +145,7 @@ describe("Qos", () => {
 
     test("should create a session with notification url", async () => {
         const session = await device.createQodSession(
-            "QOS_L",
+            "DOWNLINK_S_UPLINK_S",
             "5.6.7.8",
             "2041:0000:140F::875B:131B",
             undefined,
@@ -155,7 +155,7 @@ describe("Qos", () => {
             "c8974e592c2fa383d4a3960714"
         );
         expect(session.status).toEqual("REQUESTED");
-        expect(session.profile).toEqual("QOS_L");
+        expect(session.profile).toEqual("DOWNLINK_S_UPLINK_S");
         await session.deleteSession();
     });
 });
