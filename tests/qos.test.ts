@@ -34,6 +34,7 @@ describe("Qos", () => {
             },
             undefined
         );
+
         expect(device.networkAccessIdentifier).toEqual(
             "testuser@open5glab.net"
         );
@@ -91,7 +92,7 @@ describe("Qos", () => {
 
     test("should create a session with service ipv6", async () => {
         let device = client.devices.get(
-            "testuser@open5glab.net",
+            undefined,
             {
                 publicAddress: "1.1.1.2",
                 privateAddress: "1.1.1.2",
@@ -117,7 +118,6 @@ describe("Qos", () => {
                     publicPort: 80,
                 },
                 ipv6Address: "2041:0000:140F::875B:131B",
-                networkAccessIdentifier: "testuser@open5glab.net",
                 phoneNumber: "9382948473",
             },
             applicationServer: {
@@ -264,7 +264,7 @@ describe("Qos", () => {
 
     test("should create a session with service port", async () => {
         let device = client.devices.get(
-            "testuser@open5glab.net",
+            undefined,
             {
                 publicAddress: "1.1.1.2",
                 privateAddress: "1.1.1.2",
@@ -290,7 +290,6 @@ describe("Qos", () => {
                     publicPort: 80,
                 },
                 ipv6Address: "2041:0000:140F::875B:131B",
-                networkAccessIdentifier: "testuser@open5glab.net",
                 phoneNumber: "9382948473",
             },
             applicationServer: {
