@@ -171,19 +171,19 @@ describe("Slicing", () => {
             }
         );
 
-        await slice.waitDone(undefined, undefined, "AVAILABLE");
+        await slice.waitFor("AVAILABLE");
 
         expect(slice.state).toEqual("AVAILABLE");
 
         await slice.activate();
 
-        await slice.waitDone(undefined, undefined, "OPERATING");
+        await slice.waitFor("OPERATING");
 
         expect(slice.state).toEqual("OPERATING");
 
         await slice.deactivate();
 
-        await slice.waitDone(undefined, undefined, "AVAILABLE");
+        await slice.waitFor("AVAILABLE");
 
         expect(slice.state).toEqual("AVAILABLE");
 
@@ -195,13 +195,13 @@ describe("Slicing", () => {
     test("should attach device to slice and detach", async () => {
         const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
-        await slice.waitDone(undefined, undefined, "AVAILABLE");
+        await slice.waitFor("AVAILABLE");
 
         expect(slice.state).toEqual("AVAILABLE");
 
         await slice.activate();
 
-        await slice.waitDone(undefined, undefined, "OPERATING");
+        await slice.waitFor("OPERATING");
 
         expect(slice.state).toEqual("OPERATING");
 
@@ -231,7 +231,7 @@ describe("Slicing", () => {
 
         slice.deactivate();
 
-        await slice.waitDone(undefined, undefined, "AVAILABLE");
+        await slice.waitFor("AVAILABLE");
 
         expect(slice.state).toEqual("AVAILABLE");
 

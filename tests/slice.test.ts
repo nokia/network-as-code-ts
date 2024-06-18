@@ -417,7 +417,7 @@ describe("Slicing", () => {
             { overwriteRoutes: false, repeat: 1 }
         );
 
-        await slice.waitDone();
+        await slice.waitFor();
 
         expect(slice.state).toEqual("AVAILABLE");
     }, 72000);
@@ -480,7 +480,7 @@ describe("Slicing", () => {
             { overwriteRoutes: false, repeat: 1 }
         );
 
-        await slice.waitDone();
+        await slice.waitFor();
 
         expect(slice.state).toEqual("AVAILABLE");
 
@@ -492,7 +492,7 @@ describe("Slicing", () => {
             { overwriteRoutes: false, repeat: 1 }
         );
 
-        await slice.waitDone(undefined, undefined, "OPERATING");
+        await slice.waitFor("OPERATING");
 
         expect(slice.state).toEqual("OPERATING");
     }, 72000);

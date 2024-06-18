@@ -234,19 +234,19 @@ export class Slice {
            Returns new state.
 
         #### Args:
+            desiredState(Optional|string): if not provided, the AVAILABLE state will be returned
             timeout (datetime.timedelta): Timeout of waiting. Default is 1h.
             pollBackoff (datetime.timedelta): Backoff time between polling.
-            desiredState(Optional|string): if not provided, the AVAILABLE state will be returned
 
         #### Example:
             ```TypeScript
-            newState = slice.waitDone()
+            newState = slice.waitFor()
             ```
  */
-    async waitDone(
+    async waitFor(
+        desiredState?: string,
         timeout: number = 3600 * 1000,
-        pollBackoff: number = 10 * 1000,
-        desiredState: string | undefined = undefined
+        pollBackoff: number = 10 * 1000
     ): Promise<string> {
         if (!desiredState) {
             desiredState = "AVAILABLE";
