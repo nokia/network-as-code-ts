@@ -83,7 +83,9 @@ export class QoDSession {
      *
      */
     async deleteSession() {
-        await this._api.sessions.deleteSession(this.id);
+        if (this.id) {
+            await this._api.sessions.deleteSession(this.id);
+        }
     }
 
     /**
@@ -113,10 +115,10 @@ export class QoDSession {
         session: any
     ): QoDSession {
         let startedAt = session["startedAt"]
-            ? new Date(session["startedAt"] * 1000)
+            ? new Date(session["startedAt"])
             : null;
         let expiresAt = session["expiresAt"]
-            ? new Date(session["expiresAt"] * 1000)
+            ? new Date(session["expiresAt"])
             : null;
 
         return new QoDSession((api = api), {

@@ -78,6 +78,17 @@ pipeline {
         }        
       }
     }
+    stage('Linting') {
+      steps {
+        container('narwhal') {
+          script {
+            sh """
+              npm run lint
+            """
+          }
+        }        
+      }
+    }
     stage('Test') {
       steps {
         container('narwhal') {

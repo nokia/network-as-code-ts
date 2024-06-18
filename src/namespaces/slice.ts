@@ -104,7 +104,7 @@ export class Slices extends Namespace {
 
         let slices: Slice[] = [];
         data.forEach(async (slice: any) => {
-            const slice_instance = new Slice(
+            const sliceInstance = new Slice(
                 this.api,
                 slice.state,
                 slice.slice.slice_info,
@@ -123,16 +123,16 @@ export class Slices extends Namespace {
                     deviceUplinkThroughput: slice.slice.deviceUplinkThroughput,
                 }
             );
-            slices.push(slice_instance);
+            slices.push(sliceInstance);
             const attachments: any =
                 await this.api.sliceAttach.getAttachments();
 
             if (attachments.length > 0) {
                 const sliceAttachments = attachments.filter(
                     (attachment: any) =>
-                        attachment.resource.sliceId == slice_instance.name
+                        attachment.resource.sliceId == sliceInstance.name
                 );
-                slice_instance.setAttachments(sliceAttachments);
+                sliceInstance.setAttachments(sliceAttachments);
             }
         });
         return slices;

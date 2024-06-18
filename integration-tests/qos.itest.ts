@@ -1,6 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
+import { Device, DeviceIpv4Addr } from "../src/models/device";
 
 let client: NetworkAsCodeClient;
 
@@ -14,22 +15,43 @@ beforeAll((): any => {
 });
 
 describe("Qos", () => {
-    let device: any;
-    beforeEach(() => {
-        device = client.devices.get(
-            "test-device@testcsp.net",
-            {
-                publicAddress: "1.1.1.2",
-                privateAddress: "1.1.1.2",
-                publicPort: 80,
-            },
-            undefined,
-            "9382948473"
-        );
+    let device: Device;
+    let deviceWithPhoneNumber: Device;
+    beforeEach(async () => {
+        try {
+            device = client.devices.get(
+                "test-device@testcsp.net",
+                {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                undefined,
+                `3670${
+                    Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
+                }`
+            );
+            deviceWithPhoneNumber = client.devices.get(
+                undefined,
+                {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                undefined,
+                `3670${
+                    Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
+                }`
+            );
+        } catch (error) {
+            console.error("Error during setup:", error);
+            throw error;
+        }
     });
+
     test("should get a device", () => {
-        expect(device.networkAccessIdentifier).toEqual(
-            "test-device@testcsp.net"
+        expect((device.ipv4Address as DeviceIpv4Addr).publicAddress).toEqual(
+            "1.1.1.2"
         );
     });
 
@@ -44,19 +66,61 @@ describe("Qos", () => {
         await session.deleteSession();
     });
 
-    test("should get one session", async () => {
-        const newSession = await device.createQodSession(
+    test("should create a session to a device with phone number", async () => {
+        const session = await deviceWithPhoneNumber.createQodSession(
             "QOS_L",
             "5.6.7.8",
             "2041:0000:140F::875B:131B"
         );
+        expect(session.status).toEqual("REQUESTED");
+        await session.deleteSession();
+    });
 
-        const session = await client.sessions.get(newSession.id);
-        expect(session.id).toEqual(newSession.id);
+    test("should create a session with medium profile", async () => {
+        const session = await device.createQodSession(
+            "QOS_M",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B"
+        );
+        expect(session.status).toEqual("REQUESTED");
+        expect(session.profile).toEqual("QOS_M");
+        await session.deleteSession();
+    });
+
+    test("should create a session with small profile", async () => {
+        const session = await device.createQodSession(
+            "QOS_S",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B"
+        );
+        expect(session.status).toEqual("REQUESTED");
+        expect(session.profile).toEqual("QOS_S");
+        await session.deleteSession();
+    });
+
+    test("should create a session with low latency profile", async () => {
+        const session = await device.createQodSession(
+            "QOS_E",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B"
+        );
+        expect(session.status).toEqual("REQUESTED");
+        expect(session.profile).toEqual("QOS_E");
+        await session.deleteSession();
+    });
+
+    test("should get one session", async () => {
+        const session = await device.createQodSession(
+            "QOS_E",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B"
+        );
+        const fetchedSession = await client.sessions.get(session.id);
+        expect(session.id).toEqual(fetchedSession.id);
         await session.deleteSession();
 
         try {
-            await client.sessions.get(newSession.id);
+            await client.sessions.get(session.id);
             expect(true).toBe(false);
         } catch (error) {
             expect(true).toBe(true);
@@ -64,18 +128,17 @@ describe("Qos", () => {
     });
 
     test("should get all sessions", async () => {
-        const newSession = await device.createQodSession(
-            "QOS_L",
+        const session = await device.createQodSession(
+            "QOS_E",
             "5.6.7.8",
             "2041:0000:140F::875B:131B"
         );
-
         const sessions = await device.sessions();
 
         expect(sessions.length).toBeGreaterThan(0);
 
         await device.clearSessions();
-    })
+    });
 
     test("should create a session with service port", async () => {
         const session = await device.createQodSession(
@@ -90,16 +153,16 @@ describe("Qos", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with port range", async () => {
+    test("should create  a session with port range", async () => {
         const session = await device.createQodSession(
-            "QOS_L",
+            "QOS_M",
             "5.6.7.8",
             "2041:0000:140F::875B:131B",
             undefined,
             { ranges: [{ from: 80, to: 443 }] }
         );
         expect(session.status).toEqual("REQUESTED");
-        expect(session.profile).toEqual("QOS_L");
+        expect(session.profile).toEqual("QOS_M");
         await session.deleteSession();
     });
 
