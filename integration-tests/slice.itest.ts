@@ -1,6 +1,8 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
+import { Slice } from "../src/models/slice";
+import { Device } from "../src/models/device";
 
 let client: NetworkAsCodeClient;
 
@@ -14,8 +16,10 @@ beforeAll((): any => {
 });
 
 describe("Slicing", () => {
-    let device: any;
-    beforeEach(() => {
+    let device: Device;
+    let slice: Slice;
+    const random = Math.floor(Math.random() * 1000) + 1;
+    beforeEach(async () => {
         device = client.devices.get(
             "test-device@testcsp.net",
             {
@@ -26,7 +30,22 @@ describe("Slicing", () => {
             undefined,
             "+12065550100"
         );
+
+        slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: `slice${random}`,
+                notificationAuthToken: "my-token",
+            }
+        );
     });
+
+    afterEach(async () => {
+        await slice.delete();
+    });
+
     test("should get a device", () => {
         expect(device.networkAccessIdentifier).toEqual(
             "test-device@testcsp.net"
@@ -34,30 +53,12 @@ describe("Slicing", () => {
     });
 
     test("should create a slice", async () => {
-        const slice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { serviceType: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
-            {
-                name: "sdk-integration-slice-2",
-                notificationAuthToken: "my-token",
-            }
-        );
-
-        expect(slice.name).toEqual("sdk-integration-slice-2");
+        const new_slice = slice;
+        expect(new_slice.networkIdentifier.mcc).toEqual("236");
+        expect(new_slice.networkIdentifier.mnc).toEqual("30");
     });
 
     test.failing("should modify a slice", async () => {
-        const slice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { serviceType: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
-            {
-                name: "sdk-integration-slice-2",
-                notificationAuthToken: "my-token",
-            }
-        );
-
         expect(slice.maxDataConnections).toBeUndefined();
         expect(slice.maxDevices).toBeUndefined();
 
@@ -132,35 +133,19 @@ describe("Slicing", () => {
             }
         );
 
-        expect(slice.name).toEqual("sdk-integration-slice-2");
+        expect(slice.maxDevices).toEqual(5);
+        expect(slice.maxDataConnections).toEqual(10);
+
+        slice.delete();
     });
 
     test("should get a slice", async () => {
-        const newSlice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { serviceType: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
-            {
-                name: "sdk-integration-slice-3",
-                notificationAuthToken: "my-token",
-            }
-        );
-
+        const newSlice = slice;
         const fetchedSlice = await client.slices.get(newSlice.name as string);
         expect(newSlice.sid).toEqual(fetchedSlice.sid);
     });
 
     test("should mark a deleted slice's state as 'Deleted'", async () => {
-        const slice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { serviceType: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
-            {
-                name: "sdk-integration-slice-3",
-                notificationAuthToken: "my-token",
-            }
-        );
-
         await slice.delete();
 
         await slice.refresh();
@@ -173,20 +158,9 @@ describe("Slicing", () => {
         expect(attachments.length).toBeGreaterThanOrEqual(0);
     });
 
-
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
     test("should deactivate and delete", async () => {
-        const slice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { serviceType: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
-            {
-                name: "sdk-integration-slice-3",
-                notificationAuthToken: "my-token",
-            }
-        );
-
         const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
         let counter = 0;
@@ -232,16 +206,6 @@ describe("Slicing", () => {
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
     test("should attach device to slice and detach", async () => {
-        const slice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { serviceType: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
-            {
-                name: "sdk-integration-slice-3",
-                notificationAuthToken: "my-token",
-            }
-        );
-
         const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
         let counter = 0;

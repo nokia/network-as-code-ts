@@ -83,7 +83,9 @@ export class QoDSession {
      *
      */
     async deleteSession() {
-        await this._api.sessions.deleteSession(this.id);
+        if (this.id) {
+            await this._api.sessions.deleteSession(this.id);
+        }
     }
 
     /**
