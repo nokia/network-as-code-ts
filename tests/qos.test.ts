@@ -55,8 +55,8 @@ describe("Qos", () => {
             sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
             qosProfile: "QOS_L",
             qosStatus: "REQUESTED",
-            startedAt: new Date(2024, 1, 1, 0, 0).getTime() / 1000,
-            expiresAt: new Date(2024, 1, 1, 0, 1).getTime() / 1000,
+            startedAt: "2024-06-18T09:46:58.213Z",
+            expiresAt: "2024-06-18T09:47:58.213Z",
         };
 
         let mockRequestBody = {
@@ -396,8 +396,8 @@ describe("Qos", () => {
             sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
             qosProfile: "QOS_L",
             qosStatus: "REQUESTED",
-            startedAt: 1691671102,
-            expiresAt: 1691757502,
+            startedAt: "2024-06-18T09:46:58.213Z",
+            expiresAt: "2024-06-18T09:47:58.213Z",
         };
 
         let mockRequestBody = {
@@ -438,6 +438,7 @@ describe("Qos", () => {
             60
         );
         expect(session.status).toEqual(mockResponse["qosStatus"]);
+        expect(session.duration()).toEqual(60);
     });
 
     test("should create a session with notification info", async () => {
