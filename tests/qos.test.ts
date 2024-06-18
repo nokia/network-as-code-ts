@@ -1,11 +1,10 @@
-
-import type { FetchMockStatic } from 'fetch-mock';
-import fetch from 'node-fetch';
+import type { FetchMockStatic } from "fetch-mock";
+import fetch from "node-fetch";
 import { beforeAll, describe, expect, test } from "@jest/globals";
 import { NetworkAsCodeClient } from "../src";
 
 jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
-const fetchMock = (fetch as unknown) as FetchMockStatic;
+const fetchMock = fetch as unknown as FetchMockStatic;
 
 let client: NetworkAsCodeClient;
 
@@ -35,6 +34,7 @@ describe("Qos", () => {
             },
             undefined
         );
+
         expect(device.networkAccessIdentifier).toEqual(
             "testuser@open5glab.net"
         );
@@ -55,8 +55,8 @@ describe("Qos", () => {
             sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
             qosProfile: "QOS_L",
             qosStatus: "REQUESTED",
-            startedAt: new Date(2024, 1, 1, 0, 0).getTime() / 1000,
-            expiresAt: new Date(2024, 1, 1, 0, 1).getTime() / 1000,
+            startedAt: "2024-06-18T09:46:58.213Z",
+            expiresAt: "2024-06-18T09:47:58.213Z",
         };
 
         let mockRequestBody = {
@@ -82,14 +82,69 @@ describe("Qos", () => {
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
                 return JSON.stringify(mockResponse);
-            });
+            }
+        );
 
         const session = await device.createQodSession("QOS_L", "5.6.7.8");
         expect(session.status).toEqual(mockResponse["qosStatus"]);
         expect(session.duration()).toEqual(60);
     });
 
-    test("should create a session with ipv6", async () => {
+    test("should create a session with service ipv6", async () => {
+        let device = client.devices.get(
+            undefined,
+            {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            "2041:0000:140F::875B:131B",
+            "9382948473"
+        );
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            qosStatus: "REQUESTED",
+            startedAt: 1691671102,
+            expiresAt: 1691757502,
+        };
+
+        let mockRequestBody = {
+            qosProfile: "QOS_L",
+            device: {
+                ipv4Address: {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                ipv6Address: "2041:0000:140F::875B:131B",
+                phoneNumber: "9382948473",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+                ipv6Address: "2041:0000:140F::875B:131B",
+            },
+        };
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual(mockRequestBody);
+                return JSON.stringify(mockResponse);
+            }
+        );
+
+        const session = await device.createQodSession(
+            "QOS_L",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B"
+        );
+        expect(session.status).toEqual(mockResponse["qosStatus"]);
+    });
+
+    test("should create a session with device ports", async () => {
         let device = client.devices.get(
             "testuser@open5glab.net",
             {
@@ -124,6 +179,9 @@ describe("Qos", () => {
                 ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
             },
+            devicePorts: {
+                ports: [80, 3000],
+            },
         };
 
         fetchMock.post(
@@ -133,12 +191,314 @@ describe("Qos", () => {
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
                 return JSON.stringify(mockResponse);
-            });
+            }
+        );
 
         const session = await device.createQodSession(
             "QOS_L",
             "5.6.7.8",
-            "2041:0000:140F::875B:131B"
+            "2041:0000:140F::875B:131B",
+            { ports: [80, 3000] }
+        );
+        expect(session.status).toEqual(mockResponse["qosStatus"]);
+    });
+
+    test("should create a session with device port range", async () => {
+        let device = client.devices.get(
+            "testuser@open5glab.net",
+            {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            "2041:0000:140F::875B:131B",
+            "9382948473"
+        );
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            qosStatus: "REQUESTED",
+            startedAt: 1691671102,
+            expiresAt: 1691757502,
+        };
+
+        let mockRequestBody = {
+            qosProfile: "QOS_L",
+            device: {
+                ipv4Address: {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                ipv6Address: "2041:0000:140F::875B:131B",
+                networkAccessIdentifier: "testuser@open5glab.net",
+                phoneNumber: "9382948473",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+                ipv6Address: "2041:0000:140F::875B:131B",
+            },
+            devicePorts: {
+                ranges: [{ from: 80, to: 3000 }],
+            },
+        };
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual(mockRequestBody);
+                return JSON.stringify(mockResponse);
+            }
+        );
+
+        const session = await device.createQodSession(
+            "QOS_L",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B",
+            { ranges: [{ from: 80, to: 3000 }] }
+        );
+        expect(session.status).toEqual(mockResponse["qosStatus"]);
+    });
+
+    test("should create a session with service port", async () => {
+        let device = client.devices.get(
+            undefined,
+            {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            "2041:0000:140F::875B:131B",
+            "9382948473"
+        );
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            qosStatus: "REQUESTED",
+            startedAt: 1691671102,
+            expiresAt: 1691757502,
+        };
+
+        let mockRequestBody = {
+            qosProfile: "QOS_L",
+            device: {
+                ipv4Address: {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                ipv6Address: "2041:0000:140F::875B:131B",
+                phoneNumber: "9382948473",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+                ipv6Address: "2041:0000:140F::875B:131B",
+            },
+            applicationServerPorts: {
+                ports: [80, 3000],
+            },
+        };
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual(mockRequestBody);
+                return JSON.stringify(mockResponse);
+            }
+        );
+
+        const session = await device.createQodSession(
+            "QOS_L",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B",
+            undefined,
+            { ports: [80, 3000] }
+        );
+        expect(session.status).toEqual(mockResponse["qosStatus"]);
+    });
+
+    test("should create a session with service port range", async () => {
+        let device = client.devices.get(
+            "testuser@open5glab.net",
+            {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            "2041:0000:140F::875B:131B",
+            "9382948473"
+        );
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            qosStatus: "REQUESTED",
+            startedAt: 1691671102,
+            expiresAt: 1691757502,
+        };
+
+        let mockRequestBody = {
+            qosProfile: "QOS_L",
+            device: {
+                ipv4Address: {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                ipv6Address: "2041:0000:140F::875B:131B",
+                networkAccessIdentifier: "testuser@open5glab.net",
+                phoneNumber: "9382948473",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+                ipv6Address: "2041:0000:140F::875B:131B",
+            },
+            applicationServerPorts: {
+                ranges: [{ from: 80, to: 3000 }],
+            },
+        };
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual(mockRequestBody);
+                return JSON.stringify(mockResponse);
+            }
+        );
+
+        const session = await device.createQodSession(
+            "QOS_L",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B",
+            undefined,
+            { ranges: [{ from: 80, to: 3000 }] }
+        );
+        expect(session.status).toEqual(mockResponse["qosStatus"]);
+    });
+
+    test("should create a session with duration", async () => {
+        let device = client.devices.get(
+            "testuser@open5glab.net",
+            {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            "2041:0000:140F::875B:131B",
+            "9382948473"
+        );
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            qosStatus: "REQUESTED",
+            startedAt: "2024-06-18T09:46:58.213Z",
+            expiresAt: "2024-06-18T09:47:58.213Z",
+        };
+
+        let mockRequestBody = {
+            qosProfile: "QOS_L",
+            device: {
+                ipv4Address: {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                ipv6Address: "2041:0000:140F::875B:131B",
+                networkAccessIdentifier: "testuser@open5glab.net",
+                phoneNumber: "9382948473",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+                ipv6Address: "2041:0000:140F::875B:131B",
+            },
+            duration: 60,
+        };
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual(mockRequestBody);
+                return JSON.stringify(mockResponse);
+            }
+        );
+
+        const session = await device.createQodSession(
+            "QOS_L",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B",
+            undefined,
+            undefined,
+            60
+        );
+        expect(session.status).toEqual(mockResponse["qosStatus"]);
+        expect(session.duration()).toEqual(60);
+    });
+
+    test("should create a session with notification info", async () => {
+        let device = client.devices.get(
+            "testuser@open5glab.net",
+            {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            "2041:0000:140F::875B:131B",
+            "9382948473"
+        );
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            qosStatus: "REQUESTED",
+            startedAt: 1691671102,
+            expiresAt: 1691757502,
+        };
+
+        let mockRequestBody = {
+            qosProfile: "QOS_L",
+            device: {
+                ipv4Address: {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                ipv6Address: "2041:0000:140F::875B:131B",
+                networkAccessIdentifier: "testuser@open5glab.net",
+                phoneNumber: "9382948473",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+                ipv6Address: "2041:0000:140F::875B:131B",
+            },
+            notificationUrl: "https://example.com",
+            notificationAuthToken: "Bearer my-auth-token",
+        };
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual(mockRequestBody);
+                return JSON.stringify(mockResponse);
+            }
+        );
+
+        const session = await device.createQodSession(
+            "QOS_L",
+            "5.6.7.8",
+            "2041:0000:140F::875B:131B",
+            undefined,
+            undefined,
+            undefined,
+            "https://example.com",
+            "my-auth-token"
         );
         expect(session.status).toEqual(mockResponse["qosStatus"]);
     });

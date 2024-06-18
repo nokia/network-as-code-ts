@@ -161,42 +161,29 @@ describe("Slicing", () => {
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
     test("should deactivate and delete", async () => {
-        const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: "sdk-integration-slice-3",
+                notificationAuthToken: "my-token",
+            }
+        );
 
-        let counter = 0;
-        while (slice.state == "PENDING" && counter < 5) {
-            await slice.refresh();
-
-            await sleep(30000);
-
-            counter++;
-        }
+        await slice.waitFor("AVAILABLE");
 
         expect(slice.state).toEqual("AVAILABLE");
 
         await slice.activate();
 
-        counter = 0;
-        while (slice.state == "AVAILABLE" && counter < 5) {
-            await slice.refresh();
-
-            await sleep(30000);
-
-            counter++;
-        }
+        await slice.waitFor("OPERATING");
 
         expect(slice.state).toEqual("OPERATING");
 
         await slice.deactivate();
 
-        counter = 0;
-        while (slice.state == "OPERATING" && counter < 5) {
-            await slice.refresh();
-
-            await sleep(30000);
-
-            counter++;
-        }
+        await slice.waitFor("AVAILABLE");
 
         expect(slice.state).toEqual("AVAILABLE");
 
@@ -208,27 +195,13 @@ describe("Slicing", () => {
     test("should attach device to slice and detach", async () => {
         const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
-        let counter = 0;
-        while (slice.state == "PENDING" && counter < 5) {
-            await slice.refresh();
-
-            await sleep(30000);
-
-            counter++;
-        }
+        await slice.waitFor("AVAILABLE");
 
         expect(slice.state).toEqual("AVAILABLE");
 
         await slice.activate();
 
-        counter = 0;
-        while (slice.state == "AVAILABLE" && counter < 5) {
-            await slice.refresh();
-
-            await sleep(30000);
-
-            counter++;
-        }
+        await slice.waitFor("OPERATING");
 
         expect(slice.state).toEqual("OPERATING");
 
@@ -258,14 +231,7 @@ describe("Slicing", () => {
 
         slice.deactivate();
 
-        counter = 0;
-        while (slice.state == "OPERATING" && counter < 5) {
-            await slice.refresh();
-
-            await sleep(30000);
-
-            counter++;
-        }
+        await slice.waitFor("AVAILABLE");
 
         expect(slice.state).toEqual("AVAILABLE");
 

@@ -229,6 +229,40 @@ export class Slice {
     }
 
     /**
+ *  Wait for an ongoing order to complete.
+           I.e. not being in "PENDING" state.
+           Returns new state.
+
+        #### Args:
+            desiredState(Optional|string): if not provided, the AVAILABLE state will be returned
+            timeout (datetime.timedelta): Timeout of waiting. Default is 1h.
+            pollBackoff (datetime.timedelta): Backoff time between polling.
+
+        #### Example:
+            ```TypeScript
+            newState = slice.waitFor()
+            ```
+ */
+    async waitFor(
+        desiredState?: string,
+        timeout: number = 3600 * 1000,
+        pollBackoff: number = 10 * 1000
+    ): Promise<string> {
+        if (!desiredState) {
+            desiredState = "AVAILABLE";
+        }
+
+        const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
+
+        const end = Date.now() + timeout;
+        while (this.state !== desiredState && Date.now() < end) {
+            await sleep(pollBackoff);
+            await this.refresh();
+        }
+        return this.state;
+    }
+
+    /**
  *  Deactivate network slice.
  * #### Args:
             None
