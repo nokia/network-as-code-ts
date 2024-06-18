@@ -1,6 +1,17 @@
 
 # Changelog
 
+## Version 1.2.0
+
+Breaking changes:
+- None!
+
+Changes:
+- Added `slice.waitFor()` function to perform polling for slice state changes
+- Internal refactoring
+- Updated dependencies
+- Improved test suite coverage and reliability
+
 ## Version 1.1.1
 
 Breaking changes:
