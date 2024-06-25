@@ -42,17 +42,7 @@ export class NetworkAsCodeClient {
     private _insights: CongestionInsights;
 
     constructor(token: string, devMode?: boolean) {
-        this._api = new APIClient(
-            token,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            undefined,
-            devMode
-        );
+        this._api = new APIClient(token, devMode);
         this._devices = new Devices(this._api);
         this._sessions = new Sessions(this._api);
         this._deviceStatus = new DeviceStatus(this._api);
