@@ -78,6 +78,8 @@ export interface RoamingStatus {
         getConnectivity (ConnectivityData): Retrieve device connectivity status data
         updateConnectivity (ConnectivityData): Update device connectivity status data
         deleteConnectivity (): Delete device connectivity status
+        getSimSwapDate (): Retrieve the latest sim swap date
+        verifySimSwap (): Verify if there was sim swap
  */
 export class Device {
     private _api: APIClient;
@@ -281,5 +283,35 @@ export class Device {
         );
 
         return congestionInfo;
+    }
+
+    /**
+     * Get the latest simswap date.
+     * @returns latest sim swap date-time(string)
+     */
+    async getSimSwapDate(): Promise<string> {
+        if (!this.phoneNumber) {
+            return "Device phone number is required.";
+        }
+        const response: any = await this._api.simSwap.fetchSimSwapDate(
+            this.phoneNumber
+        );
+        return response["latestSimChange"];
+    }
+
+    /**
+     * Verify if there was sim swap.
+     * @param max_age (Optional[number]): Max acceptable age for sim swap verification info in seconds
+     * @returns true/false
+     */
+    async verifySimSwap(maxAge?: number): Promise<boolean | string> {
+        if (!this.phoneNumber) {
+            return "Device phone number is required.";
+        }
+        const response: any = await this._api.simSwap.verifySimSwap(
+            this.phoneNumber,
+            maxAge
+        );
+        return response["swapped"];
     }
 }

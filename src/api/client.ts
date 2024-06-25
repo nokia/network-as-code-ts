@@ -21,6 +21,7 @@ import { LocationRetrievalAPI, LocationVerifyAPI } from "./locationApi";
 import { DeviceStatusAPI } from "./deviceStatusAPI";
 import { AttachAPI, SliceAPI } from "./sliceApi";
 import { CongestionInsightsAPI } from "./congestionInsightsApi";
+import { SimSwapAPI } from "./simSwapApi";
 
 const QOS_BASE_URL_PROD =
     "https://quality-of-service-on-demand.p-eu.rapidapi.com";
@@ -52,6 +53,11 @@ const CONGESTION_INSIGHTS_BASE_URL_PROD =
 const CONGESTION_INSIGHTS_BASE_URL_DEV =
     "https://congestion-insights.p-eu.rapidapi.com";
 
+const SIM_SWAP_BASE_URL_PROD =
+    "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0";
+const SIM_SWAP_BASE_URL_DEV =
+    "https://simswap.p-eu.rapidapi.com/sim-swap/sim-swap/v0";
+
 const agent = new ProxyAgent();
 
 export class APIClient {
@@ -62,9 +68,11 @@ export class APIClient {
     slicing: SliceAPI;
     sliceAttach: AttachAPI;
     insights: CongestionInsightsAPI;
+    simSwap: SimSwapAPI;
 
     constructor(
         token: string,
+        devMode: boolean = false,
         qosBaseUrl: string = QOS_BASE_URL_PROD,
         locationRetrievalBaseUrl: string = LOCATION_RETRIEVAL_BASE_URL_PROD,
         locationVerifyBaseUrl: string = LOCATION_VERIFY_BASE_URL_PROD,
@@ -72,7 +80,7 @@ export class APIClient {
         sliceBaseUrl: string = SLICE_BASE_URL_PROD,
         sliceAttachBaseUrl: string = SLICE_ATTACH_BASE_URL_PROD,
         congestionInsightsBaseUrl: string = CONGESTION_INSIGHTS_BASE_URL_PROD,
-        devMode: boolean = false
+        simSwapBaseUrl: string = SIM_SWAP_BASE_URL_PROD,
     ) {
         if (devMode && qosBaseUrl == QOS_BASE_URL_PROD) {
             qosBaseUrl = QOS_BASE_URL_DEV;
@@ -189,6 +197,23 @@ export class APIClient {
                       .replace("https://", "")
                       .replace("p-eu", "nokia-dev")
                 : congestionInsightsBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
+            agent
+        );
+
+        if (devMode && simSwapBaseUrl == SIM_SWAP_BASE_URL_PROD) {
+            simSwapBaseUrl = SIM_SWAP_BASE_URL_DEV;
+        }
+
+        this.simSwap = new SimSwapAPI(
+            simSwapBaseUrl,
+            token,
+            devMode
+                ? simSwapBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
+                : simSwapBaseUrl
                       .replace("https://", "")
                       .replace("p-eu", "nokia"),
             agent
