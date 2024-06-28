@@ -18,7 +18,6 @@ import {
     AreaOfService,
     NetworkIdentifier,
     Point,
-    Slice,
     SliceInfo,
     SliceOptionalArgs,
     TrafficCategories,
@@ -27,8 +26,7 @@ import { errorHandler } from "../errors";
 import { Device, DeviceIpv4Addr } from "../models/device";
 import { ProxyAgent } from "proxy-agent";
 
-import fetch from "node-fetch";
-import { Response as FetchResponse } from "node-fetch";
+import fetch, { Response as FetchResponse } from "node-fetch";
 
 export class SliceAPI {
     private baseUrl: string;
