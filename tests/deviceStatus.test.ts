@@ -12,10 +12,13 @@ let device: Device;
 
 beforeAll(() => {
     client = new NetworkAsCodeClient("TEST_TOKEN");
-    device = client.devices.get("test-device@testcsp.net", {
-        publicAddress: "1.1.1.2",
-        privateAddress: "1.1.1.2",
-        publicPort: 80,
+    device = client.devices.get({
+        networkAccessIdentifier: "test-device@testcsp.net",
+        ipv4Address: {
+            publicAddress: "1.1.1.2",
+            privateAddress: "1.1.1.2",
+            publicPort: 80,
+        },
     });
 });
 

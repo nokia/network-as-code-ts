@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
+import { beforeAll, beforeEach, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
@@ -16,17 +16,11 @@ beforeAll((): any => {
 
 describe("Sim Swap retrieval and verification", () => {
     let device: Device;
+
     beforeEach(() => {
-        device = client.devices.get(
-            "test-device@testcsp.net",
-            {
-                publicAddress: "1.1.1.2",
-                privateAddress: "1.1.1.2",
-                publicPort: 80,
-            },
-            undefined,
-            "3637123456"
-        );
+        device = client.devices.get({
+            phoneNumber: "3637123456",
+        });
     });
     it("should retrieve sim swap of a test device", async () => {
         expect(device.getSimSwapDate()).toBeTruthy();
