@@ -13,16 +13,15 @@ let device: Device;
 
 beforeAll((): any => {
     client = new NetworkAsCodeClient("TEST_TOKEN");
-    device = client.devices.get(
-        "test-device@testcsp.net",
-        {
+    device = client.devices.get({
+        ipv4Address: {
             publicAddress: "1.1.1.2",
             privateAddress: "1.1.1.2",
             publicPort: 80,
         },
-        "2041:0000:140F::875B:131B",
-        "3637123456"
-    );
+        ipv6Address: "2041:0000:140F::875B:131B",
+        phoneNumber: "3637123456",
+    });
     return client;
 });
 

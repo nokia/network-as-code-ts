@@ -98,8 +98,6 @@ export class NetworkAsCodeClient {
     }
 }
 
-export function main() {
-    const client = new NetworkAsCodeClient("<my-token>");
-}
+export function main() {}
 
 main();

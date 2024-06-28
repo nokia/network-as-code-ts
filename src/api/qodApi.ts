@@ -67,18 +67,18 @@ export class QodAPI {
             Session: response of the endpoint, ideally a Session
  */
     async createSession(
-        sid: string | undefined,
         profile: string,
-        serviceIpv6: string | undefined,
+        sid?: string,
+        serviceIpv6?: string,
         serviceIpv4?: string,
         phoneNumber?: string,
         ipv4Address?: string | DeviceIpv4Addr,
-        ipv6Address?: string | undefined,
-        devicePorts: PortSpec | undefined = undefined,
-        servicePorts: PortSpec | undefined = undefined,
-        duration: number | undefined = undefined,
-        notificationUrl: string | undefined = undefined,
-        notificationAuthToken: string | undefined = undefined
+        ipv6Address?: string,
+        devicePorts?: PortSpec,
+        servicePorts?: PortSpec,
+        duration?: number,
+        notificationUrl?: string,
+        notificationAuthToken?: string
     ) {
         let sessionPayload: any = {
             qosProfile: profile,

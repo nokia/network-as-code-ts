@@ -15,11 +15,10 @@
  */
 
 import { ProxyAgent } from "proxy-agent";
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
 import { errorHandler } from "../errors";
 import { Device, RoamingStatus } from "../models/device";
-import { Subscription } from "../models/deviceStatus";
 import { SubscribeOptionalArgs } from "../namespaces/deviceStatus";
 
 export class DeviceStatusAPI {
@@ -27,7 +26,12 @@ export class DeviceStatusAPI {
     private headers: HeadersInit;
     private agent: ProxyAgent;
 
-    constructor(baseUrl: string, rapidKey: string, rapidHost: string, agent: ProxyAgent) {
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent
+    ) {
         this.baseUrl = baseUrl;
         this.headers = {
             "Content-Type": "application/json",
@@ -46,7 +50,7 @@ export class DeviceStatusAPI {
         const body: any = {
             subscriptionDetail: {
                 device: device.toJson(),
-                "type": eventType,
+                type: eventType,
             },
             webhook: {
                 notificationUrl: notificationUrl,
@@ -73,7 +77,7 @@ export class DeviceStatusAPI {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
-            agent: this.agent
+            agent: this.agent,
         });
 
         errorHandler(response);
@@ -87,7 +91,7 @@ export class DeviceStatusAPI {
             {
                 method: "DELETE",
                 headers: this.headers,
-                agent: this.agent
+                agent: this.agent,
             }
         );
 
@@ -100,7 +104,7 @@ export class DeviceStatusAPI {
             {
                 method: "GET",
                 headers: this.headers,
-                agent: this.agent
+                agent: this.agent,
             }
         );
 
@@ -110,14 +114,11 @@ export class DeviceStatusAPI {
     }
 
     async getSubscriptions() {
-        const response = await fetch(
-            `${this.baseUrl}/subscriptions`,
-            {
-                method: "GET",
-                headers: this.headers,
-                agent: this.agent
-            }
-        );
+        const response = await fetch(`${this.baseUrl}/subscriptions`, {
+            method: "GET",
+            headers: this.headers,
+            agent: this.agent,
+        });
 
         errorHandler(response);
 
@@ -125,17 +126,14 @@ export class DeviceStatusAPI {
     }
 
     async getConnectivity(device: Device) {
-        const response = await fetch(
-            `${this.baseUrl}/connectivity`,
-            {
-                method: "POST",
-                headers: this.headers,
-                agent: this.agent,
-                body: JSON.stringify({
-                    device: device.toJson()
-                })
-            }
-        )
+        const response = await fetch(`${this.baseUrl}/connectivity`, {
+            method: "POST",
+            headers: this.headers,
+            agent: this.agent,
+            body: JSON.stringify({
+                device: device.toJson(),
+            }),
+        });
 
         errorHandler(response);
 
@@ -143,17 +141,14 @@ export class DeviceStatusAPI {
     }
 
     async getRoaming(device: Device) {
-        const response = await fetch(
-            `${this.baseUrl}/roaming`,
-            {
-                method: "POST",
-                headers: this.headers,
-                agent: this.agent,
-                body: JSON.stringify({
-                    device: device.toJson()
-                })
-            }
-        )
+        const response = await fetch(`${this.baseUrl}/roaming`, {
+            method: "POST",
+            headers: this.headers,
+            agent: this.agent,
+            body: JSON.stringify({
+                device: device.toJson(),
+            }),
+        });
 
         errorHandler(response);
 

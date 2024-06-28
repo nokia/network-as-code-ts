@@ -78,16 +78,15 @@ const MOCK_SLICE = {
 
 beforeAll(() => {
     client = new NetworkAsCodeClient("TEST_TOKEN");
-    device = client.devices.get(
-        "test-device@testcsp.net",
-        {
+    device = client.devices.get({
+        ipv4Address: {
             publicAddress: "1.1.1.2",
             privateAddress: "1.1.1.2",
             publicPort: 80,
         },
-        undefined,
-        "+12065550100"
-    );
+        ipv6Address: "2041:0000:140F::875B:131B",
+        phoneNumber: "3637123456",
+    });
 });
 
 beforeEach(() => {
@@ -629,6 +628,7 @@ describe("Slicing", () => {
                             publicPort: (device.ipv4Address as DeviceIpv4Addr)
                                 .publicPort,
                         },
+                        ipv6Address: device.ipv6Address,
                     },
                     sliceId: "sliceone",
                     trafficCategories: {
@@ -677,7 +677,7 @@ describe("Slicing", () => {
                     nac_resource_id: "attachment-1",
                     resource: {
                         device: {
-                            phoneNumber: "+12065550100",
+                            phoneNumber: "3637123456",
                         },
                         sliceId: "sliceone",
                     },

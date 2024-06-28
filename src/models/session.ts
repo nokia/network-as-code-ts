@@ -96,7 +96,7 @@ export class QoDSession {
         if (this.startedAt && this.expiresAt) {
             return (this.expiresAt.getTime() - this.startedAt.getTime()) / 1000;
         } else {
-            null;
+            return null;
         }
     }
 
@@ -121,7 +121,7 @@ export class QoDSession {
             ? new Date(session["expiresAt"])
             : null;
 
-        return new QoDSession((api = api), {
+        return new QoDSession(api, {
             id: session["sessionId"],
             deviceIp: ip,
             devicePorts: undefined,
