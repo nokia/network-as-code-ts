@@ -154,6 +154,18 @@ pipeline {
         }
       }
     }
+    stage('Installation Test'){
+      steps {
+        container('narwhal') {
+          script {
+            sh '''
+                bash installation-test/installation-test-ts.sh              
+                bash installation-test/installation-test-js.sh              
+            '''
+          }
+        }
+      }
+    }
     stage('Publish') {
         when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabTargetBranch.contains("release-")} }
             steps {
