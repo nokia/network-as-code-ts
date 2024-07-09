@@ -72,7 +72,7 @@ export class QodAPI {
         serviceIpv6?: string,
         serviceIpv4?: string,
         phoneNumber?: string,
-        ipv4Address?: string | DeviceIpv4Addr,
+        ipv4Address?: DeviceIpv4Addr,
         ipv6Address?: string,
         devicePorts?: PortSpec,
         servicePorts?: PortSpec,
@@ -93,20 +93,17 @@ export class QodAPI {
         }
 
         if (ipv4Address) {
-            if ((ipv4Address as DeviceIpv4Addr).publicAddress) {
-                sessionPayload["device"]["ipv4Address"]["publicAddress"] = (
-                    ipv4Address as DeviceIpv4Addr
-                ).publicAddress;
+            if (ipv4Address.publicAddress) {
+                sessionPayload["device"]["ipv4Address"]["publicAddress"] =
+                    ipv4Address.publicAddress;
             }
-            if ((ipv4Address as DeviceIpv4Addr).privateAddress) {
-                sessionPayload["device"]["ipv4Address"]["privateAddress"] = (
-                    ipv4Address as DeviceIpv4Addr
-                ).privateAddress;
+            if (ipv4Address.privateAddress) {
+                sessionPayload["device"]["ipv4Address"]["privateAddress"] =
+                    ipv4Address.privateAddress;
             }
-            if ((ipv4Address as DeviceIpv4Addr).publicPort) {
-                sessionPayload["device"]["ipv4Address"]["publicPort"] = (
-                    ipv4Address as DeviceIpv4Addr
-                ).publicPort;
+            if (ipv4Address.publicPort) {
+                sessionPayload["device"]["ipv4Address"]["publicPort"] =
+                    ipv4Address.publicPort;
             }
         }
 

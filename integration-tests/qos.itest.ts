@@ -203,4 +203,34 @@ describe("Qos", () => {
         expect(session.profile).toEqual("QOS_L");
         await session.deleteSession();
     });
+
+    test("should create a session with public and private ipv4", async () => {
+        device = client.devices.get({
+            networkAccessIdentifier: "test-device@testcsp.net",
+            ipv4Address: {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+            },
+        });
+        const session = await device.createQodSession("QOS_L", {
+            serviceIpv4: "5.6.7.8",
+        });
+
+        await session.deleteSession();
+    });
+
+    test("should create a session with public ipv4 and public port", async () => {
+        device = client.devices.get({
+            networkAccessIdentifier: "test-device@testcsp.net",
+            ipv4Address: {
+                publicAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+        });
+        const session = await device.createQodSession("QOS_L", {
+            serviceIpv4: "5.6.7.8",
+        });
+
+        await session.deleteSession();
+    });
 });
