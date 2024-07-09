@@ -1,3 +1,7 @@
+// Specialized Network functionalities
+
+// Slice examples:
+
 import { NetworkAsCodeClient } from "network-as-code";
 
 import { Device, DeviceIpv4Addr } from "network-as-code/models/device";
@@ -20,7 +24,7 @@ const main = async () => {
     // Area of the slice must also be described in geo-coordinates
     const mySlice = await client.slices.create(
         { mcc: "236", mnc: "30" },
-        { service_type: "eMBB", differentiator: "123456" },
+        { serviceType: "eMBB", differentiator: "123456" },
         "https://notify.me/here",
         {
             name: "slice-name",

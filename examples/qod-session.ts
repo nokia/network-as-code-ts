@@ -1,3 +1,7 @@
+// QoD functionalities
+
+// QoS session examples:
+
 import { NetworkAsCodeClient } from 'network-as-code';
 
 import { Device, DeviceIpv4Addr } from "network-as-code/models/device";
@@ -11,29 +15,29 @@ const main = async () => {
     // with a test device copied from your Developer Sandbox
     // Or you can identify a device with its ID,
     // IP address(es) and optionally, a phone number
-    const myDevice = client.devices.get(
-        "device@testcsp.net",
-        {
+    const myDevice = client.devices.get({
+        networkAccessIdentifier: "device@testcsp.net",
+        ipv4Address: {
             publicAddress: "233.252.0.2",
             privateAddress: "192.0.2.25",
-            publicPort: 80
+            publicPort: 80,
         },
-        "36721601234567"
-    );
+        Ipv6Address: "2041:0000:140F::875B:131B",
+        phoneNumber: "36721601234567"
+    });
 
     // Create a QoD session with QOS_L (large bandwidth)
     // that lasts for 3,600 seconds (1 hour).
     // For TypeScript, values can be expressed directly,
     // but the QoS profile comes before the IP address(es) and duration:
-    const mySession = await myDevice.createQodSession(
-        "QOS_L",
-        "233.252.0.2",
-        "2001:db8:1234:5678:9abc:def0:fedc:ba98",
-        3600,
+    const mySession = await myDevice.createQodSession("QOS_L",{
+        serviceIpv4: "233.252.0.2",
+        serviceIpv6: "2001:db8:1234:5678:9abc:def0:fedc:ba98",
+        duration: 3600,
         // Use HTTPS to send or subscribe to notifications
-        "https://notify.me/here",
-        "replace-with-your-auth-token"
-    );
+        notificationUrl: "https://notify.me/here",
+        notificationAuthToken: "replace-with-your-auth-token"
+    });
 
     // Let's confirm that the device has the newly created session
     console.log(myDevice.sessions());
