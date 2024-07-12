@@ -359,6 +359,47 @@ describe("Slicing", () => {
         expect(slice.sid).toEqual(MOCK_SLICE.csi_id);
     });
 
+    it("should get a slice with no differentiator", async () => {
+        const MOCK_SLICE_RES = {
+            slice: {
+                name: "sliceone",
+                notificationUrl: "",
+                notificationAuthToken: "samplenotificationtoken",
+                networkIdentifier: {
+                    mcc: "236",
+                    mnc: "30",
+                },
+                sliceInfo: {
+                    serviceType: "1",
+                },
+            },
+            csi_id: "csi_368",
+            state: "PENDING",
+        };
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE_RES.slice.name}`,
+            JSON.stringify(MOCK_SLICE_RES)
+        );
+
+        fetchMock.get(
+            `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+            ])
+        );
+
+        const slice = await client.slices.get(MOCK_SLICE_RES.slice.name);
+        expect(slice.sid).toEqual(MOCK_SLICE_RES.csi_id);
+    });
+
     it("should get wait until polling completion", async () => {
         fetchMock.get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
