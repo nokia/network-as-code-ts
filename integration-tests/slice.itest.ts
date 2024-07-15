@@ -136,7 +136,7 @@ describe("Slicing", () => {
         expect(slice.maxDevices).toEqual(5);
         expect(slice.maxDataConnections).toEqual(10);
 
-        slice.delete();
+        await slice.delete();
     });
 
     test("should get a slice", async () => {
@@ -229,7 +229,7 @@ describe("Slicing", () => {
 
         await slice.detach(device);
 
-        slice.deactivate();
+        await slice.deactivate();
 
         await slice.waitFor("AVAILABLE");
 
