@@ -278,15 +278,12 @@ export class AttachAPI {
             },
         };
 
-        const res = await fetch(
-            `https://device-application-attach.p-eu.rapidapi.com/attachments`,
-            {
-                method: "POST",
-                headers: this.headers,
-                body: JSON.stringify(payload),
-                agent: this.agent,
-            }
-        );
+        const res = await fetch(`${this.baseUrl}/attachments`, {
+            method: "POST",
+            headers: this.headers,
+            body: JSON.stringify(payload),
+            agent: this.agent,
+        });
 
         errorHandler(res);
         return await res.json();

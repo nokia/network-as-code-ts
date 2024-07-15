@@ -43,7 +43,7 @@ const SLICE_BASE_URL_PROD = "https://network-slicing.p-eu.rapidapi.com";
 const SLICE_BASE_URL_DEV = "https://network-slicing2.p-eu.rapidapi.com";
 
 const SLICE_ATTACH_BASE_URL_PROD =
-    "https://device-application-attach.p-eu.rapidapi.com";
+    "https://network-slice-device-attachment.p-eu.rapidapi.com";
 const SLICE_ATTACH_BASE_URL_DEV =
     "https://device-application-attach.p-eu.rapidapi.com";
 
