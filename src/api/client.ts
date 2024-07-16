@@ -157,7 +157,7 @@ export class APIClient {
             agent
         );
 
-        if (devMode && sliceAttachBaseUrl == SLICE_BASE_URL_PROD) {
+        if (devMode && sliceAttachBaseUrl == SLICE_ATTACH_BASE_URL_PROD) {
             sliceAttachBaseUrl = SLICE_ATTACH_BASE_URL_DEV;
         }
 
