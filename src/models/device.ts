@@ -96,12 +96,12 @@ export class Device {
     private _sessions: QoDSession[];
     networkAccessIdentifier?: string;
     phoneNumber?: string;
-    ipv4Address?: string | DeviceIpv4Addr;
+    ipv4Address?: DeviceIpv4Addr;
     ipv6Address?: string;
     constructor(
         api: APIClient,
         networkAccessIdentifier?: string,
-        ipv4Address?: string | DeviceIpv4Addr,
+        ipv4Address?: DeviceIpv4Addr,
         ipv6Address?: string,
         phoneNumber?: string
     ) {

@@ -19,7 +19,7 @@ import { Namespace } from "./namespace";
 
 export interface DeviceGetArgs {
     networkAccessIdentifier?: string;
-    ipv4Address?: string | DeviceIpv4Addr;
+    ipv4Address?: DeviceIpv4Addr;
     ipv6Address?: string;
     phoneNumber?: string;
 }
@@ -35,7 +35,7 @@ export class Devices extends Namespace {
      *  Get a device by its external ID.
      *      @param DeviceGetArgs (object): 
                 - networkAccessIdentifier (string | undefined): External ID of the subscription. Email-like.
-                - ipv4Address (string | undefined): ipv4 address of the subscription.
+                - ipv4Address (DeviceIpv4Addr | undefined): ipv4 address of the subscription.
                 - ipv6Address (string | undefined): ipv6 address of the subscription.
                 - phoneNumber (string | undefined): phone number of the subscription.
             @returns Device
@@ -53,10 +53,6 @@ export class Devices extends Namespace {
             !phoneNumber
         ) {
             throw new Error("At least one parameter must be set.");
-        }
-
-        if (typeof ipv4Address === "string") {
-            ipv4Address = { publicAddress: ipv4Address };
         }
 
         let retDevice = new Device(

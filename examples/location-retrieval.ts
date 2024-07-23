@@ -1,3 +1,7 @@
+// Device Location functionalities
+
+// Location verification examples:
+
 import { NetworkAsCodeClient } from "network-as-code";
 import { Device, DeviceIpv4Addr } from "network-as-code/models/device";
 import { CivicAddress, Location } from "network-as-code/models/location";
@@ -8,16 +12,17 @@ const main = async () => {
     const client = new NetworkAsCodeClient("<your-application-key-here>");
 
     // Create a device object for the mobile device we want to use
-    const myDevice = client.devices.get(
-        "device@testcsp.net",
-        {
+    const myDevice = client.devices.get({
+        networkAccessIdentifier: "device@testcsp.net",
+        ipv4Address: {
             publicAddress: "233.252.0.2",
             privateAddress: "192.0.2.25",
-            publicPort: 80
+            publicPort: 80,
         },
+        Ipv6Address: "2041:0000:140F::875B:131B",
         // The phone number accepts the "+" sign, but not spaces or "()" marks
-        "36721601234567"
-    );
+        phoneNumber: "36721601234567"
+    });
 
     // Specify the maximum amount of time accepted
     // to get location information, it's a mandatory parameter.
