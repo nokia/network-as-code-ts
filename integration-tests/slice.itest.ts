@@ -20,16 +20,17 @@ describe("Slicing", () => {
     let slice: Slice;
     const random = Math.floor(Math.random() * 1000) + 1;
     beforeEach(async () => {
-        device = client.devices.get(
-            "test-device@testcsp.net",
-            {
+        device = client.devices.get({
+            networkAccessIdentifier: "test-device@testcsp.net",
+            ipv4Address: {
                 publicAddress: "1.1.1.2",
                 privateAddress: "1.1.1.2",
                 publicPort: 80,
             },
-            undefined,
-            "+12065550100"
-        );
+            phoneNumber: `3670${
+                Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
+            }`,
+        });
 
         slice = await client.slices.create(
             { mcc: "236", mnc: "30" },

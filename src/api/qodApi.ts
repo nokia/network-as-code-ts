@@ -67,18 +67,18 @@ export class QodAPI {
             Session: response of the endpoint, ideally a Session
  */
     async createSession(
-        sid: string | undefined,
         profile: string,
-        serviceIpv6: string | undefined,
+        sid?: string,
+        serviceIpv6?: string,
         serviceIpv4?: string,
         phoneNumber?: string,
-        ipv4Address?: string | DeviceIpv4Addr,
-        ipv6Address?: string | undefined,
-        devicePorts: PortSpec | undefined = undefined,
-        servicePorts: PortSpec | undefined = undefined,
-        duration: number | undefined = undefined,
-        notificationUrl: string | undefined = undefined,
-        notificationAuthToken: string | undefined = undefined
+        ipv4Address?: DeviceIpv4Addr,
+        ipv6Address?: string,
+        devicePorts?: PortSpec,
+        servicePorts?: PortSpec,
+        duration?: number,
+        notificationUrl?: string,
+        notificationAuthToken?: string
     ) {
         let sessionPayload: any = {
             qosProfile: profile,
@@ -93,20 +93,17 @@ export class QodAPI {
         }
 
         if (ipv4Address) {
-            if ((ipv4Address as DeviceIpv4Addr).publicAddress) {
-                sessionPayload["device"]["ipv4Address"]["publicAddress"] = (
-                    ipv4Address as DeviceIpv4Addr
-                ).publicAddress;
+            if (ipv4Address.publicAddress) {
+                sessionPayload["device"]["ipv4Address"]["publicAddress"] =
+                    ipv4Address.publicAddress;
             }
-            if ((ipv4Address as DeviceIpv4Addr).privateAddress) {
-                sessionPayload["device"]["ipv4Address"]["privateAddress"] = (
-                    ipv4Address as DeviceIpv4Addr
-                ).privateAddress;
+            if (ipv4Address.privateAddress) {
+                sessionPayload["device"]["ipv4Address"]["privateAddress"] =
+                    ipv4Address.privateAddress;
             }
-            if ((ipv4Address as DeviceIpv4Addr).publicPort) {
-                sessionPayload["device"]["ipv4Address"]["publicPort"] = (
-                    ipv4Address as DeviceIpv4Addr
-                ).publicPort;
+            if (ipv4Address.publicPort) {
+                sessionPayload["device"]["ipv4Address"]["publicPort"] =
+                    ipv4Address.publicPort;
             }
         }
 

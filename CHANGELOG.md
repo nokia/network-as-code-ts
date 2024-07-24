@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 2.0.0
+
+Breaking changes:
+
+- `client.devices.get()` now takes device identifiers as an object to reduce the number of parameters
+
+Changes:
+
+- SIM Swap functionality has been added to query device SIM Swap event dates
+- Internal code cleanups
+
 ## Version 1.2.1
 
 Fixes

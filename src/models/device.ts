@@ -56,6 +56,16 @@ export interface RoamingStatus {
     countryName?: string[];
 }
 
+export interface QodOptionalArgs {
+    serviceIpv4?: string;
+    serviceIpv6?: string;
+    devicePorts?: PortSpec;
+    servicePorts?: PortSpec;
+    duration?: number;
+    notificationUrl?: string;
+    notificationAuthToken?: string;
+}
+
 /**
  *  A class representing the `Device` model.
  * #### Private Attributes:
@@ -78,18 +88,20 @@ export interface RoamingStatus {
         getConnectivity (ConnectivityData): Retrieve device connectivity status data
         updateConnectivity (ConnectivityData): Update device connectivity status data
         deleteConnectivity (): Delete device connectivity status
+        getSimSwapDate (): Retrieve the latest sim swap date
+        verifySimSwap (): Verify if there was sim swap
  */
 export class Device {
     private _api: APIClient;
     private _sessions: QoDSession[];
     networkAccessIdentifier?: string;
     phoneNumber?: string;
-    ipv4Address?: string | DeviceIpv4Addr;
+    ipv4Address?: DeviceIpv4Addr;
     ipv6Address?: string;
     constructor(
         api: APIClient,
         networkAccessIdentifier?: string,
-        ipv4Address?: string | DeviceIpv4Addr,
+        ipv4Address?: DeviceIpv4Addr,
         ipv6Address?: string,
         phoneNumber?: string
     ) {
@@ -109,27 +121,30 @@ export class Device {
  *  Creates a session for the device.
  * #### Args:
             @param profile (any): Name of the requested QoS profile.
-            @param serviceIpv4 (any): IPv4 address of the service.
-            @param serviceIpv6 (optional): IPv6 address of the service.
-            @param devicePorts (optional): List of the device ports.
-            @param servicePorts (optional): List of the application server ports.
-            @param duration (optional): Session duration in seconds.
-            @param notificationUrl (optional): Notification URL for session-related events.
-            @param notificationToken (optional): Security bearer token to authenticate registration of session.
+            @param optionalArgs(QodOptionalArgs): Optional Arguments
+                - serviceIpv4 (any): IPv4 address of the service.
+                - serviceIpv6 (optional): IPv6 address of the service.
+                - devicePorts (optional): List of the device ports.
+                - servicePorts (optional): List of the application server ports.
+                - duration (optional): Session duration in seconds.
+                - notificationUrl (optional): Notification URL for session-related events.
+                - notificationToken (optional): Security bearer token to authenticate registration of session.
             @returns Promise QoDSession
 
         #### Example:
-            session = device.createSession(profile="QOS_L", serviceIpv4="5.6.7.8", serviceIpv6="2041:0000:140F::875B:131B", notificationUrl="https://example.com/notifications, notificationToken="c8974e592c2fa383d4a3960714")
+            session = device.createSession(profile="QOS_L", {serviceIpv4:"5.6.7.8", serviceIpv6:"2041:0000:140F::875B:131B", notificationUrl:"https://example.com/notifications, notificationToken: "c8974e592c2fa383d4a3960714")
  */
     async createQodSession(
         profile: string,
-        serviceIpv4: string | undefined = undefined,
-        serviceIpv6: string | undefined = undefined,
-        devicePorts: PortSpec | undefined = undefined,
-        servicePorts: PortSpec | undefined = undefined,
-        duration: number | undefined = undefined,
-        notificationUrl: string | undefined = undefined,
-        notificationAuthToken: string | undefined = undefined
+        {
+            serviceIpv4,
+            serviceIpv6,
+            devicePorts,
+            servicePorts,
+            duration,
+            notificationUrl,
+            notificationAuthToken,
+        }: QodOptionalArgs
     ): Promise<QoDSession> {
         // Checks if at least one parameter is set
         if (!serviceIpv4 && !serviceIpv6) {
@@ -139,8 +154,8 @@ export class Device {
         }
 
         let session = await this._api.sessions.createSession(
-            this.networkAccessIdentifier,
             profile,
+            this.networkAccessIdentifier,
             serviceIpv6,
             serviceIpv4,
             this.phoneNumber,
@@ -281,5 +296,35 @@ export class Device {
         );
 
         return congestionInfo;
+    }
+
+    /**
+     * Get the latest simswap date.
+     * @returns latest sim swap date-time(string)
+     */
+    async getSimSwapDate(): Promise<string> {
+        if (!this.phoneNumber) {
+            return "Device phone number is required.";
+        }
+        const response: any = await this._api.simSwap.fetchSimSwapDate(
+            this.phoneNumber
+        );
+        return response["latestSimChange"];
+    }
+
+    /**
+     * Verify if there was sim swap.
+     * @param max_age (Optional[number]): Max acceptable age for sim swap verification info in seconds
+     * @returns true/false
+     */
+    async verifySimSwap(maxAge?: number): Promise<boolean | string> {
+        if (!this.phoneNumber) {
+            return "Device phone number is required.";
+        }
+        const response: any = await this._api.simSwap.verifySimSwap(
+            this.phoneNumber,
+            maxAge
+        );
+        return response["swapped"];
     }
 }
