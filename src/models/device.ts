@@ -18,6 +18,7 @@ import { APIClient } from "../api/client";
 import { PortSpec, QoDSession } from "./session";
 import { Location } from "./location";
 import { Congestion } from "./congestionInsights";
+import { InvalidParameterError } from "../errors";
 
 /**
  * An interface representing the `Event` model.
@@ -302,14 +303,20 @@ export class Device {
      * Get the latest simswap date.
      * @returns latest sim swap date-time(string)
      */
-    async getSimSwapDate(): Promise<string> {
+    async getSimSwapDate(): Promise<Date | null> {
         if (!this.phoneNumber) {
-            return "Device phone number is required.";
+            throw new InvalidParameterError("Device phone number is required.");
         }
+
         const response: any = await this._api.simSwap.fetchSimSwapDate(
             this.phoneNumber
         );
-        return response["latestSimChange"];
+
+        if (response["latestSimChange"]) {
+            return new Date(Date.parse(response["latestSimChange"]));
+        } else {
+            return null
+        }
     }
 
     /**
@@ -317,10 +324,11 @@ export class Device {
      * @param max_age (Optional[number]): Max acceptable age for sim swap verification info in seconds
      * @returns true/false
      */
-    async verifySimSwap(maxAge?: number): Promise<boolean | string> {
+    async verifySimSwap(maxAge?: number): Promise<boolean> {
         if (!this.phoneNumber) {
-            return "Device phone number is required.";
+            throw new InvalidParameterError("Device phone number is required.");
         }
+        
         const response: any = await this._api.simSwap.verifySimSwap(
             this.phoneNumber,
             maxAge

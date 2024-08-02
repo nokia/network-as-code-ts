@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
+import { InvalidParameterError } from "../src/errors";
 
 jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
 const fetchMock = fetch as unknown as FetchMockStatic;
@@ -46,7 +47,49 @@ describe("Sim Swap", () => {
         );
 
         const latestSimSwapDate = await device.getSimSwapDate();
-        expect(latestSimSwapDate).toEqual("2024-06-19T10:36:59.976Z");
+        expect(latestSimSwapDate).toEqual(new Date(Date.parse("2024-06-19T10:36:59.976Z")));
+    });
+
+    it("should handle null", async () => {
+        fetchMock.post(
+            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/retrieve-date",
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    phoneNumber: "3637123456",
+                });
+                return Promise.resolve({
+                    body: JSON.stringify({
+                        latestSimChange: null,
+                    }),
+                });
+            }
+        );
+
+        const latestSimSwapDate = await device.getSimSwapDate();
+        expect(latestSimSwapDate).toBeNull();
+    });
+
+    it("should raise exception on missing phone number", async () => {
+        fetchMock.post(
+            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/retrieve-date",
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    networkAccessIdentifier: "device@testcsp.net",
+                });
+                return Promise.resolve({
+                    body: JSON.stringify({
+                        latestSimChange: null,
+                    }),
+                });
+            }
+        );
+
+        const deviceWithoutNumber = client.devices.get({
+            networkAccessIdentifier: "device@testcsp.net"
+        });
+
+        
+        expect(async () => await deviceWithoutNumber.getSimSwapDate()).rejects.toThrow(InvalidParameterError);
     });
 
     it("should verify sim swap without max age", async () => {
@@ -84,5 +127,28 @@ describe("Sim Swap", () => {
         );
 
         expect(await device.verifySimSwap(120)).toEqual(true);
+    });
+
+    it("verify should raise exception on missing phone number", async () => {
+        fetchMock.post(
+            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/retrieve-date",
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    networkAccessIdentifier: "device@testcsp.net",
+                });
+                return Promise.resolve({
+                    body: JSON.stringify({
+                        latestSimChange: null,
+                    }),
+                });
+            }
+        );
+
+        const deviceWithoutNumber = client.devices.get({
+            networkAccessIdentifier: "device@testcsp.net"
+        });
+
+        
+        expect(async () => await deviceWithoutNumber.verifySimSwap()).rejects.toThrow(InvalidParameterError);
     });
 });
