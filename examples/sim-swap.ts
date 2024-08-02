@@ -1,6 +1,6 @@
 import { NetworkAsCodeClient } from "../src";
 
-const client = new NetworkAsCodeClient("<yout-token>");
+const client = new NetworkAsCodeClient("<your-token>");
 
 const device = client.devices.get({ phoneNumber: "3637123456" })
 
