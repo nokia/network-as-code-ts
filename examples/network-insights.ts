@@ -18,17 +18,14 @@ const myDevice = client.devices.get({
         privateAddress: "192.0.2.25",
         publicPort: 80,
     },
-    Ipv6Address: "2041:0000:140F::875B:131B",
-    // The phone number accepts the "+" sign, but not spaces or "()" marks
-    phoneNumber: "36721601234567"
 });
 
 // Set the duration of your subscription to congestion insights,
 // e.g.: it can end in `n` days starting from now.
 const tomorrowDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
-tomorrowDate.setMilliseconds(0);
 
-// Subscribe your device to Congestion notifications
+// Subscribe your device to Congestion notifications FIRST.
+// Then, you'll be able to use other functionalities, such as polling.
 const congestionSubscription = await client.insights.subscribeToCongestionInfo(
     myDevice,
     tomorrowDate,
@@ -38,7 +35,7 @@ const congestionSubscription = await client.insights.subscribeToCongestionInfo(
 
 // Subscriptions are identified by id, for management
 // Use this to show the subscription:
-console.log(congestionSubscription.subscriptionId());
+console.log(congestionSubscription.subscriptionId);
 
 // Or check when your subscription starts/expires:
 console.log(congestionSubscription.startsAt);
@@ -46,9 +43,13 @@ console.log(congestionSubscription.expiresAt);
 
 // Get congestion predictions and historical data
 // between two timestamps with ISO 8601 formatted date strings.
+// It returns an array of congested objects and the prediction confidence level
 const congestion = await myDevice.getCongestion(
     // start date
     "2025-04-15T05:11:30.961136Z",
     // end date
     "2025-04-16T05:11:30Z"
 );
+
+// Show the congestion level objects
+console.log(congestion)

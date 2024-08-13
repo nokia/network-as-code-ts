@@ -18,8 +18,6 @@ const myDevice = client.devices.get({
         privateAddress: "192.0.2.25",
         publicPort: 80,
     },
-    Ipv6Address: "2041:0000:140F::875B:131B",
-    phoneNumber: "36721601234567"
 });
 
 // Create a QoD session with QOS_L (large bandwidth)

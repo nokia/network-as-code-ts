@@ -15,9 +15,6 @@ const myDevice = client.devices.get({
         privateAddress: "192.0.2.25",
         publicPort: 80,
     },
-    Ipv6Address: "2041:0000:140F::875B:131B",
-    // The phone number accepts the "+" sign, but not spaces or "()" marks
-    phoneNumber: "36721601234567"
 });
 
 // Specify the maximum amount of time accepted

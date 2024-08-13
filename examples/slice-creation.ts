@@ -6,6 +6,16 @@ import { NetworkAsCodeClient } from "network-as-code";
 
 const client = new NetworkAsCodeClient("<your-application-key-here>");
 
+// This is the device object we'll later attach to the slice
+const myDevice = client.devices.get({
+    networkAccessIdentifier: "device@testcsp.net",
+    ipv4Address: {
+        publicAddress: "233.252.0.2",
+        privateAddress: "192.0.2.25",
+        publicPort: 80,
+    },
+});
+
 // Creation of a slice:
 // We use the country code (MCC) and network code (MNC) to identify the network
 // Different types of slices can be requested using service type and differentiator
@@ -55,7 +65,7 @@ const mySlice = await client.slices.create(
 const sliceByIndex = await client.slices.getAll()[0];
 
 // Get a slice using the ID parameter
-const sliceByName = await client.slices.get(mySlice.name);
+const sliceByName = await client.slices.get(mySlice.name as string);
 
 // Modify a slice:
 // Remember to reconfigure all the parameters you wish to modify,
@@ -71,12 +81,27 @@ mySlice.modify(
     }
 );
 
-// Then, activate a slice
-mySlice.activate();
+// We can take advantage of Slice.waitFor() in async functions
+// This allows us to, e.g., wait for a slice to become available
+await mySlice.waitFor("AVAILABLE");
 
-// Or deactivate it
-mySlice.deactivate();
+// Slices must be activated before devices can be added
+await mySlice.activate();
+await mySlice.waitFor("OPERATING");
 
-// Finally, you can also delete it like so:
-// Remember to deactivate it first.
-await mySlice.delete();
+// Afterwards we can attach or detach devices
+const device = client.devices.get(myDevice)
+await mySlice.attach(
+    myDevice,
+    "https://notify.me/here",
+    "replace-with-your-auth-token"
+);
+
+await mySlice.detach(myDevice);
+
+// For deallocating a slice, we first deactivate the slice
+await mySlice.deactivate();
+await mySlice.waitFor("AVAILABLE");
+
+// A deactivated slice can be freely removed
+mySlice.delete()
