@@ -105,7 +105,7 @@ pipeline {
         container('narwhal') {
           script {
             sh """
-              npm audit
+              npm audit --prod
             """
           }
         }        

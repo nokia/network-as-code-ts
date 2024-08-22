@@ -12,7 +12,7 @@ beforeAll(() => {
         true
     );
     device = client.devices.get({
-        networkAccessIdentifier: "test-device@testcsp.net",
+        phoneNumber: "3670123456",
         ipv4Address: {
             publicAddress: "1.1.1.2",
             privateAddress: "1.1.1.2",
