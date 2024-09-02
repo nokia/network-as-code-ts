@@ -50,14 +50,7 @@ export class CongestionInsightsAPI {
             device: {
                 phoneNumber: device.phoneNumber,
                 networkAccessIdentifier: device.networkAccessIdentifier,
-                ipv4Address: {
-                    publicAddress: (device.ipv4Address as DeviceIpv4Addr)
-                        .publicAddress,
-                    privateAddress: (device.ipv4Address as DeviceIpv4Addr)
-                        .privateAddress,
-                    publicPort: (device.ipv4Address as DeviceIpv4Addr)
-                        .publicPort,
-                },
+                ipv4Address: device.ipv4Address,
                 ipv6Address: device.ipv6Address,
             },
             webhook: {
