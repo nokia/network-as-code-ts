@@ -17,18 +17,19 @@ beforeAll(() => {
 });
 
 describe("Congestion Insights", () => {
-    const tomorrowDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    tomorrowDate.setMilliseconds(0);
+    const expirationDate = new Date(Date.now() + 5 * 60 * 1000);
+    expirationDate.setMilliseconds(0);
+
     it("can create subscription for congestion insights", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
-            tomorrowDate,
+            expirationDate,
             "https://example.com/notify",
             "c8974e592c2fa383d4a3960714"
         );
 
         expect(subscription.expiresAt).toEqual(
-            new Date(tomorrowDate.toISOString().replace(".000", ""))
+            new Date(expirationDate.toISOString().replace(".000", ""))
         );
 
         subscription.delete();
@@ -37,12 +38,12 @@ describe("Congestion Insights", () => {
     it("can create subscription for congestion insights without auth token", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
-            tomorrowDate,
+            expirationDate,
             "https://example.com/notify"
         );
 
         expect(subscription.expiresAt).toEqual(
-            new Date(tomorrowDate.toISOString().replace(".000", ""))
+            new Date(expirationDate.toISOString().replace(".000", ""))
         );
 
         subscription.delete();
@@ -51,7 +52,7 @@ describe("Congestion Insights", () => {
     it("can get a subscription by id", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
-            tomorrowDate,
+            expirationDate,
             "https://example.com/notify",
             "c8974e592c2fa383d4a3960714"
         );
@@ -69,7 +70,7 @@ describe("Congestion Insights", () => {
     it("can get a list of subscriptions", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
-            tomorrowDate,
+            expirationDate,
             "https://example.com/notify",
             "c8974e592c2fa383d4a3960714"
         );
@@ -88,19 +89,57 @@ describe("Congestion Insights", () => {
     });
 
     it("should fetch current congestion level relevant to a given device", async () => {
+        const subscription = await client.insights.subscribeToCongestionInfo(
+            device,
+            expirationDate,
+            "https://example.com/notify",
+            "c8974e592c2fa383d4a3960714"
+        );
+
         const congestion = await device.getCongestion();
-        expect(
-            ["none", "low", "medium", "high"].includes(congestion.level)
-        ).toBe(true);
+
+        expect(congestion).toBeDefined()
+
+        expect(congestion instanceof Array).toBeTruthy();
+
+        expect(congestion.length).toBeGreaterThan(0);
+
+        congestion.forEach(x => {
+            expect(x.start).toBeDefined();
+            expect(x.stop).toBeDefined();
+            expect(
+                ["None", "Low", "Medium", "High"].includes(x.level)
+            ).toBe(true);
+        })
+
+        subscription.delete()
     });
 
     it("should fetch prediction/historical data between two time stamps:", async () => {
+        const subscription = await client.insights.subscribeToCongestionInfo(
+            device,
+            expirationDate,
+            "https://example.com/notify",
+            "c8974e592c2fa383d4a3960714"
+        );
+
         const congestion = await device.getCongestion(
             "2024-04-15T05:11:30.961136Z",
             "2024-04-16T05:11:30Z"
         );
-        expect(
-            ["none", "low", "medium", "high"].includes(congestion.level)
-        ).toBe(true);
+
+        expect(congestion).toBeDefined()
+
+        expect(congestion instanceof Array).toBeTruthy();
+
+        congestion.forEach(x => {
+            expect(x.start).toBeDefined();
+            expect(x.stop).toBeDefined();
+            expect(
+                ["None", "Low", "Medium", "High"].includes(x.level)
+            ).toBe(true);
+        })
+
+        subscription.delete()
     });
 });

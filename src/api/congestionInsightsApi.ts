@@ -111,7 +111,7 @@ export class CongestionInsightsAPI {
         start?: Date | string,
         end?: Date | string
     ) {
-        const response = await fetch(`${this.baseUrl}/device`, {
+        const response = await fetch(`${this.baseUrl}/query`, {
             method: "POST",
             body: JSON.stringify({
                 device: {

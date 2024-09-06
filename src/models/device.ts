@@ -285,18 +285,27 @@ export class Device {
     /**
      * Retrieves the current congestion insight of a device
      * @returns Congestion
+     * TODO: This will only be possible to call after a Subscription has been set up.
+     *       We should either need to migrate this method under CongestionSubscription,
+     *       take a CongestionSubscription as a parameter or ensure via docs that a
+     *       CongestionSubscription gets created first.
      */
     async getCongestion(
         start?: Date | string,
         end?: Date | string
-    ): Promise<Congestion> {
+    ): Promise<Congestion[]> {
         const congestionInfo = await this._api.insights.getCongestion(
             this,
             start,
             end
         );
 
-        return congestionInfo;
+        return congestionInfo.map((congestionJson: any) => ({
+            level: congestionJson.congestionLevel,
+            confidence: congestionJson.confidenceLevel,
+            start: new Date(congestionJson.timeIntervalStart),
+            stop: new Date(congestionJson.timeIntervalStop),
+        }));
     }
 
     /**

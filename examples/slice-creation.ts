@@ -6,16 +6,6 @@ import { NetworkAsCodeClient } from "network-as-code";
 
 const client = new NetworkAsCodeClient("<your-application-key-here>");
 
-// This is the device object we'll later attach to the slice
-const myDevice = client.devices.get({
-    networkAccessIdentifier: "device@testcsp.net",
-    ipv4Address: {
-        publicAddress: "233.252.0.2",
-        privateAddress: "192.0.2.25",
-        publicPort: 80,
-    },
-});
-
 // Creation of a slice:
 // We use the country code (MCC) and network code (MNC) to identify the network
 // Different types of slices can be requested using service type and differentiator

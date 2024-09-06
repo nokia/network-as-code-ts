@@ -18,6 +18,9 @@ import { APIClient } from "../api";
 
 export interface Congestion {
     level: string;
+    start: Date;
+    stop: Date;
+    confidence: number;
 }
 
 export class CongestionInsightsSubscription {
