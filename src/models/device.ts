@@ -245,7 +245,7 @@ export class Device {
         longitude: number,
         radius: number,
         maxAge = 60
-    ): Promise<boolean> {
+    ): Promise<boolean | string> {
         return this._api.locationVerify.verifyLocation(
             latitude,
             longitude,
@@ -324,7 +324,7 @@ export class Device {
         if (response["latestSimChange"]) {
             return new Date(Date.parse(response["latestSimChange"]));
         } else {
-            return null
+            return null;
         }
     }
 
@@ -337,7 +337,7 @@ export class Device {
         if (!this.phoneNumber) {
             throw new InvalidParameterError("Device phone number is required.");
         }
-        
+
         const response: any = await this._api.simSwap.verifySimSwap(
             this.phoneNumber,
             maxAge

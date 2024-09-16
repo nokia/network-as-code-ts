@@ -218,6 +218,19 @@ describe("Location", () => {
         expect(result).toBe(true);
     });
 
+    it("should return 'PARTIAL' if location verification response is 'PARTIAL'", async () => {
+        fetchMock.post(
+            "https://location-verification.p-eu.rapidapi.com/verify",
+            JSON.stringify({
+                verificationResult: "PARTIAL",
+            })
+        );
+
+        const result = await device.verifyLocation(0, 0, 5000);
+
+        expect(result).toBe("PARTIAL");
+    });
+
     it("should verify location with possibility to omit maxAge if 60 seconds is fine", async () => {
         fetchMock.post(
             "https://location-verification.p-eu.rapidapi.com/verify",
