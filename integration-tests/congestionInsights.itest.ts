@@ -12,7 +12,7 @@ beforeAll(() => {
         true
     );
     device = client.devices.get({
-        phoneNumber: "3637123456"
+        phoneNumber: "+3637123456",
     });
 });
 
@@ -98,21 +98,21 @@ describe("Congestion Insights", () => {
 
         const congestion = await device.getCongestion();
 
-        expect(congestion).toBeDefined()
+        expect(congestion).toBeDefined();
 
         expect(congestion instanceof Array).toBeTruthy();
 
         expect(congestion.length).toBeGreaterThan(0);
 
-        congestion.forEach(x => {
+        congestion.forEach((x) => {
             expect(x.start).toBeDefined();
             expect(x.stop).toBeDefined();
-            expect(
-                ["None", "Low", "Medium", "High"].includes(x.level)
-            ).toBe(true);
-        })
+            expect(["None", "Low", "Medium", "High"].includes(x.level)).toBe(
+                true
+            );
+        });
 
-        subscription.delete()
+        subscription.delete();
     });
 
     it("should fetch prediction/historical data between two time stamps:", async () => {
@@ -128,18 +128,18 @@ describe("Congestion Insights", () => {
             "2024-04-16T05:11:30Z"
         );
 
-        expect(congestion).toBeDefined()
+        expect(congestion).toBeDefined();
 
         expect(congestion instanceof Array).toBeTruthy();
 
-        congestion.forEach(x => {
+        congestion.forEach((x) => {
             expect(x.start).toBeDefined();
             expect(x.stop).toBeDefined();
-            expect(
-                ["None", "Low", "Medium", "High"].includes(x.level)
-            ).toBe(true);
-        })
+            expect(["None", "Low", "Medium", "High"].includes(x.level)).toBe(
+                true
+            );
+        });
 
-        subscription.delete()
+        subscription.delete();
     });
 });
