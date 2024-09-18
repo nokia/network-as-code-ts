@@ -65,6 +65,7 @@ describe("Qos", () => {
             applicationServer: {
                 ipv4Address: "5.6.7.8",
             },
+            duration: 3600,
         };
 
         fetchMock.post(
@@ -78,6 +79,7 @@ describe("Qos", () => {
         );
 
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
         });
         expect(session.status).toEqual(mockResponse["qosStatus"]);
@@ -118,6 +120,7 @@ describe("Qos", () => {
                 ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
             },
+            duration: 3600,
         };
 
         fetchMock.post(
@@ -131,6 +134,7 @@ describe("Qos", () => {
         );
 
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
         });
@@ -173,6 +177,7 @@ describe("Qos", () => {
                 ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
             },
+            duration: 3600,
             devicePorts: {
                 ports: [80, 3000],
             },
@@ -189,6 +194,7 @@ describe("Qos", () => {
         );
 
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             devicePorts: { ports: [80, 3000] },
@@ -232,6 +238,7 @@ describe("Qos", () => {
                 ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
             },
+            duration: 3600,
             devicePorts: {
                 ranges: [{ from: 80, to: 3000 }],
             },
@@ -248,6 +255,7 @@ describe("Qos", () => {
         );
 
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             devicePorts: { ranges: [{ from: 80, to: 3000 }] },
@@ -289,6 +297,7 @@ describe("Qos", () => {
                 ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
             },
+            duration: 3600,
             applicationServerPorts: {
                 ports: [80, 3000],
             },
@@ -305,6 +314,7 @@ describe("Qos", () => {
         );
 
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             servicePorts: { ports: [80, 3000] },
@@ -347,6 +357,7 @@ describe("Qos", () => {
                 ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
             },
+            duration: 3600,
             applicationServerPorts: {
                 ranges: [{ from: 80, to: 3000 }],
             },
@@ -363,6 +374,7 @@ describe("Qos", () => {
         );
 
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             servicePorts: { ranges: [{ from: 80, to: 3000 }] },
@@ -462,6 +474,7 @@ describe("Qos", () => {
                 ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
             },
+            duration: 3600,
             notificationUrl: "https://example.com/notifications",
             notificationAuthToken: "Bearer c8974e592c2fa383d4a3960714",
         };
@@ -477,6 +490,7 @@ describe("Qos", () => {
         );
 
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             notificationAuthToken: "c8974e592c2fa383d4a3960714",
