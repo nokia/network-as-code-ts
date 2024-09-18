@@ -58,11 +58,11 @@ export interface RoamingStatus {
 }
 
 export interface QodOptionalArgs {
+    duration: number;
     serviceIpv4?: string;
     serviceIpv6?: string;
     devicePorts?: PortSpec;
     servicePorts?: PortSpec;
-    duration?: number;
     notificationUrl?: string;
     notificationAuthToken?: string;
 }
@@ -122,12 +122,12 @@ export class Device {
  *  Creates a session for the device.
  * #### Args:
             @param profile (any): Name of the requested QoS profile.
-            @param optionalArgs(QodOptionalArgs): Optional Arguments
+            @param optionalArgs(QodOptionalArgs): Optional Arguments, except duration
+                - duration (mandatory): Session duration in seconds.
                 - serviceIpv4 (any): IPv4 address of the service.
                 - serviceIpv6 (optional): IPv6 address of the service.
                 - devicePorts (optional): List of the device ports.
                 - servicePorts (optional): List of the application server ports.
-                - duration (optional): Session duration in seconds.
                 - notificationUrl (optional): Notification URL for session-related events.
                 - notificationToken (optional): Security bearer token to authenticate registration of session.
             @returns Promise QoDSession
@@ -138,11 +138,11 @@ export class Device {
     async createQodSession(
         profile: string,
         {
+            duration,
             serviceIpv4,
             serviceIpv6,
             devicePorts,
             servicePorts,
-            duration,
             notificationUrl,
             notificationAuthToken,
         }: QodOptionalArgs
@@ -156,6 +156,7 @@ export class Device {
 
         let session = await this._api.sessions.createSession(
             profile,
+            duration,
             this.networkAccessIdentifier,
             serviceIpv6,
             serviceIpv4,
@@ -164,7 +165,6 @@ export class Device {
             this.ipv6Address,
             devicePorts,
             servicePorts,
-            duration,
             notificationUrl,
             notificationAuthToken
         );

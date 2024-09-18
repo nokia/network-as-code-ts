@@ -26,7 +26,7 @@ describe("Qos", () => {
                     privateAddress: "1.1.1.2",
                     publicPort: 80,
                 },
-                phoneNumber: `3670${
+                phoneNumber: `+3670${
                     Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
                 }`,
             });
@@ -37,7 +37,7 @@ describe("Qos", () => {
                     privateAddress: "1.1.1.2",
                     publicPort: 80,
                 },
-                phoneNumber: `3670${
+                phoneNumber: `+3670${
                     Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
                 }`,
             });
@@ -55,6 +55,7 @@ describe("Qos", () => {
 
     test("should create a session", async () => {
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
         });
@@ -65,6 +66,7 @@ describe("Qos", () => {
 
     test("should create a session to a device with phone number", async () => {
         const session = await deviceWithPhoneNumber.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
         });
@@ -74,6 +76,7 @@ describe("Qos", () => {
 
     test("should create a session with medium profile", async () => {
         const session = await device.createQodSession("QOS_M", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
         });
@@ -84,6 +87,7 @@ describe("Qos", () => {
 
     test("should create a session with small profile", async () => {
         const session = await device.createQodSession("QOS_S", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
         });
@@ -94,6 +98,7 @@ describe("Qos", () => {
 
     test("should create a session with low latency profile", async () => {
         const session = await device.createQodSession("QOS_E", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
         });
@@ -104,6 +109,7 @@ describe("Qos", () => {
 
     test("should get one session", async () => {
         const session = await device.createQodSession("QOS_E", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
         });
@@ -121,6 +127,7 @@ describe("Qos", () => {
 
     test("should get all sessions", async () => {
         await device.createQodSession("QOS_E", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
         });
@@ -133,6 +140,7 @@ describe("Qos", () => {
 
     test("should create a session with service port", async () => {
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             servicePorts: { ports: [80] },
@@ -144,6 +152,7 @@ describe("Qos", () => {
 
     test("should create a session with service port range", async () => {
         const session = await device.createQodSession("QOS_M", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             servicePorts: { ranges: [{ from: 80, to: 443 }] },
@@ -156,6 +165,7 @@ describe("Qos", () => {
 
     test("should create a session with device port", async () => {
         const session = await device.createQodSession("QOS_M", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             devicePorts: { ports: [80] },
@@ -168,6 +178,7 @@ describe("Qos", () => {
 
     test("should create a session with device port range", async () => {
         const session = await device.createQodSession("QOS_M", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             devicePorts: { ranges: [{ from: 80, to: 443 }] },
@@ -193,6 +204,7 @@ describe("Qos", () => {
 
     test("should create a session with notification url", async () => {
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
             notificationAuthToken: "c8974e592c2fa383d4a3960714",
@@ -213,6 +225,7 @@ describe("Qos", () => {
             },
         });
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
         });
 
@@ -228,6 +241,7 @@ describe("Qos", () => {
             },
         });
         const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
             serviceIpv4: "5.6.7.8",
         });
 

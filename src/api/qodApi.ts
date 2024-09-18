@@ -68,6 +68,7 @@ export class QodAPI {
  */
     async createSession(
         profile: string,
+        duration: number,
         sid?: string,
         serviceIpv6?: string,
         serviceIpv4?: string,
@@ -76,7 +77,6 @@ export class QodAPI {
         ipv6Address?: string,
         devicePorts?: PortSpec,
         servicePorts?: PortSpec,
-        duration?: number,
         notificationUrl?: string,
         notificationAuthToken?: string
     ) {
@@ -86,6 +86,7 @@ export class QodAPI {
             applicationServer: { ipv4Address: serviceIpv4 },
             devicePorts: devicePorts ? devicePorts : undefined,
             applicationServerPorts: servicePorts ? servicePorts : undefined,
+            duration,
         };
 
         if (sid) {
@@ -117,10 +118,6 @@ export class QodAPI {
 
         if (serviceIpv6) {
             sessionPayload["applicationServer"]["ipv6Address"] = serviceIpv6;
-        }
-
-        if (duration) {
-            sessionPayload["duration"] = duration;
         }
 
         if (notificationUrl) {
