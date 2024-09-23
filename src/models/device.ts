@@ -178,20 +178,20 @@ export class Device {
 
     filterSessionsByDevice(session: QoDSession): boolean {
         return (
-            (this.networkAccessIdentifier == null ||
+            (session.device.networkAccessIdentifier == null ||
                 session.device.networkAccessIdentifier ===
                     this.networkAccessIdentifier) &&
-            (this.phoneNumber == null ||
+            (session.device.phoneNumber == null ||
                 session.device.phoneNumber === this.phoneNumber) &&
-            (this.ipv4Address == null ||
-                (session.device.ipv4Address != null &&
+            (session.device.ipv4Address == null ||
+                (this.ipv4Address != null &&
                     session.device.ipv4Address.publicAddress ===
                         this.ipv4Address.publicAddress &&
                     session.device.ipv4Address.privateAddress ===
                         this.ipv4Address.privateAddress &&
                     session.device.ipv4Address.publicPort ===
                         this.ipv4Address.publicPort)) &&
-            (this.ipv6Address == null ||
+            (session.device.ipv6Address == null ||
                 session.device.ipv6Address === this.ipv6Address)
         );
     }
