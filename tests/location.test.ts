@@ -182,7 +182,7 @@ describe("Location", () => {
                         },
                     },
                     area: {
-                        areaType: "Circle",
+                        areaType: "CIRCLE",
                         center: {
                             latitude: 0.0,
                             longitude: 0.0,

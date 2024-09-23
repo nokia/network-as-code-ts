@@ -51,7 +51,7 @@ class LocationVerifyAPI {
         const body: any = {
             device: device.toJson(),
             area: {
-                areaType: "Circle",
+                areaType: "CIRCLE",
                 center: { latitude: latitude, longitude: longitude },
                 radius: radius,
             },
