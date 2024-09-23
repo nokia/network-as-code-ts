@@ -171,7 +171,7 @@ export class Device {
 
         return QoDSession.convertSessionModel(
             this._api,
-            this.ipv4Address,
+            this,
             JSON.parse(JSON.stringify(session))
         );
     }
@@ -205,11 +205,7 @@ export class Device {
     }
 
     __convertSessionModel(session: any): QoDSession {
-        const result = QoDSession.convertSessionModel(
-            this._api,
-            this.ipv4Address,
-            session
-        );
+        const result = QoDSession.convertSessionModel(this._api, this, session);
         return result;
     }
 

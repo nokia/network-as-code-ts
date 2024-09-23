@@ -22,6 +22,7 @@
  */
 
 import { APIClient } from "../api/client";
+import { Device } from "./device";
 
 export interface PortRange {
     // Aliasing Functionality is not implemented here but the python version has it
@@ -65,6 +66,10 @@ export class QoDSession {
     private _api: APIClient;
     id: string;
     profile: string | undefined;
+    device: Device;
+    serviceIpv4?: string = "";
+    serviceIpv6?: string = "";
+    servicePorts?: PortSpec;
     status: string | undefined;
     startedAt: Date | null | undefined;
     expiresAt: Date | null | undefined;
@@ -76,6 +81,10 @@ export class QoDSession {
         this.status = options?.status;
         this.startedAt = options?.startedAt;
         this.expiresAt = options?.expiresAt;
+        this.device = options?.device;
+        this.serviceIpv4 = options?.serviceIpv4;
+        this.serviceIpv6 = options?.serviceIpv6;
+        this.servicePorts = options?.servicePorts;
     }
 
     /**
@@ -111,7 +120,7 @@ export class QoDSession {
  */
     static convertSessionModel(
         api: APIClient,
-        ip: any,
+        device: Device,
         session: any
     ): QoDSession {
         let startedAt = session["startedAt"]
@@ -120,13 +129,14 @@ export class QoDSession {
         let expiresAt = session["expiresAt"]
             ? new Date(session["expiresAt"])
             : null;
-
+        const service = session["applicationServer"];
         return new QoDSession(api, {
             id: session["sessionId"],
-            deviceIp: ip,
+            device: device,
             devicePorts: undefined,
-            serviceIP: "",
-            servicePorts: undefined,
+            serviceIpv4: service ? service["ipv4Address"] : "",
+            serviceIpv6: service ? service["ipv6Address"] : "",
+            servicePorts: session["applicationServerPorts"],
             profile: session["qosProfile"],
             status: session["qosStatus"],
             startedAt,
