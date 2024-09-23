@@ -176,6 +176,26 @@ export class Device {
         );
     }
 
+    filterSessionsByDevice(session: QoDSession): boolean {
+        return (
+            (this.networkAccessIdentifier == null ||
+                session.device.networkAccessIdentifier ===
+                    this.networkAccessIdentifier) &&
+            (this.phoneNumber == null ||
+                session.device.phoneNumber === this.phoneNumber) &&
+            (this.ipv4Address == null ||
+                (session.device.ipv4Address != null &&
+                    session.device.ipv4Address.publicAddress ===
+                        this.ipv4Address.publicAddress &&
+                    session.device.ipv4Address.privateAddress ===
+                        this.ipv4Address.privateAddress &&
+                    session.device.ipv4Address.publicPort ===
+                        this.ipv4Address.publicPort)) &&
+            (this.ipv6Address == null ||
+                session.device.ipv6Address === this.ipv6Address)
+        );
+    }
+
     /**
  *  List sessions of the device.
  *  @returns Promise QoDSession[]
@@ -185,7 +205,11 @@ export class Device {
     async sessions(): Promise<QoDSession[]> {
         try {
             let sessions: any = await this._api.sessions.getAllSessions(this);
-            return sessions.map((session: any) =>
+            const filteredSessions = sessions.filter((session: QoDSession) =>
+                this.filterSessionsByDevice(session)
+            );
+
+            return filteredSessions.map((session: any) =>
                 this.__convertSessionModel(session)
             );
         } catch (error) {

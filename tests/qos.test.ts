@@ -733,4 +733,88 @@ describe("Qos", () => {
             expect(true).toBe(true);
         }
     });
+
+    test("should filter sessions by device network access identifier", async () => {
+        let device = client.devices.get({
+            networkAccessIdentifier: "testuser@open5glab.net",
+        });
+
+        let mockResponse = [
+            {
+                sessionId: "1234",
+                qosProfile: "QOS_L",
+                device: {
+                    networkAccessIdentifier: "testuser@open5glab.net",
+                },
+                qosStatus: "BLA",
+                expiresAt: 1641494400,
+                startedAt: 0,
+            },
+            {
+                sessionId: "12345",
+                qosProfile: "QOS_L",
+                device: {
+                    networkAccessIdentifier: "testuser2@open5glab.net",
+                },
+                qosStatus: "BLA",
+                expiresAt: 1641494400,
+                startedAt: 0,
+            },
+        ];
+
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
+            JSON.stringify(mockResponse)
+        );
+
+        const sessions = await device.sessions();
+        expect(sessions.length).toEqual(1);
+    });
+
+    test("should filter sessions by device phone number", async () => {
+        let device = client.devices.get({
+            phoneNumber: "+123214343",
+        });
+
+        let mockResponse = [
+            {
+                sessionId: "1234",
+                qosProfile: "QOS_L",
+                device: {
+                    phoneNumber: "+123214343",
+                },
+                qosStatus: "BLA",
+                expiresAt: 1641494400,
+                startedAt: 0,
+            },
+            {
+                sessionId: "12345",
+                qosProfile: "QOS_L",
+                device: {
+                    phoneNumber: "+321433443",
+                },
+                qosStatus: "BLA",
+                expiresAt: 1641494400,
+                startedAt: 0,
+            },
+            {
+                sessionId: "12346",
+                qosProfile: "QOS_L",
+                device: {
+                    phoneNumber: "+123214343",
+                },
+                qosStatus: "BLA",
+                expiresAt: 1641494400,
+                startedAt: 0,
+            },
+        ];
+
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?phoneNumber=+123214343",
+            JSON.stringify(mockResponse)
+        );
+
+        const sessions = await device.sessions();
+        expect(sessions.length).toEqual(2);
+    });
 });
