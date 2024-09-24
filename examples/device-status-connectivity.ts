@@ -20,7 +20,7 @@ const myDevice = client.devices.get({
     phoneNumber: "36721601234567"
 });
 
-// Simply change the event_type to "ROAMING_STATUS" whenever needed.
+// Simply change the event_type whenever needed.
 const mySubscription = await client.deviceStatus.subscribe(
     myDevice,
     // When necessary, change it to:

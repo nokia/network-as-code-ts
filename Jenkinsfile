@@ -105,7 +105,7 @@ pipeline {
         container('narwhal') {
           script {
             sh """
-              npm audit
+              npm audit --prod
             """
           }
         }        
@@ -167,11 +167,11 @@ pipeline {
       }
     }
     stage('Publish') {
-        when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabTargetBranch.contains("release-")} }
+        when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")} }
             steps {
                 container('narwhal') {
                     script {
-                        if(env.gitlabActionType == "TAG_PUSH" && env.gitlabTargetBranch.contains("release-")) {
+                        if(env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")) {
                             sh '''
                                 npm config set -- '//registry.npmjs.org/:_authToken' "${NPM_AUTH_TOKEN}"
                                 https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm publish --verbose

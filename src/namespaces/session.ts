@@ -33,6 +33,10 @@ export class Sessions extends Namespace {
     */
     async get(id: string): Promise<QoDSession> {
         const session = await this.api.sessions.getSession(id);
-        return QoDSession.convertSessionModel(this.api, "", session);
+        return QoDSession.convertSessionModel(
+            this.api,
+            await session.device,
+            session
+        );
     }
 }

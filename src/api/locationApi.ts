@@ -47,11 +47,11 @@ class LocationVerifyAPI {
         device: Device,
         radius: number,
         maxAge = 60
-    ): Promise<boolean> {
+    ): Promise<boolean | string> {
         const body: any = {
             device: device.toJson(),
             area: {
-                areaType: "Circle",
+                areaType: "CIRCLE",
                 center: { latitude: latitude, longitude: longitude },
                 radius: radius,
             },
@@ -68,7 +68,11 @@ class LocationVerifyAPI {
         errorHandler(response);
 
         const data: any = await response.json();
-        return data.verificationResult === "TRUE";
+        return data.verificationResult === "TRUE"
+            ? true
+            : data.verificationResult === "FALSE"
+            ? false
+            : data.verificationResult;
     }
 }
 

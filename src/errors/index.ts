@@ -56,7 +56,7 @@ export class ServiceError extends Error {}
  */
 class InvalidParameterError extends Error {}
 
-export function errorHandler({
+function errorHandler({
     ok,
     status,
     statusText,
@@ -77,3 +77,9 @@ export function errorHandler({
         }
     }
 }
+
+export {
+    errorHandler,
+    InvalidParameterError
+}
+

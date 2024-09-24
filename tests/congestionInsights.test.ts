@@ -219,9 +219,9 @@ describe("Congestion Insights", () => {
         expect(fetchMock.calls().length).toBe(2);
     });
 
-    it("should polling current congestion level ", async () => {
+    it("should poll congestion level of given time range", async () => {
         fetchMock.post(
-            "https://congestion-insights.p-eu.rapidapi.com/device",
+            "https://congestion-insights.p-eu.rapidapi.com/query",
             (_: any, req: any): any => {
                 expect(req.method).toBe("POST");
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -233,22 +233,27 @@ describe("Congestion Insights", () => {
                             publicPort: 80,
                         },
                     },
-                    start: "2024-04-15T05:11:30.961136Z",
-                    end: "2024-04-16T05:11:30Z",
+                    start: "2024-04-15T05:11:30.961Z",
+                    end: "2024-04-16T05:11:30.000Z",
                 });
 
-                return Promise.resolve({
-                    level: "low",
-                });
+                return Promise.resolve([
+                    {
+                        timeIntervalStart: "2024-08-20T21:00:00+0000",
+                        timeIntervalStop: "2024-08-20T21:05:00+0000",
+                        congestionLevel: "medium",
+                        confidenceLevel: 50
+                    }
+                ]);
             }
         );
 
         const congestion = await device.getCongestion(
-            "2024-04-15T05:11:30.961136Z",
-            "2024-04-16T05:11:30Z"
+            new Date("2024-04-15T05:11:30.961136Z"),
+            new Date("2024-04-16T05:11:30Z")
         );
-        expect(
-            ["none", "low", "medium", "high"].includes(congestion.level)
-        ).toBe(true);
+
+        expect(congestion.length).toBe(1)
+        expect(congestion[0].level).toBe("medium")
     });
 });

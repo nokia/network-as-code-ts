@@ -18,6 +18,7 @@ import { APIClient } from "../api/client";
 import { PortSpec, QoDSession } from "./session";
 import { Location } from "./location";
 import { Congestion } from "./congestionInsights";
+import { InvalidParameterError } from "../errors";
 
 /**
  * An interface representing the `Event` model.
@@ -57,11 +58,11 @@ export interface RoamingStatus {
 }
 
 export interface QodOptionalArgs {
+    duration: number;
     serviceIpv4?: string;
     serviceIpv6?: string;
     devicePorts?: PortSpec;
     servicePorts?: PortSpec;
-    duration?: number;
     notificationUrl?: string;
     notificationAuthToken?: string;
 }
@@ -80,7 +81,7 @@ export interface QodOptionalArgs {
         ipv6Address (string): string
 
     #### Public Methods:
-        createSession (Session): Creates a session for the device.
+        createQodSession (Session): Creates a session for the device.
         sessions (Session[]): Returns all the sessions created by the device network_access_id.
         clearSessions (): Deletes all the sessions created by the device network_access_id.
         location (Location): Gets the location of the device and returns a Location client object.
@@ -121,12 +122,12 @@ export class Device {
  *  Creates a session for the device.
  * #### Args:
             @param profile (any): Name of the requested QoS profile.
-            @param optionalArgs(QodOptionalArgs): Optional Arguments
+            @param optionalArgs(QodOptionalArgs): Optional Arguments, except duration
+                - duration (mandatory): Session duration in seconds.
                 - serviceIpv4 (any): IPv4 address of the service.
                 - serviceIpv6 (optional): IPv6 address of the service.
                 - devicePorts (optional): List of the device ports.
                 - servicePorts (optional): List of the application server ports.
-                - duration (optional): Session duration in seconds.
                 - notificationUrl (optional): Notification URL for session-related events.
                 - notificationToken (optional): Security bearer token to authenticate registration of session.
             @returns Promise QoDSession
@@ -137,11 +138,11 @@ export class Device {
     async createQodSession(
         profile: string,
         {
+            duration,
             serviceIpv4,
             serviceIpv6,
             devicePorts,
             servicePorts,
-            duration,
             notificationUrl,
             notificationAuthToken,
         }: QodOptionalArgs
@@ -155,6 +156,7 @@ export class Device {
 
         let session = await this._api.sessions.createSession(
             profile,
+            duration,
             this.networkAccessIdentifier,
             serviceIpv6,
             serviceIpv4,
@@ -163,15 +165,23 @@ export class Device {
             this.ipv6Address,
             devicePorts,
             servicePorts,
-            duration,
             notificationUrl,
             notificationAuthToken
         );
 
         return QoDSession.convertSessionModel(
             this._api,
-            this.ipv4Address,
+            this,
             JSON.parse(JSON.stringify(session))
+        );
+    }
+
+    filterSessionsByDevice(session: QoDSession): boolean {
+        return (
+            session.device.networkAccessIdentifier ===
+                this.networkAccessIdentifier &&
+            (session.device.phoneNumber == null ||
+                session.device.phoneNumber === this.phoneNumber)
         );
     }
 
@@ -184,7 +194,11 @@ export class Device {
     async sessions(): Promise<QoDSession[]> {
         try {
             let sessions: any = await this._api.sessions.getAllSessions(this);
-            return sessions.map((session: any) =>
+            const filteredSessions = sessions.filter((session: QoDSession) =>
+                this.filterSessionsByDevice(session)
+            );
+
+            return filteredSessions.map((session: any) =>
                 this.__convertSessionModel(session)
             );
         } catch (error) {
@@ -204,11 +218,7 @@ export class Device {
     }
 
     __convertSessionModel(session: any): QoDSession {
-        const result = QoDSession.convertSessionModel(
-            this._api,
-            this.ipv4Address,
-            session
-        );
+        const result = QoDSession.convertSessionModel(this._api, this, session);
         return result;
     }
 
@@ -244,7 +254,7 @@ export class Device {
         longitude: number,
         radius: number,
         maxAge = 60
-    ): Promise<boolean> {
+    ): Promise<boolean | string> {
         return this._api.locationVerify.verifyLocation(
             latitude,
             longitude,
@@ -284,32 +294,47 @@ export class Device {
     /**
      * Retrieves the current congestion insight of a device
      * @returns Congestion
+     * TODO: This will only be possible to call after a Subscription has been set up.
+     *       We should either need to migrate this method under CongestionSubscription,
+     *       take a CongestionSubscription as a parameter or ensure via docs that a
+     *       CongestionSubscription gets created first.
      */
     async getCongestion(
         start?: Date | string,
         end?: Date | string
-    ): Promise<Congestion> {
+    ): Promise<Congestion[]> {
         const congestionInfo = await this._api.insights.getCongestion(
             this,
             start,
             end
         );
 
-        return congestionInfo;
+        return congestionInfo.map((congestionJson: any) => ({
+            level: congestionJson.congestionLevel,
+            confidence: congestionJson.confidenceLevel,
+            start: new Date(congestionJson.timeIntervalStart),
+            stop: new Date(congestionJson.timeIntervalStop),
+        }));
     }
 
     /**
      * Get the latest simswap date.
      * @returns latest sim swap date-time(string)
      */
-    async getSimSwapDate(): Promise<string> {
+    async getSimSwapDate(): Promise<Date | null> {
         if (!this.phoneNumber) {
-            return "Device phone number is required.";
+            throw new InvalidParameterError("Device phone number is required.");
         }
+
         const response: any = await this._api.simSwap.fetchSimSwapDate(
             this.phoneNumber
         );
-        return response["latestSimChange"];
+
+        if (response["latestSimChange"]) {
+            return new Date(Date.parse(response["latestSimChange"]));
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -317,10 +342,11 @@ export class Device {
      * @param max_age (Optional[number]): Max acceptable age for sim swap verification info in seconds
      * @returns true/false
      */
-    async verifySimSwap(maxAge?: number): Promise<boolean | string> {
+    async verifySimSwap(maxAge?: number): Promise<boolean> {
         if (!this.phoneNumber) {
-            return "Device phone number is required.";
+            throw new InvalidParameterError("Device phone number is required.");
         }
+
         const response: any = await this._api.simSwap.verifySimSwap(
             this.phoneNumber,
             maxAge

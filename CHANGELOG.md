@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 3.0.0
+
+Breaking changes:
+- `device.createQodSession()` now requires `duration` as a mandatory parameter
+- `device.getCongestion()` now returns a list of `Congestion` objects
+
+Changes:
+- `device.verifyLocation()` may now return a "PARTIAL" result if the device is
+  partially inside the verification area
+
+Fixes:
+- Previously due to a miscommunication `device.sessions()` would return all
+  created sessions. These have now been correctly limited to device-specific ones
+
 ## Version 2.0.0
 
 Breaking changes:
