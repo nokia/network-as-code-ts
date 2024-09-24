@@ -81,7 +81,7 @@ export interface QodOptionalArgs {
         ipv6Address (string): string
 
     #### Public Methods:
-        createSession (Session): Creates a session for the device.
+        createQodSession (Session): Creates a session for the device.
         sessions (Session[]): Returns all the sessions created by the device network_access_id.
         clearSessions (): Deletes all the sessions created by the device network_access_id.
         location (Location): Gets the location of the device and returns a Location client object.
