@@ -114,6 +114,7 @@ class LocationRetrievalAPI {
             latitude: jsonData.area.center.latitude,
             longitude: jsonData.area.center.longitude,
             civicAddress: jsonData.civicAddress,
+            radius: jsonData.area.radius,
         };
     }
 }
