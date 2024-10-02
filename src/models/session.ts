@@ -67,6 +67,7 @@ export class QoDSession {
     id: string;
     profile: string | undefined;
     device: Device;
+    duration?: number;
     serviceIpv4?: string = "";
     serviceIpv6?: string = "";
     servicePorts?: PortSpec;
@@ -85,6 +86,7 @@ export class QoDSession {
         this.serviceIpv4 = options?.serviceIpv4;
         this.serviceIpv6 = options?.serviceIpv6;
         this.servicePorts = options?.servicePorts;
+        this.duration = options?.duration;
     }
 
     /**
@@ -98,14 +100,29 @@ export class QoDSession {
     }
 
     /**
-     *  Returns the duration of a given session in seconds.
-     *
+     *  Extends the duration of a given session.
+     * #### Args:
+            additionalDuration (number): Additional session duration in seconds.
      */
-    duration() {
-        if (this.startedAt && this.expiresAt) {
-            return (this.expiresAt.getTime() - this.startedAt.getTime()) / 1000;
-        } else {
-            return null;
+    async extendSession(additionalDuration: number) {
+        if (this.id) {
+            const res = await this._api.sessions.extendSession(
+                this.id,
+                additionalDuration
+            );
+            const sessionJson: any = await res.json();
+            const device = new Device(
+                this._api,
+                sessionJson.networkAccessIdentifier,
+                sessionJson.ipv4Address,
+                sessionJson.ipv6Address,
+                sessionJson.phoneNumber
+            );
+            return QoDSession.convertSessionModel(
+                this._api,
+                device,
+                sessionJson
+            );
         }
     }
 
@@ -139,6 +156,7 @@ export class QoDSession {
             servicePorts: session["applicationServerPorts"],
             profile: session["qosProfile"],
             status: session["qosStatus"],
+            duration: session["duration"],
             startedAt,
             expiresAt,
         });

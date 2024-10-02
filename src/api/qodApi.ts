@@ -208,4 +208,26 @@ export class QodAPI {
 
         return response;
     }
+
+    /**
+         *  Deletes a session given session ID
+         * Args:
+                    id (string): session ID
+                    additionalDuration (number): Additional session duration in seconds.
+        */
+    async extendSession(sessionId: string, additionalDuration: number) {
+        const url = `/sessions/${sessionId}/extend`;
+        let response = await fetch(this.baseUrl + url, {
+            method: "POST",
+            headers: this.headers,
+            body: JSON.stringify({
+                requestedAdditionalDuration: additionalDuration,
+            }),
+            agent: this.agent,
+        });
+
+        errorHandler(response);
+
+        return response;
+    }
 }

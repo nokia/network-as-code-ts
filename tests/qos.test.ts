@@ -61,6 +61,7 @@ describe("Qos", () => {
             qosStatus: "REQUESTED",
             startedAt: "2024-06-18T09:46:58.213Z",
             expiresAt: "2024-06-18T09:47:58.213Z",
+            duration: 3600,
         };
 
         let mockRequestBody = {
@@ -100,7 +101,7 @@ describe("Qos", () => {
         );
         expect(session.serviceIpv4).toEqual("5.6.7.8");
         expect(session.serviceIpv6).toBeFalsy();
-        expect(session.duration()).toEqual(60);
+        expect(session.duration).toEqual(3600);
     });
 
     test("should create a session with service ipv6", async () => {
@@ -512,6 +513,7 @@ describe("Qos", () => {
             qosStatus: "REQUESTED",
             startedAt: "2024-06-18T09:46:58.213Z",
             expiresAt: "2024-06-18T09:47:58.213Z",
+            duration: 60,
         };
 
         let mockRequestBody = {
@@ -549,7 +551,7 @@ describe("Qos", () => {
             duration: 60,
         });
         expect(session.status).toEqual(mockResponse["qosStatus"]);
-        expect(session.duration()).toEqual(60);
+        expect(session.duration).toEqual(60);
     });
 
     test("should create a session with notification info", async () => {
