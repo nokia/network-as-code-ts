@@ -219,8 +219,8 @@ describe("Qos", () => {
         });
 
         expect(session.duration).toEqual(60);
-        const extendedSession = await session.extendSession(60);
-        expect((extendedSession as QoDSession).duration).toEqual(120);
+        await session.extendSession(60);
+        expect(session.duration).toEqual(120);
         await session.deleteSession();
     });
 

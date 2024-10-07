@@ -210,7 +210,7 @@ export class QodAPI {
     }
 
     /**
-         *  Deletes a session given session ID
+         *  Extends session's duration
          * Args:
                     id (string): session ID
                     additionalDuration (number): Additional session duration in seconds.

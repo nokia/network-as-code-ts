@@ -111,18 +111,7 @@ export class QoDSession {
                 additionalDuration
             );
             const sessionJson: any = await res.json();
-            const device = new Device(
-                this._api,
-                sessionJson.networkAccessIdentifier,
-                sessionJson.ipv4Address,
-                sessionJson.ipv6Address,
-                sessionJson.phoneNumber
-            );
-            return QoDSession.convertSessionModel(
-                this._api,
-                device,
-                sessionJson
-            );
+            this.duration = sessionJson.duration;
         }
     }
 

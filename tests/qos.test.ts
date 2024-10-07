@@ -554,6 +554,62 @@ describe("Qos", () => {
         expect(session.duration).toEqual(60);
     });
 
+    test("should extend a session's duration", async () => {
+        let mockFetchResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            device: {
+                networkAccessIdentifier: "testuser@open5glab.net",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+            },
+            qosStatus: "REQUESTED",
+            startedAt: "2024-06-18T09:46:58.213Z",
+            expiresAt: "2024-06-18T09:47:58.213Z",
+            duration: 60,
+        };
+
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            device: {
+                networkAccessIdentifier: "testuser@open5glab.net",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+            },
+            qosStatus: "REQUESTED",
+            startedAt: "2024-06-18T09:46:58.213Z",
+            expiresAt: "2024-06-18T09:47:58.213Z",
+            duration: 260,
+        };
+
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            JSON.stringify(mockFetchResponse)
+        );
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0/extend",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual({
+                    requestedAdditionalDuration: 200,
+                });
+                return JSON.stringify(mockResponse);
+            }
+        );
+
+        let session = await client.sessions.get(
+            "08305343-7ed2-43b7-8eda-4c5ae9805bd0"
+        );
+        expect(session.duration).toEqual(60);
+        await session.extendSession(200);
+        expect(await session.duration).toEqual(260);
+    });
+
     test("should create a session with notification info", async () => {
         let device = client.devices.get({
             networkAccessIdentifier: "testuser@open5glab.net",
