@@ -2,16 +2,12 @@ import { beforeAll, beforeEach, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
+import { configureClient } from "./configClient";
 
 let client: NetworkAsCodeClient;
 
 beforeAll((): any => {
-    const NAC_TOKEN = process.env["NAC_TOKEN"];
-    client = new NetworkAsCodeClient(
-        NAC_TOKEN ? NAC_TOKEN : "TEST_TOKEN",
-        true
-    );
-    return client;
+    client = configureClient()
 });
 
 describe("Sim Swap retrieval and verification", () => {

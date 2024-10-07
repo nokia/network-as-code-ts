@@ -53,6 +53,7 @@ pipeline {
   }
   environment {
     NAC_TOKEN = credentials('NAC_TOKEN')
+    NAC_TOKEN_PROD = credentials('NAC_TOKEN_PROD')
     TEAMS_WEBHOOK = credentials('TEAMS_WEBHOOK')
     NPM_AUTH_TOKEN = credentials('NPM_AUTH_TOKEN')
     SONAR_PATH = "/opt/sonar-scanner/bin"
@@ -166,6 +167,44 @@ pipeline {
         }
       }
     }
+
+    stage('Candidate integration tests against production') {
+        when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("rc-")} }
+        steps {
+            container('narwhal') {
+                script {
+                    sh """
+                    env | grep gitlab
+                    """
+                    if(env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("rc-")){
+                        sh '''
+                            PRODTEST=1 https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+
+    stage('Release integration tests against production') {
+        when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")} }
+        steps {
+            container('narwhal') {
+                script {
+                    sh """
+                    env | grep gitlab
+                    """
+                    if(env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")){
+                        sh '''
+                            PRODTEST=1 https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
+                        '''
+                    }
+                }
+            }
+        }
+    }
+        
     stage('Publish') {
         when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")} }
             steps {
