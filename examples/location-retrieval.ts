@@ -32,6 +32,6 @@ console.log(location.civicAddress);
 // For estimations, use the `verifyLocation()` method
 // with the geo-coordinates and maximum age in seconds.
 // Integers can be passed directly in TypeScript.
-if (await myDevice.verifyLocation(60.252, 25.227, 1_000, 3600)) {
+if (await myDevice.verifyLocation(60.252, 25.227, 3000, 3600)) {
     console.log("Our device is near Helsinki!");
 }
