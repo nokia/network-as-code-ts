@@ -2,7 +2,7 @@
 
 // QoS session examples:
 
-import { NetworkAsCodeClient } from 'network-as-code';
+import { NetworkAsCodeClient } from "network-as-code";
 
 // Begin by creating a client for Network as Code:
 const client = new NetworkAsCodeClient("<your-application-key-here>");
@@ -19,24 +19,24 @@ const myDevice = client.devices.get({
         publicPort: 80,
     },
     Ipv6Address: "2041:0000:140F::875B:131B",
-    phoneNumber: "36721601234567"
+    phoneNumber: "+36721601234567",
 });
 
 // Create a QoD session with QOS_L (large bandwidth)
 // that lasts for 3,600 seconds (1 hour).
 // For TypeScript, values can be expressed directly,
 // but the QoS profile comes before the IP address(es) and duration:
-const mySession = await myDevice.createQodSession("QOS_L",{
+const mySession = await myDevice.createQodSession("QOS_L", {
     serviceIpv4: "233.252.0.2",
     serviceIpv6: "2001:db8:1234:5678:9abc:def0:fedc:ba98",
     duration: 3600,
     // Use HTTPS to send or subscribe to notifications
     notificationUrl: "https://notify.me/here",
-    notificationAuthToken: "replace-with-your-auth-token"
+    notificationAuthToken: "replace-with-your-auth-token",
 });
 
 // Let's confirm that the device has the newly created session
-console.log(myDevice.sessions());
+console.log(await myDevice.sessions());
 
 // This is how you get all sessions for a device
 const allSessions = await myDevice.sessions();
@@ -47,17 +47,20 @@ const allSessions = await myDevice.sessions();
 const firstSession = await allSessions[0];
 
 // Show a list of all the QoD sessions associated with a device
-console.log(myDevice.sessions());
+console.log(await myDevice.sessions());
 
-// You can also show the duration of a given session
-console.log(mySession.duration());
+// Or use these to check when your session duration and started/expires:
+if (mySession !== undefined) {
+    console.log(mySession.duration);
+    console.log(mySession.startedAt);
+    console.log(mySession.expiresAt);
+}
 
-// Or use these to check when your session started/expires:
-console.log(mySession.startedAt);
-console.log(mySession.expiresAt);
-
+const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 // Additionally, you can delete a specific session like so:
 mySession.deleteSession();
 
+// wait until the delete operation is completed
+await sleep(500);
 // Finally, clear out all sessions for a device when you're done:
-myDevice.clearSessions()
+myDevice.clearSessions();
