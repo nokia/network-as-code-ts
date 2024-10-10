@@ -8,7 +8,7 @@ import { configureClient } from "./configClient";
 let client: NetworkAsCodeClient;
 
 beforeAll((): any => {
-    client = configureClient()
+    client = configureClient();
 });
 
 describe("Slicing", () => {
@@ -55,7 +55,11 @@ describe("Slicing", () => {
         expect(new_slice.networkIdentifier.mnc).toEqual("30");
     });
 
-    test.failing("should modify a slice", async () => {
+    // NOTE: This test takes a long time to execute, since it must wait for slice creation
+    // if you are in a rush, add a temporary skip here
+    test("should modify a slice", async () => {
+        await slice.waitFor("AVAILABLE");
+
         expect(slice.maxDataConnections).toBeUndefined();
         expect(slice.maxDevices).toBeUndefined();
 
@@ -74,7 +78,7 @@ describe("Slicing", () => {
         expect(slice.sliceDownlinkThroughput).toBeTruthy();
         expect(slice.deviceUplinkThroughput).toBeTruthy();
         expect(slice.deviceDownlinkThroughput).toBeTruthy();
-    });
+    }, 720000);
 
     // Temporarly skip because of the ISE in attachment endpoint,
     // the test.failing couldn't mark it as failing test for some reason, so test.skip is used for now
