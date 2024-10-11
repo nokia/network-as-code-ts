@@ -195,7 +195,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test("should attach device to slice and detach", async () => {
+    test("should attach device to slice and detach with all params", async () => {
         const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
         await slice.waitFor("AVAILABLE");
@@ -219,6 +219,48 @@ describe("Slicing", () => {
                 },
             }
         );
+
+        await sleep(30000);
+
+        const attachment: any = await client.slices.getAttachment(
+            newAttachment["nac_resource_id"]
+        );
+
+        expect(attachment["nac_resource_id"]).toEqual(
+            newAttachment["nac_resource_id"]
+        );
+
+        await slice.detach(device);
+
+        await slice.deactivate();
+
+        await slice.waitFor("AVAILABLE");
+
+        expect(slice.state).toEqual("AVAILABLE");
+
+        await slice.delete();
+    }, 720000);
+
+    // NOTE: This test takes a long time to execute, since it must wait for slice updates
+    // if you are in a rush, add a temporary skip here
+    test("should attach device to slice and detach with manadatory params", async () => {
+        const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
+
+        await slice.waitFor("AVAILABLE");
+
+        expect(slice.state).toEqual("AVAILABLE");
+
+        await slice.activate();
+
+        await slice.waitFor("OPERATING");
+
+        expect(slice.state).toEqual("OPERATING");
+
+        const device = client.devices.get({
+            phoneNumber: "+3637123456",
+        });
+
+        const newAttachment = await slice.attach(device);
 
         await sleep(30000);
 

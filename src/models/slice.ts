@@ -361,7 +361,7 @@ export class Slice {
  */
     async attach(
         device: Device,
-        notificationAuthToken: string,
+        notificationAuthToken?: string,
         notificationUrl?: string,
         trafficCategories?: TrafficCategories
     ) {

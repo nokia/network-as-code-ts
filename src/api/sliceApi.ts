@@ -22,7 +22,7 @@ import {
     SliceOptionalArgs,
     TrafficCategories,
 } from "../models/slice";
-import { errorHandler } from "../errors";
+import { errorHandler, InvalidParameterError } from "../errors";
 import { Device, DeviceIpv4Addr } from "../models/device";
 import { ProxyAgent } from "proxy-agent";
 
@@ -251,30 +251,49 @@ export class AttachAPI {
     async attach(
         device: Device,
         sliceId: string,
-        notificationAuthToken: string,
+        notificationAuthToken?: string,
         notificationUrl?: string,
         trafficCategories?: TrafficCategories
     ) {
-        let payload = {
+        if (!device.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        }
+        let payload: any = {
             device: {
                 phoneNumber: device.phoneNumber,
-                ipv4Address: {
-                    publicAddress: (device.ipv4Address as DeviceIpv4Addr)
-                        .publicAddress,
-                    privateAddress: (device.ipv4Address as DeviceIpv4Addr)
-                        .privateAddress,
-                    publicPort: (device.ipv4Address as DeviceIpv4Addr)
-                        .publicPort,
-                },
-                ipv6Address: device.ipv6Address,
+                ipv4Address: {},
             },
             sliceId,
-            trafficCategories,
-            webhook: {
-                notificationUrl: notificationUrl,
-                notificationAuthToken: notificationAuthToken,
-            },
         };
+
+        if (trafficCategories) {
+            payload.trafficCategories = trafficCategories;
+        }
+        if (notificationUrl) {
+            payload.webhook = {
+                notificationUrl,
+                notificationAuthToken,
+            };
+        }
+
+        if (device.ipv4Address) {
+            if (device.ipv4Address.publicAddress) {
+                payload["device"]["ipv4Address"]["publicAddress"] =
+                    device.ipv4Address.publicAddress;
+            }
+            if (device.ipv4Address.privateAddress) {
+                payload["device"]["ipv4Address"]["privateAddress"] =
+                    device.ipv4Address.privateAddress;
+            }
+            if (device.ipv4Address.publicPort) {
+                payload["device"]["ipv4Address"]["publicPort"] =
+                    device.ipv4Address.publicPort;
+            }
+        }
+
+        if (device.ipv6Address) {
+            payload["device"]["ipv6Address"] = device.ipv6Address;
+        }
 
         const res = await fetch(`${this.baseUrl}/attachments`, {
             method: "POST",
