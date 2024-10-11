@@ -261,7 +261,6 @@ export class AttachAPI {
         let payload: any = {
             device: {
                 phoneNumber: device.phoneNumber,
-                ipv4Address: {},
             },
             sliceId,
         };
@@ -277,17 +276,19 @@ export class AttachAPI {
         }
 
         if (device.ipv4Address) {
+            const ipv4Address: any = {};
             if (device.ipv4Address.publicAddress) {
-                payload["device"]["ipv4Address"]["publicAddress"] =
-                    device.ipv4Address.publicAddress;
+                ipv4Address.publicAddress = device.ipv4Address.publicAddress;
             }
             if (device.ipv4Address.privateAddress) {
-                payload["device"]["ipv4Address"]["privateAddress"] =
-                    device.ipv4Address.privateAddress;
+                ipv4Address.privateAddress = device.ipv4Address.privateAddress;
             }
             if (device.ipv4Address.publicPort) {
-                payload["device"]["ipv4Address"]["publicPort"] =
-                    device.ipv4Address.publicPort;
+                ipv4Address.publicPort = device.ipv4Address.publicPort;
+            }
+
+            if (Object.keys(ipv4Address).length > 0) {
+                payload.device.ipv4Address = ipv4Address;
             }
         }
 

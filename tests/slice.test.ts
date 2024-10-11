@@ -717,7 +717,6 @@ describe("Slicing", () => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     device: {
                         phoneNumber: device.phoneNumber,
-                        ipv4Address: {},
                     },
                     sliceId: "sliceone",
                 });
