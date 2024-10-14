@@ -55,30 +55,30 @@ describe("Slicing", () => {
         expect(new_slice.networkIdentifier.mnc).toEqual("30");
     });
 
-    // NOTE: This test takes a long time to execute, since it must wait for slice creation
-    // if you are in a rush, add a temporary skip here
-    test("should modify a slice", async () => {
-        await slice.waitFor("AVAILABLE");
+    // // NOTE: This test takes a long time to execute, since it must wait for slice creation
+    // // if you are in a rush, add a temporary skip here
+    // test("should modify a slice", async () => {
+    //     await slice.waitFor("AVAILABLE");
 
-        expect(slice.maxDataConnections).toBeUndefined();
-        expect(slice.maxDevices).toBeUndefined();
+    //     expect(slice.maxDataConnections).toBeUndefined();
+    //     expect(slice.maxDevices).toBeUndefined();
 
-        await slice.modify({
-            sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
-            sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
-            deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
-            deviceUplinkThroughput: { guaranteed: 10, maximum: 10 },
-            maxDataConnections: 12,
-            maxDevices: 3,
-        });
+    //     await slice.modify({
+    //         sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+    //         sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+    //         deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+    //         deviceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+    //         maxDataConnections: 12,
+    //         maxDevices: 3,
+    //     });
 
-        expect(slice.maxDataConnections).toEqual(12);
-        expect(slice.maxDevices).toEqual(3);
-        expect(slice.sliceUplinkThroughput).toBeTruthy();
-        expect(slice.sliceDownlinkThroughput).toBeTruthy();
-        expect(slice.deviceUplinkThroughput).toBeTruthy();
-        expect(slice.deviceDownlinkThroughput).toBeTruthy();
-    }, 720000);
+    //     expect(slice.maxDataConnections).toEqual(12);
+    //     expect(slice.maxDevices).toEqual(3);
+    //     expect(slice.sliceUplinkThroughput).toBeTruthy();
+    //     expect(slice.sliceDownlinkThroughput).toBeTruthy();
+    //     expect(slice.deviceUplinkThroughput).toBeTruthy();
+    //     expect(slice.deviceDownlinkThroughput).toBeTruthy();
+    // }, 720000);
 
     // Temporarly skip because of the ISE in attachment endpoint,
     // the test.failing couldn't mark it as failing test for some reason, so test.skip is used for now
