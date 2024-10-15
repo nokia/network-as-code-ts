@@ -67,6 +67,9 @@ export class DeviceStatus extends Namespace {
      *  Get a subscription by its external ID.
      * 
             @param eventSubscriptionId (string): Resource ID
+            @example ```TypeScript 
+            const subscription = await client.deviceStatus.get(subscription.eventSubscriptionId);
+            ```
             @returns Promise Subscription
     */
     async get(eventSubscriptionId: string): Promise<Subscription> {
@@ -98,6 +101,9 @@ export class DeviceStatus extends Namespace {
     /**
      *  Get a list of active subscriptions
      * 
+     *      @example ```TypeScript 
+            const subscriptions = await client.deviceStatus.getSubscriptions();
+            ```
             @returns Promise<Subscription[]>
     */
     async getSubscriptions(): Promise<Subscription[]> {

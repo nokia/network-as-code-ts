@@ -18,12 +18,16 @@ import { Device } from "../models/device";
 import { CongestionInsightsSubscription } from "../models/congestionInsights";
 import { Namespace } from "./namespace";
 
+/**
+ *  Gain insights from network analytics.
+ *
+ */
 export class CongestionInsights extends Namespace {
     /**
      *  Create subscription for congestion insights.
      * 
             @param device (Device): Identifier of the device.
-            @param subscriptionExpireTime (Date): Subscription expire time
+            @param subscriptionExpireTime (Date|string): Subscription expire time
             @param notificationUrl (string): Notification URL for congestion insights.
             @param notificationAuthToken (string): Notification Auth Token 
             @returns Promise Subscription
@@ -72,6 +76,7 @@ export class CongestionInsights extends Namespace {
     /**
      *  Get all active subscriptions of Congestion Insights
      *
+     * @returns Promise CongestionInsightsSubscription[]
      */
     async getSubscriptions(): Promise<CongestionInsightsSubscription[]> {
         const res = await this.api.insights.getAll();

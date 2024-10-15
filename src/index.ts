@@ -24,11 +24,11 @@ import { Slices } from "./namespaces/slice";
 /**
  * A client for working with Network as Code.
  *  @example Example:
-    import { NetworkAsCodeClient } from "../src";
+    import { NetworkAsCodeClient } from "network-as-code";
 
-    client = NetworkAsCodeClient(token="your_api_token")
-    sub = client.subscriptions.get("user@example.com")
-    console.log(sub.location())
+    client = NetworkAsCodeClient("your_api_token")
+    device = client.devices.get("user@example.com")
+    console.log(device.getLocation())
     
     ### Args:
         @param token - Authentication token for the Network as Code API.
