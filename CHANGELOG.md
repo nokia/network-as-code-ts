@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 3.0.1
+
+Fixes:
+- QoD webhook was supplied using an older method, this release brings the SDK
+  back in line with the newer behavior of the API
+
 ## Version 3.0.0
 
 Breaking changes:
