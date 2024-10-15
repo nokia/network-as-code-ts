@@ -121,13 +121,14 @@ export class QodAPI {
         }
 
         if (notificationUrl) {
-            sessionPayload["notificationUrl"] = notificationUrl;
+            sessionPayload["webhook"] = { "notificationUrl": notificationUrl };
+
+            if (notificationAuthToken) {
+                sessionPayload["webhook"]["notificationAuthToken"] =
+                    "Bearer " + notificationAuthToken;
+            }
         }
 
-        if (notificationAuthToken) {
-            sessionPayload["notificationAuthToken"] =
-                "Bearer " + notificationAuthToken;
-        }
 
         let response = await fetch(this.baseUrl + "/sessions", {
             method: "POST",
