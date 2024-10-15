@@ -142,7 +142,7 @@ describe("Slicing", () => {
         await slice.delete();
     });
 
-    test.failing("should get a slice", async () => {
+    test("should get a slice", async () => {
         const newSlice = slice;
         const fetchedSlice = await client.slices.get(newSlice.name as string);
         expect(newSlice.sid).toEqual(fetchedSlice.sid);
@@ -156,7 +156,7 @@ describe("Slicing", () => {
         expect(slice.state).toEqual("DELETED");
     });
 
-    test.failing("should get attachments", async () => {
+    test("should get attachments", async () => {
         const attachments: any = await client.slices.getAllAttachments();
         expect(attachments.length).toBeGreaterThanOrEqual(0);
     });
