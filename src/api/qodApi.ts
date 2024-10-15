@@ -121,11 +121,11 @@ export class QodAPI {
         }
 
         if (notificationUrl) {
-            sessionPayload["notificationUrl"] = notificationUrl;
+            sessionPayload["webhook"] = { "notificationUrl": notificationUrl };
         }
 
         if (notificationAuthToken) {
-            sessionPayload["notificationAuthToken"] =
+            sessionPayload["webhook"]["notificationAuthToken"] =
                 "Bearer " + notificationAuthToken;
         }
 

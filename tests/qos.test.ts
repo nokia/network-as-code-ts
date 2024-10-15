@@ -602,8 +602,10 @@ describe("Qos", () => {
                 ipv6Address: "2041:0000:140F::875B:131B",
             },
             duration: 3600,
-            notificationUrl: "https://example.com/notifications",
-            notificationAuthToken: "Bearer c8974e592c2fa383d4a3960714",
+            webhook: {
+                notificationUrl: "https://example.com/notifications",
+                notificationAuthToken: "Bearer c8974e592c2fa383d4a3960714",
+            }
         };
 
         fetchMock.post(
