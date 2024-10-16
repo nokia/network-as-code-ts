@@ -759,6 +759,57 @@ describe("Qos", () => {
         expect(sessions[0].device.ipv6Address).toEqual(device.ipv6Address);
     });
 
+    test("should clear all device's sessions", async () => {
+        let device = client.devices.get({
+            networkAccessIdentifier: "testuser@open5glab.net",
+        });
+
+        let mockResponse = [
+            {
+                sessionId: "1234",
+                qosProfile: "QOS_L",
+                device: {
+                    networkAccessIdentifier: "testuser@open5glab.net",
+                },
+                qosStatus: "BLA",
+                expiresAt: 1641494400,
+                startedAt: 0,
+            },
+            {
+                sessionId: "12345",
+                qosProfile: "QOS_L",
+                device: {
+                    networkAccessIdentifier: "testuser@open5glab.net",
+                },
+                qosStatus: "BLA",
+                expiresAt: 1641494400,
+                startedAt: 0,
+            },
+        ];
+
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
+            JSON.stringify(mockResponse)
+        );
+
+        const sessions = await device.sessions();
+        expect(sessions.length).toEqual(2);
+
+        fetchMock.delete(
+            `https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/${mockResponse[0].sessionId}`,
+            JSON.stringify({})
+        );
+
+        fetchMock.delete(
+            `https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/${mockResponse[1].sessionId}`,
+            JSON.stringify({})
+        );
+        await device.clearSessions();
+        const requests = fetchMock.calls();
+        expect(requests[requests.length - 1][1]?.method).toEqual("DELETE");
+        expect(requests[requests.length - 2][1]?.method).toEqual("DELETE");
+    });
+
     test("should not create a session without ip address", async () => {
         let device = client.devices.get({
             ipv4Address: {
@@ -829,6 +880,23 @@ describe("Qos", () => {
 
         const sessions = await device.sessions();
         expect(sessions.length).toEqual(1);
+    });
+
+    test("should return empty array for non-existent device", async () => {
+        let device = client.devices.get({
+            networkAccessIdentifier: "nonexistent-user@open5glab.net",
+        });
+
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=nonexistent-user@open5glab.net",
+            {
+                status: 404,
+                detail: "QoS subscription not found",
+            }
+        );
+
+        const sessions = await device.sessions();
+        expect(sessions.length).toEqual(0);
     });
 
     test("should filter sessions by device phone number", async () => {
