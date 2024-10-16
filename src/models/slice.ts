@@ -94,6 +94,13 @@ export interface SliceModifyOptionalArgs {
     maxDevices?: number;
 }
 
+/**
+ *  An interface representing the `Apps` model.
+ * #### Public Attributes:
+           @param apps (string[]): The enterprise app name (ID).
+           @param os (string): The OSId identifier according to the OS you use (Android, iOS, etc.).
+ */
+
 export interface Apps {
     os: string;
     apps: string[];
@@ -278,6 +285,21 @@ export class Slice {
         }
     }
 
+    /**
+ *  Modify the parameters for an existing slice.
+ * #### Args:
+        @param optionalArgs(SliceModifyOptionalArgs): properties of `SliceModifyOptionalArgs` object
+        @example ```TypeScript
+        slice.modify({
+                sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+                sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+                deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+                deviceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+                maxDataConnections: 12,
+                maxDevices: 3
+        });
+        ```
+ */
     async modify({
         sliceDownlinkThroughput,
         sliceUplinkThroughput,
@@ -355,12 +377,29 @@ export class Slice {
     /**
  *  Attach network slice.
  * #### Args:
-            device (Device): Device object that the slice is being attached to
+            @param device (Device): Device object that the slice is being attached to
+            @param notificationAuthToken (string): Authorization token for notification sending.
+            @param notificationUrl (string): Notification URL for attachment-related events.
+            @param trafficCategories (TrafficCategories): It should contain the OSId, according to the OS and the OsAppId
 
-    #### Example:
+            @example```TypeScript
             device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80})
-            slice.attach(device)
- */
+            const new_attachment = await mySlice.attach(
+                    device,
+                    "replace-with-your-auth-token",
+                    // Use HTTPS to send notifications
+                    // about slice attachments.
+                    "https://example.com/notifications",
+                    {
+                        apps: {
+                            // This is the OS ID used by Android
+                            os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
+                            apps: ["ENTERPRISE", "ENTERPRISE2"],
+                        },
+                    }
+                );
+            ```
+    */
     async attach(
         device: Device,
         notificationAuthToken?: string,
@@ -386,12 +425,13 @@ export class Slice {
     /**
  *  Detach network slice.
  * #### Args:
-            device (Device): Device object that the slice is being attached to
+            @param device (Device): Device object that the slice is being attached to
 
-    #### Example:
-            device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80})
-            slice.attach(device)
-            slice.detach(device)
+            @example```TypeScript
+                device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80})
+                slice.attach(device)
+                slice.detach(device)
+            ```
  */
     async detach(device: Device) {
         const attachmentId = fetchAndRemove(this._attachments, device);

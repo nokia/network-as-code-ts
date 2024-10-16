@@ -23,6 +23,20 @@ export interface SubscribeOptionalArgs {
     notificationAuthToken?: string;
 }
 
+/**
+ *  A class representing the `ConnectivitySubscription` model.
+ * #### Private Attributes:
+        @param api(APIClient): An API client object.
+    #### Public Attributes:
+        @param eventSubscriptionId (string): IIt represents the subscription identifier.
+        @param device (Device): Identifier of the device
+        @param eventType (string): The status type you want to check, which can be connectivity or roaming.
+        @param notificationUrl (string): Notification URL for session-related events.
+        @param startsAt (optional): It represents when this subscription started.
+        @param expiresAt (optional): It represents when this subscription should expire.
+    #### Public Methods:
+        @method delete(): Deletes device connectivity status subscription.
+ */
 export class Subscription {
     private api: APIClient;
     eventSubscriptionId: string;

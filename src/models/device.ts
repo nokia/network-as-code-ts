@@ -71,18 +71,18 @@ export interface QodOptionalArgs {
  *  A class representing the `Device` model.
  * #### Private Attributes:
         _api(APIClient): An API client object.
-        _sessions(Session[]): List of device session instances.
+        _sessions(QoDSession[]): List of device session instances.
 
 
     #### Public Attributes:
-        sid(EmailStr): Device Identifier email string.
+        networkAccessIdentifier(EmailStr): Device Identifier email string.
         phoneNumber(string): Phone Number string
-        ipv4Address (DeviceIpv4Addr): DeviceIpv4Addr
-        ipv6Address (string): string
+        ipv4Address (DeviceIpv4Addr): Ipv4 address of the device.
+        ipv6Address (string): Ipv6 address of the device.
 
     #### Public Methods:
-        createQodSession (Session): Creates a session for the device.
-        sessions (Session[]): Returns all the sessions created by the device network_access_id.
+        createQodSession (QoDSession): Creates a session for the device.
+        sessions (QoDSession[]): Returns all the sessions created by the device network_access_id.
         clearSessions (): Deletes all the sessions created by the device network_access_id.
         location (Location): Gets the location of the device and returns a Location client object.
         verifyLocation (bool): Verifies if a device is located in a given location point.
@@ -139,11 +139,13 @@ export class Device {
                 - devicePorts (optional): List of the device ports.
                 - servicePorts (optional): List of the application server ports.
                 - notificationUrl (optional): Notification URL for session-related events.
-                - notificationToken (optional): Security bearer token to authenticate registration of session.
+                - notificationAuthToken (optional): Security bearer token to authenticate registration of session.
             @returns Promise QoDSession
 
-        #### Example:
-            session = device.createSession(profile="QOS_L", {serviceIpv4:"5.6.7.8", serviceIpv6:"2041:0000:140F::875B:131B", notificationUrl:"https://example.com/notifications, notificationToken: "c8974e592c2fa383d4a3960714")
+            @exmple ```TypeScript
+            session = device.createSession(profile="QOS_L", 
+            {serviceIpv4:"5.6.7.8", serviceIpv6:"2041:0000:140F::875B:131B", notificationUrl:"https://example.com/notifications, notificationToken: "c8974e592c2fa383d4a3960714"})
+            ```
  */
     async createQodSession(
         profile: string,
@@ -195,8 +197,10 @@ export class Device {
     /**
  *  List sessions of the device.
  *  @returns Promise QoDSession[]
- *  #### Example:
-            sessions = device.sessions()
+ *  @example ```TypeScript
+ *    sessions = device.sessions()
+ *   ```
+            
  */
     async sessions(): Promise<QoDSession[]> {
         try {
@@ -230,12 +234,13 @@ export class Device {
     }
 
     /**
- *  Returns the location of the device.
- *  @param maxAge (number): Max acceptable age for location info in seconds
- *  @returns Promise Location
- *  #### Example:
-            location = device.location(60)
- */
+     *  Returns the location of the device.
+     *  @param maxAge (number): Max acceptable age for location info in seconds
+     *  @returns Promise Location
+     *  @example ```TypeScript
+     *     location = device.location(60)
+     *   ```
+     */
     async getLocation(maxAge: number = 60): Promise<Location> {
         const location = await this._api.locationRetrieval.getLocation(
             this,
@@ -246,16 +251,16 @@ export class Device {
     }
 
     /**
- *  Verifies the location of the device(Returns boolean value).
- *  @param latitude (number):latitude of the device.
- *  @param longitude (number):longitude of the device.
- *  @param radius (number):radius of the device.
- *  @param maxAge (number):maxAge of the device.
- *  @returns Promise boolean
- *  #### Example:
-            located? = device.verifyLocation(24.07915612501993, 47.48627616952785, 10_000, 60)
- */
-
+     *  Verifies the location of the device(Returns boolean value).
+     *  @param latitude (number):latitude of the device.
+     *  @param longitude (number):longitude of the device.
+     *  @param radius (number):radius of the device.
+     *  @param maxAge (number):maxAge of the device.
+     *  @returns Promise boolean
+     *  @example```TypeScript
+     *      located? = device.verifyLocation(24.07915612501993, 47.48627616952785, 10_000, 60)
+     *   ```
+     */
     async verifyLocation(
         latitude: number,
         longitude: number,
@@ -300,6 +305,8 @@ export class Device {
 
     /**
      * Retrieves the current congestion insight of a device
+     * @param start (Date|string]): Beginning of the time range to access historical or predicted congestion
+     * @param end (Date|string]): End of the time range to access historical or predicted congestion
      * @returns Congestion
      * TODO: This will only be possible to call after a Subscription has been set up.
      *       We should either need to migrate this method under CongestionSubscription,
