@@ -115,7 +115,7 @@ export class QodAPI {
     /**
  *  This function retrieves all sessions given a device_id
  * Args:
-            deviceId (dict): The dict with device-id of the device whose sessions to retrieve
+            device (Device): The device whose sessions to retrieve
 
         Returns:
             list: returns list of session
@@ -164,7 +164,7 @@ export class QodAPI {
     /**
  *  Deletes a session given session ID
  * Args:
-            id (string): session ID
+            sessionId (string): session ID
  */
     async deleteSession(sessionId: string) {
         const url = `/sessions/${sessionId}`;
