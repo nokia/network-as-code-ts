@@ -37,7 +37,7 @@ export class Slices extends Namespace {
     @param notificationUrl (string): Destination URL of notifications
     @param optionalArgs (SliceOptionalArgs): optional arguments (sid, name, 
     areaOfService, maxDataConnections, maxDevices, notificationAuthToken, sliceDownlinkThroughput, ...)
-    @returns Slice
+    @returns Promise<Slice>
    @example ```TypeScript
             networkId = {mcc:"358ffYYT", mnc:"246fsTRE"}
             sliceInfo = {service_type:"eMBB", differentiator:"44eab5"}
@@ -87,7 +87,7 @@ export class Slices extends Namespace {
     /**
  *  Get All slices.
  *  @param None
-    @returns Promise Slice[]
+    @returns Promise<Slice[]>
     @example ```TypeScript
         fetchedSlices = nacClient.slices.getAll()
     ``` 
@@ -135,7 +135,7 @@ export class Slices extends Namespace {
     /**
  *  Get network slice by id.
           @param  id (string): Resource id.
-          @returns Promise Slice
+          @returns Promise<Slice>
           @example ```TypeScript
             fetchedSlice = nacClient.slices.get(id)
           ``` 

@@ -115,10 +115,8 @@ export class QodAPI {
     /**
  *  This function retrieves all sessions given a device_id
  * Args:
-            device (Device): The device whose sessions to retrieve
-
-        Returns:
-            list: returns list of session
+           @param device (Device): The device whose sessions to retrieve
+           @returns Promise<any>
  */
     async getAllSessions(device: Device) {
         let url = "";

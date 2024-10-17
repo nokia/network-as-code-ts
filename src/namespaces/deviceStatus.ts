@@ -26,7 +26,7 @@ export class DeviceStatus extends Namespace {
             @param eventType (string): Event type of the subscription.
             @param notificationUrl (string): Notification URL for session-related events.
             @param optionalArgs (SubscribeOptionalArgs): optional arguments(subscriptionExpireTime, maxNumberOfReports, notificationAuthToken)
-            @returns Promise Subscription
+            @returns Promise<Subscription>
     */
 
     async subscribe(
@@ -70,7 +70,7 @@ export class DeviceStatus extends Namespace {
             @example ```TypeScript 
             const subscription = await client.deviceStatus.get(subscription.eventSubscriptionId);
             ```
-            @returns Promise Subscription
+            @returns Promise<Subscription>
     */
     async get(eventSubscriptionId: string): Promise<Subscription> {
         const jsonData = await this.api.deviceStatus.get(eventSubscriptionId);

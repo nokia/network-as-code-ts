@@ -140,7 +140,7 @@ export class Device {
                 - servicePorts (optional): List of the application server ports.
                 - notificationUrl (optional): Notification URL for session-related events.
                 - notificationAuthToken (optional): Security bearer token to authenticate registration of session.
-            @returns Promise QoDSession
+            @returns Promise<QoDSession>
 
             @exmple ```TypeScript
             session = device.createSession(profile="QOS_L", 
@@ -196,7 +196,7 @@ export class Device {
 
     /**
  *  List sessions of the device.
- *  @returns Promise QoDSession[]
+ *  @returns Promise<QoDSession[]>
  *  @example ```TypeScript
  *    sessions = device.sessions()
  *   ```
@@ -236,7 +236,7 @@ export class Device {
     /**
      *  Returns the location of the device.
      *  @param maxAge (number): Max acceptable age for location info in seconds
-     *  @returns Promise Location
+     *  @returns Promise<Location>
      *  @example ```TypeScript
      *     location = device.location(60)
      *   ```
@@ -256,7 +256,7 @@ export class Device {
      *  @param longitude (number):longitude of the device.
      *  @param radius (number):radius of the device.
      *  @param maxAge (number):maxAge of the device.
-     *  @returns Promise boolean
+     *  @returns Promise<boolean | string>
      *  @example```TypeScript
      *      located? = device.verifyLocation(24.07915612501993, 47.48627616952785, 10_000, 60)
      *   ```
