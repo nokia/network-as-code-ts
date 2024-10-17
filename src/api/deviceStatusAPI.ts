@@ -19,7 +19,7 @@ import fetch from "node-fetch";
 
 import { errorHandler } from "../errors";
 import { Device, RoamingStatus } from "../models/device";
-import { SubscribeOptionalArgs } from "../namespaces/deviceStatus";
+import { SubscribeOptionalArgs } from "../models/deviceStatus";
 
 export class DeviceStatusAPI {
     private baseUrl: string;

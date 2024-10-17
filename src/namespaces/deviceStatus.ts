@@ -15,14 +15,8 @@
  */
 
 import { Device } from "../models/device";
-import { Subscription } from "../models/deviceStatus";
+import { SubscribeOptionalArgs, Subscription } from "../models/deviceStatus";
 import { Namespace } from "./namespace";
-
-export interface SubscribeOptionalArgs {
-    subscriptionExpireTime?: Date | string;
-    maxNumberOfReports?: number;
-    notificationAuthToken?: string;
-}
 
 export class DeviceStatus extends Namespace {
     /**
@@ -62,6 +56,8 @@ export class DeviceStatus extends Namespace {
             device,
             eventType,
             notificationUrl,
+            optionalArgs?.notificationAuthToken,
+            optionalArgs?.maxNumberOfReports,
             jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
             jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
         );
@@ -92,6 +88,8 @@ export class DeviceStatus extends Namespace {
             device,
             jsonData.subscriptionDetail["type"],
             jsonData.webhook.notificationUrl,
+            jsonData.webhook.notificationAuthToken,
+            jsonData.maxNumberOfReports,
             jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
             jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
         );
@@ -122,6 +120,8 @@ export class DeviceStatus extends Namespace {
                 device,
                 entry.subscriptionDetail["type"],
                 entry.webhook.notificationUrl,
+                entry.webhook.notificationAuthToken,
+                entry.maxNumberOfReports,
                 entry.startsAt ? new Date(entry.startsAt) : undefined,
                 entry.expiresAt ? new Date(entry.expiresAt) : undefined
             );

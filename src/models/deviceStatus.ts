@@ -17,12 +17,20 @@
 import { APIClient } from "../api";
 import { Device } from "./device";
 
+export interface SubscribeOptionalArgs {
+    subscriptionExpireTime?: Date | string;
+    maxNumberOfReports?: number;
+    notificationAuthToken?: string;
+}
+
 export class Subscription {
     private api: APIClient;
     eventSubscriptionId: string;
     device: Device;
     eventType: string;
     notificationUrl: string;
+    maxNumOfReports?: number;
+    notificationAuthToken?: string;
     startsAt?: Date;
     expiresAt?: Date;
 
@@ -32,6 +40,8 @@ export class Subscription {
         device: Device,
         eventType: string,
         notificationUrl: string,
+        notificationAuthToken?: string,
+        maxNumOfReports?: number,
         startsAt?: Date,
         expiresAt?: Date
     ) {
@@ -42,6 +52,8 @@ export class Subscription {
         this.notificationUrl = notificationUrl;
         this.startsAt = startsAt;
         this.expiresAt = expiresAt;
+        this.maxNumOfReports = maxNumOfReports;
+        this.notificationAuthToken = notificationAuthToken;
     }
 
     /**

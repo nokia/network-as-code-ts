@@ -7,7 +7,7 @@ let client: NetworkAsCodeClient;
 let device: Device;
 
 beforeAll(() => {
-    client = configureClient()
+    client = configureClient();
     device = client.devices.get({
         networkAccessIdentifier: "test-device@testcsp.net",
         ipv4Address: {
@@ -47,6 +47,24 @@ describe("Device Status", () => {
         expect(subscription.expiresAt).toEqual(
             new Date(tomorrowDate.toISOString().replace(".000", ""))
         );
+
+        subscription.delete();
+    });
+
+    it("can create a connectivity subscription with other optional arguments", async () => {
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            "org.camaraproject.device-status.v0.connectivity-data",
+            "https://example.com/notify",
+            {
+                maxNumberOfReports: 2,
+                notificationAuthToken: "my-token",
+            }
+        );
+
+        expect(subscription.eventSubscriptionId).toBeDefined();
+        expect(subscription.maxNumOfReports).toEqual(2);
+        expect(subscription.notificationAuthToken).toEqual("my-token");
 
         subscription.delete();
     });
