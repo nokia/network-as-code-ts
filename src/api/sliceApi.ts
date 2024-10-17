@@ -70,10 +70,6 @@ export class SliceAPI {
         };
 
         if (optionalArgs) {
-            if (optionalArgs.sid) {
-                body.sid = optionalArgs.sid;
-            }
-
             if (optionalArgs.name) {
                 body.name = optionalArgs.name;
             }
@@ -82,6 +78,10 @@ export class SliceAPI {
                 body.areaOfService = this.convertAreaOfServiceObj(
                     optionalArgs.areaOfService
                 );
+            }
+
+            if (optionalArgs.notificationAuthToken) {
+                body.notificationAuthToken = optionalArgs.notificationAuthToken;
             }
 
             if (optionalArgs.maxDataConnections) {

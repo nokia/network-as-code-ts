@@ -33,6 +33,14 @@ describe("Qos", () => {
         );
     });
 
+    test("should throw an Error if no identifier is provided", () => {
+        try {
+            client.devices.get({});
+        } catch (error) {
+            expect(error).toBeInstanceOf(Error);
+        }
+    });
+
     test("should create a session", async () => {
         let device = client.devices.get({
             networkAccessIdentifier: "test-device@testcsp.net",
@@ -663,7 +671,7 @@ describe("Qos", () => {
             webhook: {
                 notificationUrl: "https://example.com/notifications",
                 notificationAuthToken: "Bearer c8974e592c2fa383d4a3960714",
-            }
+            },
         };
 
         fetchMock.post(

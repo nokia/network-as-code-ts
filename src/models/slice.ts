@@ -197,6 +197,7 @@ export class Slice {
                 areaOfService,
                 maxDataConnections,
                 maxDevices,
+                notificationAuthToken,
                 sliceDownlinkThroughput,
                 sliceUplinkThroughput,
                 deviceDownlinkThroughput,
@@ -211,6 +212,7 @@ export class Slice {
             this.sliceUplinkThroughput = sliceUplinkThroughput;
             this.deviceDownlinkThroughput = deviceDownlinkThroughput;
             this.deviceUplinkThroughput = deviceUplinkThroughput;
+            this.notificationAuthToken = notificationAuthToken;
         }
     }
 
