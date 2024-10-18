@@ -32,6 +32,7 @@ export interface SubscribeOptionalArgs {
         @param device (Device): Identifier of the device
         @param eventType (string): The status type you want to check, which can be connectivity or roaming.
         @param notificationUrl (string): Notification URL for session-related events.
+        @param maxNumOfReports (string): Number of notifications until the subscription is available.
         @param startsAt (optional): It represents when this subscription started.
         @param expiresAt (optional): It represents when this subscription should expire.
     #### Public Methods:
