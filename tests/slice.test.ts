@@ -354,6 +354,23 @@ describe("Slicing", () => {
         expect(slices[0].name).toEqual("sliceone");
     });
 
+    it("should return empty array if no slices found", async () => {
+        const mockSlices: any = [];
+
+        fetchMock.get(
+            `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([])
+        );
+
+        fetchMock.get(
+            "https://network-slicing.p-eu.rapidapi.com/slices",
+            JSON.stringify(mockSlices)
+        );
+
+        const slices = await client.slices.getAll();
+        expect(slices.length).toEqual(0);
+    });
+
     it("should get a slice", async () => {
         fetchMock.get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
