@@ -54,27 +54,25 @@ export class QodAPI {
  *  Function that hits the create session endpoint with the data
  * 
  * #### Args:
-            profile (any): Name of the requested QoS profile.
-            serviceIpv4 (any): IPv4 address of the service.
+ *          profile (string): Name of the requested QoS profile.
+            duration (optional): Session duration in seconds.
+            device (Device): Device object for the session.        
+            serviceIpv4 (string): IPv4 address of the service.
             serviceIpv6 (optional): IPv6 address of the service.
             devicePorts (optional): List of the device ports.
             servicePorts (optional): List of the application server ports.
-            duration (optional): Session duration in seconds.
             notificationUrl (optional): Notification URL for session-related events.
             notificationToken (optional): Security bearer token to authenticate registration of session.
 
         Returns:
-            Session: response of the endpoint, ideally a Session
+            Promise<Session>: response of the endpoint, ideally a Session
  */
     async createSession(
         profile: string,
         duration: number,
-        sid?: string,
+        device: Device,
         serviceIpv6?: string,
         serviceIpv4?: string,
-        phoneNumber?: string,
-        ipv4Address?: DeviceIpv4Addr,
-        ipv6Address?: string,
         devicePorts?: PortSpec,
         servicePorts?: PortSpec,
         notificationUrl?: string,
@@ -82,53 +80,25 @@ export class QodAPI {
     ) {
         let sessionPayload: any = {
             qosProfile: profile,
-            device: { ipv4Address: {} },
+            device: JSON.parse(JSON.stringify(device)),
             applicationServer: { ipv4Address: serviceIpv4 },
             devicePorts: devicePorts ? devicePorts : undefined,
             applicationServerPorts: servicePorts ? servicePorts : undefined,
             duration,
         };
 
-        if (sid) {
-            sessionPayload["device"]["networkAccessIdentifier"] = sid;
-        }
-
-        if (ipv4Address) {
-            if (ipv4Address.publicAddress) {
-                sessionPayload["device"]["ipv4Address"]["publicAddress"] =
-                    ipv4Address.publicAddress;
-            }
-            if (ipv4Address.privateAddress) {
-                sessionPayload["device"]["ipv4Address"]["privateAddress"] =
-                    ipv4Address.privateAddress;
-            }
-            if (ipv4Address.publicPort) {
-                sessionPayload["device"]["ipv4Address"]["publicPort"] =
-                    ipv4Address.publicPort;
-            }
-        }
-
-        if (ipv6Address) {
-            sessionPayload["device"]["ipv6Address"] = ipv6Address;
-        }
-
-        if (phoneNumber) {
-            sessionPayload["device"]["phoneNumber"] = phoneNumber;
-        }
-
         if (serviceIpv6) {
             sessionPayload["applicationServer"]["ipv6Address"] = serviceIpv6;
         }
 
         if (notificationUrl) {
-            sessionPayload["webhook"] = { "notificationUrl": notificationUrl };
+            sessionPayload["webhook"] = { notificationUrl: notificationUrl };
 
             if (notificationAuthToken) {
                 sessionPayload["webhook"]["notificationAuthToken"] =
                     "Bearer " + notificationAuthToken;
             }
         }
-
 
         let response = await fetch(this.baseUrl + "/sessions", {
             method: "POST",

@@ -118,6 +118,16 @@ export class Device {
         return this.networkAccessIdentifier;
     }
 
+    // To serialize Device object to JSON
+    toJSON() {
+        return {
+            networkAccessIdentifier: this.networkAccessIdentifier,
+            phoneNumber: this.phoneNumber,
+            ipv4Address: this.ipv4Address,
+            ipv6Address: this.ipv6Address,
+        };
+    }
+
     /**
  *  Creates a session for the device.
  * #### Args:
@@ -157,12 +167,9 @@ export class Device {
         let session = await this._api.sessions.createSession(
             profile,
             duration,
-            this.networkAccessIdentifier,
+            this,
             serviceIpv6,
             serviceIpv4,
-            this.phoneNumber,
-            this.ipv4Address,
-            this.ipv6Address,
             devicePorts,
             servicePorts,
             notificationUrl,
