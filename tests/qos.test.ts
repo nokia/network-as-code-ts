@@ -723,29 +723,13 @@ describe("Qos", () => {
     });
 
     test("should get all sessions", async () => {
-        let device = client.devices.get({
-            networkAccessIdentifier: "testuser@open5glab.net",
-            ipv4Address: {
-                publicAddress: "1.1.1.2",
-                privateAddress: "1.1.1.2",
-                publicPort: 80,
-            },
-            ipv6Address: "2041:0000:140F::875B:131B",
-            phoneNumber: "9382948473",
-        });
+        let device = client.devices.get({ phoneNumber: "9382948473" });
 
         let mockResponse = [
             {
                 sessionId: "1234",
                 qosProfile: "QOS_L",
                 device: {
-                    ipv4Address: {
-                        publicAddress: "1.1.1.2",
-                        privateAddress: "1.1.1.2",
-                        publicPort: 80,
-                    },
-                    ipv6Address: "2041:0000:140F::875B:131B",
-                    networkAccessIdentifier: "testuser@open5glab.net",
                     phoneNumber: "9382948473",
                 },
                 qosStatus: "BLA",
@@ -754,17 +738,23 @@ describe("Qos", () => {
             },
         ];
 
-        fetchMock.get(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
-            JSON.stringify(mockResponse)
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/retrieve-sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual({
+                    device: {
+                        phoneNumber: "9382948473",
+                    },
+                });
+                return JSON.stringify(mockResponse);
+            }
         );
 
         const sessions = await device.sessions();
         expect(sessions[0].id).toEqual("1234");
-        expect(sessions[0].device.networkAccessIdentifier).toEqual(
-            device.networkAccessIdentifier
-        );
-        expect(sessions[0].device.ipv6Address).toEqual(device.ipv6Address);
+        expect(sessions[0].device.phoneNumber).toEqual(device.phoneNumber);
     });
 
     test("should clear all device's sessions", async () => {
@@ -794,6 +784,20 @@ describe("Qos", () => {
                 startedAt: 0,
             },
         ];
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/retrieve-sessions",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual({
+                    device: {
+                        networkAccessIdentifier: "testuser@open5glab.net",
+                    },
+                });
+                return JSON.stringify(mockResponse);
+            }
+        );
 
         fetchMock.get(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
@@ -853,142 +857,29 @@ describe("Qos", () => {
         }
     });
 
-    test("should filter sessions by device network access identifier", async () => {
-        let device = client.devices.get({
-            networkAccessIdentifier: "testuser@open5glab.net",
-        });
-
-        let mockResponse = [
-            {
-                sessionId: "1234",
-                qosProfile: "QOS_L",
-                device: {
-                    networkAccessIdentifier: "testuser@open5glab.net",
-                },
-                qosStatus: "BLA",
-                expiresAt: 1641494400,
-                startedAt: 0,
-            },
-            {
-                sessionId: "12345",
-                qosProfile: "QOS_L",
-                device: {
-                    networkAccessIdentifier: "testuser2@open5glab.net",
-                },
-                qosStatus: "BLA",
-                expiresAt: 1641494400,
-                startedAt: 0,
-            },
-        ];
-
-        fetchMock.get(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
-            JSON.stringify(mockResponse)
-        );
-
-        const sessions = await device.sessions();
-        expect(sessions.length).toEqual(1);
-    });
-
     test("should return empty array for non-existent device", async () => {
         let device = client.devices.get({
             networkAccessIdentifier: "nonexistent-user@open5glab.net",
         });
 
-        fetchMock.get(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=nonexistent-user@open5glab.net",
-            {
-                status: 404,
-                detail: "QoS subscription not found",
+        const mockRequestBody = {
+            device: {
+                networkAccessIdentifier: "nonexistent-user@open5glab.net",
+            },
+        };
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/retrieve-sessions",
+            (res: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual(mockRequestBody);
+                expect(res.status).toEqual(404);
+                expect(res.detail).toEqual("QoS subscription not found");
+                return JSON.stringify("QoS subscription not found");
             }
         );
-
         const sessions = await device.sessions();
         expect(sessions.length).toEqual(0);
-    });
-
-    test("should filter sessions by device phone number", async () => {
-        let device = client.devices.get({
-            phoneNumber: "+123214343",
-        });
-
-        let mockResponse = [
-            {
-                sessionId: "1234",
-                qosProfile: "QOS_L",
-                device: {
-                    phoneNumber: "+123214343",
-                },
-                qosStatus: "BLA",
-                expiresAt: 1641494400,
-                startedAt: 0,
-            },
-            {
-                sessionId: "12345",
-                qosProfile: "QOS_L",
-                device: {
-                    phoneNumber: "+321433443",
-                },
-                qosStatus: "BLA",
-                expiresAt: 1641494400,
-                startedAt: 0,
-            },
-            {
-                sessionId: "12346",
-                qosProfile: "QOS_L",
-                device: {
-                    phoneNumber: "+123214343",
-                },
-                qosStatus: "BLA",
-                expiresAt: 1641494400,
-                startedAt: 0,
-            },
-        ];
-
-        fetchMock.get(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?phoneNumber=+123214343",
-            JSON.stringify(mockResponse)
-        );
-
-        const sessions = await device.sessions();
-        expect(sessions.length).toEqual(2);
-    });
-
-    test("should filter sessions by device phone number and ", async () => {
-        let device = client.devices.get({
-            networkAccessIdentifier: "testuser@open5glab.net",
-            phoneNumber: "+123214343",
-        });
-
-        let mockResponse = [
-            {
-                sessionId: "1234",
-                qosProfile: "QOS_L",
-                device: {
-                    networkAccessIdentifier: "testuser@open5glab.net",
-                },
-                qosStatus: "BLA",
-                expiresAt: 1641494400,
-                startedAt: 0,
-            },
-            {
-                sessionId: "12345",
-                qosProfile: "QOS_L",
-                device: {
-                    phoneNumber: "+321433443",
-                },
-                qosStatus: "BLA",
-                expiresAt: 1641494400,
-                startedAt: 0,
-            },
-        ];
-
-        fetchMock.get(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
-            JSON.stringify(mockResponse)
-        );
-
-        const sessions = await device.sessions();
-        expect(sessions.length).toEqual(1);
     });
 });

@@ -80,7 +80,7 @@ export class QodAPI {
     ) {
         let sessionPayload: any = {
             qosProfile: profile,
-            device: JSON.parse(JSON.stringify(device)),
+            device: device,
             applicationServer: { ipv4Address: serviceIpv4 },
             devicePorts: devicePorts ? devicePorts : undefined,
             applicationServerPorts: servicePorts ? servicePorts : undefined,
@@ -119,17 +119,12 @@ export class QodAPI {
            @returns Promise<any>
  */
     async getAllSessions(device: Device) {
-        let url = "";
-
-        if (device.networkAccessIdentifier) {
-            url = `/sessions?networkAccessIdentifier=${device.networkAccessIdentifier}`;
-        } else if (device.phoneNumber) {
-            url = `/sessions?phoneNumber=${device.phoneNumber}`;
-        }
-
-        let response = await fetch(this.baseUrl + url, {
-            method: "GET",
+        let response = await fetch(this.baseUrl + "/retrieve-sessions", {
+            method: "POST",
             headers: this.headers,
+            body: JSON.stringify({
+                device,
+            }),
             agent: this.agent,
         });
 
