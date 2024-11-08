@@ -1,5 +1,12 @@
 # Changelog
 
+## Version 3.1.0
+
+Changes:
+- Radius information has been added to `device.location()` output
+- QoD Sessions can now be extended with `session.extendSession()` method
+- Docstrings have been updated across the board
+
 ## Version 3.0.1
 
 Fixes:
