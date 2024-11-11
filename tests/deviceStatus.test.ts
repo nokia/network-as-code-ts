@@ -300,6 +300,8 @@ describe("Device Status", () => {
 
         expect(subscription.startsAt instanceof Date).toBeTruthy();
         expect(subscription.expiresAt instanceof Date).toBeTruthy();
+        expect(subscription.maxNumOfReports).toEqual(5);
+        expect(subscription.notificationAuthToken).toEqual("asdasd");
 
         expect(subscription.expiresAt).toEqual(
             new Date("2024-01-11T11:53:20.293671Z")
@@ -375,7 +377,9 @@ describe("Device Status", () => {
                         },
                         webhook: {
                             notificationUrl: "https://example.com/notify",
+                            notificationAuthToken: "my-token",
                         },
+                        maxNumberOfReports: 5,
                         startsAt: "2024-01-11T11:53:20.293671Z",
                     }),
                 });
@@ -389,6 +393,8 @@ describe("Device Status", () => {
         expect(subscription.eventSubscriptionId).toBe(
             "89cc1355-2ff1-4091-a935-54817c821260"
         );
+        expect(subscription.maxNumOfReports).toEqual(5);
+        expect(subscription.notificationAuthToken).toEqual("my-token");
         expect(subscription.device).toBeDefined();
         expect(subscription.device.networkAccessIdentifier).toBe(
             "test-device@testcsp.net"

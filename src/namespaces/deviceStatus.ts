@@ -15,14 +15,8 @@
  */
 
 import { Device } from "../models/device";
-import { Subscription } from "../models/deviceStatus";
+import { SubscribeOptionalArgs, Subscription } from "../models/deviceStatus";
 import { Namespace } from "./namespace";
-
-export interface SubscribeOptionalArgs {
-    subscriptionExpireTime?: Date | string;
-    maxNumberOfReports?: number;
-    notificationAuthToken?: string;
-}
 
 export class DeviceStatus extends Namespace {
     /**
@@ -32,7 +26,7 @@ export class DeviceStatus extends Namespace {
             @param eventType (string): Event type of the subscription.
             @param notificationUrl (string): Notification URL for session-related events.
             @param optionalArgs (SubscribeOptionalArgs): optional arguments(subscriptionExpireTime, maxNumberOfReports, notificationAuthToken)
-            @returns Promise Subscription
+            @returns Promise<Subscription>
     */
 
     async subscribe(
@@ -62,6 +56,8 @@ export class DeviceStatus extends Namespace {
             device,
             eventType,
             notificationUrl,
+            optionalArgs?.notificationAuthToken,
+            optionalArgs?.maxNumberOfReports,
             jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
             jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
         );
@@ -71,7 +67,10 @@ export class DeviceStatus extends Namespace {
      *  Get a subscription by its external ID.
      * 
             @param eventSubscriptionId (string): Resource ID
-            @returns Promise Subscription
+            @example ```TypeScript 
+            const subscription = await client.deviceStatus.get(subscription.eventSubscriptionId);
+            ```
+            @returns Promise<Subscription>
     */
     async get(eventSubscriptionId: string): Promise<Subscription> {
         const jsonData = await this.api.deviceStatus.get(eventSubscriptionId);
@@ -92,6 +91,8 @@ export class DeviceStatus extends Namespace {
             device,
             jsonData.subscriptionDetail["type"],
             jsonData.webhook.notificationUrl,
+            jsonData.webhook.notificationAuthToken,
+            jsonData.maxNumberOfReports,
             jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
             jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
         );
@@ -100,6 +101,9 @@ export class DeviceStatus extends Namespace {
     /**
      *  Get a list of active subscriptions
      * 
+     *      @example ```TypeScript 
+            const subscriptions = await client.deviceStatus.getSubscriptions();
+            ```
             @returns Promise<Subscription[]>
     */
     async getSubscriptions(): Promise<Subscription[]> {
@@ -122,6 +126,8 @@ export class DeviceStatus extends Namespace {
                 device,
                 entry.subscriptionDetail["type"],
                 entry.webhook.notificationUrl,
+                entry.webhook.notificationAuthToken,
+                entry.maxNumberOfReports,
                 entry.startsAt ? new Date(entry.startsAt) : undefined,
                 entry.expiresAt ? new Date(entry.expiresAt) : undefined
             );

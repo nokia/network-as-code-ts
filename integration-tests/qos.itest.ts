@@ -1,17 +1,14 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
-import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { Device, DeviceIpv4Addr } from "../src/models/device";
+import { QoDSession } from "../src/models/session";
+
+import { configureClient } from "./configClient";
 
 let client: NetworkAsCodeClient;
 
-beforeAll((): any => {
-    const NAC_TOKEN = process.env["NAC_TOKEN"];
-    client = new NetworkAsCodeClient(
-        NAC_TOKEN ? NAC_TOKEN : "TEST_TOKEN",
-        true
-    );
-    return client;
+beforeAll(() => {
+    client = configureClient()
 });
 
 describe("Qos", () => {
@@ -210,7 +207,20 @@ describe("Qos", () => {
 
         expect(session.startedAt).toBeTruthy();
         expect(session.expiresAt).toBeTruthy();
-        expect(session.duration()).toEqual(60);
+        expect(session.duration).toEqual(60);
+        await session.deleteSession();
+    });
+
+    test("should extend the duration of a session", async () => {
+        const session = await device.createQodSession("QOS_L", {
+            serviceIpv4: "5.6.7.8",
+            serviceIpv6: "2041:0000:140F::875B:131B",
+            duration: 60,
+        });
+
+        expect(session.duration).toEqual(60);
+        await session.extendSession(60);
+        expect(session.duration).toEqual(120);
         await session.deleteSession();
     });
 

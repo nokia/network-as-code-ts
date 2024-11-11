@@ -32,33 +32,28 @@ export class Slices extends Namespace {
     /**
  *  Create a slice with its network identifier, slice info, area of service, and notification url.
  * 
- * #### Args:
-            @param networkId (NetworkIdentifier): Name of the network
-            @param sliceInfo (SliceInfo): Purpose of this slice
-            @param areaOfService (AreaOfService): Location of the slice
-            @param sliceDownlinkThroughput (optional): Optional throughput object
-            @param sliceUplinkThroughput (optional): Optional throughput object
-            @param deviceDownlinkThroughput (optional): Optional throughput object
-            @param deviceUplinkThroughput: (optional): Optional throughput object
-            @param name (optional): Optional short name for the slice. Must be ASCII characters, digits and dash. Like name of an event, such as "Concert-2029-Big-Arena".
-            @param maxDataConnections (optional): Optional maximum number of data connection sessions in the slice.
-            @param maxDevices (optional): Optional maximum number of devices using the slice.
-            @returns Slice
-    #### Example:
-        import NetworkIdentifier, SliceInfo, AreaOfService, Point from models.slice
-        
+    @param networkId (NetworkIdentifier): Name of the network
+    @param sliceInfo (SliceInfo): Purpose of this slice
+    @param notificationUrl (string): Destination URL of notifications
+    @param optionalArgs (SliceOptionalArgs): optional arguments (sid, name, 
+    areaOfService, maxDataConnections, maxDevices, notificationAuthToken, sliceDownlinkThroughput, ...)
+    @returns Promise<Slice>
+   @example ```TypeScript
+            networkId = {mcc:"358ffYYT", mnc:"246fsTRE"}
+            sliceInfo = {service_type:"eMBB", differentiator:"44eab5"}
+            areaOfService = {poligon:[Point(lat=47.344, lon=104.349), Point(lat=35.344, lon=76.619), Point(lat=12.344, lon=142.541), Point(lat=19.43, lon=103.53)]}
+            notificationUrl = "https://notify.me/here"
 
-        networkId = {mcc:"358ffYYT", mnc:"246fsTRE"}
-        sliceInfo = {service_type:"eMBB", differentiator:"44eab5"}
-        areaOfService = {poligon:[Point(lat=47.344, lon=104.349), Point(lat=35.344, lon=76.619), Point(lat=12.344, lon=142.541), Point(lat=19.43, lon=103.53)]}
-        notificationUrl = "https://notify.me/here"
-
-        newSlice = nacClient.slices.create(
-            network_id = network_id,
-            slice_info = slice_info,
-            area_of_service = area_of_service,
-            notification_url = notification_url
-        )
+            newSlice = nacClient.slices.create(
+                networkId,
+                sliceInfo,
+                notificationUrl,
+                {
+                    name: 'slice_one',
+                    areaOfService
+                }
+            )
+        ```
  */
 
     async create(
@@ -90,14 +85,13 @@ export class Slices extends Namespace {
     }
 
     /**
- *  Get All slices by id.
- * 
- * #### Args:
-            None
-        @returns Promise Slice[]
-
-    #### Example:
-            fetchedSlices = nac_client.slices.getAll()
+ *  Get All slices.
+ *  @param None
+    @returns Promise<Slice[]>
+    @example ```TypeScript
+        fetchedSlices = nacClient.slices.getAll()
+    ``` 
+ *
  */
     async getAll(): Promise<Slice[]> {
         const data: any = await this.api.slicing.getAll();
@@ -140,13 +134,11 @@ export class Slices extends Namespace {
 
     /**
  *  Get network slice by id.
- * 
- * #### Args:
           @param  id (string): Resource id.
-          @returns Promise Slice
-
-    #### Example:
-           fetchedSlice = nac_client.slices.get(id)
+          @returns Promise<Slice>
+          @example ```TypeScript
+            fetchedSlice = nacClient.slices.get(id)
+          ``` 
  */
     async get(id: string): Promise<Slice> {
         const data: any = await this.api.slicing.get(id);
@@ -184,11 +176,10 @@ export class Slices extends Namespace {
 
     /**
  *  Get Application Attachment Instance
- * #### Args:
-            id (string): Application Attachment Id
-
-    #### Example:
-            attachment = nac_client.slices.get_attachment(id)
+          @param  id (string): Application Attachment Id
+          @example ```TypeScript
+            attachment = nacClient.slices.getAttachment(id)
+          ``` 
  */
     async getAttachment(id: string) {
         return await this.api.sliceAttach.get(id);
@@ -196,11 +187,10 @@ export class Slices extends Namespace {
 
     /**
  *  Get All Application Attachments
- * #### Args:
-            None
-
-    #### Example:
-            attachment = nac_client.slices.get_attachment(id)
+ * @param None
+   @example ```TypeScript
+        attachment = nacClient.slices.getAttachments()
+    ``` 
  */
     async getAllAttachments() {
         return await this.api.sliceAttach.getAttachments();

@@ -33,6 +33,14 @@ describe("Qos", () => {
         );
     });
 
+    test("should throw an Error if no identifier is provided", () => {
+        try {
+            client.devices.get({});
+        } catch (error) {
+            expect(error).toBeInstanceOf(Error);
+        }
+    });
+
     test("should create a session", async () => {
         let device = client.devices.get({
             networkAccessIdentifier: "test-device@testcsp.net",
@@ -61,6 +69,7 @@ describe("Qos", () => {
             qosStatus: "REQUESTED",
             startedAt: "2024-06-18T09:46:58.213Z",
             expiresAt: "2024-06-18T09:47:58.213Z",
+            duration: 3600,
         };
 
         let mockRequestBody = {
@@ -100,7 +109,7 @@ describe("Qos", () => {
         );
         expect(session.serviceIpv4).toEqual("5.6.7.8");
         expect(session.serviceIpv6).toBeFalsy();
-        expect(session.duration()).toEqual(60);
+        expect(session.duration).toEqual(3600);
     });
 
     test("should create a session with service ipv6", async () => {
@@ -512,6 +521,7 @@ describe("Qos", () => {
             qosStatus: "REQUESTED",
             startedAt: "2024-06-18T09:46:58.213Z",
             expiresAt: "2024-06-18T09:47:58.213Z",
+            duration: 60,
         };
 
         let mockRequestBody = {
@@ -549,7 +559,63 @@ describe("Qos", () => {
             duration: 60,
         });
         expect(session.status).toEqual(mockResponse["qosStatus"]);
-        expect(session.duration()).toEqual(60);
+        expect(session.duration).toEqual(60);
+    });
+
+    test("should extend a session's duration", async () => {
+        let mockFetchResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            device: {
+                networkAccessIdentifier: "testuser@open5glab.net",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+            },
+            qosStatus: "REQUESTED",
+            startedAt: "2024-06-18T09:46:58.213Z",
+            expiresAt: "2024-06-18T09:47:58.213Z",
+            duration: 60,
+        };
+
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            device: {
+                networkAccessIdentifier: "testuser@open5glab.net",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+            },
+            qosStatus: "REQUESTED",
+            startedAt: "2024-06-18T09:46:58.213Z",
+            expiresAt: "2024-06-18T09:47:58.213Z",
+            duration: 260,
+        };
+
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            JSON.stringify(mockFetchResponse)
+        );
+
+        fetchMock.post(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0/extend",
+            (_: any, req: any) => {
+                expect(req.method).toBe("POST");
+                const requestBody = JSON.parse(req.body);
+                expect(requestBody).toEqual({
+                    requestedAdditionalDuration: 200,
+                });
+                return JSON.stringify(mockResponse);
+            }
+        );
+
+        let session = await client.sessions.get(
+            "08305343-7ed2-43b7-8eda-4c5ae9805bd0"
+        );
+        expect(session.duration).toEqual(60);
+        await session.extendSession(200);
+        expect(await session.duration).toEqual(260);
     });
 
     test("should create a session with notification info", async () => {
@@ -605,7 +671,7 @@ describe("Qos", () => {
             webhook: {
                 notificationUrl: "https://example.com/notifications",
                 notificationAuthToken: "Bearer c8974e592c2fa383d4a3960714",
-            }
+            },
         };
 
         fetchMock.post(
@@ -701,6 +767,57 @@ describe("Qos", () => {
         expect(sessions[0].device.ipv6Address).toEqual(device.ipv6Address);
     });
 
+    test("should clear all device's sessions", async () => {
+        let device = client.devices.get({
+            networkAccessIdentifier: "testuser@open5glab.net",
+        });
+
+        let mockResponse = [
+            {
+                sessionId: "1234",
+                qosProfile: "QOS_L",
+                device: {
+                    networkAccessIdentifier: "testuser@open5glab.net",
+                },
+                qosStatus: "BLA",
+                expiresAt: 1641494400,
+                startedAt: 0,
+            },
+            {
+                sessionId: "12345",
+                qosProfile: "QOS_L",
+                device: {
+                    networkAccessIdentifier: "testuser@open5glab.net",
+                },
+                qosStatus: "BLA",
+                expiresAt: 1641494400,
+                startedAt: 0,
+            },
+        ];
+
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
+            JSON.stringify(mockResponse)
+        );
+
+        const sessions = await device.sessions();
+        expect(sessions.length).toEqual(2);
+
+        fetchMock.delete(
+            `https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/${mockResponse[0].sessionId}`,
+            JSON.stringify({})
+        );
+
+        fetchMock.delete(
+            `https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/${mockResponse[1].sessionId}`,
+            JSON.stringify({})
+        );
+        await device.clearSessions();
+        const requests = fetchMock.calls();
+        expect(requests[requests.length - 1][1]?.method).toEqual("DELETE");
+        expect(requests[requests.length - 2][1]?.method).toEqual("DELETE");
+    });
+
     test("should not create a session without ip address", async () => {
         let device = client.devices.get({
             ipv4Address: {
@@ -771,6 +888,23 @@ describe("Qos", () => {
 
         const sessions = await device.sessions();
         expect(sessions.length).toEqual(1);
+    });
+
+    test("should return empty array for non-existent device", async () => {
+        let device = client.devices.get({
+            networkAccessIdentifier: "nonexistent-user@open5glab.net",
+        });
+
+        fetchMock.get(
+            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=nonexistent-user@open5glab.net",
+            {
+                status: 404,
+                detail: "QoS subscription not found",
+            }
+        );
+
+        const sessions = await device.sessions();
+        expect(sessions.length).toEqual(0);
     });
 
     test("should filter sessions by device phone number", async () => {

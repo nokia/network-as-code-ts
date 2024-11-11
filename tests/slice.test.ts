@@ -4,6 +4,7 @@ import fetch from "node-fetch";
 import {
     APIError,
     AuthenticationError,
+    InvalidParameterError,
     NotFoundError,
     ServiceError,
 } from "../src/errors";
@@ -94,7 +95,22 @@ beforeEach(() => {
 });
 
 describe("Slicing", () => {
-    it("should create a slice", async () => {
+    it("should create a slice only with mandatory params", async () => {
+        fetchMock.post(
+            "https://network-slicing.p-eu.rapidapi.com/slices",
+            JSON.stringify(MOCK_SLICE)
+        );
+
+        const newSlice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "AAABBB" },
+            "https://example.com/notify"
+        );
+
+        expect(newSlice.state).toBe(MOCK_SLICE.state);
+    });
+
+    it("should create a slice with optional args", async () => {
         fetchMock.post(
             "https://network-slicing.p-eu.rapidapi.com/slices",
             JSON.stringify(MOCK_SLICE)
@@ -104,7 +120,30 @@ describe("Slicing", () => {
             { mcc: "236", mnc: "30" },
             { serviceType: "eMBB", differentiator: "AAABBB" },
             "https://example.com/notify",
-            { name: "sliceone" }
+            {
+                name: "sliceone",
+                areaOfService: {
+                    polygon: [
+                        {
+                            latitude: 47.344,
+                            longitude: 104.349,
+                        },
+                        {
+                            latitude: 35.344,
+                            longitude: 76.619,
+                        },
+                        {
+                            latitude: 12.344,
+                            longitude: 142.541,
+                        },
+                        {
+                            latitude: 19.43,
+                            longitude: 103.53,
+                        },
+                    ],
+                },
+                notificationAuthToken: "my-token",
+            }
         );
 
         expect(newSlice.name).toBe("sliceone");
@@ -313,6 +352,23 @@ describe("Slicing", () => {
 
         const slices = await client.slices.getAll();
         expect(slices[0].name).toEqual("sliceone");
+    });
+
+    it("should return empty array if no slices found", async () => {
+        const mockSlices: any = [];
+
+        fetchMock.get(
+            `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([])
+        );
+
+        fetchMock.get(
+            "https://network-slicing.p-eu.rapidapi.com/slices",
+            JSON.stringify(mockSlices)
+        );
+
+        const slices = await client.slices.getAll();
+        expect(slices.length).toEqual(0);
     });
 
     it("should get a slice", async () => {
@@ -612,7 +668,7 @@ describe("Slicing", () => {
         expect(fetchMock).toBeTruthy();
     });
 
-    it("should attach a device to slice", async () => {
+    it("should attach a device to slice with all params", async () => {
         fetchMock.get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE)
@@ -621,24 +677,6 @@ describe("Slicing", () => {
         fetchMock.get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
-                {
-                    nac_resource_id: "attachment-1",
-                    resource: {
-                        device: {
-                            phoneNumber: "+12065550100",
-                        },
-                        sliceId: "sliceone",
-                    },
-                },
-                {
-                    nac_resource_id: "attachment-2",
-                    resource: {
-                        device: {
-                            phoneNumber: "09213284343",
-                        },
-                        sliceId: "sliceone",
-                    },
-                },
                 {
                     nac_resource_id: "attachment-3",
                     resource: {
@@ -705,6 +743,111 @@ describe("Slicing", () => {
         );
     });
 
+    it("should attach a device to slice with only mandatory params", async () => {
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            JSON.stringify(MOCK_SLICE)
+        );
+
+        fetchMock.get(
+            `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+            ])
+        );
+
+        const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
+
+        fetchMock.post(
+            `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    device: {
+                        phoneNumber: device.phoneNumber,
+                    },
+                    sliceId: "sliceone",
+                });
+
+                return Promise.resolve({
+                    body: JSON.stringify({
+                        nac_resource_id: "attachment-1",
+                    }),
+                });
+            }
+        );
+        const device = client.devices.get({
+            phoneNumber: "+3637123456",
+        });
+        await slice.attach(device);
+    });
+
+    it("should throw an error if a device phone number is not given for attachment", async () => {
+        fetchMock.get(
+            `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+            JSON.stringify(MOCK_SLICE)
+        );
+
+        fetchMock.get(
+            `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
+            JSON.stringify([
+                {
+                    nac_resource_id: "attachment-1",
+                    resource: {
+                        device: {
+                            phoneNumber: "+12065550100",
+                        },
+                        sliceId: "sliceone",
+                    },
+                },
+            ])
+        );
+
+        const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
+
+        fetchMock.post(
+            `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    device: {
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    sliceId: "sliceone",
+                });
+
+                return Promise.resolve({
+                    body: JSON.stringify({
+                        nac_resource_id: "attachment-1",
+                    }),
+                });
+            }
+        );
+        const device = client.devices.get({
+            ipv4Address: {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+        });
+
+        try {
+            await slice.attach(device);
+        } catch (error) {
+            expect(error).toBeInstanceOf(InvalidParameterError);
+        }
+    });
+
     it("should detach a device from slice", async () => {
         fetchMock.get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
@@ -752,6 +895,27 @@ describe("Slicing", () => {
         );
 
         await slice.detach(device);
+    });
+
+    test("should throw a NotFoundError if attachment id is not found", async () => {
+        try {
+            fetchMock.get(
+                `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
+                JSON.stringify(MOCK_SLICE)
+            );
+            fetchMock.get(
+                `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
+                JSON.stringify([])
+            );
+            const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
+            fetchMock.delete(
+                `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments/attachment-1`,
+                JSON.stringify({})
+            );
+            await slice.detach(device);
+        } catch (error) {
+            expect(error).toBeInstanceOf(NotFoundError);
+        }
     });
 
     it("should get application attachment", async () => {

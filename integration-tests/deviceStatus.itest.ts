@@ -1,16 +1,13 @@
 import { NetworkAsCodeClient } from "../src";
 import "dotenv/config";
 import { Device } from "../src/models/device";
+import { configureClient } from "./configClient";
 
 let client: NetworkAsCodeClient;
 let device: Device;
 
 beforeAll(() => {
-    const NAC_TOKEN = process.env["NAC_TOKEN"];
-    client = new NetworkAsCodeClient(
-        NAC_TOKEN ? NAC_TOKEN : "TEST_TOKEN",
-        true
-    );
+    client = configureClient();
     device = client.devices.get({
         networkAccessIdentifier: "test-device@testcsp.net",
         ipv4Address: {
@@ -50,6 +47,24 @@ describe("Device Status", () => {
         expect(subscription.expiresAt).toEqual(
             new Date(tomorrowDate.toISOString().replace(".000", ""))
         );
+
+        subscription.delete();
+    });
+
+    it("can create a connectivity subscription with other optional arguments", async () => {
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            "org.camaraproject.device-status.v0.connectivity-data",
+            "https://example.com/notify",
+            {
+                maxNumberOfReports: 2,
+                notificationAuthToken: "my-token",
+            }
+        );
+
+        expect(subscription.eventSubscriptionId).toBeDefined();
+        expect(subscription.maxNumOfReports).toEqual(2);
+        expect(subscription.notificationAuthToken).toEqual("my-token");
 
         subscription.delete();
     });

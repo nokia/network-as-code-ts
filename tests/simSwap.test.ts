@@ -47,7 +47,48 @@ describe("Sim Swap", () => {
         );
 
         const latestSimSwapDate = await device.getSimSwapDate();
-        expect(latestSimSwapDate).toEqual(new Date(Date.parse("2024-06-19T10:36:59.976Z")));
+        expect(latestSimSwapDate).toEqual(
+            new Date(Date.parse("2024-06-19T10:36:59.976Z"))
+        );
+    });
+
+    it("should throw InvalidParameter error for no phone number - getSimSwapDate()", async () => {
+        const device = client.devices.get({
+            networkAccessIdentifier: "testuser@open5glab.net",
+        });
+        try {
+            await device.getSimSwapDate();
+        } catch (error) {
+            expect(error).toBeInstanceOf(InvalidParameterError);
+        }
+    });
+
+    it("should return null if the response doesn't contain latestSimChange", async () => {
+        fetchMock.post(
+            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/retrieve-date",
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    phoneNumber: "3637123456",
+                });
+                return Promise.resolve({
+                    body: JSON.stringify({}),
+                });
+            }
+        );
+
+        const response = await device.getSimSwapDate();
+        expect(response).toBeNull();
+    });
+
+    it("should throw InvalidParameter error for no phone number - verifySimSwap()", async () => {
+        const device = client.devices.get({
+            networkAccessIdentifier: "testuser@open5glab.net",
+        });
+        try {
+            await device.verifySimSwap();
+        } catch (error) {
+            expect(error).toBeInstanceOf(InvalidParameterError);
+        }
     });
 
     it("should handle null", async () => {
@@ -85,11 +126,12 @@ describe("Sim Swap", () => {
         );
 
         const deviceWithoutNumber = client.devices.get({
-            networkAccessIdentifier: "device@testcsp.net"
+            networkAccessIdentifier: "device@testcsp.net",
         });
 
-        
-        expect(async () => await deviceWithoutNumber.getSimSwapDate()).rejects.toThrow(InvalidParameterError);
+        expect(
+            async () => await deviceWithoutNumber.getSimSwapDate()
+        ).rejects.toThrow(InvalidParameterError);
     });
 
     it("should verify sim swap without max age", async () => {
@@ -145,10 +187,11 @@ describe("Sim Swap", () => {
         );
 
         const deviceWithoutNumber = client.devices.get({
-            networkAccessIdentifier: "device@testcsp.net"
+            networkAccessIdentifier: "device@testcsp.net",
         });
 
-        
-        expect(async () => await deviceWithoutNumber.verifySimSwap()).rejects.toThrow(InvalidParameterError);
+        expect(
+            async () => await deviceWithoutNumber.verifySimSwap()
+        ).rejects.toThrow(InvalidParameterError);
     });
 });

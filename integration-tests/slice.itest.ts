@@ -3,16 +3,12 @@ import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { Slice } from "../src/models/slice";
 import { Device } from "../src/models/device";
+import { configureClient } from "./configClient";
 
 let client: NetworkAsCodeClient;
 
 beforeAll((): any => {
-    const NAC_TOKEN = process.env["NAC_TOKEN"];
-    client = new NetworkAsCodeClient(
-        NAC_TOKEN ? NAC_TOKEN : "TEST_TOKEN",
-        true
-    );
-    return client;
+    client = configureClient();
 });
 
 describe("Slicing", () => {
@@ -59,7 +55,11 @@ describe("Slicing", () => {
         expect(new_slice.networkIdentifier.mnc).toEqual("30");
     });
 
-    test.failing("should modify a slice", async () => {
+    // NOTE: This test takes a long time to execute, since it must wait for slice creation
+    // if you are in a rush, add a temporary skip here
+    test("should modify a slice", async () => {
+        await slice.waitFor("AVAILABLE");
+
         expect(slice.maxDataConnections).toBeUndefined();
         expect(slice.maxDevices).toBeUndefined();
 
@@ -78,7 +78,7 @@ describe("Slicing", () => {
         expect(slice.sliceDownlinkThroughput).toBeTruthy();
         expect(slice.deviceUplinkThroughput).toBeTruthy();
         expect(slice.deviceDownlinkThroughput).toBeTruthy();
-    });
+    }, 720000);
 
     // Temporarly skip because of the ISE in attachment endpoint,
     // the test.failing couldn't mark it as failing test for some reason, so test.skip is used for now
@@ -195,7 +195,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test("should attach device to slice and detach", async () => {
+    test("should attach device to slice and detach with all params", async () => {
         const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
         await slice.waitFor("AVAILABLE");
@@ -219,6 +219,48 @@ describe("Slicing", () => {
                 },
             }
         );
+
+        await sleep(30000);
+
+        const attachment: any = await client.slices.getAttachment(
+            newAttachment["nac_resource_id"]
+        );
+
+        expect(attachment["nac_resource_id"]).toEqual(
+            newAttachment["nac_resource_id"]
+        );
+
+        await slice.detach(device);
+
+        await slice.deactivate();
+
+        await slice.waitFor("AVAILABLE");
+
+        expect(slice.state).toEqual("AVAILABLE");
+
+        await slice.delete();
+    }, 720000);
+
+    // NOTE: This test takes a long time to execute, since it must wait for slice updates
+    // if you are in a rush, add a temporary skip here
+    test("should attach device to slice and detach with manadatory params", async () => {
+        const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
+
+        await slice.waitFor("AVAILABLE");
+
+        expect(slice.state).toEqual("AVAILABLE");
+
+        await slice.activate();
+
+        await slice.waitFor("OPERATING");
+
+        expect(slice.state).toEqual("OPERATING");
+
+        const device = client.devices.get({
+            phoneNumber: "+3637123456",
+        });
+
+        const newAttachment = await slice.attach(device);
 
         await sleep(30000);
 

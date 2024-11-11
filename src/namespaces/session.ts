@@ -29,7 +29,7 @@ export class Sessions extends Namespace {
      * 
      * Args:
             @param id (string): ID of the QoS Session
-            @returns Promise QoDSession
+            @returns Promise<QoDSession>
     */
     async get(id: string): Promise<QoDSession> {
         const session = await this.api.sessions.getSession(id);

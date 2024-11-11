@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-/**
- *  A class representing the `PortRange` model.
- * #### Public Attributes:
-            from (int): the `from` of a port object.
-            to (int): the `to` of a port object.
- */
-
 import { APIClient } from "../api/client";
 import { Device } from "./device";
 
+/**
+ *  An interface representing the `PortRange` model.
+ * #### Public Attributes:
+            @param from (number): the `from` of a port object.
+            @param to (number): the `to` of a port object.
+ */
 export interface PortRange {
     // Aliasing Functionality is not implemented here but the python version has it
     from: number;
@@ -50,15 +49,18 @@ export interface PortSpec {
 
     #### Public Attributes:
         @param id (string): Session identifier.
-        @param serviceIp (string): IP address of a service.
-        @param servicePorts (Union[PortsSpec, undefined]): List of ports for a service.
         @param profile (string): Name of the requested QoS profile.
+        @param device (Device): Session belongs to device.
+        @param duration (number | undefined): The duration of a given session.
+        @param serviceIpv4 (string): IPv4 address of a service.
+        @param serviceIpv6 (string): IPv6 address of a service.
+        @param servicePorts (Union[PortsSpec, undefined]): List of ports for a service.
         @param status(string): Status of the requested QoS.
         @param startedAt (Union[number, undefined]): Starting time of the session.
         @param expiresAt (Union[number, undefined]): Expiry time of the session.
     #### Public Methods:
-        delete (undefined): Deletes a given session.
-        duration (number | undefined): Returns the duration of a given session.
+        deleteSession (): Deletes a given session.
+        extendSession (): Extends the duration of a given session.
     #### Static Methods:
         convertSessionModel (Session): Returns A `Session` instance.
  */
@@ -67,6 +69,7 @@ export class QoDSession {
     id: string;
     profile: string | undefined;
     device: Device;
+    duration?: number;
     serviceIpv4?: string = "";
     serviceIpv6?: string = "";
     servicePorts?: PortSpec;
@@ -85,11 +88,11 @@ export class QoDSession {
         this.serviceIpv4 = options?.serviceIpv4;
         this.serviceIpv6 = options?.serviceIpv6;
         this.servicePorts = options?.servicePorts;
+        this.duration = options?.duration;
     }
 
     /**
      *  Deletes a given session
-     *
      */
     async deleteSession() {
         if (this.id) {
@@ -98,14 +101,18 @@ export class QoDSession {
     }
 
     /**
-     *  Returns the duration of a given session in seconds.
-     *
+     *  Extends the duration of a given session.
+     * #### Args:
+            @param additionalDuration (number): Additional session duration in seconds.
      */
-    duration() {
-        if (this.startedAt && this.expiresAt) {
-            return (this.expiresAt.getTime() - this.startedAt.getTime()) / 1000;
-        } else {
-            return null;
+    async extendSession(additionalDuration: number) {
+        if (this.id) {
+            const res = await this._api.sessions.extendSession(
+                this.id,
+                additionalDuration
+            );
+            const sessionJson: any = await res.json();
+            this.duration = sessionJson.duration;
         }
     }
 
@@ -114,7 +121,7 @@ export class QoDSession {
 
  * Assigns the startedAt and expiresAt attributes None if their value not found.
      #### Args:
-            @param ip (any): IP address of the service.
+            @param device (any): A `Device` object.
             @param session (any): A `Session` object created by the low-level API.
             @returns QoDSession
  */
@@ -139,6 +146,7 @@ export class QoDSession {
             servicePorts: session["applicationServerPorts"],
             profile: session["qosProfile"],
             status: session["qosStatus"],
+            duration: session["duration"],
             startedAt,
             expiresAt,
         });

@@ -38,6 +38,18 @@ export class Devices extends Namespace {
                 - ipv4Address (DeviceIpv4Addr | undefined): ipv4 address of the subscription.
                 - ipv6Address (string | undefined): ipv6 address of the subscription.
                 - phoneNumber (string | undefined): phone number of the subscription.
+
+            @example ```TypeScript
+            const device = client.devices.get({
+                    networkAccessIdentifier: "test-device@testcsp.net",
+                    ipv4Address: {
+                        publicAddress: "1.1.1.2",
+                        privateAddress: "1.1.1.2",
+                        publicPort: 80,
+                    },
+                    phoneNumber: "+36705345345",
+        });
+            ```
             @returns Device
     */
     get({

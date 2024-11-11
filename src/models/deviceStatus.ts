@@ -17,12 +17,35 @@
 import { APIClient } from "../api";
 import { Device } from "./device";
 
+export interface SubscribeOptionalArgs {
+    subscriptionExpireTime?: Date | string;
+    maxNumberOfReports?: number;
+    notificationAuthToken?: string;
+}
+
+/**
+ *  A class representing the `ConnectivitySubscription` model.
+ * #### Private Attributes:
+        @param api(APIClient): An API client object.
+    #### Public Attributes:
+        @param eventSubscriptionId (string): IIt represents the subscription identifier.
+        @param device (Device): Identifier of the device
+        @param eventType (string): The status type you want to check, which can be connectivity or roaming.
+        @param notificationUrl (string): Notification URL for session-related events.
+        @param maxNumOfReports (string): Number of notifications until the subscription is available.
+        @param startsAt (optional): It represents when this subscription started.
+        @param expiresAt (optional): It represents when this subscription should expire.
+    #### Public Methods:
+        @method delete(): Deletes device connectivity status subscription.
+ */
 export class Subscription {
     private api: APIClient;
     eventSubscriptionId: string;
     device: Device;
     eventType: string;
     notificationUrl: string;
+    maxNumOfReports?: number;
+    notificationAuthToken?: string;
     startsAt?: Date;
     expiresAt?: Date;
 
@@ -32,6 +55,8 @@ export class Subscription {
         device: Device,
         eventType: string,
         notificationUrl: string,
+        notificationAuthToken?: string,
+        maxNumOfReports?: number,
         startsAt?: Date,
         expiresAt?: Date
     ) {
@@ -42,6 +67,8 @@ export class Subscription {
         this.notificationUrl = notificationUrl;
         this.startsAt = startsAt;
         this.expiresAt = expiresAt;
+        this.maxNumOfReports = maxNumOfReports;
+        this.notificationAuthToken = notificationAuthToken;
     }
 
     /**

@@ -1,16 +1,12 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
+import { configureClient } from "./configClient";
 
 let client: NetworkAsCodeClient;
 
 beforeAll((): any => {
-    const NAC_TOKEN = process.env["NAC_TOKEN"];
-    client = new NetworkAsCodeClient(
-        NAC_TOKEN ? NAC_TOKEN : "TEST_TOKEN",
-        true
-    );
-    return client;
+    client = configureClient()
 });
 
 describe("Location retrieval and verification", () => {
@@ -30,6 +26,7 @@ describe("Location retrieval and verification", () => {
 
         expect(location.latitude).toBe(47.48627616952785);
         expect(location.longitude).toBe(19.07915612501993);
+        expect(location.radius).toBe(1000);
     });
 
     it("should verify location of a test device", async () => {

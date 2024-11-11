@@ -99,6 +99,7 @@ describe("Location", () => {
                         longitude: 0.0,
                         latitude: 0.0,
                     },
+                    radius: 1000,
                 },
                 civicAddress: {
                     country: "Finland",
@@ -116,6 +117,7 @@ describe("Location", () => {
 
         expect(location.longitude).toBe(0.0);
         expect(location.latitude).toBe(0.0);
+        expect(location.radius).toBe(1000);
         expect(location.civicAddress).toBeDefined();
     });
 
@@ -128,6 +130,7 @@ describe("Location", () => {
                         longitude: 0.0,
                         latitude: 0.0,
                     },
+                    radius: 1000,
                 },
                 civicAddress: {
                     country: "Finland",
@@ -145,6 +148,7 @@ describe("Location", () => {
 
         expect(location.longitude).toBe(0.0);
         expect(location.latitude).toBe(0.0);
+        expect(location.radius).toBe(1000);
         expect(location.civicAddress).toBeDefined();
     });
 

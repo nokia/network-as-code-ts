@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 interface CivicAddress {
     country?: string;
     a1?: string;
@@ -24,8 +23,7 @@ interface CivicAddress {
     a5?: string;
     a6?: string;
 }
-  
-  
+
 interface Location {
     /**
      * A class representing the `Location` model.
@@ -33,13 +31,12 @@ interface Location {
      * @param longitude - The `longitude` of a location object.
      * @param latitude - The `latitude` of a location object.
      * @param civicAddress - The `civic_address` of a location object (optional).
+     * @param radius - The `radius` of a location object (optional).
      */
     longitude: number;
     latitude: number;
     civicAddress?: CivicAddress;
+    radius?: number;
 }
-  
-export {
-    Location,
-    CivicAddress
-}
+
+export { Location, CivicAddress };
