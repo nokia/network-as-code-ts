@@ -113,6 +113,7 @@ pipeline {
       }
     }
     stage('Integration Test') {
+      when { expression { env.gitlabActionType != "TAG_PUSH"} }
       steps {
         container('narwhal') {
           script {
