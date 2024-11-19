@@ -9,7 +9,7 @@ let device: Device;
 beforeAll(() => {
     client = configureClient()
     device = client.devices.get({
-        phoneNumber: "+3672123456",
+        phoneNumber: "+3670123456",
     });
 });
 
