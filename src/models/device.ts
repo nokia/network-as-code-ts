@@ -185,15 +185,6 @@ export class Device {
         );
     }
 
-    filterSessionsByDevice(session: QoDSession): boolean {
-        return (
-            session.device.networkAccessIdentifier ===
-                this.networkAccessIdentifier &&
-            (session.device.phoneNumber == null ||
-                session.device.phoneNumber === this.phoneNumber)
-        );
-    }
-
     /**
  *  List sessions of the device.
  *  @returns Promise<QoDSession[]>
@@ -205,11 +196,8 @@ export class Device {
     async sessions(): Promise<QoDSession[]> {
         try {
             let sessions: any = await this._api.sessions.getAllSessions(this);
-            const filteredSessions = sessions.filter((session: QoDSession) =>
-                this.filterSessionsByDevice(session)
-            );
 
-            return filteredSessions.map((session: any) =>
+            return sessions.map((session: any) =>
                 this.__convertSessionModel(session)
             );
         } catch (error) {
