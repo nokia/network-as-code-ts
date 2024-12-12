@@ -15,7 +15,7 @@
  */
 
 import { Device } from "../models/device";
-import { Location } from "../models/location";
+import { Location, VerificationResult } from "../models/location";
 import { errorHandler } from "../errors";
 import { ProxyAgent } from "proxy-agent";
 
@@ -47,7 +47,7 @@ class LocationVerifyAPI {
         device: Device,
         radius: number,
         maxAge = 60
-    ): Promise<boolean | string> {
+    ): Promise<VerificationResult> {
         const body: any = {
             device: device.toJson(),
             area: {
@@ -68,11 +68,11 @@ class LocationVerifyAPI {
         errorHandler(response);
 
         const data: any = await response.json();
-        return data.verificationResult === "TRUE"
-            ? true
-            : data.verificationResult === "FALSE"
-            ? false
-            : data.verificationResult;
+        return {
+            resultType: data.verificationResult,
+            matchRate: data.matchRate,
+            lastLocationTime: data.lastLocationTime,
+        };
     }
 }
 

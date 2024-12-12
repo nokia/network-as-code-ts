@@ -24,6 +24,21 @@ interface CivicAddress {
     a6?: string;
 }
 
+interface VerificationResult {
+
+      /**
+     * A class representing the `Location verification result` model.
+     *
+     * @param resultType - The `result_type` of a location verification result object.
+     * @param matchRate - The `matchRate`, in case of result_type is partial, of a location verification result object (optional).
+     * @param LastLocationTime - The `last_location_time` of a location verification result object (optional).
+     */
+      resultType: string;
+      matchRate?: number;
+      LastLocationTime?: string;
+  }
+
+
 interface Location {
     /**
      * A class representing the `Location` model.
@@ -39,4 +54,4 @@ interface Location {
     radius?: number;
 }
 
-export { Location, CivicAddress };
+export { VerificationResult, Location, CivicAddress };
