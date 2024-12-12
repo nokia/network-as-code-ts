@@ -35,7 +35,7 @@ interface VerificationResult {
      */
       resultType: string;
       matchRate?: number;
-      LastLocationTime?: string;
+      lastLocationTime?: string;
   }
 
 
