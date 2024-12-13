@@ -219,7 +219,7 @@ describe("Location", () => {
 
         const result = await device.verifyLocation(0, 0, 5000);
 
-        expect(result).toBe(true);
+        expect(result.resultType).toBe("TRUE");
     });
 
     it("should return 'PARTIAL' if location verification response is 'PARTIAL'", async () => {
@@ -232,7 +232,7 @@ describe("Location", () => {
 
         const result = await device.verifyLocation(0, 0, 5000);
 
-        expect(result).toBe("PARTIAL");
+        expect(result.resultType).toBe("PARTIAL");
     });
 
     it("should verify location with possibility to omit maxAge if 60 seconds is fine", async () => {
@@ -245,7 +245,7 @@ describe("Location", () => {
 
         const result = await device.verifyLocation(0, 0, 5000);
 
-        expect(result).toBe(true);
+        expect(result.resultType).toBe("TRUE");
     });
 
     it("should still return true with non-default maxAge value", async () => {
@@ -258,7 +258,7 @@ describe("Location", () => {
 
         const result = await device.verifyLocation(0, 0, 5000, 80);
 
-        expect(result).toBe(true);
+        expect(result.resultType).toBe("TRUE");
     });
 
     it("should return false if location verification response is FALSE", async () => {
@@ -271,7 +271,7 @@ describe("Location", () => {
 
         const result = await device.verifyLocation(0, 0, 5000);
 
-        expect(result).toBe(false);
+        expect(result.resultType).toBe("FALSE");
     });
 
     it("should raise exception if status code indicates error", async () => {
