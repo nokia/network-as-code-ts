@@ -6,13 +6,13 @@
  * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 import { Device } from "../models/device";
 import { Location, VerificationResult } from "../models/location";
@@ -22,101 +22,101 @@ import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 
 class LocationVerifyAPI {
-    private baseUrl: string;
-    private headers: HeadersInit;
-    private agent: ProxyAgent;
+private baseUrl: string;
+private headers: HeadersInit;
+private agent: ProxyAgent;
 
-    constructor(
-        baseUrl: string,
-        rapidKey: string,
-        rapidHost: string,
-        agent: ProxyAgent
-    ) {
-        this.baseUrl = baseUrl;
-        this.headers = {
-            "Content-Type": "application/json",
-            "X-RapidAPI-Host": rapidHost,
-            "X-RapidAPI-Key": rapidKey,
-        };
-        this.agent = agent;
-    }
+constructor(
+    baseUrl: string,
+    rapidKey: string,
+    rapidHost: string,
+    agent: ProxyAgent
+) {
+    this.baseUrl = baseUrl;
+    this.headers = {
+        "Content-Type": "application/json",
+        "X-RapidAPI-Host": rapidHost,
+        "X-RapidAPI-Key": rapidKey,
+    };
+    this.agent = agent;
+}
 
-    async verifyLocation(
-        latitude: number,
-        longitude: number,
-        device: Device,
-        radius: number,
-        maxAge = 60
-    ): Promise<VerificationResult> {
-        const body: any = {
-            device: device.toJson(),
-            area: {
-                areaType: "CIRCLE",
-                center: { latitude: latitude, longitude: longitude },
-                radius: radius,
-            },
-            maxAge,
-        };
+async verifyLocation(
+    latitude: number,
+    longitude: number,
+    device: Device,
+    radius: number,
+    maxAge = 60
+): Promise<VerificationResult> {
+    const body: any = {
+        device: device.toJson(),
+        area: {
+            areaType: "CIRCLE",
+            center: { latitude: latitude, longitude: longitude },
+            radius: radius,
+        },
+        maxAge,
+    };
 
-        const response = await fetch(`${this.baseUrl}/verify`, {
-            method: "POST",
-            headers: this.headers,
-            body: JSON.stringify(body),
-            agent: this.agent,
-        });
+    const response = await fetch(`${this.baseUrl}/verify`, {
+        method: "POST",
+        headers: this.headers,
+        body: JSON.stringify(body),
+        agent: this.agent,
+    });
 
-        errorHandler(response);
+    errorHandler(response);
 
-        const data: any = await response.json();
-        return {
-            resultType: data.verificationResult,
-            matchRate: data.matchRate,
-            lastLocationTime: new Date(data.lastLocationTime),
-        };
-    }
+    const data: any = await response.json();
+    return {
+        resultType: data.verificationResult,
+        matchRate: data.matchRate,
+        lastLocationTime: new Date(data.lastLocationTime),
+    };
+}
 }
 
 class LocationRetrievalAPI {
-    private baseUrl: string;
-    private headers: HeadersInit;
-    private agent: ProxyAgent;
+private baseUrl: string;
+private headers: HeadersInit;
+private agent: ProxyAgent;
 
-    constructor(
-        baseUrl: string,
-        rapidKey: string,
-        rapidHost: string,
-        agent: ProxyAgent
-    ) {
-        this.baseUrl = baseUrl;
-        this.headers = {
-            "Content-Type": "application/json",
-            "X-RapidAPI-Host": rapidHost,
-            "X-RapidAPI-Key": rapidKey,
-        };
-        this.agent = agent;
-    }
+constructor(
+    baseUrl: string,
+    rapidKey: string,
+    rapidHost: string,
+    agent: ProxyAgent
+) {
+    this.baseUrl = baseUrl;
+    this.headers = {
+        "Content-Type": "application/json",
+        "X-RapidAPI-Host": rapidHost,
+        "X-RapidAPI-Key": rapidKey,
+    };
+    this.agent = agent;
+}
 
-    async getLocation(device: Device, maxAge = 60): Promise<Location> {
-        const body: any = { device: device.toJson(), maxAge };
+async getLocation(device: Device, maxAge = 60): Promise<Location> {
+    const body: any = { device: device.toJson(), maxAge };
 
-        const response = await fetch(`${this.baseUrl}/retrieve`, {
-            method: "POST",
-            headers: this.headers,
-            body: JSON.stringify(body),
-            agent: this.agent,
-        });
+    const response = await fetch(`${this.baseUrl}/retrieve`, {
+        method: "POST",
+        headers: this.headers,
+        body: JSON.stringify(body),
+        agent: this.agent,
+    });
 
-        errorHandler(response);
+    errorHandler(response);
 
-        const jsonData: any = await response.json();
+    const jsonData: any = await response.json();
 
-        return {
-            latitude: jsonData.area.center.latitude,
-            longitude: jsonData.area.center.longitude,
-            civicAddress: jsonData.civicAddress,
-            radius: jsonData.area.radius,
-        };
-    }
+    return {
+        latitude: jsonData.area.center.latitude,
+        longitude: jsonData.area.center.longitude,
+        civicAddress: jsonData.civicAddress,
+        radius: jsonData.area.radius,
+    };
+}
 }
 
 export { LocationRetrievalAPI, LocationVerifyAPI };
