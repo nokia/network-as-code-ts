@@ -71,7 +71,7 @@ class LocationVerifyAPI {
         return {
             resultType: data.verificationResult,
             matchRate: data.matchRate,
-            lastLocationTime: data.lastLocationTime,
+            lastLocationTime: new Date(data.lastLocationTime),
         };
     }
 }
