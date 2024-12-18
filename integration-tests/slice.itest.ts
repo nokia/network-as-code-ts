@@ -13,8 +13,6 @@ beforeAll((): any => {
 
 describe("Slicing", () => {
     let device: Device;
-    let slice: Slice;
-    const random = Math.floor(Math.random() * 1000) + 1;
     beforeEach(async () => {
         device = client.devices.get({
             networkAccessIdentifier: "test-device@testcsp.net",
@@ -28,19 +26,10 @@ describe("Slicing", () => {
             }`,
         });
 
-        slice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { serviceType: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
-            {
-                name: `slice${random}`,
-                notificationAuthToken: "my-token",
-            }
-        );
     });
 
     afterEach(async () => {
-        await slice.delete();
+        // Clean up, currently nothing
     });
 
     test("should get a device", () => {
@@ -50,35 +39,24 @@ describe("Slicing", () => {
     });
 
     test("should create a slice", async () => {
-        const new_slice = slice;
+        const random = Math.floor(Math.random() * 1000) + 1;
+
+        const new_slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: `slice${random}`,
+                notificationAuthToken: "my-token",
+            }
+        );
+
         expect(new_slice.networkIdentifier.mcc).toEqual("236");
         expect(new_slice.networkIdentifier.mnc).toEqual("30");
+
+        new_slice.delete();
     });
 
-    // NOTE: This test takes a long time to execute, since it must wait for slice creation
-    // if you are in a rush, add a temporary skip here
-    test("should modify a slice", async () => {
-        await slice.waitFor("AVAILABLE");
-
-        expect(slice.maxDataConnections).toBeUndefined();
-        expect(slice.maxDevices).toBeUndefined();
-
-        await slice.modify({
-            sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
-            sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
-            deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
-            deviceUplinkThroughput: { guaranteed: 10, maximum: 10 },
-            maxDataConnections: 12,
-            maxDevices: 3,
-        });
-
-        expect(slice.maxDataConnections).toEqual(12);
-        expect(slice.maxDevices).toEqual(3);
-        expect(slice.sliceUplinkThroughput).toBeTruthy();
-        expect(slice.sliceDownlinkThroughput).toBeTruthy();
-        expect(slice.deviceUplinkThroughput).toBeTruthy();
-        expect(slice.deviceDownlinkThroughput).toBeTruthy();
-    }, 720000);
 
     // Temporarly skip because of the ISE in attachment endpoint,
     // the test.failing couldn't mark it as failing test for some reason, so test.skip is used for now
@@ -143,12 +121,35 @@ describe("Slicing", () => {
     });
 
     test("should get a slice", async () => {
-        const newSlice = slice;
-        const fetchedSlice = await client.slices.get(newSlice.name as string);
-        expect(newSlice.sid).toEqual(fetchedSlice.sid);
+        const random = Math.floor(Math.random() * 1000) + 1;
+
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: `slice${random}`,
+                notificationAuthToken: "my-token",
+            }
+        );
+
+        const fetchedSlice = await client.slices.get(slice.name as string);
+        expect(slice.sid).toEqual(fetchedSlice.sid);
     });
 
     test("should mark a deleted slice's state as 'Deleted'", async () => {
+        const random = Math.floor(Math.random() * 1000) + 1;
+
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: `slice${random}`,
+                notificationAuthToken: "my-token",
+            }
+        );
+
         await slice.delete();
 
         await slice.refresh();
@@ -161,9 +162,48 @@ describe("Slicing", () => {
         expect(attachments.length).toBeGreaterThanOrEqual(0);
     });
 
+    // NOTE: This test takes a long time to execute, since it must wait for slice creation
+    // if you are in a rush, add a temporary skip here
+    test.concurrent("should modify a slice", async () => {
+        const random = Math.floor(Math.random() * 1000) + 1;
+
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: `slice${random}`,
+                notificationAuthToken: "my-token",
+            }
+        );
+
+        await slice.waitFor("AVAILABLE");
+
+        expect(slice.maxDataConnections).toBeUndefined();
+        expect(slice.maxDevices).toBeUndefined();
+
+        await slice.modify({
+            sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+            sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+            deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
+            deviceUplinkThroughput: { guaranteed: 10, maximum: 10 },
+            maxDataConnections: 12,
+            maxDevices: 3,
+        });
+
+        expect(slice.maxDataConnections).toEqual(12);
+        expect(slice.maxDevices).toEqual(3);
+        expect(slice.sliceUplinkThroughput).toBeTruthy();
+        expect(slice.sliceDownlinkThroughput).toBeTruthy();
+        expect(slice.deviceUplinkThroughput).toBeTruthy();
+        expect(slice.deviceDownlinkThroughput).toBeTruthy();
+
+        slice.delete();
+    }, 720000);
+
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test("should deactivate and delete", async () => {
+    test.concurrent("should deactivate and delete", async () => {
         const slice = await client.slices.create(
             { mcc: "236", mnc: "30" },
             { serviceType: "eMBB", differentiator: "444444" },
@@ -195,7 +235,19 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test("should attach device to slice and detach with all params", async () => {
+    test.concurrent("should attach device to slice and detach with all params", async () => {
+        const random = Math.floor(Math.random() * 1000) + 1;
+
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: `slice${random}`,
+                notificationAuthToken: "my-token",
+            }
+        );
+
         const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
         await slice.waitFor("AVAILABLE");
@@ -243,7 +295,19 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test("should attach device to slice and detach with manadatory params", async () => {
+    test.concurrent("should attach device to slice and detach with manadatory params", async () => {
+        const random = Math.floor(Math.random() * 1000) + 1;
+
+        const slice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "444444" },
+            "https://notify.me/here",
+            {
+                name: `slice${random}`,
+                notificationAuthToken: "my-token",
+            }
+        );
+
         const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
         await slice.waitFor("AVAILABLE");

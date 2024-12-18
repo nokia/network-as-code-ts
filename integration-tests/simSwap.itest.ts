@@ -15,7 +15,7 @@ describe("Sim Swap retrieval and verification", () => {
 
     beforeEach(() => {
         device = client.devices.get({
-            phoneNumber: "3637123456",
+            phoneNumber: "+3637123456",
         });
     });
     it("should retrieve sim swap of a test device", async () => {

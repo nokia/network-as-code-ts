@@ -46,6 +46,6 @@ describe("Location retrieval and verification", () => {
             70
         );
 
-        expect(isHere).toBeTruthy();
+        expect(isHere.resultType).toBe("TRUE");
     });
 });

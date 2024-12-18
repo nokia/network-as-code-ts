@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 4.0.0
+
+Breaking changes:
+- Location verification using `device.verifyLocation()` now returns a `VerificationResult`
+  containing fields for `matchRate`, `lastLocationTime` and `resultType`
+
 ## Version 3.1.0
 
 Changes:

@@ -16,7 +16,7 @@
 
 import { APIClient } from "../api/client";
 import { PortSpec, QoDSession } from "./session";
-import { Location } from "./location";
+import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 
@@ -85,7 +85,7 @@ export interface QodOptionalArgs {
         sessions (QoDSession[]): Returns all the sessions created by the device network_access_id.
         clearSessions (): Deletes all the sessions created by the device network_access_id.
         location (Location): Gets the location of the device and returns a Location client object.
-        verifyLocation (bool): Verifies if a device is located in a given location point.
+        verifyLocation (VerificationResult): Verifies if a device is located in a given location point.
         getConnectivity (ConnectivityData): Retrieve device connectivity status data
         updateConnectivity (ConnectivityData): Update device connectivity status data
         deleteConnectivity (): Delete device connectivity status
@@ -185,15 +185,6 @@ export class Device {
         );
     }
 
-    filterSessionsByDevice(session: QoDSession): boolean {
-        return (
-            session.device.networkAccessIdentifier ===
-                this.networkAccessIdentifier &&
-            (session.device.phoneNumber == null ||
-                session.device.phoneNumber === this.phoneNumber)
-        );
-    }
-
     /**
  *  List sessions of the device.
  *  @returns Promise<QoDSession[]>
@@ -205,11 +196,8 @@ export class Device {
     async sessions(): Promise<QoDSession[]> {
         try {
             let sessions: any = await this._api.sessions.getAllSessions(this);
-            const filteredSessions = sessions.filter((session: QoDSession) =>
-                this.filterSessionsByDevice(session)
-            );
 
-            return filteredSessions.map((session: any) =>
+            return sessions.map((session: any) =>
                 this.__convertSessionModel(session)
             );
         } catch (error) {
@@ -251,14 +239,14 @@ export class Device {
     }
 
     /**
-     *  Verifies the location of the device(Returns boolean value).
+     *  Verifies the location of the device(Returns VerificationResult object).
      *  @param latitude (number):latitude of the device.
      *  @param longitude (number):longitude of the device.
      *  @param radius (number):radius of the device.
      *  @param maxAge (number):maxAge of the device.
-     *  @returns Promise<boolean | string>
+     *  @returns Promise<VerificationResult>
      *  @example```TypeScript
-     *      located? = device.verifyLocation(24.07915612501993, 47.48627616952785, 10_000, 60)
+     *      located? = device.verifyLocation(24.07915612501993, 47.48627616952785, 10_000, 60).resultType
      *   ```
      */
     async verifyLocation(
@@ -266,7 +254,7 @@ export class Device {
         longitude: number,
         radius: number,
         maxAge = 60
-    ): Promise<boolean | string> {
+    ): Promise<VerificationResult> {
         return this._api.locationVerify.verifyLocation(
             latitude,
             longitude,
