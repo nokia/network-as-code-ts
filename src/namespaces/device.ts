@@ -67,7 +67,7 @@ export class Devices extends Namespace {
             throw new Error("At least one parameter must be set.");
         }
 
-        let retDevice = new Device(
+        const retDevice = new Device(
             this.api,
             networkAccessIdentifier,
             ipv4Address,

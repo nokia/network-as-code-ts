@@ -62,7 +62,7 @@ export class Slices extends Namespace {
         notificationUrl: string,
         optionalArgs?: SliceOptionalArgs
     ): Promise<Slice> {
-        let slice = new Slice(
+        const slice = new Slice(
             this.api,
             "NOT_SUBMITED",
             sliceInfo,
@@ -96,7 +96,7 @@ export class Slices extends Namespace {
     async getAll(): Promise<Slice[]> {
         const data: any = await this.api.slicing.getAll();
 
-        let slices: Slice[] = [];
+        const slices: Slice[] = [];
         data.forEach(async (slice: any) => {
             const sliceInstance = new Slice(
                 this.api,
@@ -143,7 +143,7 @@ export class Slices extends Namespace {
     async get(id: string): Promise<Slice> {
         const data: any = await this.api.slicing.get(id);
 
-        let slice: Slice = new Slice(
+        const slice: Slice = new Slice(
             this.api,
             data.state,
             data.slice.slice_info,

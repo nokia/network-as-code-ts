@@ -23,7 +23,7 @@ import {
     TrafficCategories,
 } from "../models/slice";
 import { errorHandler, InvalidParameterError } from "../errors";
-import { Device, DeviceIpv4Addr } from "../models/device";
+import { Device } from "../models/device";
 import { ProxyAgent } from "proxy-agent";
 
 import fetch, { Response as FetchResponse } from "node-fetch";
@@ -212,7 +212,7 @@ export class SliceAPI {
     }
 
     convertAreaOfServiceObj(areaOfService: AreaOfService) {
-        let polygon: Array<{ lat?: number; lon?: number }> = [];
+        const polygon: Array<{ lat?: number; lon?: number }> = [];
         areaOfService.polygon.forEach((point: Point) => {
             polygon.push({ lat: point.latitude, lon: point.longitude });
         });
@@ -258,7 +258,7 @@ export class AttachAPI {
         if (!device.phoneNumber) {
             throw new InvalidParameterError("Device phone number is required.");
         }
-        let payload: any = {
+        const payload: any = {
             device: {
                 phoneNumber: device.phoneNumber,
             },

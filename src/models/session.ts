@@ -130,10 +130,10 @@ export class QoDSession {
         device: Device,
         session: any
     ): QoDSession {
-        let startedAt = session["startedAt"]
+        const startedAt = session["startedAt"]
             ? new Date(session["startedAt"])
             : null;
-        let expiresAt = session["expiresAt"]
+        const expiresAt = session["expiresAt"]
             ? new Date(session["expiresAt"])
             : null;
         const service = session["applicationServer"];
