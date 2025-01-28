@@ -22,6 +22,7 @@ import { DeviceStatusAPI } from "./deviceStatusAPI";
 import { AttachAPI, SliceAPI } from "./sliceApi";
 import { CongestionInsightsAPI } from "./congestionInsightsApi";
 import { SimSwapAPI } from "./simSwapApi";
+import { GeofencingAPI } from "./geofencing";
 
 const QOS_BASE_URL_PROD =
     "https://quality-of-service-on-demand.p-eu.rapidapi.com";
@@ -58,6 +59,10 @@ const SIM_SWAP_BASE_URL_PROD =
 const SIM_SWAP_BASE_URL_DEV =
     "https://simswap.p-eu.rapidapi.com/sim-swap/sim-swap/v0";
 
+const GEOFENCING_BASE_URL_PROD = "https://geofencing-subscription.p-eu.rapidapi.com/v0.3"
+const GEOFENCING_RAPID_HOST_PROD = "geofencing-subscription.nokia.rapidapi.com"
+const GEOFENCING_BASE_URL_DEV = "https://geofencing-subscription.p-eu.rapidapi.com/v0.3"
+
 const agent = new ProxyAgent();
 
 export class APIClient {
@@ -69,6 +74,7 @@ export class APIClient {
     sliceAttach: AttachAPI;
     insights: CongestionInsightsAPI;
     simSwap: SimSwapAPI;
+    geofencing: GeofencingAPI;
 
     constructor(
         token: string,
@@ -81,6 +87,7 @@ export class APIClient {
         sliceAttachBaseUrl: string = SLICE_ATTACH_BASE_URL_PROD,
         congestionInsightsBaseUrl: string = CONGESTION_INSIGHTS_BASE_URL_PROD,
         simSwapBaseUrl: string = SIM_SWAP_BASE_URL_PROD,
+        geofencingBaseUrl: string = GEOFENCING_BASE_URL_PROD,
     ) {
         if (devMode && qosBaseUrl == QOS_BASE_URL_PROD) {
             qosBaseUrl = QOS_BASE_URL_DEV;
@@ -214,6 +221,23 @@ export class APIClient {
                       .replace("https://", "")
                       .replace("p-eu", "nokia-dev")
                 : simSwapBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
+            agent
+        );
+
+        if (devMode && geofencingBaseUrl == GEOFENCING_BASE_URL_PROD) {
+            geofencingBaseUrl = GEOFENCING_BASE_URL_DEV;
+        }
+
+        this.geofencing = new GeofencingAPI(
+            geofencingBaseUrl,
+            token,
+            devMode
+                ? geofencingBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
+                : geofencingBaseUrl
                       .replace("https://", "")
                       .replace("p-eu", "nokia"),
             agent
