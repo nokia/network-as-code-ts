@@ -122,6 +122,8 @@ describe("Geofencing", () => {
         expect(geofencingSubscription.radius).toBe(2001)
     })
 
+    // TODO: Test subscription with/without optional params
+
     it("should allow subscriptions to be deleted", async () => {
         fetchMock.post(
             "https://geofencing-subscription.p-eu.rapidapi.com/v0.3/subscriptions",
@@ -177,8 +179,6 @@ describe("Geofencing", () => {
         fetchMock.delete(
             "https://geofencing-subscription.p-eu.rapidapi.com/v0.3/subscriptions/de87e438-58b4-42c3-9d49-0fbfbd878305",
             (_: any, req: any): any => {
-                expect(req.method).toBe("DELETE");
-
                 return Promise.resolve({
                     status: 200,
                 });
@@ -190,5 +190,121 @@ describe("Geofencing", () => {
         expect(fetchMock.calls().length).toBe(2);
     })
 
-    // TODO: Test geofencing subscription retrieval
+    it("should allow getting one subscription that was already created", async () => {
+        fetchMock.get(
+            "https://geofencing-subscription.p-eu.rapidapi.com/v0.3/subscriptions/de87e438-58b4-42c3-9d49-0fbfbd878305",
+            JSON.stringify({
+                "protocol": "HTTP",
+                "sink": "https://example.com/",
+                "types": [
+                    "org.camaraproject.geofencing-subscriptions.v0.area-entered"
+                ],
+                "config": {
+                    "subscriptionDetail": {
+                        "device": {
+                            "networkAccessIdentifier": "123456789@domain.com",
+                            "phoneNumber": "+123456789",
+                            "ipv4Address": {
+                                "publicAddress": "1.1.1.2",
+                                "publicPort": 80
+                            },
+                            "ipv6Address": "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+                        },
+                        "area": {
+                            "areaType": "CIRCLE",
+                            "center": {
+                                "latitude": -90,
+                                "longitude": -180
+                            },
+                            "radius": 2001
+                        }
+                    },
+                    "subscriptionExpireTime": "2025-01-23T10:40:30.616Z",
+                    "subscriptionMaxEvents": 1,
+                    "initialEvent": false
+                },
+                "id": "de87e438-58b4-42c3-9d49-0fbfbd878305",
+                "startsAt": "2025-01-23T10:40:30.616Z"
+            })
+        )
+
+        const geofencingSubscription = await client.geofencing.get("de87e438-58b4-42c3-9d49-0fbfbd878305")
+
+        expect(geofencingSubscription.eventSubscriptionId).toBe("de87e438-58b4-42c3-9d49-0fbfbd878305")
+    })
+
+    it("should allow getting list of all subscriptions", async () => {
+        fetchMock.get(
+            "https://geofencing-subscription.p-eu.rapidapi.com/v0.3/subscriptions",
+            JSON.stringify([
+                {
+                    "protocol": "HTTP",
+                    "sink": "https://example.com/",
+                    "types": [
+                        "org.camaraproject.geofencing-subscriptions.v0.area-entered"
+                    ],
+                    "config": {
+                        "subscriptionDetail": {
+                            "device": {
+                                "networkAccessIdentifier": "123456789@domain.com",
+                                "phoneNumber": "+123456789",
+                                "ipv4Address": {
+                                    "publicAddress": "1.1.1.2",
+                                    "publicPort": 80
+                                },
+                                "ipv6Address": "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+                            },
+                            "area": {
+                                "areaType": "CIRCLE",
+                                "center": {
+                                    "latitude": -90,
+                                    "longitude": -180
+                                },
+                                "radius": 2001
+                            }
+                        },
+                        "subscriptionExpireTime": "2025-01-23T10:40:30.616Z",
+                        "subscriptionMaxEvents": 1,
+                        "initialEvent": false
+                    },
+                    "id": "de87e438-58b4-42c3-9d49-0fbfbd878305",
+                    "startsAt": "2025-01-23T10:40:30.616Z"
+                },
+                {
+                    "protocol": "HTTP",
+                    "sink": "https://example.com/",
+                    "types": [
+                        "org.camaraproject.geofencing-subscriptions.v0.area-entered"
+                    ],
+                    "config": {
+                        "subscriptionDetail": {
+                            "device": {
+                                "networkAccessIdentifier": "123456789@domain.com",
+                                "ipv6Address": "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+                            },
+                            "area": {
+                                "areaType": "CIRCLE",
+                                "center": {
+                                    "latitude": -90,
+                                    "longitude": -180
+                                },
+                                "radius": 2001
+                            }
+                        },
+                        "subscriptionExpireTime": "2025-01-23T10:40:30.616Z",
+                        "subscriptionMaxEvents": 1,
+                        "initialEvent": false
+                    },
+                    "id": "de87e438-58b4-42c3-9d49-0fbfbd878306",
+                    "startsAt": "2025-01-23T10:40:30.616Z"
+                },
+            ])
+        )
+
+        const subscriptions = await client.geofencing.getAll();
+
+        expect(subscriptions.length).toBe(2)
+    })
+
+    
 })

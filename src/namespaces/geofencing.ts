@@ -22,14 +22,18 @@ export class Geofencing extends Namespace {
     async subscribe(device: Device, params: GeofencingSubscriptionParams): Promise<GeofencingSubscription> {
         const jsonData = await this.api.geofencing.subscribe(device, params);
 
-        return new GeofencingSubscription(
-            this.api,
-            jsonData.id,
-            jsonData.types,
-            jsonData.sink,
-            jsonData.config.subscriptionDetail.area.center.latitude,
-            jsonData.config.subscriptionDetail.area.center.longitude,
-            jsonData.config.subscriptionDetail.area.radius,
-        );
+        return GeofencingSubscription.fromJson(this.api, jsonData);
+    }
+
+    async get(subscriptionId: string): Promise<GeofencingSubscription> {
+        const jsonData = await this.api.geofencing.get(subscriptionId);
+
+        return GeofencingSubscription.fromJson(this.api, jsonData);
+    }
+
+    async getAll(): Promise<GeofencingSubscription[]> {
+        const jsonData: any[] = await this.api.geofencing.getSubscriptions()
+
+        return jsonData.map((jsonObject) => GeofencingSubscription.fromJson(this.api, jsonObject))
     }
 }

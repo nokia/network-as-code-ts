@@ -62,4 +62,16 @@ export class GeofencingSubscription {
     async delete() {
         await this.api.geofencing.delete(this.eventSubscriptionId);
     }
+
+    static fromJson(api: APIClient, jsonData: any): GeofencingSubscription {
+        return new GeofencingSubscription(
+            api,
+            jsonData.id,
+            jsonData.types,
+            jsonData.sink,
+            jsonData.config.subscriptionDetail.area.center.latitude,
+            jsonData.config.subscriptionDetail.area.center.longitude,
+            jsonData.config.subscriptionDetail.area.radius,
+        );
+    }
 }
