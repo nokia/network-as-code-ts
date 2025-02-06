@@ -16,13 +16,26 @@
 
 import { APIClient } from "../api";
 
+
+export interface PlainCredential {
+    identifier: string,
+    secret: string
+}
+
+export interface AccessTokenCredential {
+    accessToken: string,
+    accessTokenType?: string,
+    accessTokenExpiresUtc: Date | string
+}
+
 export interface GeofencingSubscriptionParams {
     sink: string,
+    protocol?: string,
     types: string[],
     latitude: number,
     longitude: number,
     radius: number,
-    sinkCredential?: string,
+    sinkCredential?: PlainCredential | AccessTokenCredential,
     subscriptionExpireTime?: Date | string,
     subscriptionMaxEvents?: number,
     initialEvent?: boolean
