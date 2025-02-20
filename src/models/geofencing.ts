@@ -18,11 +18,14 @@ import { APIClient } from "../api";
 
 
 export interface PlainCredential {
+    credentialType: "PLAIN",
     identifier: string,
     secret: string
+
 }
 
 export interface AccessTokenCredential {
+    credentialType: "ACCESSTOKEN",
     accessToken: string,
     accessTokenType?: string,
     accessTokenExpiresUtc: Date | string
@@ -41,7 +44,6 @@ export interface GeofencingSubscriptionParams {
     initialEvent?: boolean
 }
 
-
 export class GeofencingSubscription {
     private api: APIClient;
     eventSubscriptionId: string;
@@ -50,6 +52,7 @@ export class GeofencingSubscription {
     latitude: number;
     longitude: number;
     radius: number;
+    startAt: Date;
 
     constructor(
         api: APIClient,
@@ -59,6 +62,7 @@ export class GeofencingSubscription {
         latitude: number,
         longitude: number,
         radius: number,
+        startAt: Date,
     ) {
         this.api = api;
         this.eventSubscriptionId = eventSubscriptionId;
@@ -67,6 +71,7 @@ export class GeofencingSubscription {
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
+        this.startAt = startAt;
     }
 
     /**
@@ -85,6 +90,7 @@ export class GeofencingSubscription {
             jsonData.config.subscriptionDetail.area.center.latitude,
             jsonData.config.subscriptionDetail.area.center.longitude,
             jsonData.config.subscriptionDetail.area.radius,
+            jsonData.startAt,
         );
     }
 }
