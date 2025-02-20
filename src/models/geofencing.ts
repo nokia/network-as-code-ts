@@ -52,7 +52,7 @@ export class GeofencingSubscription {
     latitude: number;
     longitude: number;
     radius: number;
-    startAt: Date;
+    startsAt: Date;
 
     constructor(
         api: APIClient,
@@ -62,7 +62,7 @@ export class GeofencingSubscription {
         latitude: number,
         longitude: number,
         radius: number,
-        startAt: Date,
+        startsAt: Date,
     ) {
         this.api = api;
         this.eventSubscriptionId = eventSubscriptionId;
@@ -71,7 +71,7 @@ export class GeofencingSubscription {
         this.latitude = latitude;
         this.longitude = longitude;
         this.radius = radius;
-        this.startAt = startAt;
+        this.startsAt = startsAt;
     }
 
     /**
@@ -90,7 +90,7 @@ export class GeofencingSubscription {
             jsonData.config.subscriptionDetail.area.center.latitude,
             jsonData.config.subscriptionDetail.area.center.longitude,
             jsonData.config.subscriptionDetail.area.radius,
-            jsonData.startAt,
+            jsonData.startsAt,
         );
     }
 }
