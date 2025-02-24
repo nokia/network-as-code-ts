@@ -65,7 +65,7 @@ export class GeofencingAPI {
         };
 
         if (params.sinkCredential) {
-            body.sinkCredential = params.sinkCredential;
+            body.sinkCredential = params.sinkCredential ? Object.fromEntries(Object.entries(params.sinkCredential as {[key:string]: any}).filter(([key, value]) => value !== null && value !== undefined)) : undefined;
         }
 
         if (params.subscriptionExpireTime) {
