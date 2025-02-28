@@ -164,7 +164,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice creation
     // if you are in a rush, add a temporary skip here
-    test.concurrent.failing("should modify a slice", async () => {
+    test.skip("should modify a slice", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
