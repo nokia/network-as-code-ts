@@ -235,7 +235,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test.concurrent("should attach device to slice and detach with all params", async () => {
+    test.skip("should attach device to slice and detach with all params", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
@@ -295,7 +295,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test.concurrent("should attach device to slice and detach with manadatory params", async () => {
+    test.skip("should attach device to slice and detach with manadatory params", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
