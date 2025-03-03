@@ -1,5 +1,13 @@
 # Changelog
 
+## Version 4.1.0
+
+Changes:
+- Made using devices with public IPv4 address a bit easier by allowing private address to be omitted
+
+Fixes:
+- Eslint dependency was upgraded and new lints enabled, code changed to satisfy the lints 
+
 ## Version 4.0.0
 
 Breaking changes:
