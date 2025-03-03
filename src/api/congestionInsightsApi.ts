@@ -18,7 +18,7 @@ import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 
 import { errorHandler } from "../errors";
-import { Device, DeviceIpv4Addr } from "../models/device";
+import { Device } from "../models/device";
 
 export class CongestionInsightsAPI {
     private baseUrl: string;

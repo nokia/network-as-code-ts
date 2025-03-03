@@ -21,17 +21,6 @@ import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 
 /**
- * An interface representing the `Event` model.
- * #### Public Attributes:
-            eventTarget (string): the `eventTarget` of an event object.
-            atUnix (float): the `atUnix` of an event object.
- */
-interface Event {
-    eventTarget: string;
-    atUnix: number;
-}
-
-/**
  *  An interface representing the `DeviceIpv4Addr` model.
  * #### Public Attributes:
             publicAddress (float): the `public_address` of a device IPv4 address object.
@@ -166,7 +155,7 @@ export class Device {
             );
         }
 
-        let session = await this._api.sessions.createSession(
+        const session = await this._api.sessions.createSession(
             profile,
             duration,
             this,
@@ -195,12 +184,13 @@ export class Device {
  */
     async sessions(): Promise<QoDSession[]> {
         try {
-            let sessions: any = await this._api.sessions.getAllSessions(this);
+            const sessions: any = await this._api.sessions.getAllSessions(this);
 
             return sessions.map((session: any) =>
                 this.__convertSessionModel(session)
             );
-        } catch (error) {
+        } catch {
+
             return [];
         }
     }

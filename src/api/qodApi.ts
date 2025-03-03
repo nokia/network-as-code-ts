@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Device, DeviceIpv4Addr } from "../models/device";
+import { Device} from "../models/device";
 import { errorHandler } from "../errors";
 import { PortSpec } from "../models/session";
 import { ProxyAgent } from "proxy-agent";
@@ -78,7 +78,7 @@ export class QodAPI {
         notificationUrl?: string,
         notificationAuthToken?: string
     ) {
-        let sessionPayload: any = {
+        const sessionPayload: any = {
             qosProfile: profile,
             device: device,
             applicationServer: { ipv4Address: serviceIpv4 },
@@ -100,7 +100,7 @@ export class QodAPI {
             }
         }
 
-        let response = await fetch(this.baseUrl + "/sessions", {
+        const response = await fetch(this.baseUrl + "/sessions", {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(sessionPayload),
@@ -119,7 +119,7 @@ export class QodAPI {
            @returns Promise<any>
  */
     async getAllSessions(device: Device) {
-        let response = await fetch(this.baseUrl + "/retrieve-sessions", {
+        const response = await fetch(this.baseUrl + "/retrieve-sessions", {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify({
@@ -143,7 +143,7 @@ export class QodAPI {
  */
     async getSession(sessionId: string) {
         const url = `/sessions/${sessionId}`;
-        let response = await fetch(this.baseUrl + url, {
+        const response = await fetch(this.baseUrl + url, {
             method: "GET",
             headers: this.headers,
             agent: this.agent,
@@ -161,7 +161,7 @@ export class QodAPI {
  */
     async deleteSession(sessionId: string) {
         const url = `/sessions/${sessionId}`;
-        let response = await fetch(this.baseUrl + url, {
+        const response = await fetch(this.baseUrl + url, {
             method: "DELETE",
             headers: this.headers,
             agent: this.agent,
@@ -180,7 +180,7 @@ export class QodAPI {
         */
     async extendSession(sessionId: string, additionalDuration: number) {
         const url = `/sessions/${sessionId}/extend`;
-        let response = await fetch(this.baseUrl + url, {
+        const response = await fetch(this.baseUrl + url, {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify({

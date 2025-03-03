@@ -67,7 +67,11 @@ export class Devices extends Namespace {
             throw new Error("At least one parameter must be set.");
         }
 
-        let retDevice = new Device(
+        if (ipv4Address?.publicAddress && (!ipv4Address?.privateAddress && !ipv4Address?.publicPort)) {
+            ipv4Address.privateAddress = ipv4Address.publicAddress;
+        }
+
+        const retDevice = new Device(
             this.api,
             networkAccessIdentifier,
             ipv4Address,

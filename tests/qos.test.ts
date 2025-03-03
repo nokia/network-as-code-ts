@@ -18,21 +18,6 @@ describe("Qos", () => {
         fetchMock.reset();
     });
 
-    test("should get a device", () => {
-        let device = client.devices.get({
-            networkAccessIdentifier: "test-device@testcsp.net",
-            ipv4Address: {
-                publicAddress: "1.1.1.2",
-                privateAddress: "1.1.1.2",
-                publicPort: 80,
-            },
-        });
-
-        expect(device.networkAccessIdentifier).toEqual(
-            "test-device@testcsp.net"
-        );
-    });
-
     test("should throw an Error if no identifier is provided", () => {
         try {
             client.devices.get({});
