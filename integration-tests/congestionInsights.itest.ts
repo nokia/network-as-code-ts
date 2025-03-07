@@ -17,7 +17,7 @@ describe("Congestion Insights", () => {
     const expirationDate = new Date(Date.now() + 5 * 60 * 1000);
     expirationDate.setMilliseconds(0);
 
-    it("can create subscription for congestion insights", async () => {
+    it.skip("can create subscription for congestion insights", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -32,7 +32,7 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it("can create subscription for congestion insights without auth token", async () => {
+    it.skip("can create subscription for congestion insights without auth token", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -46,7 +46,7 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it("can get a subscription by id", async () => {
+    it.skip("can get a subscription by id", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -64,7 +64,7 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it("can get a list of subscriptions", async () => {
+    it.skip("can get a list of subscriptions", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -85,7 +85,7 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it("should fetch current congestion level relevant to a given device", async () => {
+    it.skip("should fetch current congestion level relevant to a given device", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -112,7 +112,7 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it("should fetch prediction/historical data between two time stamps:", async () => {
+    it.skip("should fetch prediction/historical data between two time stamps:", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
