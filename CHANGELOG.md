@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 4.1.1
+
+Fixes:
+- Adapted the Location Verification bindings to use the new version prefix
+
 ## Version 4.1.0
 
 Changes:
