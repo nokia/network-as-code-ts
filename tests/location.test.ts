@@ -174,7 +174,7 @@ describe("Location", () => {
 
     it("should send location verification request to the right URL with right parameters", async () => {
         fetchMock.post(
-            "https://location-verification.p-eu.rapidapi.com/verify",
+            "https://location-verification.p-eu.rapidapi.com/v1/verify",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     device: {
@@ -211,7 +211,7 @@ describe("Location", () => {
 
     it("should return true if location verification response is TRUE", async () => {
         fetchMock.post(
-            "https://location-verification.p-eu.rapidapi.com/verify",
+            "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
             })
@@ -224,7 +224,7 @@ describe("Location", () => {
 
     it("should return 'PARTIAL' if location verification response is 'PARTIAL'", async () => {
         fetchMock.post(
-            "https://location-verification.p-eu.rapidapi.com/verify",
+            "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "PARTIAL",
             })
@@ -237,7 +237,7 @@ describe("Location", () => {
 
     it("should verify location with possibility to omit maxAge if 60 seconds is fine", async () => {
         fetchMock.post(
-            "https://location-verification.p-eu.rapidapi.com/verify",
+            "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
             })
@@ -250,7 +250,7 @@ describe("Location", () => {
 
     it("should still return true with non-default maxAge value", async () => {
         fetchMock.post(
-            "https://location-verification.p-eu.rapidapi.com/verify",
+            "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
             })
@@ -263,7 +263,7 @@ describe("Location", () => {
 
     it("should return false if location verification response is FALSE", async () => {
         fetchMock.post(
-            "https://location-verification.p-eu.rapidapi.com/verify",
+            "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "FALSE",
             })
@@ -276,7 +276,7 @@ describe("Location", () => {
 
     it("should raise exception if status code indicates error", async () => {
         fetchMock.post(
-            "https://location-verification.p-eu.rapidapi.com/verify",
+            "https://location-verification.p-eu.rapidapi.com/v1/verify",
             403
         );
 
