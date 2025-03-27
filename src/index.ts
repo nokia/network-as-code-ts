@@ -18,6 +18,7 @@ import { APIClient } from "./api/client";
 import { CongestionInsights } from "./namespaces/congestionInsights";
 import { Devices } from "./namespaces/device";
 import { DeviceStatus } from "./namespaces/deviceStatus";
+import { Geofencing } from "./namespaces/geofencing";
 import { Sessions } from "./namespaces/session";
 import { Slices } from "./namespaces/slice";
 
@@ -40,6 +41,7 @@ export class NetworkAsCodeClient {
     private _deviceStatus: DeviceStatus;
     private _slices: Slices;
     private _insights: CongestionInsights;
+    private _geofencing: Geofencing;
 
     constructor(token: string, devMode?: boolean) {
         this._api = new APIClient(token, devMode);
@@ -48,6 +50,7 @@ export class NetworkAsCodeClient {
         this._deviceStatus = new DeviceStatus(this._api);
         this._slices = new Slices(this._api);
         this._insights = new CongestionInsights(this._api);
+        this._geofencing = new Geofencing(this._api);
     }
 
     /**
@@ -89,6 +92,14 @@ export class NetworkAsCodeClient {
     get insights() {
         return this._insights;
     }
+
+    /**
+     * Namespace containing functionalities related to geofencing.
+     * @returns NAC geofencing 
+     */
+    // get geofencing() {
+    //     return this._geofencing;
+    // }
 
     /**
      * @returns NAC API
