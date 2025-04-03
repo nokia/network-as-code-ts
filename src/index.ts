@@ -102,9 +102,9 @@ export class NetworkAsCodeClient {
      * Namespace containing functionalities related to geofencing.
      * @returns NAC geofencing 
      */
-    // get geofencing() {
-    //     return this._geofencing;
-    // }
+    get geofencing() {
+        return this._geofencing;
+    }
 
     /**
      * Namespace containing functionalities related to authentication.
