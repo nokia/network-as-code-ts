@@ -21,6 +21,8 @@ import { DeviceStatus } from "./namespaces/deviceStatus";
 import { Geofencing } from "./namespaces/geofencing";
 import { Sessions } from "./namespaces/session";
 import { Slices } from "./namespaces/slice";
+import { Authentication } from "./namespaces/authentication";
+
 
 /**
  * A client for working with Network as Code.
@@ -42,6 +44,8 @@ export class NetworkAsCodeClient {
     private _slices: Slices;
     private _insights: CongestionInsights;
     private _geofencing: Geofencing;
+    private _authentication: Authentication;
+
 
     constructor(token: string, devMode?: boolean) {
         this._api = new APIClient(token, devMode);
@@ -51,6 +55,7 @@ export class NetworkAsCodeClient {
         this._slices = new Slices(this._api);
         this._insights = new CongestionInsights(this._api);
         this._geofencing = new Geofencing(this._api);
+        this._authentication = new Authentication(this._api);
     }
 
     /**
@@ -100,6 +105,14 @@ export class NetworkAsCodeClient {
     // get geofencing() {
     //     return this._geofencing;
     // }
+
+    /**
+     * Namespace containing functionalities related to authentication.
+     * @returns NAC authentication
+     */
+    get authentication() {
+        return this._authentication;
+    }
 
     /**
      * @returns NAC API
