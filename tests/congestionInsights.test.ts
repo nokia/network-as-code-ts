@@ -1,11 +1,21 @@
-import type { FetchMockStatic } from "fetch-mock";
-import fetch from "node-fetch";
+import fetchMock from '@fetch-mock/jest';
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
 
-jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
-const fetchMock = fetch as unknown as FetchMockStatic;
+
+jest.mock("node-fetch", () => {
+	const nodeFetch = jest.requireActual("node-fetch");
+	// only needed if your application makes use of Response, Request
+	// or Headers classes directly
+	Object.assign(fetchMock.config, {
+		fetch: nodeFetch,
+		Response: nodeFetch.Response,
+		Request: nodeFetch.Request,
+		Headers: nodeFetch.Headers,
+	});
+	return fetchMock.fetchHandler;
+});
 
 let client: NetworkAsCodeClient;
 
@@ -26,12 +36,16 @@ beforeAll((): any => {
 
 // Tests
 beforeEach(() => {
-    fetchMock.reset();
+    fetchMock.mockReset();
+});
+
+afterEach(() => {
+    fetchMock.unmockGlobal();
 });
 
 describe("Congestion Insights", () => {
     it("should create a congestion insight subscription", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
             JSON.stringify({
                 subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
@@ -55,7 +69,7 @@ describe("Congestion Insights", () => {
     });
 
     it("should send correct payload", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -73,15 +87,15 @@ describe("Congestion Insights", () => {
                     },
                     subscriptionExpireTime: "2024-04-20T00:00:00Z",
                 });
-
-                return Promise.resolve(
+            },
+                
+               { response: Promise.resolve(
                     JSON.stringify({
                         subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
                         startsAt: "2024-04-15T08:45:37.210563Z",
                         expiresAt: "2024-04-20T00:00:00Z",
                     })
-                );
-            }
+                )}
         );
 
         await client.insights.subscribeToCongestionInfo(
@@ -93,20 +107,19 @@ describe("Congestion Insights", () => {
     });
 
     it("can get a subscription by id", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://congestion-insights.p-eu.rapidapi.com/subscriptions/4edb6919-8e91-406a-ab84-900a420af860",
             (_: any, req: any): any => {
                 expect(req.method).toBe("GET");
-
-                return Promise.resolve({
+            },
+              { response: Promise.resolve({
                     status: 200,
                     body: JSON.stringify({
                         subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
                         startsAt: "2024-04-15T08:45:37.210563Z",
                         expiresAt: "2024-04-20T00:00:00Z",
                     }),
-                });
-            }
+                })}       
         );
 
         const subscription = await client.insights.get(
@@ -119,7 +132,7 @@ describe("Congestion Insights", () => {
     });
 
     it("can get list of subscriptions", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
             JSON.stringify([
                 {
@@ -146,7 +159,7 @@ describe("Congestion Insights", () => {
     });
 
     it("can handle a subscriptionExpireTime given as a Date", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -164,15 +177,15 @@ describe("Congestion Insights", () => {
                     },
                     subscriptionExpireTime: "2024-01-11T11:53:20.000Z",
                 });
-
-                return Promise.resolve(
+            }, 
+                { response: Promise.resolve(
                     JSON.stringify({
                         subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
                         startsAt: "2024-04-15T08:45:37.210563Z",
                         expiresAt: "2024-01-11T11:53:20.000Z",
                     })
-                );
-            }
+                )}
+            
         );
 
         const subscription = await client.insights.subscribeToCongestionInfo(
@@ -187,7 +200,7 @@ describe("Congestion Insights", () => {
     });
 
     it("can delete a subscription", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
             JSON.stringify({
                 subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
@@ -203,24 +216,23 @@ describe("Congestion Insights", () => {
             "c8974e592c2fa383d4a3960714"
         );
 
-        fetchMock.delete(
+        fetchMock.mockGlobal().delete(
             "https://congestion-insights.p-eu.rapidapi.com/subscriptions/4edb6919-8e91-406a-ab84-900a420af860",
             (_: any, req: any): any => {
                 expect(req.method).toBe("DELETE");
-
-                return Promise.resolve({
+            },
+                { response: Promise.resolve({
                     status: 200,
-                });
-            }
+                })}
         );
 
         await subscription.delete();
 
-        expect(fetchMock.calls().length).toBe(2);
+        expect(fetchMock.callHistory.calls().length).toBe(2);
     });
 
     it("should poll congestion level of given time range", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://congestion-insights.p-eu.rapidapi.com/query",
             (_: any, req: any): any => {
                 expect(req.method).toBe("POST");
@@ -236,16 +248,16 @@ describe("Congestion Insights", () => {
                     start: "2024-04-15T05:11:30.961Z",
                     end: "2024-04-16T05:11:30.000Z",
                 });
-
-                return Promise.resolve([
+            },
+                { response: Promise.resolve([
                     {
                         timeIntervalStart: "2024-08-20T21:00:00+0000",
                         timeIntervalStop: "2024-08-20T21:05:00+0000",
                         congestionLevel: "medium",
                         confidenceLevel: 50
                     }
-                ]);
-            }
+                ])}
+            
         );
 
         const congestion = await device.getCongestion(

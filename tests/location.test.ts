@@ -1,12 +1,21 @@
-import type { FetchMockStatic } from "fetch-mock";
-import fetch from "node-fetch";
+import fetchMock from '@fetch-mock/jest';
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
 import { AuthenticationError } from "../src/errors";
 
-jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
-const fetchMock = fetch as unknown as FetchMockStatic;
+jest.mock("node-fetch", () => {
+	const nodeFetch = jest.requireActual("node-fetch");
+	// only needed if your application makes use of Response, Request
+	// or Headers classes directly
+	Object.assign(fetchMock.config, {
+		fetch: nodeFetch,
+		Response: nodeFetch.Response,
+		Request: nodeFetch.Request,
+		Headers: nodeFetch.Headers,
+	});
+	return fetchMock.fetchHandler;
+});
 
 let client: NetworkAsCodeClient;
 
@@ -27,12 +36,17 @@ beforeAll((): any => {
 
 // Tests
 beforeEach(() => {
-    fetchMock.reset();
+    fetchMock.mockReset();
 });
+
+afterEach(() => {
+    fetchMock.unmockGlobal();
+});
+
 
 describe("Location", () => {
     it("should use mocks correctly", async () => {
-        fetchMock.get("https://example.com/test", {
+        fetchMock.mockGlobal().get("https://example.com/test", {
             status: 200,
             body: {
                 status: "ok",
@@ -48,7 +62,7 @@ describe("Location", () => {
     });
 
     it("should send location retrieval request to the right URL with right parameters", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-retrieval.p-eu.rapidapi.com/retrieve",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -62,8 +76,8 @@ describe("Location", () => {
                     },
                     maxAge: 60,
                 });
-
-                return Promise.resolve({
+            },
+               { response: Promise.resolve({
                     body: JSON.stringify({
                         area: {
                             center: {
@@ -81,7 +95,7 @@ describe("Location", () => {
                             A6: "",
                         },
                     }),
-                });
+                })
             }
         );
 
@@ -91,7 +105,7 @@ describe("Location", () => {
     });
 
     it("should get location from a valid response", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-retrieval.p-eu.rapidapi.com/retrieve",
             JSON.stringify({
                 area: {
@@ -122,7 +136,7 @@ describe("Location", () => {
     });
 
     it("should get location without civic address", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-retrieval.p-eu.rapidapi.com/retrieve",
             JSON.stringify({
                 area: {
@@ -153,7 +167,7 @@ describe("Location", () => {
     });
 
     it("can omit maxAge if 60 seconds is fine", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-retrieval.p-eu.rapidapi.com/retrieve",
             JSON.stringify({
                 area: {
@@ -173,7 +187,7 @@ describe("Location", () => {
     });
 
     it("should send location verification request to the right URL with right parameters", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-verification.p-eu.rapidapi.com/v1/verify",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -195,12 +209,12 @@ describe("Location", () => {
                     },
                     maxAge: 60,
                 });
-
-                return Promise.resolve({
+            },
+              { response: Promise.resolve({
                     body: JSON.stringify({
                         verificationResult: "TRUE",
                     }),
-                });
+                })
             }
         );
 
@@ -210,7 +224,7 @@ describe("Location", () => {
     });
 
     it("should return true if location verification response is TRUE", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
@@ -223,7 +237,7 @@ describe("Location", () => {
     });
 
     it("should return 'PARTIAL' if location verification response is 'PARTIAL'", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "PARTIAL",
@@ -236,7 +250,7 @@ describe("Location", () => {
     });
 
     it("should verify location with possibility to omit maxAge if 60 seconds is fine", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
@@ -249,7 +263,7 @@ describe("Location", () => {
     });
 
     it("should still return true with non-default maxAge value", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
@@ -262,7 +276,7 @@ describe("Location", () => {
     });
 
     it("should return false if location verification response is FALSE", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-verification.p-eu.rapidapi.com/v1/verify",
             JSON.stringify({
                 verificationResult: "FALSE",
@@ -275,7 +289,7 @@ describe("Location", () => {
     });
 
     it("should raise exception if status code indicates error", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://location-verification.p-eu.rapidapi.com/v1/verify",
             403
         );
