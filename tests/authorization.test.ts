@@ -1,19 +1,27 @@
-import type { FetchMockStatic } from "fetch-mock";
-import fetch from "node-fetch";
-
+import fetchMock from '@fetch-mock/jest';
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
-
 import {
     APIError,
     ServiceError
-} from "../src/errors";
+} from "../src/errors"
 
 
-jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
-const fetchMock = fetch as unknown as FetchMockStatic;
+jest.mock("node-fetch", () => {
+	const nodeFetch = jest.requireActual("node-fetch");
+	// only needed if your application makes use of Response, Request
+	// or Headers classes directly
+	Object.assign(fetchMock.config, {
+		fetch: nodeFetch,
+		Response: nodeFetch.Response,
+		Request: nodeFetch.Request,
+		Headers: nodeFetch.Headers,
+	});
+	return fetchMock.fetchHandler;
+});
 
 let client: NetworkAsCodeClient;
+
 let device: Device;
 
 beforeAll(() => {
@@ -23,11 +31,18 @@ beforeAll(() => {
     });
 });
 
+beforeEach(() => {
+    fetchMock.mockReset();
+});
+
+afterEach(() => {
+    fetchMock.unmockGlobal();
+});
+
 
 describe("Number Verification successfull authentication tests", () => {
     beforeEach(() => {
-        fetchMock.reset();
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://nac-authorization-server.p-eu.rapidapi.com/auth/clientcredentials",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
@@ -35,16 +50,16 @@ describe("Number Verification successfull authentication tests", () => {
                     "X-RapidAPI-Host": "nac-authorization-server.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
-                return Promise.resolve({
-                    body: JSON.stringify({
-                        client_id: "123456",
-                        client_secret: "secret123"
-                    }),
-                });
-            }
+            },
+            { response: Promise.resolve({
+                body: JSON.stringify({
+                    client_id: "123456",
+                    client_secret: "secret123"
+                })
+            })}       
         );
-    
-        fetchMock.get(
+
+        fetchMock.mockGlobal().get(
             "https://well-known-metadata.p-eu.rapidapi.com/openid-configuration",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
@@ -52,15 +67,16 @@ describe("Number Verification successfull authentication tests", () => {
                     "X-RapidAPI-Host": "well-known-metadata.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
-                return Promise.resolve({
-                    body: JSON.stringify({
-                        authorization_endpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize",
-                        token_endpoint: "https://tokenTestEndpoint/oauth2/v1/token"
-                    }),
-                });
-            }
+            },
+            { response: Promise.resolve({
+                body: JSON.stringify({
+                    authorization_endpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize",
+                    token_endpoint: "https://tokenTestEndpoint/oauth2/v1/token"
+                }),
+            })
+            }       
         );
-    
+ 
     });
 
     it("should get the credentials", async () => {
@@ -86,8 +102,7 @@ describe("Number Verification successfull authentication tests", () => {
 
 describe("Number Verification authentication tests errors", () => {
     it("credential fetching should return APIError", async () => {
-        fetchMock.reset();       
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://nac-authorization-server.p-eu.rapidapi.com/auth/clientcredentials",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
@@ -95,32 +110,33 @@ describe("Number Verification authentication tests errors", () => {
                     "X-RapidAPI-Host": "nac-authorization-server.nokia.rapidapi.com",
                     "X-RapidAPI-Key": "TEST_TOKEN",
                 });
-                return Promise.resolve({
-                    status: 400
-                    })
-                });
+            },
+            { response: Promise.resolve({
+                status: 400
+                })
+            });
         try {
             await client.authentication.credentials();
         } catch (error) {
             expect(error).toBeInstanceOf(APIError);
-        }
+        }  
         }
     );
 
     it("credential fetching should return ServiceError", async () => {
-        fetchMock.reset();       
-        fetchMock.get(
-            "https://nac-authorization-server.p-eu.rapidapi.com/auth/clientcredentials",
-            (_: any, req: any): any => {
-                expect(req.headers).toEqual({
-                    "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "nac-authorization-server.nokia.rapidapi.com",
-                    "X-RapidAPI-Key": "TEST_TOKEN",
-                });
-                return Promise.resolve({
-                    status: 500
-                    })
-                });
+        fetchMock.mockGlobal().get(
+        "https://nac-authorization-server.p-eu.rapidapi.com/auth/clientcredentials",
+        (_: any, req: any): any => {
+            expect(req.headers).toEqual({
+                "Content-Type": "application/json",
+                "X-RapidAPI-Host": "nac-authorization-server.nokia.rapidapi.com",
+                "X-RapidAPI-Key": "TEST_TOKEN",
+            });
+        },
+        { response: Promise.resolve({
+            status: 500
+            })
+        });
         try {
             await client.authentication.credentials();
         } catch (error) {
@@ -130,8 +146,7 @@ describe("Number Verification authentication tests errors", () => {
     );
 
     it("endpoint fetching should return ServiceError", async () => {
-        fetchMock.reset();       
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://well-known-metadata.p-eu.rapidapi.com/openid-configuration",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
@@ -139,10 +154,11 @@ describe("Number Verification authentication tests errors", () => {
                     "X-RapidAPI-Host": "well-known-metadata.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
-                return Promise.resolve({
-                    status: 500
-                    })
-                });
+            },
+            { response: Promise.resolve({
+                status: 500
+                })
+            });
         try {
             await client.authentication.endpoints();
         } catch (error) {
@@ -152,8 +168,7 @@ describe("Number Verification authentication tests errors", () => {
     );
 
     it("endpoint fetching should return APIError", async () => {
-        fetchMock.reset();    
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://well-known-metadata.p-eu.rapidapi.com/openid-configuration",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
@@ -161,10 +176,11 @@ describe("Number Verification authentication tests errors", () => {
                     "X-RapidAPI-Host": "well-known-metadata.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
-                return Promise.resolve({
-                    status: 400
-                    })
-                });
+            },
+            { response: Promise.resolve({
+                status: 400
+                })
+            });
         try {
             await client.authentication.endpoints();
         } catch (error) {

@@ -75,7 +75,7 @@ describe("Number Verification NaC auth code and access token", () => {
         const secondResponse: any = await fetch(secondRedirect, {
             redirect: "manual",
             method: "GET",
-            agent: httpAgent
+            agent: httpsAgent
         });
         const location = secondResponse.headers.get("location");
         const codeIndex = location.search("code=");
@@ -107,7 +107,7 @@ describe("Number Verification NaC auth code and access token", () => {
         const secondResponse: any = await fetch(secondRedirect, {
             redirect: "manual",
             method: "GET",
-            agent: httpAgent
+            agent: httpsAgent
         });
         const location = secondResponse.headers.get("location");
         const codeIndex = location.search("code=");
@@ -144,14 +144,14 @@ describe("Number verification", () => {
         const secondResponse: any = await fetch(secondRedirect, {
             redirect: "manual",
             method: "GET",
-            agent: httpAgent
+            agent: httpsAgent
         });
         const location = secondResponse.headers.get("location");
         const codeIndex = location.search("code=");
         const code = location.slice(codeIndex + 5);
-        const result: any = await device.verifyNumber(code);
+        const result: boolean = await device.verifyNumber(code);
         expect(result).toBeTruthy();
-    });
+    }, 7000);
 
     it("should return 400 APIError", async () => {
         try {

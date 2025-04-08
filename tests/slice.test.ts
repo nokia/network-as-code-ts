@@ -1,21 +1,29 @@
-import type { FetchMockStatic } from "fetch-mock";
-import fetch from "node-fetch";
+import fetchMock from '@fetch-mock/jest';
+import { NetworkAsCodeClient } from "../src";
+import { Device, DeviceIpv4Addr } from "../src/models/device";
 
 import {
     APIError,
     AuthenticationError,
     InvalidParameterError,
     NotFoundError,
-    ServiceError,
+    ServiceError
 } from "../src/errors";
-import { NetworkAsCodeClient } from "../src";
-import { Device, DeviceIpv4Addr } from "../src/models/device";
 import { Slice } from "../src/models/slice";
 
-jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
-const fetchMock = fetch as unknown as FetchMockStatic;
+jest.mock("node-fetch", () => {
+	const nodeFetch = jest.requireActual("node-fetch");
+	Object.assign(fetchMock.config, {
+		fetch: nodeFetch,
+		Response: nodeFetch.Response,
+		Request: nodeFetch.Request,
+		Headers: nodeFetch.Headers,
+	});
+	return fetchMock.fetchHandler;
+});
 
 let client: NetworkAsCodeClient;
+
 let device: Device;
 
 const MOCK_SLICE = {
@@ -77,7 +85,7 @@ const MOCK_SLICE = {
     state: "PENDING",
 };
 
-beforeAll(() => {
+beforeAll((): any => {
     client = new NetworkAsCodeClient("TEST_TOKEN");
     device = client.devices.get({
         ipv4Address: {
@@ -88,15 +96,20 @@ beforeAll(() => {
         ipv6Address: "2041:0000:140F::875B:131B",
         phoneNumber: "3637123456",
     });
+    return client;
 });
 
 beforeEach(() => {
-    fetchMock.reset();
+    fetchMock.mockReset();
+});
+
+afterEach(() => {
+    fetchMock.unmockGlobal();
 });
 
 describe("Slicing", () => {
     it("should create a slice only with mandatory params", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://network-slicing.p-eu.rapidapi.com/slices",
             JSON.stringify(MOCK_SLICE)
         );
@@ -111,7 +124,7 @@ describe("Slicing", () => {
     });
 
     it("should create a slice with optional args", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://network-slicing.p-eu.rapidapi.com/slices",
             JSON.stringify(MOCK_SLICE)
         );
@@ -257,14 +270,14 @@ describe("Slicing", () => {
             state: "PENDING",
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://network-slicing.p-eu.rapidapi.com/slices",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual(slicePayload);
-
-                return Promise.resolve({
-                    body: JSON.stringify(sliceResponseOriginal),
-                });
+            },
+            { response: Promise.resolve({
+                body: JSON.stringify(sliceResponseOriginal),
+            })
             }
         );
 
@@ -281,16 +294,16 @@ describe("Slicing", () => {
         expect(slice.maxDataConnections).toBeUndefined();
         expect(slice.maxDevices).toBeUndefined();
 
-        fetchMock.put(
+        fetchMock.mockGlobal().put(
             `https://network-slicing.p-eu.rapidapi.com/slices/${slice.name}`,
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual(
                     sliceModificationPayload
                 );
-
-                return Promise.resolve({
-                    body: JSON.stringify(sliceResponseModified),
-                });
+            },
+            { response: Promise.resolve({
+                body: JSON.stringify(sliceResponseModified),
+            })
             }
         );
         await slice.modify({
@@ -312,9 +325,9 @@ describe("Slicing", () => {
     it("should get all slices", async () => {
         const mockSlices = [MOCK_SLICE];
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
-            JSON.stringify([
+            { response: JSON.stringify([
                 {
                     nac_resource_id: "attachment-1",
                     resource: {
@@ -343,9 +356,10 @@ describe("Slicing", () => {
                     },
                 },
             ])
+            }
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://network-slicing.p-eu.rapidapi.com/slices",
             JSON.stringify(mockSlices)
         );
@@ -357,12 +371,12 @@ describe("Slicing", () => {
     it("should return empty array if no slices found", async () => {
         const mockSlices: any = [];
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([])
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://network-slicing.p-eu.rapidapi.com/slices",
             JSON.stringify(mockSlices)
         );
@@ -372,12 +386,12 @@ describe("Slicing", () => {
     });
 
     it("should get a slice", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE)
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
                 {
@@ -431,12 +445,12 @@ describe("Slicing", () => {
             csi_id: "csi_368",
             state: "PENDING",
         };
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE_RES.slice.name}`,
             JSON.stringify(MOCK_SLICE_RES)
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
                 {
@@ -448,7 +462,7 @@ describe("Slicing", () => {
                         sliceId: "sliceone",
                     },
                 },
-            ])
+            ]) 
         );
 
         const slice = await client.slices.get(MOCK_SLICE_RES.slice.name);
@@ -456,13 +470,13 @@ describe("Slicing", () => {
     });
 
     it("should get wait until polling completion", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE),
             { repeat: 1 }
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
                 {
@@ -499,18 +513,18 @@ describe("Slicing", () => {
 
         expect(slice.state).toEqual("PENDING");
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE),
-            { overwriteRoutes: false, repeat: 1 }
+            { repeat: 1 }            
         );
 
         let modifiedSlice = { ...slice, state: "AVAILABLE" };
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(modifiedSlice),
-            { overwriteRoutes: false, repeat: 1 }
+            { repeat: 1 }
         );
 
         await slice.waitFor();
@@ -519,13 +533,13 @@ describe("Slicing", () => {
     }, 72000);
 
     it("should get wait for other states than AVAILABLE", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE),
             { repeat: 1 }
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
                 {
@@ -562,18 +576,18 @@ describe("Slicing", () => {
 
         expect(slice.state).toEqual("PENDING");
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE),
-            { overwriteRoutes: false, repeat: 1 }
+            { repeat: 1 }
         );
 
         let modifiedSlice = { ...slice, state: "AVAILABLE" };
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(modifiedSlice),
-            { overwriteRoutes: false, repeat: 1 }
+            { repeat: 1 }
         );
 
         await slice.waitFor();
@@ -582,10 +596,10 @@ describe("Slicing", () => {
 
         modifiedSlice = { ...slice, state: "OPERATING" };
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(modifiedSlice),
-            { overwriteRoutes: false, repeat: 1 }
+            { repeat: 1 }
         );
 
         await slice.waitFor("OPERATING");
@@ -594,7 +608,7 @@ describe("Slicing", () => {
     }, 72000);
 
     it("should activate a slice", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://network-slicing.p-eu.rapidapi.com/slices/sliceone/activate",
             {}
         );
@@ -615,11 +629,11 @@ describe("Slicing", () => {
 
         await slice.activate();
 
-        expect(fetchMock).toBeTruthy();
+        expect(fetchMock.mockGlobal).toBeTruthy();
     });
 
     it("should deactivate a slice", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://network-slicing.p-eu.rapidapi.com/slices/sliceone/deactivate",
             {}
         );
@@ -639,12 +653,11 @@ describe("Slicing", () => {
         );
 
         await slice.deactivate();
-
-        expect(fetchMock).toBeTruthy();
+        expect(fetchMock.mockGlobal).toBeTruthy();
     });
 
     it("should delete a slice", async () => {
-        fetchMock.delete(
+        fetchMock.mockGlobal().delete(
             "https://network-slicing.p-eu.rapidapi.com/slices/sliceone",
             {}
         );
@@ -665,16 +678,16 @@ describe("Slicing", () => {
 
         await slice.delete();
 
-        expect(fetchMock).toBeTruthy();
+        expect(fetchMock.mockGlobal).toBeTruthy();
     });
 
     it("should attach a device to slice with all params", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE)
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
                 {
@@ -691,7 +704,7 @@ describe("Slicing", () => {
 
         const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -705,28 +718,28 @@ describe("Slicing", () => {
                                 device.ipv4Address as DeviceIpv4Addr
                             ).privateAddress,
                             publicPort: (device.ipv4Address as DeviceIpv4Addr)
-                                .publicPort,
+                                .publicPort
                         },
-                        ipv6Address: device.ipv6Address,
+                        ipv6Address: device.ipv6Address
                     },
                     sliceId: "sliceone",
                     trafficCategories: {
                         apps: {
                             os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
-                            apps: ["ENTERPRISE"],
-                        },
+                            apps: ["ENTERPRISE"]
+                        }
                     },
                     webhook: {
                         notificationUrl: "https://example.com/notifications",
-                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
-                    },
+                        notificationAuthToken: "c8974e592c2fa383d4a3960714"
+                    }
                 });
-
-                return Promise.resolve({
-                    body: JSON.stringify({
-                        nac_resource_id: "attachment-1",
-                    }),
-                });
+            },
+            { response: Promise.resolve({
+                body: JSON.stringify({
+                    nac_resource_id: "attachment-1"
+                })
+            })
             }
         );
 
@@ -744,12 +757,12 @@ describe("Slicing", () => {
     });
 
     it("should attach a device to slice with only mandatory params", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE)
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
                 {
@@ -766,7 +779,7 @@ describe("Slicing", () => {
 
         const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -775,12 +788,12 @@ describe("Slicing", () => {
                     },
                     sliceId: "sliceone",
                 });
-
-                return Promise.resolve({
-                    body: JSON.stringify({
-                        nac_resource_id: "attachment-1",
-                    }),
-                });
+            },
+            { response: Promise.resolve({
+                body: JSON.stringify({
+                    nac_resource_id: "attachment-1",
+                }),
+            })
             }
         );
         const device = client.devices.get({
@@ -790,12 +803,12 @@ describe("Slicing", () => {
     });
 
     it("should throw an error if a device phone number is not given for attachment", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE)
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
                 {
@@ -812,7 +825,7 @@ describe("Slicing", () => {
 
         const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -825,12 +838,12 @@ describe("Slicing", () => {
                     },
                     sliceId: "sliceone",
                 });
-
-                return Promise.resolve({
-                    body: JSON.stringify({
-                        nac_resource_id: "attachment-1",
-                    }),
-                });
+            },
+            { response: Promise.resolve({
+                body: JSON.stringify({
+                    nac_resource_id: "attachment-1",
+                }),
+            })
             }
         );
         const device = client.devices.get({
@@ -849,12 +862,12 @@ describe("Slicing", () => {
     });
 
     it("should detach a device from slice", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             JSON.stringify(MOCK_SLICE)
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
                 {
@@ -889,7 +902,7 @@ describe("Slicing", () => {
 
         const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
 
-        fetchMock.delete(
+        fetchMock.mockGlobal().delete(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments/attachment-1`,
             JSON.stringify({})
         );
@@ -899,16 +912,16 @@ describe("Slicing", () => {
 
     test("should throw a NotFoundError if attachment id is not found", async () => {
         try {
-            fetchMock.get(
+            fetchMock.mockGlobal().get(
                 `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
                 JSON.stringify(MOCK_SLICE)
             );
-            fetchMock.get(
+            fetchMock.mockGlobal().get(
                 `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
                 JSON.stringify([])
             );
             const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
-            fetchMock.delete(
+            fetchMock.mockGlobal().delete(
                 `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments/attachment-1`,
                 JSON.stringify({})
             );
@@ -919,7 +932,7 @@ describe("Slicing", () => {
     });
 
     it("should get application attachment", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments/4f11d02d-e661-4e4b-b623-55292a431c60`,
             JSON.stringify({
                 nac_resource_id: "4f11d02d-e661-4e4b-b623-55292a431c60",
@@ -935,7 +948,7 @@ describe("Slicing", () => {
     });
 
     it("should get all application attachments", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slice-device-attachment.p-eu.rapidapi.com/attachments`,
             JSON.stringify([
                 {
@@ -973,7 +986,7 @@ describe("Slicing", () => {
     });
 
     test("should throw NotFound Error for 404 HTTPError", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             `https://network-slicing.p-eu.rapidapi.com/slices/${MOCK_SLICE.slice.name}`,
             {
                 status: 404,
@@ -989,7 +1002,8 @@ describe("Slicing", () => {
     });
 
     test("should throw Authentication Error for 403 HTTPError", async () => {
-        fetchMock.post(`https://network-slicing.p-eu.rapidapi.com/slices`, {
+        fetchMock.mockGlobal().post(
+            `https://network-slicing.p-eu.rapidapi.com/slices`, {
             status: 403,
             body: JSON.stringify({ message: "Authentication Error" }),
         });
@@ -1007,7 +1021,8 @@ describe("Slicing", () => {
     });
 
     test("should throw Authentication Error for 401 HTTPError", async () => {
-        fetchMock.post(`https://network-slicing.p-eu.rapidapi.com/slices`, {
+        fetchMock.mockGlobal().post(
+            `https://network-slicing.p-eu.rapidapi.com/slices`, {
             status: 401,
             body: JSON.stringify({ message: "Authentication Error" }),
         });
@@ -1025,7 +1040,8 @@ describe("Slicing", () => {
     });
 
     test("should throw API Error for 4xx HTTPError", async () => {
-        fetchMock.post(`https://network-slicing.p-eu.rapidapi.com/slices`, {
+        fetchMock.mockGlobal().post(
+            `https://network-slicing.p-eu.rapidapi.com/slices`, {
             status: 400,
             body: JSON.stringify({ message: "API Error" }),
         });
@@ -1043,8 +1059,9 @@ describe("Slicing", () => {
     });
 
     test("should throw Service Error for 500 HTTPError", async () => {
-        fetchMock.post(`https://network-slicing.p-eu.rapidapi.com/slices`, {
-            status: 500,
+        fetchMock.mockGlobal().post(
+            `https://network-slicing.p-eu.rapidapi.com/slices`, {
+            status: 500
         });
 
         try {

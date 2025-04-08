@@ -1,11 +1,20 @@
-import type { FetchMockStatic } from "fetch-mock";
-import fetch from "node-fetch";
+import fetchMock from '@fetch-mock/jest';
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
 
-jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
-const fetchMock = fetch as unknown as FetchMockStatic;
+jest.mock("node-fetch", () => {
+	const nodeFetch = jest.requireActual("node-fetch");
+	// only needed if your application makes use of Response, Request
+	// or Headers classes directly
+	Object.assign(fetchMock.config, {
+		fetch: nodeFetch,
+		Response: nodeFetch.Response,
+		Request: nodeFetch.Request,
+		Headers: nodeFetch.Headers,
+	});
+	return fetchMock.fetchHandler;
+});
 
 let client: NetworkAsCodeClient;
 let device: Device;
@@ -23,12 +32,16 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-    fetchMock.reset();
+    fetchMock.mockReset();
+});
+
+afterEach(() => {
+    fetchMock.unmockGlobal();
 });
 
 describe("Device Status", () => {
     it("can invoke subscription to CONNECTIVITY updates", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://device-status.p-eu.rapidapi.com/subscriptions",
             JSON.stringify({
                 subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
@@ -60,7 +73,7 @@ describe("Device Status", () => {
     });
 
     it("sends a request out on subscribe", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://device-status.p-eu.rapidapi.com/subscriptions",
             JSON.stringify({
                 subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
@@ -88,11 +101,11 @@ describe("Device Status", () => {
             "https://example.com/notify"
         );
 
-        expect(fetchMock.calls().length).toBe(1);
+        expect(fetchMock.callHistory.calls().length).toBe(1);
     });
 
     it("uses the returned response to fill the subscription object", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://device-status.p-eu.rapidapi.com/subscriptions",
             JSON.stringify({
                 subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
@@ -130,7 +143,7 @@ describe("Device Status", () => {
     });
 
     it("sends the right body to the correct URL for subscription", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://device-status.p-eu.rapidapi.com/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -149,8 +162,8 @@ describe("Device Status", () => {
                         notificationUrl: "https://example.com/notify",
                     },
                 });
-
-                return Promise.resolve(
+            },
+                { response: Promise.resolve(
                     JSON.stringify({
                         subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                         subscriptionDetail: {
@@ -170,8 +183,8 @@ describe("Device Status", () => {
                         },
                         startsAt: "2024-01-11T11:53:20.293671Z",
                     })
-                );
-            }
+                )}
+            
         );
 
         await client.deviceStatus.subscribe(
@@ -182,7 +195,7 @@ describe("Device Status", () => {
     });
 
     it("can handle a subscriptionExpireTime given as a Date", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://device-status.p-eu.rapidapi.com/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -202,8 +215,8 @@ describe("Device Status", () => {
                         notificationUrl: "https://example.com/notify",
                     },
                 });
-
-                return Promise.resolve(
+            },
+                { response: Promise.resolve(
                     JSON.stringify({
                         subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                         subscriptionDetail: {
@@ -223,8 +236,8 @@ describe("Device Status", () => {
                         },
                         startsAt: "2024-01-11T11:53:20.293671Z",
                     })
-                );
-            }
+                )}
+            
         );
 
         await client.deviceStatus.subscribe(
@@ -238,7 +251,7 @@ describe("Device Status", () => {
     });
 
     it("handles optional parameters in subscription", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://device-status.p-eu.rapidapi.com/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -260,8 +273,8 @@ describe("Device Status", () => {
                         notificationAuthToken: "asdasd",
                     },
                 });
-
-                return Promise.resolve(
+            },
+                { response: Promise.resolve(
                     JSON.stringify({
                         subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                         subscriptionDetail: {
@@ -283,8 +296,8 @@ describe("Device Status", () => {
                         startsAt: "2024-01-11T11:53:20.293671Z",
                         expiresAt: "2024-01-11T11:53:20.293671Z",
                     })
-                );
-            }
+                )}
+            
         );
 
         const subscription = await client.deviceStatus.subscribe(
@@ -309,7 +322,7 @@ describe("Device Status", () => {
     });
 
     it("can delete a subscription", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://device-status.p-eu.rapidapi.com/subscriptions",
             JSON.stringify({
                 subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
@@ -337,29 +350,29 @@ describe("Device Status", () => {
             "https://example.com/notify"
         );
 
-        fetchMock.delete(
+        fetchMock.mockGlobal().delete(
             "https://device-status.p-eu.rapidapi.com/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
             (_: any, req: any): any => {
                 expect(req.method).toBe("DELETE");
-
-                return Promise.resolve({
+            },
+                { response: Promise.resolve({
                     status: 200,
-                });
-            }
+                })}
+            
         );
 
         await subscription.delete();
 
-        expect(fetchMock.calls().length).toBe(2);
+        expect(fetchMock.callHistory.calls().length).toBe(2);
     });
 
     it("can fetch a subscription by id", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://device-status.p-eu.rapidapi.com/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
             (_: any, req: any): any => {
                 expect(req.method).toBe("GET");
-
-                return Promise.resolve({
+            },
+               { response: Promise.resolve({
                     status: 200,
                     body: JSON.stringify({
                         subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
@@ -382,7 +395,7 @@ describe("Device Status", () => {
                         maxNumberOfReports: 5,
                         startsAt: "2024-01-11T11:53:20.293671Z",
                     }),
-                });
+                })
             }
         );
 
@@ -407,7 +420,7 @@ describe("Device Status", () => {
     });
 
     it("can get list of subscriptions", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://device-status.p-eu.rapidapi.com/subscriptions",
             JSON.stringify([
                 {
@@ -497,7 +510,7 @@ describe("Device Status", () => {
     });
 
     it("allows polling device connectivity", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://device-status.p-eu.rapidapi.com/connectivity",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body)).toStrictEqual({
@@ -510,13 +523,13 @@ describe("Device Status", () => {
                         },
                     },
                 });
-
-                return Promise.resolve({
+            },
+               { response: Promise.resolve({
                     status: 200,
                     body: JSON.stringify({
                         connectivityStatus: "CONNECTED_DATA",
                     }),
-                });
+                })
             }
         );
 
@@ -526,7 +539,7 @@ describe("Device Status", () => {
     });
 
     it("allows polling device roaming status", async () => {
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://device-status.p-eu.rapidapi.com/roaming",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body)).toStrictEqual({
@@ -539,15 +552,15 @@ describe("Device Status", () => {
                         },
                     },
                 });
-
-                return Promise.resolve({
+            },
+               { response: Promise.resolve({
                     status: 200,
                     body: JSON.stringify({
                         roaming: true,
                         countryCode: 358,
                         countryName: ["Finland"],
                     }),
-                });
+                })
             }
         );
 
