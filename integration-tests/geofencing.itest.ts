@@ -30,7 +30,7 @@ describe("Geofencing", () => {
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`);
 
         const data = await notification.json();
@@ -39,7 +39,7 @@ describe("Geofencing", () => {
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`, { method: 'DELETE' });
 
         subscription.delete();
-    });
+    },10 * 1000);
 
     it("should subscribe for geofencing event area left", async () => {
         const subscription = await client.geofencing.subscribe(device, {
@@ -52,7 +52,7 @@ describe("Geofencing", () => {
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`);
 
         const data = await notification.json();
@@ -61,7 +61,7 @@ describe("Geofencing", () => {
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`, { method: 'DELETE' });
 
         subscription.delete();
-    });
+    }, 10* 1000);
 
     it("should subscribe for geofencing event with plain credential", async () => {
         const subscription = await client.geofencing.subscribe(device, {
@@ -79,7 +79,7 @@ describe("Geofencing", () => {
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`);
 
         const data = await notification.json();
@@ -88,7 +88,7 @@ describe("Geofencing", () => {
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`, { method: 'DELETE' });
 
         subscription.delete();
-    });
+    }, 10 * 1000);
 
     it("should subscribe for geofencing event with accesstoken credential", async () => {
         const expirationDate = new Date(Date.now() + 5 * 60 * 60 * 1000);
@@ -109,7 +109,7 @@ describe("Geofencing", () => {
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`);
 
         const data = await notification.json();
@@ -118,7 +118,7 @@ describe("Geofencing", () => {
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`, { method: 'DELETE' });
 
         subscription.delete();
-    });
+    }, 10 * 1000);
 
     it("should get an event subscription", async () => {
         const subscription = await client.geofencing.subscribe(device, {
