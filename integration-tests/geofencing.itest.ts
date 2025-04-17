@@ -1,23 +1,29 @@
 import { NetworkAsCodeClient } from "../src";
 import { beforeAll, describe, expect} from "@jest/globals";
+import { ProxyAgent } from "proxy-agent";
+import fetch from "node-fetch";
 import "dotenv/config";
 import { Device } from "../src/models/device";
-import { configureClient } from "./configClient";
+import { configureClient, configureNotificationServerUrl } from "./configClient";
 
 let client: NetworkAsCodeClient;
 let device: Device;
+let notificationUrl: string;
+let agent : ProxyAgent
 
 beforeAll(() => {
     client = configureClient();
     device = client.devices.get({
         phoneNumber:"+3637123456",
     });
+    notificationUrl = configureNotificationServerUrl();
+    agent = new ProxyAgent()
 });
 
 describe("Geofencing", () => {
     it("should subscribe for geofencing event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
-            sink: "https://example.com/notif",
+            sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
@@ -26,12 +32,28 @@ describe("Geofencing", () => {
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            });
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent 
+            });
+
         subscription.delete();
-    });
+    },20 * 1000);
 
     it("should subscribe for geofencing event area left", async () => {
         const subscription = await client.geofencing.subscribe(device, {
-            sink: "https://example.com/notif",
+            sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
@@ -40,12 +62,29 @@ describe("Geofencing", () => {
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
         subscription.delete();
-    });
+    }, 20* 1000);
 
     it("should subscribe for geofencing event with plain credential", async () => {
         const subscription = await client.geofencing.subscribe(device, {
-            sink: "https://example.com/notif",
+            sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
@@ -58,15 +97,32 @@ describe("Geofencing", () => {
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
-    
+
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
         subscription.delete();
-    });
+    }, 20 * 1000);
 
     it("should subscribe for geofencing event with accesstoken credential", async () => {
         const expirationDate = new Date(Date.now() + 5 * 60 * 60 * 1000);
         expirationDate.setMilliseconds(0);
         const subscription = await client.geofencing.subscribe(device, {
-            sink: "https://example.com/notif",
+            sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
@@ -80,9 +136,26 @@ describe("Geofencing", () => {
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
-    
+
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
         subscription.delete();
-    });
+    }, 20 * 1000);
 
     it("should get an event subscription", async () => {
         const subscription = await client.geofencing.subscribe(device, {
