@@ -23,7 +23,7 @@ beforeAll(() => {
 describe("Geofencing", () => {
     it("should subscribe for geofencing event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
-            sink: `${notificationUrl}/notif`,
+            sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
@@ -53,7 +53,7 @@ describe("Geofencing", () => {
 
     it("should subscribe for geofencing event area left", async () => {
         const subscription = await client.geofencing.subscribe(device, {
-            sink: `${notificationUrl}/notif`,
+            sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
@@ -84,7 +84,7 @@ describe("Geofencing", () => {
 
     it("should subscribe for geofencing event with plain credential", async () => {
         const subscription = await client.geofencing.subscribe(device, {
-            sink: `${notificationUrl}/notif`,
+            sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
@@ -122,7 +122,7 @@ describe("Geofencing", () => {
         const expirationDate = new Date(Date.now() + 5 * 60 * 60 * 1000);
         expirationDate.setMilliseconds(0);
         const subscription = await client.geofencing.subscribe(device, {
-            sink: `${notificationUrl}/notif`,
+            sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
