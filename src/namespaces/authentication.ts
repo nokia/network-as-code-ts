@@ -69,14 +69,14 @@ export class Authentication extends Namespace {
      * 
             @param redirectUri (string): Callback uri where the NaC authorization code should be sent to.
             @param scope (string): Permissions that the authorization endpoint should request from the end user.
-            @param loginHint (string): Device phone number.
+            @param loginHint (Optional[string]): Device phone number.
             @param state (Optional[string]): Optional value for state, which can be used for CSRF attack checking.
             @returns Promise<string>
     */    
     async createAuthenticationLink(
         redirectUri: string,
         scope: string,
-        loginHint: string,
+        loginHint?: string,
         state?: string
     ): Promise<string> {
 
