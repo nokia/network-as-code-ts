@@ -153,6 +153,37 @@ describe("Number verification", () => {
         expect(result).toBeTruthy();
     }, 7000);
 
+    it("should get device phone number", async () => {
+        const redirectUri= "https://example.com/redirect";
+        const scope = "number-verification:device-phone-number:read";
+        const callback = await client.authentication.createAuthenticationLink(
+            redirectUri,
+            scope
+        );
+        const callbackResponse: any = await fetch(callback, {
+            redirect: "manual",
+            method: "GET",
+            agent: httpsAgent
+        });
+        const firstRedirect = callbackResponse.headers.get("location");
+        const firstResponse: any = await fetch(firstRedirect, {
+            redirect: "manual",
+            method: "GET",
+            agent: httpAgent
+        });
+        const secondRedirect = firstResponse.headers.get("location");
+        const secondResponse: any = await fetch(secondRedirect, {
+            redirect: "manual",
+            method: "GET",
+            agent: httpsAgent
+        });
+        const location = secondResponse.headers.get("location");
+        const codeIndex = location.search("code=");
+        const code = location.slice(codeIndex + 5);
+        const result: string = await device.getPhoneNumber(code);
+        expect(result).toBeDefined();
+    }, 7000);
+
     it("should return 400 APIError", async () => {
         try {
             await device.getSingleUseAccessToken("1234567");            
