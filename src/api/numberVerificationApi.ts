@@ -53,4 +53,17 @@ export class NumberVerificationAPI {
         return await response.json(); 
     }
 
+    async getPhoneNumber(authenticatorHeader: string) {
+        this.headers = {...this.headers, "Authorization": authenticatorHeader}
+        const response = await fetch(`${this.baseUrl}/device-phone-number`, {
+            method: "GET",
+            headers: this.headers,
+            agent: this.agent,
+        });
+
+        errorHandler(response);
+
+        return await response.json(); 
+    }
+
 }
