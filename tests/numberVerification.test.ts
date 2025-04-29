@@ -160,7 +160,7 @@ describe("Number Verification access token and verifying number tests", () => {
                         devicePhoneNumber: "+123456789"
                 })});
 
-        expect(await device.verifyNumber("testCode1234")).toMatch("+123456789");
+        expect(await device.getPhoneNumber("testCode1234")).toMatch("+123456789");
     });
     
 });
