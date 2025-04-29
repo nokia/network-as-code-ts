@@ -153,6 +153,18 @@ describe("Number verification", () => {
         expect(result).toBeTruthy();
     }, 7000);
 
+    it("should return 400 APIError", async () => {
+        try {
+            await device.getSingleUseAccessToken("1234567");            
+            expect(true).toBe(false);
+        } catch (error){
+            expect(error).toBeDefined();
+            const err = error as Error;
+            expect(err.message).toEqual("400 - Bad Request");
+        }
+    });
+});
+describe("Get Phone Number", () => {
     it("should get device phone number", async () => {
         const redirectUri= "https://example.com/redirect";
         const scope = "number-verification:device-phone-number:read";
@@ -183,15 +195,4 @@ describe("Number verification", () => {
         const result: string = await device.getPhoneNumber(code);
         expect(result).toBeDefined();
     }, 7000);
-
-    it("should return 400 APIError", async () => {
-        try {
-            await device.getSingleUseAccessToken("1234567");            
-            expect(true).toBe(false);
-        } catch (error){
-            expect(error).toBeDefined();
-            const err = error as Error;
-            expect(err.message).toEqual("400 - Bad Request");
-        }
-    });
 });
