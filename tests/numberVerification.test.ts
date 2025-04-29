@@ -144,5 +144,24 @@ describe("Number Verification access token and verifying number tests", () => {
             expect(error).toBeInstanceOf(InvalidParameterError);
         }
     });
+
+    it("should get phone number", async () => {
+        fetchMock.mockGlobal().get(
+            "https://number-verification.p-eu.rapidapi.com/device-phone-number", 
+            (req: any): any => {
+                expect(req.headers).toEqual({
+                    "Authorization": "testTokenTypeBearer testAccessToken123456",
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "number-verification.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+                })},
+                { response: 
+                    JSON.stringify({
+                        devicePhoneNumber: "+123456789"
+                })});
+
+        expect(await device.verifyNumber("testCode1234")).toMatch("+123456789");
+    });
+    
 });
 

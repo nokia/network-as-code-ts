@@ -63,7 +63,13 @@ const code = "NaC-authorization-code";
 
 
 /* You can use the Number Verification API with the obtained authorization code.
- This will respond with a true or false value. */
+ The verifyNumber endpoint will respond with a true or false value. */
 const verificationResult = await device.verifyNumber(code);
 
 console.log(verificationResult);
+
+// The getPhoneNumber endpoint will respond with the phone number of the used Device.
+
+const phoneNumber = await device.getPhoneNumber(code);
+
+console.log(phoneNumber) // "+123456789"
