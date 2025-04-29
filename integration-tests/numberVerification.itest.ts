@@ -168,9 +168,11 @@ describe("Get Phone Number", () => {
     it("should get device phone number", async () => {
         const redirectUri= "https://example.com/redirect";
         const scope = "number-verification:device-phone-number:read";
+        const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
-            scope
+            scope,
+            loginHint
         );
         const callbackResponse: any = await fetch(callback, {
             redirect: "manual",
