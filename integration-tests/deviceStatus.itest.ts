@@ -1,10 +1,16 @@
 import { NetworkAsCodeClient } from "../src";
 import "dotenv/config";
 import { Device } from "../src/models/device";
-import { configureClient } from "./configClient";
+import { configureClient, configureNotificationServerUrl } from "./configClient";
+import { ProxyAgent } from "proxy-agent";
+import fetch from "node-fetch";
+
 
 let client: NetworkAsCodeClient;
 let device: Device;
+let notificationUrl: string;
+let agent : ProxyAgent
+
 
 beforeAll(() => {
     client = configureClient();
@@ -16,6 +22,8 @@ beforeAll(() => {
             publicPort: 80,
         },
     });
+    notificationUrl = configureNotificationServerUrl();
+    agent = new ProxyAgent();
 });
 
 describe("Device Status", () => {
@@ -23,13 +31,29 @@ describe("Device Status", () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             "org.camaraproject.device-status.v0.connectivity-data",
-            "https://example.com/notify"
+            `${notificationUrl}/notify`
         );
-
         expect(subscription.eventSubscriptionId).toBeDefined();
 
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/device-status/get/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+        notification = await fetch(`${notificationUrl}/device-status/delete/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
         subscription.delete();
-    });
+    },20 * 1000);
 
     it("can create a connectivity subscription with expiry", async () => {
         const tomorrowDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
@@ -38,7 +62,7 @@ describe("Device Status", () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             "org.camaraproject.device-status.v0.connectivity-data",
-            "https://example.com/notify",
+            `${notificationUrl}/notify`,
             {
                 subscriptionExpireTime: tomorrowDate,
             }
@@ -48,14 +72,31 @@ describe("Device Status", () => {
             new Date(tomorrowDate.toISOString().replace(".000", ""))
         );
 
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/device-status/get/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+        notification = await fetch(`${notificationUrl}/device-status/delete/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
         subscription.delete();
-    });
+    },20 * 1000);
 
     it("can create a connectivity subscription with other optional arguments", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             "org.camaraproject.device-status.v0.connectivity-data",
-            "https://example.com/notify",
+            `${notificationUrl}/notify`,
             {
                 maxNumberOfReports: 2,
                 notificationAuthToken: "my-token",
@@ -66,8 +107,25 @@ describe("Device Status", () => {
         expect(subscription.maxNumOfReports).toEqual(2);
         expect(subscription.notificationAuthToken).toEqual("my-token");
 
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/device-status/get/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+        notification = await fetch(`${notificationUrl}/device-status/delete/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
         subscription.delete();
-    });
+    },20 * 1000);
 
     it("can get a subscription by id", async () => {
         const subscription = await client.deviceStatus.subscribe(
