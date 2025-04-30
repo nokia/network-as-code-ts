@@ -1,5 +1,14 @@
 # Changelog
 
+## Version 4.2.0
+
+Changes:
+- Introduced support for Geofencing API
+- Introduced support for Number Verification API
+
+Fixes:
+- Updated mocking libraries to deal with deprecated dependencies
+
 ## Version 4.1.1
 
 Fixes:
