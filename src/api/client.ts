@@ -63,7 +63,7 @@ const SIM_SWAP_BASE_URL_PROD =
 const SIM_SWAP_BASE_URL_DEV =
     "https://simswap.p-eu.rapidapi.com/sim-swap/sim-swap/v0";
 
-const GEOFENCING_BASE_URL_PROD = "https://geofencing-subscription.p-eu.rapidapi.com/v0.3"
+const GEOFENCING_BASE_URL_PROD = "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3"
 const GEOFENCING_BASE_URL_DEV = "https://geofencing-subscription.p-eu.rapidapi.com/v0.3"
 
 const CREDENTIALS_BASE_URL = 
