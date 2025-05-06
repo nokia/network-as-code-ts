@@ -1,14 +1,21 @@
 import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
 import { NetworkAsCodeClient } from "../src";
 import { Device, DeviceIpv4Addr } from "../src/models/device";
+import { ProxyAgent } from "proxy-agent";
+import fetch from "node-fetch";
+import "dotenv/config";
 import { QoDSession } from "../src/models/session";
 
-import { configureClient } from "./configClient";
+import { configureClient, configureNotificationServerUrl } from "./configClient";
 
 let client: NetworkAsCodeClient;
+let notificationUrl: string;
+let agent : ProxyAgent
 
 beforeAll(() => {
-    client = configureClient()
+    client = configureClient();
+    notificationUrl = configureNotificationServerUrl();
+    agent = new ProxyAgent()
 });
 
 describe("Qos", () => {
@@ -224,19 +231,79 @@ describe("Qos", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with notification url", async () => {
+    test("should create and delete a session with notification url", async () => {
         const session = await device.createQodSession("QOS_L", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
-            notificationAuthToken: "c8974e592c2fa383d4a3960714",
-            notificationUrl: "https://example.com/notifications",
+            notificationUrl: `${notificationUrl}/notify`,
         });
 
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_L");
-        await session.deleteSession();
-    });
+
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/qod/get/${session.id}`,
+            {
+                method: "GET",
+                agent: agent
+            });
+
+        const data = (await notification.json()) as any[];
+        expect(data).not.toBeNull();
+
+        const sessionInfo = data[0]
+        expect(sessionInfo).toHaveProperty("data.sessionId")
+        expect(sessionInfo).toHaveProperty("data.qosStatus")
+
+        session.deleteSession();
+        
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        notification = await fetch(`${notificationUrl}/qod/delete/${session.id}`,
+            {
+                method: "DELETE",
+                agent: agent
+            });
+
+        const message = (await notification.json()) as any[]
+        expect(message).toEqual([{'message': 'Notification deleted'}, 200])
+
+    },20 * 1000);
+
+    test("should change session status from deletion", async () => {
+        const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
+            serviceIpv4: "5.6.7.8",
+            serviceIpv6: "2041:0000:140F::875B:131B",
+            notificationUrl: `${notificationUrl}/notify`,
+        });
+
+        expect(session.status).toEqual("REQUESTED");
+        expect(session.profile).toEqual("QOS_L");
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+
+        session.deleteSession();
+
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/qod/get/${session.id}`,
+            {
+                method: "GET",
+                agent: agent
+            });
+        
+        const data = (await notification.json()) as any[];
+        expect(data).not.toBeNull();
+
+        const deletionInfo = data[1]
+        expect(deletionInfo).toHaveProperty("data.statusInfo", "DELETE_REQUESTED")
+
+        notification = await fetch(`${notificationUrl}/qod/delete/${session.id}`,
+            {
+                method: "DELETE",
+                agent: agent
+            });
+
+    },20 * 1000);
 
     test("should create a session with public and private ipv4", async () => {
         device = client.devices.get({
