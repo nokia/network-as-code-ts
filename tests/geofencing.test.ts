@@ -42,7 +42,7 @@ afterEach(() => {
 describe("Geofencing", () => {
     it("should allow subscribing to geofencing information", async () => {
         fetchMock.mockGlobal().post(
-            "https://geofencing-subscription.p-eu.rapidapi.com/v0.3/subscriptions",
+            "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     "protocol": "HTTP",
@@ -139,7 +139,7 @@ describe("Geofencing", () => {
 
     it("should allow subscriptions to be deleted", async () => {
         fetchMock.mockGlobal().post(
-            "https://geofencing-subscription.p-eu.rapidapi.com/v0.3/subscriptions",
+            "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3/subscriptions",
             JSON.stringify({
                 "protocol": "HTTP",
                 "sink": "https://example.com/",
@@ -190,7 +190,7 @@ describe("Geofencing", () => {
         );
 
         fetchMock.mockGlobal().delete(
-            "https://geofencing-subscription.p-eu.rapidapi.com/v0.3/subscriptions/de87e438-58b4-42c3-9d49-0fbfbd878305",
+            "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3/subscriptions/de87e438-58b4-42c3-9d49-0fbfbd878305",
             (_: any, req: any): any => {
                 return Promise.resolve({
                     status: 200,
@@ -205,7 +205,7 @@ describe("Geofencing", () => {
 
     it("should allow getting one subscription that was already created", async () => {
         fetchMock.mockGlobal().get(
-            "https://geofencing-subscription.p-eu.rapidapi.com/v0.3/subscriptions/de87e438-58b4-42c3-9d49-0fbfbd878305",
+            "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3/subscriptions/de87e438-58b4-42c3-9d49-0fbfbd878305",
             JSON.stringify({
                 "protocol": "HTTP",
                 "sink": "https://example.com/",
@@ -248,7 +248,7 @@ describe("Geofencing", () => {
 
     it("should allow getting list of all subscriptions", async () => {
         fetchMock.mockGlobal().get(
-            "https://geofencing-subscription.p-eu.rapidapi.com/v0.3/subscriptions",
+            "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3/subscriptions",
             JSON.stringify([
                 {
                     "protocol": "HTTP",
