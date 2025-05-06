@@ -1,4 +1,4 @@
-import { NetworkAsCodeClient } from "../src";
+import { NetworkAsCodeClient } from "network-as-code";
 
 const client = new NetworkAsCodeClient("<your-token>");
 

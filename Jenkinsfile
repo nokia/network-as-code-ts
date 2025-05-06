@@ -56,6 +56,7 @@ pipeline {
     NAC_TOKEN_PROD = credentials('NAC_TOKEN_PROD')
     TEAMS_WEBHOOK = credentials('TEAMS_WEBHOOK')
     NPM_AUTH_TOKEN = credentials('NPM_AUTH_TOKEN')
+    SDK_NOTIFICATION_SERVER_URL = credentials('SDK_NOTIFICATION_SERVER_URL')
     SONAR_PATH = "/opt/sonar-scanner/bin"
     SONAR_TOKEN = "sonar-token"
   }
@@ -119,7 +120,7 @@ pipeline {
           script {
             sh """
               env | grep gitlab
-              https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
+              http_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
             """
           }
         }        

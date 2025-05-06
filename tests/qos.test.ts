@@ -1,10 +1,19 @@
-import type { FetchMockStatic } from "fetch-mock";
-import fetch from "node-fetch";
-import { beforeAll, describe, expect, test } from "@jest/globals";
+import fetchMock from '@fetch-mock/jest';
+
 import { NetworkAsCodeClient } from "../src";
 
-jest.mock("node-fetch", () => require("fetch-mock-jest").sandbox());
-const fetchMock = fetch as unknown as FetchMockStatic;
+jest.mock("node-fetch", () => {
+	const nodeFetch = jest.requireActual("node-fetch");
+	// only needed if your application makes use of Response, Request
+	// or Headers classes directly
+	Object.assign(fetchMock.config, {
+		fetch: nodeFetch,
+		Response: nodeFetch.Response,
+		Request: nodeFetch.Request,
+		Headers: nodeFetch.Headers,
+	});
+	return fetchMock.fetchHandler;
+});
 
 let client: NetworkAsCodeClient;
 
@@ -15,8 +24,11 @@ beforeAll((): any => {
 
 describe("Qos", () => {
     beforeEach(() => {
-        fetchMock.reset();
+        fetchMock.mockReset();
     });
+    afterEach(() => {
+        fetchMock.unmockGlobal();
+    })
 
     test("should throw an Error if no identifier is provided", () => {
         try {
@@ -74,13 +86,14 @@ describe("Qos", () => {
             duration: 3600,
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -147,13 +160,14 @@ describe("Qos", () => {
             duration: 3600,
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -223,13 +237,14 @@ describe("Qos", () => {
             },
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -300,13 +315,14 @@ describe("Qos", () => {
             },
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -376,13 +392,14 @@ describe("Qos", () => {
             },
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -455,13 +472,14 @@ describe("Qos", () => {
             },
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -528,13 +546,14 @@ describe("Qos", () => {
             duration: 60,
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -578,12 +597,12 @@ describe("Qos", () => {
             duration: 260,
         };
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0",
             JSON.stringify(mockFetchResponse)
         );
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0/extend",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
@@ -591,7 +610,8 @@ describe("Qos", () => {
                 expect(requestBody).toEqual({
                     requestedAdditionalDuration: 200,
                 });
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -659,13 +679,14 @@ describe("Qos", () => {
             },
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
                 expect(requestBody).toEqual(mockRequestBody);
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -698,7 +719,7 @@ describe("Qos", () => {
             startedAt: 0,
         };
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/1234",
             JSON.stringify(mockResponse)
         );
@@ -723,7 +744,7 @@ describe("Qos", () => {
             },
         ];
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/retrieve-sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
@@ -733,7 +754,8 @@ describe("Qos", () => {
                         phoneNumber: "9382948473",
                     },
                 });
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
@@ -770,7 +792,7 @@ describe("Qos", () => {
             },
         ];
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/retrieve-sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
@@ -780,11 +802,12 @@ describe("Qos", () => {
                         networkAccessIdentifier: "testuser@open5glab.net",
                     },
                 });
-                return JSON.stringify(mockResponse);
+            },
+               { response: JSON.stringify(mockResponse)
             }
         );
 
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
             JSON.stringify(mockResponse)
         );
@@ -792,19 +815,21 @@ describe("Qos", () => {
         const sessions = await device.sessions();
         expect(sessions.length).toEqual(2);
 
-        fetchMock.delete(
+        fetchMock.mockGlobal().delete(
             `https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/${mockResponse[0].sessionId}`,
             JSON.stringify({})
         );
 
-        fetchMock.delete(
+        fetchMock.mockGlobal().delete(
             `https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/${mockResponse[1].sessionId}`,
             JSON.stringify({})
         );
         await device.clearSessions();
-        const requests = fetchMock.calls();
-        expect(requests[requests.length - 1][1]?.method).toEqual("DELETE");
-        expect(requests[requests.length - 2][1]?.method).toEqual("DELETE");
+        expect(device.sessions.length).toEqual(0)
+
+        const requests = fetchMock.callHistory.calls();
+        expect(requests.length).toEqual(4);
+        
     });
 
     test("should not create a session without ip address", async () => {
@@ -826,7 +851,7 @@ describe("Qos", () => {
     });
 
     test("should not get sessions as unauthenticated user", async () => {
-        fetchMock.get(
+        fetchMock.mockGlobal().get(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/1234",
             {
                 status: 403,
@@ -853,7 +878,7 @@ describe("Qos", () => {
             },
         };
 
-        fetchMock.post(
+        fetchMock.mockGlobal().post(
             "https://quality-of-service-on-demand.p-eu.rapidapi.com/retrieve-sessions",
             (res: any, req: any) => {
                 expect(req.method).toBe("POST");

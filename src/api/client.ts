@@ -23,6 +23,10 @@ import { AttachAPI, SliceAPI } from "./sliceApi";
 import { CongestionInsightsAPI } from "./congestionInsightsApi";
 import { SimSwapAPI } from "./simSwapApi";
 import { GeofencingAPI } from "./geofencing";
+import { AuthorizationEndpointsAPI } from "./authorizatioEndpointsApi";
+import { CredentialsAPI } from "./credentialsApi";
+import { NumberVerificationAPI } from "./numberVerificationApi";
+import { AccessTokenAPI } from "./accessTokenApi";
 
 const QOS_BASE_URL_PROD =
     "https://quality-of-service-on-demand.p-eu.rapidapi.com";
@@ -59,8 +63,23 @@ const SIM_SWAP_BASE_URL_PROD =
 const SIM_SWAP_BASE_URL_DEV =
     "https://simswap.p-eu.rapidapi.com/sim-swap/sim-swap/v0";
 
-const GEOFENCING_BASE_URL_PROD = "https://geofencing-subscription.p-eu.rapidapi.com/v0.3"
+const GEOFENCING_BASE_URL_PROD = "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3"
 const GEOFENCING_BASE_URL_DEV = "https://geofencing-subscription.p-eu.rapidapi.com/v0.3"
+
+const CREDENTIALS_BASE_URL = 
+    "https://nac-authorization-server.p-eu.rapidapi.com";
+const CREDENTIALS_BASE_URL_PROD = 
+    "https://nac-authorization-server.p-eu.rapidapi.com";
+
+const AUTHORIZATION_ENDPOINTS_BASE_URL = 
+    "https://well-known-metadata.p-eu.rapidapi.com";
+const AUTHORIZATION_ENDPOINTS_BASE_URL_PROD =
+    "https://well-known-metadata.p-eu.rapidapi.com";
+
+const NUMBER_VERIFICATION_BASE_URL = 
+    "https://number-verification.p-eu.rapidapi.com";
+const NUMBER_VERIFICATION_BASE_URL_PROD = 
+    "https://number-verification.p-eu.rapidapi.com";
 
 const agent = new ProxyAgent();
 
@@ -74,6 +93,10 @@ export class APIClient {
     insights: CongestionInsightsAPI;
     simSwap: SimSwapAPI;
     geofencing: GeofencingAPI;
+    authorizationEndpoints: AuthorizationEndpointsAPI;
+    credentials: CredentialsAPI;
+    verification: NumberVerificationAPI;
+    accesstoken: AccessTokenAPI;
 
     constructor(
         token: string,
@@ -87,6 +110,9 @@ export class APIClient {
         congestionInsightsBaseUrl: string = CONGESTION_INSIGHTS_BASE_URL_PROD,
         simSwapBaseUrl: string = SIM_SWAP_BASE_URL_PROD,
         geofencingBaseUrl: string = GEOFENCING_BASE_URL_PROD,
+        authorizationEndpointsBaseUrl: string = AUTHORIZATION_ENDPOINTS_BASE_URL_PROD,
+        credentialsBaseUrl: string = CREDENTIALS_BASE_URL_PROD,
+        verificationBaseUrl: string = NUMBER_VERIFICATION_BASE_URL_PROD
     ) {
         if (devMode && qosBaseUrl == QOS_BASE_URL_PROD) {
             qosBaseUrl = QOS_BASE_URL_DEV;
@@ -239,6 +265,61 @@ export class APIClient {
                 : geofencingBaseUrl
                       .replace("https://", "")
                       .replace("p-eu", "nokia"),
+            agent
+        );
+
+        if (devMode && authorizationEndpointsBaseUrl == AUTHORIZATION_ENDPOINTS_BASE_URL_PROD) {
+            authorizationEndpointsBaseUrl = AUTHORIZATION_ENDPOINTS_BASE_URL;
+        }
+
+        this.authorizationEndpoints = new AuthorizationEndpointsAPI(
+            authorizationEndpointsBaseUrl,
+            token,
+            devMode
+                ? authorizationEndpointsBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
+                : authorizationEndpointsBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
+            agent
+        );
+
+        if (devMode && credentialsBaseUrl == CREDENTIALS_BASE_URL_PROD) {
+            credentialsBaseUrl = CREDENTIALS_BASE_URL;
+        }
+
+        this.credentials = new CredentialsAPI(
+            credentialsBaseUrl,
+            token,
+            devMode
+                ? credentialsBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
+                : credentialsBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
+            agent
+        );
+
+        if (devMode && verificationBaseUrl == NUMBER_VERIFICATION_BASE_URL_PROD) {
+            verificationBaseUrl = NUMBER_VERIFICATION_BASE_URL;
+        }
+
+        this.verification = new NumberVerificationAPI(
+            verificationBaseUrl,
+            token,
+            devMode
+                ? verificationBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia-dev")
+                : verificationBaseUrl
+                      .replace("https://", "")
+                      .replace("p-eu", "nokia"),
+            agent
+        );
+
+        this.accesstoken = new AccessTokenAPI(
             agent
         );
     }

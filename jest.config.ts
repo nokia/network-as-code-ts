@@ -161,10 +161,10 @@ const config: Config = {
   // ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
-  testPathIgnorePatterns: [
-      "tests/geofencing.test.ts",
-      "integration-tests/geofencing.itest.ts"
-  ],
+  // testPathIgnorePatterns: [
+  //     "tests/geofencing.test.ts",
+  //     "integration-tests/geofencing.itest.ts"
+  // ],
 
   // The regexp pattern or array of patterns that Jest uses to detect test files
   // testRegex: [],

@@ -19,6 +19,7 @@ import { PortSpec, QoDSession } from "./session";
 import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
+import { AccessToken } from "./authentication";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -345,4 +346,79 @@ export class Device {
         );
         return response["swapped"];
     }
+    
+
+    /**
+     * Retrieves the access token and its information.
+     * @param code (string): The previously obtained NaC authorization code.
+     * @returns Promise<AccessToken>: The retreived access token, its type and when it expires.
+     */
+    async getSingleUseAccessToken(code: string): Promise<AccessToken> {
+        const credentialInfo: any = await this._api.credentials.fetchCredentials();
+        const endpoints: any = await this._api.authorizationEndpoints.fetchEndpoints();
+        const payload:any = {
+            client_id: credentialInfo["client_id"],
+            client_secret: credentialInfo["client_secret"],
+            grant_type: "authorization_code",
+            code: code
+        };
+        const data = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+        const response: any = await this._api.accesstoken.fetchToken(data, endpoints["token_endpoint"]);
+        const accessToken = response["access_token"];
+        const tokenType = response["token_type"];
+        const expiresIn = response["expires_in"];
+
+        const singleUseToken = new AccessToken(
+            accessToken,
+            tokenType,
+            expiresIn
+        );
+        return singleUseToken;
+    }
+
+
+    /**
+     * Verify if the device uses the phone number.
+     * @param code (string): The previously obtained NaC authorization code.
+     * @returns true/false
+     */
+    async verifyNumber(code: string): Promise<boolean> {
+        if (!this.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        };
+
+        const singleUseToken = await this.getSingleUseAccessToken(code);
+        const payload = {
+            phoneNumber: this.phoneNumber
+        };
+        
+        const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
+
+        const response: any = await this._api.verification.verifyNumber(
+            payload, 
+            authenticatorHeader
+        );
+
+        return response["devicePhoneNumberVerified"];
+
+    }
+
+    /**
+     * Get the phone number of the used Device.
+     * @param code (string): The previously obtained NaC authorization code.
+     * @returns (string): The phone number
+     */
+    async getPhoneNumber(code: string): Promise<string> {
+        const singleUseToken = await this.getSingleUseAccessToken(code);
+        
+        const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
+
+        const response: any = await this._api.verification.getPhoneNumber(
+            authenticatorHeader
+        );
+
+        return response["devicePhoneNumber"];
+
+    }
+
 }

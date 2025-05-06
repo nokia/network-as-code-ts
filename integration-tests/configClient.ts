@@ -12,3 +12,8 @@ export const configureClient = (): NetworkAsCodeClient => {
     );
     return client;
 }
+
+export const configureNotificationServerUrl = () : string => {
+    const notificationUrl = `${process.env["SDK_NOTIFICATION_SERVER_URL"]}typescript`;
+    return notificationUrl 
+}
