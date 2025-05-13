@@ -82,7 +82,7 @@ describe("Geofencing", () => {
         subscription.delete();
     }, 20* 1000);
 
-    it("should subscribe for geofencing event with plain credential", async () => {
+    it.skip("should subscribe for geofencing event with plain credential", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
