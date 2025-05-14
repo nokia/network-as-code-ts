@@ -180,7 +180,7 @@ pipeline {
                     """
                     if(env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("rc-")){
                         sh '''
-                            PRODTEST=1 https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
+                            PRODTEST=1 http_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
                         '''
                     }
                 }
@@ -199,7 +199,7 @@ pipeline {
                     """
                     if(env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")){
                         sh '''
-                            PRODTEST=1 https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
+                            PRODTEST=1 http_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
                         '''
                     }
                 }
