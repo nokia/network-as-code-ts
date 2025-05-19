@@ -366,9 +366,9 @@ describe("Slicing", () => {
                 notificationAuthToken: "my-token",
             }
         );
+        const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
         await slice.waitFor("AVAILABLE");
-
         expect(slice.state).toEqual("AVAILABLE");
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
@@ -378,8 +378,8 @@ describe("Slicing", () => {
                 agent: agent
             });
         
-        data = await notification.json() as { [key: string]: any };
-        expect(data['current_slice_state']).toEqual("AVAILABLE");
+        data = await notification.json()[notification.length - 1] as { [key: string]: any };
+        expect(data[-1]['current_slice_state']).toEqual("AVAILABLE");
 
         await slice.activate();
 
@@ -393,7 +393,9 @@ describe("Slicing", () => {
                 method: "GET",
                 agent: agent
             });
-        data = await notification.json() as { [key: string]: any };
+        
+        data = await notification.json()[notification.length - 1] as { [key: string]: any };
+
         expect(data['current_slice_state']).toEqual("OPERATING");
 
         await slice.deactivate();
@@ -406,20 +408,18 @@ describe("Slicing", () => {
                 method: "GET",
                 agent: agent
             });
-        data = await notification.json() as { [key: string]: any };
+        data = await notification.json()[notification.length - 1] as { [key: string]: any };
         expect(data['current_slice_state']).toEqual("AVAILABLE");
 
         await slice.delete();
-        
-        await slice.waitFor("DELETED");
-
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        // Waiting 2 minutes for delete notification to be sent
+        await new Promise(resolve => setTimeout(resolve, 2 * 60 * 1000));
         notification = await fetch(`${notificationUrl}/network-slice/get/${slice.name}`,
             {
                 method: "GET",
                 agent: agent
             });
-        data = await notification.json() as { [key: string]: any };
+        data = await notification.json()[notification.length - 1] as { [key: string]: any };
         expect(data['current_slice_state']).toEqual("DELETED");
 
         notification = await fetch(`${notificationUrl}/network-slice/delete/${slice.name}`,
