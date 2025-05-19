@@ -354,6 +354,7 @@ describe("Slicing", () => {
     }, 720000);
 
     test("Should receive notifications", async() => {
+        let data: {[key: string]: any};
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
@@ -377,7 +378,7 @@ describe("Slicing", () => {
                 agent: agent
             });
         
-        let data = await notification.json();
+        data = await notification.json();
         expect(data['current_slice_state']).toEqual("AVAILABLE");
 
         await slice.activate();
