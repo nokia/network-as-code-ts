@@ -378,7 +378,7 @@ describe("Slicing", () => {
                 agent: agent
             });
         
-        data = await notification.json();
+        data = await notification.json() as { [key: string]: any };
         expect(data['current_slice_state']).toEqual("AVAILABLE");
 
         await slice.activate();
@@ -393,7 +393,7 @@ describe("Slicing", () => {
                 method: "GET",
                 agent: agent
             });
-        data = await notification.json();
+        data = await notification.json() as { [key: string]: any };
         expect(data['current_slice_state']).toEqual("OPERATING");
 
         await slice.deactivate();
@@ -406,7 +406,7 @@ describe("Slicing", () => {
                 method: "GET",
                 agent: agent
             });
-        data = await notification.json();
+        data = await notification.json() as { [key: string]: any };
         expect(data['current_slice_state']).toEqual("AVAILABLE");
 
         await slice.delete();
@@ -419,17 +419,7 @@ describe("Slicing", () => {
                 method: "GET",
                 agent: agent
             });
-        data = await notification.json();
-        
-        
-
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        notification = await fetch(`${notificationUrl}/network-slice/get/${slice.name}`,
-            {
-                method: "GET",
-                agent: agent
-            });
-        data = await notification.json();
+        data = await notification.json() as { [key: string]: any };
         expect(data['current_slice_state']).toEqual("DELETED");
 
         notification = await fetch(`${notificationUrl}/network-slice/delete/${slice.name}`,
