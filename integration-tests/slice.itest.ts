@@ -354,7 +354,8 @@ describe("Slicing", () => {
     }, 720000);
 
     test("Should receive notifications", async() => {
-        let data: {[key: string]: any};
+        let lastNotification: {[key: string]: any};
+        let data: {[key: string]: any}[];
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
@@ -366,7 +367,6 @@ describe("Slicing", () => {
                 notificationAuthToken: "my-token",
             }
         );
-        const sleep = (ms: any) => new Promise((r) => setTimeout(r, ms));
 
         await slice.waitFor("AVAILABLE");
         expect(slice.state).toEqual("AVAILABLE");
@@ -378,8 +378,9 @@ describe("Slicing", () => {
                 agent: agent
             });
         
-        data = await notification.json()[notification.length - 1] as { [key: string]: any };
-        expect(data[-1]['current_slice_state']).toEqual("AVAILABLE");
+        data = await notification.json() as { [key: string]: any }[];
+        lastNotification = data[data.length-1];
+        expect(lastNotification['current_slice_state']).toEqual("AVAILABLE");
 
         await slice.activate();
 
@@ -394,9 +395,10 @@ describe("Slicing", () => {
                 agent: agent
             });
         
-        data = await notification.json()[notification.length - 1] as { [key: string]: any };
+        data = await notification.json() as { [key: string]: any }[];
+        lastNotification = data[data.length-1];
 
-        expect(data['current_slice_state']).toEqual("OPERATING");
+        expect(lastNotification['current_slice_state']).toEqual("OPERATING");
 
         await slice.deactivate();
 
@@ -408,8 +410,9 @@ describe("Slicing", () => {
                 method: "GET",
                 agent: agent
             });
-        data = await notification.json()[notification.length - 1] as { [key: string]: any };
-        expect(data['current_slice_state']).toEqual("AVAILABLE");
+        data = await notification.json() as { [key: string]: any }[];
+        lastNotification = data[data.length-1];
+        expect(lastNotification['current_slice_state']).toEqual("AVAILABLE");
 
         await slice.delete();
         // Waiting 2 minutes for delete notification to be sent
@@ -419,8 +422,10 @@ describe("Slicing", () => {
                 method: "GET",
                 agent: agent
             });
-        data = await notification.json()[notification.length - 1] as { [key: string]: any };
-        expect(data['current_slice_state']).toEqual("DELETED");
+        data = await notification.json() as { [key: string]: any }[];
+        lastNotification = data[data.length-1];
+
+        expect(lastNotification['current_slice_state']).toEqual("DELETED");
 
         notification = await fetch(`${notificationUrl}/network-slice/delete/${slice.name}`,
             {
