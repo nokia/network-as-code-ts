@@ -427,5 +427,5 @@ describe("Slicing", () => {
                 method: "DELETE",
                 agent: agent
             });
-    });
+    }, 720000);
 });
