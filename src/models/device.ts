@@ -332,7 +332,7 @@ export class Device {
 
     /**
      * Verify if there was sim swap.
-     * @param max_age (Optional[number]): Max acceptable age for sim swap verification info in seconds
+     * @param max_age (Optional[number]): Max acceptable age for sim swap verification info in hours
      * @returns true/false
      */
     async verifySimSwap(maxAge?: number): Promise<boolean> {
