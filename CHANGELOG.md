@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 4.2.1
+
+Fixes:
+- The docstring in Sim Swap functionality incorrectly stated that `maxAge` was in seconds, when it is in fact in hours
+
 ## Version 4.2.0
 
 Changes:
