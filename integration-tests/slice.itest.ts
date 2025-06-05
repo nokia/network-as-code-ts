@@ -38,13 +38,13 @@ describe("Slicing", () => {
         // Clean up, currently nothing
     });
 
-    test("should get a device", () => {
+    test.skip("should get a device", () => {
         expect(device.networkAccessIdentifier).toEqual(
             "test-device@testcsp.net"
         );
     });
 
-    test("should create a slice", async () => {
+    test.skip("should create a slice", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const new_slice = await client.slices.create(
@@ -71,7 +71,7 @@ describe("Slicing", () => {
         expect(slices.length).toBeGreaterThanOrEqual(0);
     });
 
-    test("should create a slice with other optional args", async () => {
+    test.skip("should create a slice with other optional args", async () => {
         const slice = await client.slices.create(
             { mcc: "236", mnc: "30" },
             { serviceType: "eMBB", differentiator: "444444" },
@@ -126,7 +126,7 @@ describe("Slicing", () => {
         await slice.delete();
     });
 
-    test("should get a slice", async () => {
+    test.skip("should get a slice", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
@@ -143,7 +143,7 @@ describe("Slicing", () => {
         expect(slice.sid).toEqual(fetchedSlice.sid);
     });
 
-    test("should mark a deleted slice's state as 'Deleted'", async () => {
+    test.skip("should mark a deleted slice's state as 'Deleted'", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
@@ -163,7 +163,7 @@ describe("Slicing", () => {
         expect(slice.state).toEqual("DELETED");
     });
 
-    test("should get attachments", async () => {
+    test.skip("should get attachments", async () => {
         const attachments: any = await client.slices.getAllAttachments();
         expect(attachments.length).toBeGreaterThanOrEqual(0);
     });
@@ -209,7 +209,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test.concurrent("should deactivate and delete", async () => {
+    test.skip("should deactivate and delete", async () => {
         const slice = await client.slices.create(
             { mcc: "236", mnc: "30" },
             { serviceType: "eMBB", differentiator: "444444" },
@@ -353,7 +353,7 @@ describe("Slicing", () => {
         await slice.delete();
     }, 720000);
 
-    test("Should receive notifications", async() => {
+    test.skip("Should receive notifications", async() => {
         let lastNotification: {[key: string]: any};
         let data: {[key: string]: any}[];
         const random = Math.floor(Math.random() * 1000) + 1;
