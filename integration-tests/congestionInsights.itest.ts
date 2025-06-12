@@ -9,7 +9,7 @@ let device: Device;
 beforeAll(() => {
     client = configureClient()
     device = client.devices.get({
-        phoneNumber: "+3672123456",
+        phoneNumber: "+3670123456",
     });
 });
 
@@ -17,7 +17,7 @@ describe("Congestion Insights", () => {
     const expirationDate = new Date(Date.now() + 5 * 60 * 1000);
     expirationDate.setMilliseconds(0);
 
-    it.skip("can create subscription for congestion insights", async () => {
+    it("can create subscription for congestion insights", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -32,7 +32,7 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it.skip("can create subscription for congestion insights without auth token", async () => {
+    it("can create subscription for congestion insights without auth token", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -46,7 +46,7 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it.skip("can get a subscription by id", async () => {
+    it("can get a subscription by id", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -64,7 +64,44 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it.skip("can get a list of subscriptions", async () => {
+    it("can get subscription start and expiration", async () => {
+        const subscription = await client.insights.subscribeToCongestionInfo(
+            device,
+            expirationDate,
+            "https://example.com/notify"
+        );
+
+        expect(subscription.startsAt).toBeDefined()
+        expect(subscription.expiresAt).toBeDefined()
+
+        expect(subscription.startsAt instanceof Date).toBeTruthy();
+
+        subscription.delete()
+    });
+
+    it("can get start and expiration from selected subscription", async () => {
+        const subscription = await client.insights.subscribeToCongestionInfo(
+            device,
+            expirationDate,
+            "https://example.com/notify"
+        );
+
+        const subscriptionFromList = (await client.insights.getSubscriptions())[0]
+
+        expect(subscriptionFromList.startsAt).toBeDefined()
+        expect(subscriptionFromList.expiresAt).toBeDefined()
+        
+        const subscriptionById = await client.insights.get(
+            subscription.subscriptionId
+        );
+
+        expect(subscriptionById.startsAt).toBeDefined()
+        expect(subscriptionById.expiresAt).toBeDefined()
+
+        subscription.delete()
+    });
+
+    it("can get a list of subscriptions", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -85,7 +122,7 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it.skip("should fetch current congestion level relevant to a given device", async () => {
+    it("should fetch current congestion level relevant to a given device", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -112,7 +149,7 @@ describe("Congestion Insights", () => {
         subscription.delete();
     });
 
-    it.skip("should fetch prediction/historical data between two time stamps:", async () => {
+    it("should fetch prediction/historical data between two time stamps:", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,

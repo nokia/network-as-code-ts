@@ -49,7 +49,7 @@ describe("Congestion Insights", () => {
             "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
             JSON.stringify({
                 subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
-                startsAt: "2024-04-12T08:45:37.210563Z",
+                startedAt: "2024-04-12T08:45:37.210563Z",
                 expiresAt: "2024-04-20T00:00:00Z",
             })
         );
@@ -92,7 +92,7 @@ describe("Congestion Insights", () => {
                { response: Promise.resolve(
                     JSON.stringify({
                         subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
-                        startsAt: "2024-04-15T08:45:37.210563Z",
+                        startedAt: "2024-04-15T08:45:37.210563Z",
                         expiresAt: "2024-04-20T00:00:00Z",
                     })
                 )}
@@ -116,7 +116,7 @@ describe("Congestion Insights", () => {
                     status: 200,
                     body: JSON.stringify({
                         subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
-                        startsAt: "2024-04-15T08:45:37.210563Z",
+                        startedAt: "2024-04-15T08:45:37.210563Z",
                         expiresAt: "2024-04-20T00:00:00Z",
                     }),
                 })}       
@@ -137,17 +137,17 @@ describe("Congestion Insights", () => {
             JSON.stringify([
                 {
                     subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
-                    startsAt: "2024-04-15T08:45:37.210563Z",
+                    startedAt: "2024-04-15T08:45:37.210563Z",
                     expiresAt: "2024-04-20T00:00:00Z",
                 },
                 {
                     subscriptionId: "4edb6919-8e91-406a-ab84-900a420af861",
-                    startsAt: "2024-04-15T08:45:37.210563Z",
+                    startedAt: "2024-04-15T08:45:37.210563Z",
                     expiresAt: "2024-04-20T00:00:00Z",
                 },
                 {
                     subscriptionId: "4edb6919-8e91-406a-ab84-900a420af862",
-                    startsAt: "2024-04-15T08:45:37.210563Z",
+                    startedAt: "2024-04-15T08:45:37.210563Z",
                     expiresAt: "2024-04-20T00:00:00Z",
                 },
             ])
@@ -181,7 +181,7 @@ describe("Congestion Insights", () => {
                 { response: Promise.resolve(
                     JSON.stringify({
                         subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
-                        startsAt: "2024-04-15T08:45:37.210563Z",
+                        startedAt: "2024-04-15T08:45:37.210563Z",
                         expiresAt: "2024-01-11T11:53:20.000Z",
                     })
                 )}
@@ -204,7 +204,7 @@ describe("Congestion Insights", () => {
             "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
             JSON.stringify({
                 subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
-                startsAt: "2024-04-15T08:45:37.210563Z",
+                startedAt: "2024-04-15T08:45:37.210563Z",
                 expiresAt: "2024-01-11T11:53:20.000Z",
             })
         );
