@@ -51,7 +51,7 @@ export class CongestionInsights extends Namespace {
         return new CongestionInsightsSubscription(
             this.api,
             res.subscriptionId,
-            res.startsAt ? new Date(res.startsAt) : undefined,
+            res.startedAt ? new Date(res.startedAt) : undefined,
             res.expiresAt ? new Date(res.expiresAt) : undefined
         );
     }
@@ -68,7 +68,7 @@ export class CongestionInsights extends Namespace {
         return new CongestionInsightsSubscription(
             this.api,
             res.subscriptionId,
-            res.startsAt ? new Date(res.startsAt) : undefined,
+            res.startedAt ? new Date(res.startedAt) : undefined,
             res.expiresAt ? new Date(res.expiresAt) : undefined
         );
     }
@@ -85,7 +85,7 @@ export class CongestionInsights extends Namespace {
             return new CongestionInsightsSubscription(
                 this.api,
                 subscription.subscriptionId,
-                subscription.startsAt,
+                subscription.startedAt,
                 subscription.expiresAt
             );
         });
