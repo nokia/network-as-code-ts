@@ -206,6 +206,9 @@ describe("Qos", () => {
                 networkAccessIdentifier: "testuser@open5glab.net",
                 phoneNumber: "9382948473",
             },
+            devicePorts: {
+                ports: [80, 3000],
+            },
             applicationServer: {
                 ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
@@ -257,6 +260,7 @@ describe("Qos", () => {
         expect(session.status).toEqual(mockResponse["qosStatus"]);
         expect(session.device.ipv6Address).toEqual(device.ipv6Address);
         expect(session.serviceIpv6).toEqual("2041:0000:140F::875B:131B");
+        expect(session.devicePorts?.ports).toEqual([80, 3000]);
     });
 
     test("should create a session with device port range", async () => {
@@ -283,6 +287,9 @@ describe("Qos", () => {
                 ipv6Address: "2041:0000:140F::875B:131B",
                 networkAccessIdentifier: "testuser@open5glab.net",
                 phoneNumber: "9382948473",
+            },
+            devicePorts: {
+                ranges: [{ from: 80, to: 3000 }],
             },
             applicationServer: {
                 ipv4Address: "5.6.7.8",
@@ -333,6 +340,7 @@ describe("Qos", () => {
             devicePorts: { ranges: [{ from: 80, to: 3000 }] },
         });
         expect(session.status).toEqual(mockResponse["qosStatus"]);
+        expect(session.devicePorts?.ranges).toEqual([{ from: 80, to: 3000 }]);
     });
 
     test("should create a session with service port", async () => {

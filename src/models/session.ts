@@ -51,6 +51,7 @@ export interface PortSpec {
         @param id (string): Session identifier.
         @param profile (string): Name of the requested QoS profile.
         @param device (Device): Session belongs to device.
+        @param devicePorts (Union[PortsSpec, undefined]): List of ports for a device.
         @param duration (number | undefined): The duration of a given session.
         @param serviceIpv4 (string): IPv4 address of a service.
         @param serviceIpv6 (string): IPv6 address of a service.
@@ -70,6 +71,7 @@ export class QoDSession {
     profile: string | undefined;
     device: Device;
     duration?: number;
+    devicePorts?: PortSpec;
     serviceIpv4?: string = "";
     serviceIpv6?: string = "";
     servicePorts?: PortSpec;
@@ -85,6 +87,7 @@ export class QoDSession {
         this.startedAt = options?.startedAt;
         this.expiresAt = options?.expiresAt;
         this.device = options?.device;
+        this.devicePorts = options?.devicePorts;
         this.serviceIpv4 = options?.serviceIpv4;
         this.serviceIpv6 = options?.serviceIpv6;
         this.servicePorts = options?.servicePorts;
@@ -140,7 +143,7 @@ export class QoDSession {
         return new QoDSession(api, {
             id: session["sessionId"],
             device: device,
-            devicePorts: undefined,
+            devicePorts: session['devicePorts'],
             serviceIpv4: service ? service["ipv4Address"] : "",
             serviceIpv6: service ? service["ipv6Address"] : "",
             servicePorts: session["applicationServerPorts"],

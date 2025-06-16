@@ -189,6 +189,7 @@ describe("Qos", () => {
 
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_M");
+        expect(session.devicePorts?.ports).toEqual([80]);
         await session.deleteSession();
     });
 
@@ -202,6 +203,7 @@ describe("Qos", () => {
 
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_M");
+        expect(session.devicePorts?.ranges).toEqual([{ from: 80, to: 443 }]);
         await session.deleteSession();
     });
 
