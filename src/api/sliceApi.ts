@@ -110,9 +110,8 @@ export class SliceAPI {
                     optionalArgs.deviceUplinkThroughput;
             }
         }
-        let response: FetchResponse;
 
-        response = await fetch(`${this.baseUrl}/slices`, {
+        const response: FetchResponse = await fetch(`${this.baseUrl}/slices`, {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
