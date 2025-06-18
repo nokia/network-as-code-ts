@@ -30,41 +30,48 @@ import { AccessTokenAPI } from "./accessTokenApi";
 
 const QOS_BASE_URL_PROD =
     "https://quality-of-service-on-demand.p-eu.rapidapi.com";
-const QOS_BASE_URL_DEV = "https://qos-on-demand2.p-eu.rapidapi.com";
+const QOS_BASE_URL_DEV =
+    "https://network-as-code1.p-eu.rapidapi.com/qod/v0";
 
 const LOCATION_RETRIEVAL_BASE_URL_PROD =
     "https://location-retrieval.p-eu.rapidapi.com";
 const LOCATION_RETRIEVAL_BASE_URL_DEV =
-    "https://location-retrieval3.p-eu.rapidapi.com";
+    "https://network-as-code1.p-eu.rapidapi.com/location-retrieval/v0";
 
 const LOCATION_VERIFY_BASE_URL_PROD =
-    "https://location-verification.p-eu.rapidapi.com";
+    "https://location-verification.p-eu.rapidapi.com/v1";
 const LOCATION_VERIFY_BASE_URL_DEV =
-    "https://location-verification5.p-eu.rapidapi.com";
+    "https://network-as-code1.p-eu.rapidapi.com/location-verification/v1"
 
-const DEVICE_STATUS_BASE_URL_PROD = "https://device-status.p-eu.rapidapi.com";
-const DEVICE_STATUS_BASE_URL_DEV = "https://device-status1.p-eu.rapidapi.com";
+const DEVICE_STATUS_BASE_URL_PROD =
+    "https://device-status.p-eu.rapidapi.com";
+const DEVICE_STATUS_BASE_URL_DEV =
+    "https://network-as-code1.p-eu.rapidapi.com/device-status/v0";
 
-const SLICE_BASE_URL_PROD = "https://network-slicing.p-eu.rapidapi.com";
-const SLICE_BASE_URL_DEV = "https://network-slicing2.p-eu.rapidapi.com";
+const SLICE_BASE_URL_PROD =
+    "https://network-slicing.p-eu.rapidapi.com";
+const SLICE_BASE_URL_DEV =
+    "https://network-as-code1.p-eu.rapidapi.com/slice/v1"
 
 const SLICE_ATTACH_BASE_URL_PROD =
     "https://network-slice-device-attachment.p-eu.rapidapi.com";
 const SLICE_ATTACH_BASE_URL_DEV =
-    "https://device-application-attach.p-eu.rapidapi.com";
+    "https://network-as-code1.p-eu.rapidapi.com/device-attach/v0"
 
 const CONGESTION_INSIGHTS_BASE_URL_PROD =
     "https://congestion-insights.p-eu.rapidapi.com";
 const CONGESTION_INSIGHTS_BASE_URL_DEV =
-    "https://congestion-insights.p-eu.rapidapi.com";
+    "https://network-as-code1.p-eu.rapidapi.com/congestion-insights/v0";
 
 const SIM_SWAP_BASE_URL_PROD =
     "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0";
 const SIM_SWAP_BASE_URL_DEV =
-    "https://simswap.p-eu.rapidapi.com/sim-swap/sim-swap/v0";
+    "https://network-as-code1.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0";
 
-const GEOFENCING_BASE_URL_PROD = "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3"
-const GEOFENCING_BASE_URL_DEV = "https://geofencing-subscription.p-eu.rapidapi.com/v0.3"
+const GEOFENCING_BASE_URL_PROD =
+    "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3"
+const GEOFENCING_BASE_URL_DEV =
+    "https://network-as-code1.p-eu.rapidapi.com/geofencing-subscriptions/v0.3"
 
 const CREDENTIALS_BASE_URL = 
     "https://nac-authorization-server.p-eu.rapidapi.com";
@@ -76,10 +83,10 @@ const AUTHORIZATION_ENDPOINTS_BASE_URL =
 const AUTHORIZATION_ENDPOINTS_BASE_URL_PROD =
     "https://well-known-metadata.p-eu.rapidapi.com";
 
-const NUMBER_VERIFICATION_BASE_URL = 
-    "https://number-verification.p-eu.rapidapi.com";
 const NUMBER_VERIFICATION_BASE_URL_PROD = 
     "https://number-verification.p-eu.rapidapi.com";
+const NUMBER_VERIFICATION_BASE_URL_DEV = 
+    "https://network-as-code1.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0";
 
 const agent = new ProxyAgent();
 
@@ -303,7 +310,7 @@ export class APIClient {
         );
 
         if (devMode && verificationBaseUrl == NUMBER_VERIFICATION_BASE_URL_PROD) {
-            verificationBaseUrl = NUMBER_VERIFICATION_BASE_URL;
+            verificationBaseUrl = NUMBER_VERIFICATION_BASE_URL_DEV;
         }
 
         this.verification = new NumberVerificationAPI(
