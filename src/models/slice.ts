@@ -85,15 +85,6 @@ export interface SliceOptionalArgs {
     deviceUplinkThroughput?: Throughput;
 }
 
-export interface SliceModifyOptionalArgs {
-    sliceDownlinkThroughput?: Throughput;
-    sliceUplinkThroughput?: Throughput;
-    deviceDownlinkThroughput?: Throughput;
-    deviceUplinkThroughput?: Throughput;
-    maxDataConnections?: number;
-    maxDevices?: number;
-}
-
 /**
  *  An interface representing the `Apps` model.
  * #### Public Attributes:
@@ -283,56 +274,6 @@ export class Slice {
         if (this.name) {
             return await this._api.slicing.deactivate(this.name);
         }
-    }
-
-    /**
- *  Modify the parameters for an existing slice.
- * #### Args:
-        @param optionalArgs(SliceModifyOptionalArgs): properties of `SliceModifyOptionalArgs` object
-        @example ```TypeScript
-        slice.modify({
-                sliceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
-                sliceUplinkThroughput: { guaranteed: 10, maximum: 10 },
-                deviceDownlinkThroughput: { guaranteed: 10, maximum: 10 },
-                deviceUplinkThroughput: { guaranteed: 10, maximum: 10 },
-                maxDataConnections: 12,
-                maxDevices: 3
-        });
-        ```
- */
-    async modify({
-        sliceDownlinkThroughput,
-        sliceUplinkThroughput,
-        deviceDownlinkThroughput,
-        deviceUplinkThroughput,
-        maxDataConnections,
-        maxDevices,
-    }: SliceModifyOptionalArgs) {
-        await this._api.slicing.create(
-            this.networkIdentifier,
-            this.sliceInfo,
-            this.notificationUrl,
-            {
-                notificationAuthToken: this.notificationAuthToken,
-                name: this.name,
-                areaOfService: this.areaOfService,
-                sliceDownlinkThroughput: sliceDownlinkThroughput,
-                sliceUplinkThroughput: sliceUplinkThroughput,
-                deviceDownlinkThroughput: deviceDownlinkThroughput,
-                deviceUplinkThroughput: deviceUplinkThroughput,
-                maxDataConnections: maxDataConnections,
-                maxDevices: maxDevices,
-            },
-            true
-        );
-
-        // Update model (if no exception on modify)
-        this.sliceDownlinkThroughput = sliceDownlinkThroughput;
-        this.sliceUplinkThroughput = sliceUplinkThroughput;
-        this.deviceDownlinkThroughput = deviceDownlinkThroughput;
-        this.deviceUplinkThroughput = deviceUplinkThroughput;
-        this.maxDataConnections = maxDataConnections;
-        this.maxDevices = maxDevices;
     }
 
     /**

@@ -60,8 +60,7 @@ export class SliceAPI {
         networkId: NetworkIdentifier,
         sliceInfo: SliceInfo,
         notificationUrl: string,
-        optionalArgs?: SliceOptionalArgs,
-        modify = false
+        optionalArgs?: SliceOptionalArgs
     ) {
         const body: any = {
             networkIdentifier: networkId,
@@ -111,38 +110,17 @@ export class SliceAPI {
                     optionalArgs.deviceUplinkThroughput;
             }
         }
-        let response: FetchResponse;
 
-        if (modify) {
-            if (!optionalArgs?.name) {
-                throw new Error("Name is mandatory for modify");
-            }
+        const response: FetchResponse = await fetch(`${this.baseUrl}/slices`, {
+            method: "POST",
+            headers: this.headers,
+            body: JSON.stringify(body),
+            agent: this.agent,
+        });
 
-            response = await fetch(
-                `${this.baseUrl}/slices/${optionalArgs.name}`,
-                {
-                    method: "PUT",
-                    headers: this.headers,
-                    body: JSON.stringify(body),
-                    agent: this.agent,
-                }
-            );
+        errorHandler(response);
 
-            errorHandler(response);
-
-            return await response.json();
-        } else {
-            response = await fetch(`${this.baseUrl}/slices`, {
-                method: "POST",
-                headers: this.headers,
-                body: JSON.stringify(body),
-                agent: this.agent,
-            });
-
-            errorHandler(response);
-
-            return await response.json();
-        }
+        return await response.json();        
     }
 
     async getAll() {
