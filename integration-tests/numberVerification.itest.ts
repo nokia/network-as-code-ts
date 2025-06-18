@@ -38,7 +38,7 @@ describe("Number Verification authentication", () => {
         const credentials: any = await client.authentication.credentials();
         const endpoints: any = await client.authentication.endpoints();
         const redirectUri= "https://example.com/redirect";
-        const scope = "number-verification:verify";
+        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -46,14 +46,14 @@ describe("Number Verification authentication", () => {
             loginHint
         );
         expect(callback)
-        .toEqual(`${endpoints.authorizationEndpoint}?response_type=code&client_id=${credentials.clientId}&redirect_uri=https%3A%2F%2Fexample.com%2Fredirect&scope=number-verification%3Averify&login_hint=%2B3637123456`);
+        .toEqual(`${endpoints.authorizationEndpoint}?response_type=code&client_id=${credentials.clientId}&redirect_uri=https%3A%2F%2Fexample.com%2Fredirect&scope=dpv%3AFraudPreventionAndDetection%20number-verification%3Averify&login_hint=%2B3637123456`);
     });
 });
 
 describe("Number Verification NaC auth code and access token", () => {
     it("should get NaC auth code", async () => {
         const redirectUri= "https://example.com/redirect";
-        const scope = "number-verification:verify";
+        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -85,7 +85,7 @@ describe("Number Verification NaC auth code and access token", () => {
 
     it("should get single use access token", async () => {
         const redirectUri= "https://example.com/redirect";
-        const scope = "number-verification:verify";
+        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -122,7 +122,7 @@ describe("Number Verification NaC auth code and access token", () => {
 describe("Number verification", () => {   
     it("should verify number", async () => {
         const redirectUri= "https://example.com/redirect";
-        const scope = "number-verification:verify";
+        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -167,7 +167,7 @@ describe("Number verification", () => {
 describe("Get Phone Number", () => {
     it("should get device phone number", async () => {
         const redirectUri= "https://example.com/redirect";
-        const scope = "number-verification:device-phone-number:read";
+        const scope = "dpv:FraudPreventionAndDetection number-verification:device-phone-number:read";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
