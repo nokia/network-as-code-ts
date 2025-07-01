@@ -46,7 +46,7 @@ afterEach(() => {
 describe("Congestion Insights", () => {
     it("should create a congestion insight subscription", async () => {
         fetchMock.mockGlobal().post(
-            "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",
             JSON.stringify({
                 subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
                 startedAt: "2024-04-12T08:45:37.210563Z",
@@ -70,7 +70,7 @@ describe("Congestion Insights", () => {
 
     it("should send correct payload", async () => {
         fetchMock.mockGlobal().post(
-            "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     device: {
@@ -108,7 +108,7 @@ describe("Congestion Insights", () => {
 
     it("can get a subscription by id", async () => {
         fetchMock.mockGlobal().get(
-            "https://congestion-insights.p-eu.rapidapi.com/subscriptions/4edb6919-8e91-406a-ab84-900a420af860",
+            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions/4edb6919-8e91-406a-ab84-900a420af860",
             (_: any, req: any): any => {
                 expect(req.method).toBe("GET");
             },
@@ -133,7 +133,7 @@ describe("Congestion Insights", () => {
 
     it("can get list of subscriptions", async () => {
         fetchMock.mockGlobal().get(
-            "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",
             JSON.stringify([
                 {
                     subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
@@ -160,7 +160,7 @@ describe("Congestion Insights", () => {
 
     it("can handle a subscriptionExpireTime given as a Date", async () => {
         fetchMock.mockGlobal().post(
-            "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     device: {
@@ -201,7 +201,7 @@ describe("Congestion Insights", () => {
 
     it("can delete a subscription", async () => {
         fetchMock.mockGlobal().post(
-            "https://congestion-insights.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",
             JSON.stringify({
                 subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
                 startedAt: "2024-04-15T08:45:37.210563Z",
@@ -217,7 +217,7 @@ describe("Congestion Insights", () => {
         );
 
         fetchMock.mockGlobal().delete(
-            "https://congestion-insights.p-eu.rapidapi.com/subscriptions/4edb6919-8e91-406a-ab84-900a420af860",
+            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions/4edb6919-8e91-406a-ab84-900a420af860",
             (_: any, req: any): any => {
                 expect(req.method).toBe("DELETE");
             },
@@ -233,7 +233,7 @@ describe("Congestion Insights", () => {
 
     it("should poll congestion level of given time range", async () => {
         fetchMock.mockGlobal().post(
-            "https://congestion-insights.p-eu.rapidapi.com/query",
+            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/query",
             (_: any, req: any): any => {
                 expect(req.method).toBe("POST");
                 expect(JSON.parse(req.body.toString())).toEqual({

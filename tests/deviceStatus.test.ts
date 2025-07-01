@@ -42,7 +42,7 @@ afterEach(() => {
 describe("Device Status", () => {
     it("can invoke subscription to CONNECTIVITY updates", async () => {
         fetchMock.mockGlobal().post(
-            "https://device-status.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
             JSON.stringify({
                 subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                 subscriptionDetail: {
@@ -74,7 +74,7 @@ describe("Device Status", () => {
 
     it("sends a request out on subscribe", async () => {
         fetchMock.mockGlobal().post(
-            "https://device-status.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
             JSON.stringify({
                 subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                 subscriptionDetail: {
@@ -106,7 +106,7 @@ describe("Device Status", () => {
 
     it("uses the returned response to fill the subscription object", async () => {
         fetchMock.mockGlobal().post(
-            "https://device-status.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
             JSON.stringify({
                 subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                 subscriptionDetail: {
@@ -144,7 +144,7 @@ describe("Device Status", () => {
 
     it("sends the right body to the correct URL for subscription", async () => {
         fetchMock.mockGlobal().post(
-            "https://device-status.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     subscriptionDetail: {
@@ -196,7 +196,7 @@ describe("Device Status", () => {
 
     it("can handle a subscriptionExpireTime given as a Date", async () => {
         fetchMock.mockGlobal().post(
-            "https://device-status.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     subscriptionDetail: {
@@ -252,7 +252,7 @@ describe("Device Status", () => {
 
     it("handles optional parameters in subscription", async () => {
         fetchMock.mockGlobal().post(
-            "https://device-status.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     subscriptionDetail: {
@@ -323,7 +323,7 @@ describe("Device Status", () => {
 
     it("can delete a subscription", async () => {
         fetchMock.mockGlobal().post(
-            "https://device-status.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
             JSON.stringify({
                 subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
                 subscriptionDetail: {
@@ -351,7 +351,7 @@ describe("Device Status", () => {
         );
 
         fetchMock.mockGlobal().delete(
-            "https://device-status.p-eu.rapidapi.com/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
             (_: any, req: any): any => {
                 expect(req.method).toBe("DELETE");
             },
@@ -368,7 +368,7 @@ describe("Device Status", () => {
 
     it("can fetch a subscription by id", async () => {
         fetchMock.mockGlobal().get(
-            "https://device-status.p-eu.rapidapi.com/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
             (_: any, req: any): any => {
                 expect(req.method).toBe("GET");
             },
@@ -421,7 +421,7 @@ describe("Device Status", () => {
 
     it("can get list of subscriptions", async () => {
         fetchMock.mockGlobal().get(
-            "https://device-status.p-eu.rapidapi.com/subscriptions",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
             JSON.stringify([
                 {
                     subscriptionDetail: {
@@ -511,7 +511,7 @@ describe("Device Status", () => {
 
     it("allows polling device connectivity", async () => {
         fetchMock.mockGlobal().post(
-            "https://device-status.p-eu.rapidapi.com/connectivity",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/connectivity",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body)).toStrictEqual({
                     device: {
@@ -540,7 +540,7 @@ describe("Device Status", () => {
 
     it("allows polling device roaming status", async () => {
         fetchMock.mockGlobal().post(
-            "https://device-status.p-eu.rapidapi.com/roaming",
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/roaming",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body)).toStrictEqual({
                     device: {
