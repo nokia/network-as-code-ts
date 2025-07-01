@@ -63,7 +63,7 @@ describe("Location", () => {
 
     it("should send location retrieval request to the right URL with right parameters", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-retrieval.p-eu.rapidapi.com/retrieve",
+            "https://network-as-code.p-eu.rapidapi.com/location-retrieval/v0/retrieve",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     device: {
@@ -106,7 +106,7 @@ describe("Location", () => {
 
     it("should get location from a valid response", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-retrieval.p-eu.rapidapi.com/retrieve",
+            "https://network-as-code.p-eu.rapidapi.com/location-retrieval/v0/retrieve",
             JSON.stringify({
                 area: {
                     center: {
@@ -137,7 +137,7 @@ describe("Location", () => {
 
     it("should get location without civic address", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-retrieval.p-eu.rapidapi.com/retrieve",
+            "https://network-as-code.p-eu.rapidapi.com/location-retrieval/v0/retrieve",
             JSON.stringify({
                 area: {
                     center: {
@@ -168,7 +168,7 @@ describe("Location", () => {
 
     it("can omit maxAge if 60 seconds is fine", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-retrieval.p-eu.rapidapi.com/retrieve",
+            "https://network-as-code.p-eu.rapidapi.com/location-retrieval/v0/retrieve",
             JSON.stringify({
                 area: {
                     center: {
@@ -188,7 +188,7 @@ describe("Location", () => {
 
     it("should send location verification request to the right URL with right parameters", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-verification.p-eu.rapidapi.com/v1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/location-verification/v1/verify",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     device: {
@@ -225,7 +225,7 @@ describe("Location", () => {
 
     it("should return true if location verification response is TRUE", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-verification.p-eu.rapidapi.com/v1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/location-verification/v1/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
             })
@@ -238,7 +238,7 @@ describe("Location", () => {
 
     it("should return 'PARTIAL' if location verification response is 'PARTIAL'", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-verification.p-eu.rapidapi.com/v1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/location-verification/v1/verify",
             JSON.stringify({
                 verificationResult: "PARTIAL",
             })
@@ -251,7 +251,7 @@ describe("Location", () => {
 
     it("should verify location with possibility to omit maxAge if 60 seconds is fine", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-verification.p-eu.rapidapi.com/v1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/location-verification/v1/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
             })
@@ -264,7 +264,7 @@ describe("Location", () => {
 
     it("should still return true with non-default maxAge value", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-verification.p-eu.rapidapi.com/v1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/location-verification/v1/verify",
             JSON.stringify({
                 verificationResult: "TRUE",
             })
@@ -277,7 +277,7 @@ describe("Location", () => {
 
     it("should return false if location verification response is FALSE", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-verification.p-eu.rapidapi.com/v1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/location-verification/v1/verify",
             JSON.stringify({
                 verificationResult: "FALSE",
             })
@@ -290,7 +290,7 @@ describe("Location", () => {
 
     it("should raise exception if status code indicates error", async () => {
         fetchMock.mockGlobal().post(
-            "https://location-verification.p-eu.rapidapi.com/v1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/location-verification/v1/verify",
             403
         );
 

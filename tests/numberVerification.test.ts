@@ -92,7 +92,7 @@ describe("Number Verification access token and verifying number tests", () => {
 
     it("should get verify number result as true", async () => {
         fetchMock.mockGlobal().post(
-            "https://number-verification.p-eu.rapidapi.com/verify", 
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify", 
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Authorization": "testTokenTypeBearer testAccessToken123456",
@@ -114,7 +114,7 @@ describe("Number Verification access token and verifying number tests", () => {
 
     it("should get verify number result as false", async () => {
         fetchMock.mockGlobal().post(
-            "https://number-verification.p-eu.rapidapi.com/verify", 
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify", 
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Authorization": "testTokenTypeBearer testAccessToken123456",
@@ -147,7 +147,7 @@ describe("Number Verification access token and verifying number tests", () => {
 
     it("should get phone number", async () => {
         fetchMock.mockGlobal().get(
-            "https://number-verification.p-eu.rapidapi.com/device-phone-number", 
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/device-phone-number", 
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Authorization": "testTokenTypeBearer testAccessToken123456",

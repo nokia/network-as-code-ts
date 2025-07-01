@@ -29,49 +29,31 @@ import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
 
 const QOS_BASE_URL_PROD =
-    "https://quality-of-service-on-demand.p-eu.rapidapi.com";
-const QOS_BASE_URL_DEV =
-    "https://network-as-code1.p-eu.rapidapi.com/qod/v0";
+    "https://network-as-code.p-eu.rapidapi.com/qod/v0";
 
 const LOCATION_RETRIEVAL_BASE_URL_PROD =
-    "https://location-retrieval.p-eu.rapidapi.com";
-const LOCATION_RETRIEVAL_BASE_URL_DEV =
-    "https://network-as-code1.p-eu.rapidapi.com/location-retrieval/v0";
+    "https://network-as-code.p-eu.rapidapi.com/location-retrieval/v0";
 
 const LOCATION_VERIFY_BASE_URL_PROD =
-    "https://location-verification.p-eu.rapidapi.com/v1";
-const LOCATION_VERIFY_BASE_URL_DEV =
-    "https://network-as-code1.p-eu.rapidapi.com/location-verification/v1"
+    "https://network-as-code.p-eu.rapidapi.com/location-verification/v1";
 
 const DEVICE_STATUS_BASE_URL_PROD =
-    "https://device-status.p-eu.rapidapi.com";
-const DEVICE_STATUS_BASE_URL_DEV =
-    "https://network-as-code1.p-eu.rapidapi.com/device-status/v0";
+    "https://network-as-code.p-eu.rapidapi.com/device-status/v0";
 
 const SLICE_BASE_URL_PROD =
-    "https://network-slicing.p-eu.rapidapi.com";
-const SLICE_BASE_URL_DEV =
-    "https://network-as-code1.p-eu.rapidapi.com/slice/v1"
+    "https://network-as-code.p-eu.rapidapi.com/slice/v1";
 
 const SLICE_ATTACH_BASE_URL_PROD =
-    "https://network-slice-device-attachment.p-eu.rapidapi.com";
-const SLICE_ATTACH_BASE_URL_DEV =
-    "https://network-as-code1.p-eu.rapidapi.com/device-attach/v0"
+    "https://network-as-code.p-eu.rapidapi.com/device-attach/v0";
 
 const CONGESTION_INSIGHTS_BASE_URL_PROD =
-    "https://congestion-insights.p-eu.rapidapi.com";
-const CONGESTION_INSIGHTS_BASE_URL_DEV =
-    "https://network-as-code1.p-eu.rapidapi.com/congestion-insights/v0";
+    "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0";
 
 const SIM_SWAP_BASE_URL_PROD =
-    "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0";
-const SIM_SWAP_BASE_URL_DEV =
-    "https://network-as-code1.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0";
+    "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0";
 
 const GEOFENCING_BASE_URL_PROD =
-    "https://geofencing-subscriptions.p-eu.rapidapi.com/v0.3"
-const GEOFENCING_BASE_URL_DEV =
-    "https://network-as-code1.p-eu.rapidapi.com/geofencing-subscriptions/v0.3"
+    "https://network-as-code.p-eu.rapidapi.com/geofencing-subscriptions/v0.3";
 
 const CREDENTIALS_BASE_URL = 
     "https://nac-authorization-server.p-eu.rapidapi.com";
@@ -84,9 +66,9 @@ const AUTHORIZATION_ENDPOINTS_BASE_URL_PROD =
     "https://well-known-metadata.p-eu.rapidapi.com";
 
 const NUMBER_VERIFICATION_BASE_URL_PROD = 
-    "https://number-verification.p-eu.rapidapi.com";
-const NUMBER_VERIFICATION_BASE_URL_DEV = 
-    "https://network-as-code1.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0";
+    "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0";
+
+const RAPID_HOST_PROD = "network-as-code.nokia.rapidapi.com"
 
 const agent = new ProxyAgent();
 
@@ -108,6 +90,7 @@ export class APIClient {
     constructor(
         token: string,
         devMode: boolean = false,
+        rapidHostProd: string = RAPID_HOST_PROD,
         qosBaseUrl: string = QOS_BASE_URL_PROD,
         locationRetrievalBaseUrl: string = LOCATION_RETRIEVAL_BASE_URL_PROD,
         locationVerifyBaseUrl: string = LOCATION_VERIFY_BASE_URL_PROD,
@@ -122,16 +105,14 @@ export class APIClient {
         verificationBaseUrl: string = NUMBER_VERIFICATION_BASE_URL_PROD
     ) {
         if (devMode && qosBaseUrl == QOS_BASE_URL_PROD) {
-            qosBaseUrl = QOS_BASE_URL_DEV;
+            qosBaseUrl = qosBaseUrl.replace(".p-eu", "1.p-eu");
         }
         this.sessions = new QodAPI(
             qosBaseUrl,
             token,
             devMode
-                ? qosBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : qosBaseUrl.replace("https://", "").replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
@@ -139,139 +120,106 @@ export class APIClient {
             devMode &&
             locationRetrievalBaseUrl == LOCATION_RETRIEVAL_BASE_URL_PROD
         ) {
-            locationRetrievalBaseUrl = LOCATION_RETRIEVAL_BASE_URL_DEV;
+            locationRetrievalBaseUrl = locationRetrievalBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.locationRetrieval = new LocationRetrievalAPI(
             locationRetrievalBaseUrl,
             token,
             devMode
-                ? locationRetrievalBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : locationRetrievalBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
         if (devMode && locationVerifyBaseUrl == LOCATION_VERIFY_BASE_URL_PROD) {
-            locationVerifyBaseUrl = LOCATION_VERIFY_BASE_URL_DEV;
+            locationVerifyBaseUrl = locationVerifyBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.locationVerify = new LocationVerifyAPI(
             locationVerifyBaseUrl,
             token,
             devMode
-                ? locationVerifyBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : locationVerifyBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
         if (devMode && deviceStatusBaseUrl == DEVICE_STATUS_BASE_URL_PROD) {
-            deviceStatusBaseUrl = DEVICE_STATUS_BASE_URL_DEV;
+            deviceStatusBaseUrl = deviceStatusBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.deviceStatus = new DeviceStatusAPI(
             deviceStatusBaseUrl,
             token,
             devMode
-                ? deviceStatusBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : deviceStatusBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
         if (devMode && sliceBaseUrl == SLICE_BASE_URL_PROD) {
-            sliceBaseUrl = SLICE_BASE_URL_DEV;
+            sliceBaseUrl = sliceBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.slicing = new SliceAPI(
             sliceBaseUrl,
             token,
             devMode
-                ? sliceBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : sliceBaseUrl.replace("https://", "").replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
         if (devMode && sliceAttachBaseUrl == SLICE_ATTACH_BASE_URL_PROD) {
-            sliceAttachBaseUrl = SLICE_ATTACH_BASE_URL_DEV;
+            sliceAttachBaseUrl = sliceAttachBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.sliceAttach = new AttachAPI(
             sliceAttachBaseUrl,
             token,
             devMode
-                ? sliceAttachBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : sliceAttachBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
-        if (
-            devMode &&
-            congestionInsightsBaseUrl == CONGESTION_INSIGHTS_BASE_URL_PROD
-        ) {
-            congestionInsightsBaseUrl = CONGESTION_INSIGHTS_BASE_URL_DEV;
+        if (devMode && congestionInsightsBaseUrl == CONGESTION_INSIGHTS_BASE_URL_PROD) {
+            congestionInsightsBaseUrl = congestionInsightsBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.insights = new CongestionInsightsAPI(
             congestionInsightsBaseUrl,
             token,
             devMode
-                ? congestionInsightsBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : congestionInsightsBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
         if (devMode && simSwapBaseUrl == SIM_SWAP_BASE_URL_PROD) {
-            simSwapBaseUrl = SIM_SWAP_BASE_URL_DEV;
+            simSwapBaseUrl = simSwapBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.simSwap = new SimSwapAPI(
             simSwapBaseUrl,
             token,
             devMode
-                ? simSwapBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : simSwapBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
         if (devMode && geofencingBaseUrl == GEOFENCING_BASE_URL_PROD) {
-            geofencingBaseUrl = GEOFENCING_BASE_URL_DEV;
+            geofencingBaseUrl = geofencingBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.geofencing = new GeofencingAPI(
             geofencingBaseUrl,
             token,
             devMode
-                ? geofencingBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : geofencingBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
@@ -310,19 +258,15 @@ export class APIClient {
         );
 
         if (devMode && verificationBaseUrl == NUMBER_VERIFICATION_BASE_URL_PROD) {
-            verificationBaseUrl = NUMBER_VERIFICATION_BASE_URL_DEV;
+            verificationBaseUrl = verificationBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.verification = new NumberVerificationAPI(
             verificationBaseUrl,
             token,
             devMode
-                ? verificationBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : verificationBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
