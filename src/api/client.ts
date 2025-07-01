@@ -55,15 +55,11 @@ const SIM_SWAP_BASE_URL_PROD =
 const GEOFENCING_BASE_URL_PROD =
     "https://network-as-code.p-eu.rapidapi.com/geofencing-subscriptions/v0.3";
 
-const CREDENTIALS_BASE_URL = 
-    "https://nac-authorization-server.p-eu.rapidapi.com";
 const CREDENTIALS_BASE_URL_PROD = 
-    "https://nac-authorization-server.p-eu.rapidapi.com";
+    "https://network-as-code.p-eu.rapidapi.com/oauth2/v1";
 
-const AUTHORIZATION_ENDPOINTS_BASE_URL = 
-    "https://well-known-metadata.p-eu.rapidapi.com";
 const AUTHORIZATION_ENDPOINTS_BASE_URL_PROD =
-    "https://well-known-metadata.p-eu.rapidapi.com";
+    "https://network-as-code1.p-eu.rapidapi.com/.well-known";
 
 const NUMBER_VERIFICATION_BASE_URL_PROD = 
     "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0";
@@ -224,36 +220,28 @@ export class APIClient {
         );
 
         if (devMode && authorizationEndpointsBaseUrl == AUTHORIZATION_ENDPOINTS_BASE_URL_PROD) {
-            authorizationEndpointsBaseUrl = AUTHORIZATION_ENDPOINTS_BASE_URL;
+            authorizationEndpointsBaseUrl = authorizationEndpointsBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.authorizationEndpoints = new AuthorizationEndpointsAPI(
             authorizationEndpointsBaseUrl,
             token,
             devMode
-                ? authorizationEndpointsBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : authorizationEndpointsBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 
         if (devMode && credentialsBaseUrl == CREDENTIALS_BASE_URL_PROD) {
-            credentialsBaseUrl = CREDENTIALS_BASE_URL;
+            credentialsBaseUrl = credentialsBaseUrl.replace(".p-eu", "1.p-eu");
         }
 
         this.credentials = new CredentialsAPI(
             credentialsBaseUrl,
             token,
             devMode
-                ? credentialsBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia-dev")
-                : credentialsBaseUrl
-                      .replace("https://", "")
-                      .replace("p-eu", "nokia"),
+                ? rapidHostProd.replace(".nokia", "1.nokia-dev")
+                : rapidHostProd,
             agent
         );
 

@@ -29,7 +29,7 @@ beforeAll(() => {
 beforeEach(() => {
     fetchMock.mockReset();
     fetchMock.mockGlobal().get(
-        "https://nac-authorization-server.p-eu.rapidapi.com/auth/clientcredentials",
+        "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
         (req: any): any => {
             expect(req.headers).toEqual({
                 "Content-Type": "application/json",
@@ -46,7 +46,7 @@ beforeEach(() => {
     );
 
     fetchMock.mockGlobal().get(
-        "https://well-known-metadata.p-eu.rapidapi.com/openid-configuration",
+        "https://network-as-code1.p-eu.rapidapi.com/.well-known/openid-configuration",
         (req: any): any => {
             expect(req.headers).toEqual({
                 "Content-Type": "application/json",
