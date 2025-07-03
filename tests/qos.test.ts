@@ -87,7 +87,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -161,7 +161,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -206,6 +206,9 @@ describe("Qos", () => {
                 networkAccessIdentifier: "testuser@open5glab.net",
                 phoneNumber: "9382948473",
             },
+            devicePorts: {
+                ports: [80, 3000],
+            },
             applicationServer: {
                 ipv4Address: "5.6.7.8",
                 ipv6Address: "2041:0000:140F::875B:131B",
@@ -238,7 +241,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -257,6 +260,7 @@ describe("Qos", () => {
         expect(session.status).toEqual(mockResponse["qosStatus"]);
         expect(session.device.ipv6Address).toEqual(device.ipv6Address);
         expect(session.serviceIpv6).toEqual("2041:0000:140F::875B:131B");
+        expect(session.devicePorts?.ports).toEqual([80, 3000]);
     });
 
     test("should create a session with device port range", async () => {
@@ -283,6 +287,9 @@ describe("Qos", () => {
                 ipv6Address: "2041:0000:140F::875B:131B",
                 networkAccessIdentifier: "testuser@open5glab.net",
                 phoneNumber: "9382948473",
+            },
+            devicePorts: {
+                ranges: [{ from: 80, to: 3000 }],
             },
             applicationServer: {
                 ipv4Address: "5.6.7.8",
@@ -316,7 +323,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -333,6 +340,7 @@ describe("Qos", () => {
             devicePorts: { ranges: [{ from: 80, to: 3000 }] },
         });
         expect(session.status).toEqual(mockResponse["qosStatus"]);
+        expect(session.devicePorts?.ranges).toEqual([{ from: 80, to: 3000 }]);
     });
 
     test("should create a session with service port", async () => {
@@ -393,7 +401,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -473,7 +481,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -547,7 +555,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -598,12 +606,12 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().get(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0",
             JSON.stringify(mockFetchResponse)
         );
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0/extend",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions/08305343-7ed2-43b7-8eda-4c5ae9805bd0/extend",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -680,7 +688,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -720,7 +728,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().get(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/1234",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions/1234",
             JSON.stringify(mockResponse)
         );
 
@@ -745,7 +753,7 @@ describe("Qos", () => {
         ];
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/retrieve-sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/retrieve-sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -793,7 +801,7 @@ describe("Qos", () => {
         ];
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/retrieve-sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/retrieve-sessions",
             (_: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);
@@ -808,7 +816,7 @@ describe("Qos", () => {
         );
 
         fetchMock.mockGlobal().get(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions?networkAccessIdentifier=testuser@open5glab.net",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions?networkAccessIdentifier=testuser@open5glab.net",
             JSON.stringify(mockResponse)
         );
 
@@ -816,12 +824,12 @@ describe("Qos", () => {
         expect(sessions.length).toEqual(2);
 
         fetchMock.mockGlobal().delete(
-            `https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/${mockResponse[0].sessionId}`,
+            `https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions/${mockResponse[0].sessionId}`,
             JSON.stringify({})
         );
 
         fetchMock.mockGlobal().delete(
-            `https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/${mockResponse[1].sessionId}`,
+            `https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions/${mockResponse[1].sessionId}`,
             JSON.stringify({})
         );
         await device.clearSessions();
@@ -852,7 +860,7 @@ describe("Qos", () => {
 
     test("should not get sessions as unauthenticated user", async () => {
         fetchMock.mockGlobal().get(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/sessions/1234",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/sessions/1234",
             {
                 status: 403,
                 body: JSON.stringify({ message: "Invalid API key." }),
@@ -879,7 +887,7 @@ describe("Qos", () => {
         };
 
         fetchMock.mockGlobal().post(
-            "https://quality-of-service-on-demand.p-eu.rapidapi.com/retrieve-sessions",
+            "https://network-as-code.p-eu.rapidapi.com/qod/v0/retrieve-sessions",
             (res: any, req: any) => {
                 expect(req.method).toBe("POST");
                 const requestBody = JSON.parse(req.body);

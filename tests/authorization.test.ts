@@ -43,11 +43,11 @@ afterEach(() => {
 describe("Number Verification successfull authentication tests", () => {
     beforeEach(() => {
         fetchMock.mockGlobal().get(
-            "https://nac-authorization-server.p-eu.rapidapi.com/auth/clientcredentials",
+            "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "nac-authorization-server.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
             },
@@ -60,11 +60,11 @@ describe("Number Verification successfull authentication tests", () => {
         );
 
         fetchMock.mockGlobal().get(
-            "https://well-known-metadata.p-eu.rapidapi.com/openid-configuration",
+            "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "well-known-metadata.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
             },
@@ -103,11 +103,11 @@ describe("Number Verification successfull authentication tests", () => {
 describe("Number Verification authentication tests errors", () => {
     it("credential fetching should return APIError", async () => {
         fetchMock.mockGlobal().get(
-            "https://nac-authorization-server.p-eu.rapidapi.com/auth/clientcredentials",
+            "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "nac-authorization-server.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": "TEST_TOKEN",
                 });
             },
@@ -125,11 +125,11 @@ describe("Number Verification authentication tests errors", () => {
 
     it("credential fetching should return ServiceError", async () => {
         fetchMock.mockGlobal().get(
-        "https://nac-authorization-server.p-eu.rapidapi.com/auth/clientcredentials",
+        "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
         (_: any, req: any): any => {
             expect(req.headers).toEqual({
                 "Content-Type": "application/json",
-                "X-RapidAPI-Host": "nac-authorization-server.nokia.rapidapi.com",
+                "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                 "X-RapidAPI-Key": "TEST_TOKEN",
             });
         },
@@ -147,11 +147,11 @@ describe("Number Verification authentication tests errors", () => {
 
     it("endpoint fetching should return ServiceError", async () => {
         fetchMock.mockGlobal().get(
-            "https://well-known-metadata.p-eu.rapidapi.com/openid-configuration",
+            "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "well-known-metadata.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
             },
@@ -169,11 +169,11 @@ describe("Number Verification authentication tests errors", () => {
 
     it("endpoint fetching should return APIError", async () => {
         fetchMock.mockGlobal().get(
-            "https://well-known-metadata.p-eu.rapidapi.com/openid-configuration",
+            "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "well-known-metadata.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
             },

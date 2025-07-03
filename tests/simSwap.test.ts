@@ -46,7 +46,7 @@ afterEach(() => {
 describe("Sim Swap", () => {
     it("should get the latest sim swap date", async () => {
         fetchMock.mockGlobal().post(
-            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "3637123456"
@@ -79,7 +79,7 @@ describe("Sim Swap", () => {
 
     it("should return null if the response doesn't contain latestSimChange", async () => {
         fetchMock.mockGlobal().post(
-            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "3637123456"
@@ -108,7 +108,7 @@ describe("Sim Swap", () => {
 
     it("should handle null", async () => {
         fetchMock.mockGlobal().post(
-            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "3637123456"
@@ -128,7 +128,7 @@ describe("Sim Swap", () => {
 
     it("should raise exception on missing phone number", async () => {
         fetchMock.mockGlobal().post(
-            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     networkAccessIdentifier: "device@testcsp.net"
@@ -153,7 +153,7 @@ describe("Sim Swap", () => {
 
     it("should verify sim swap without max age", async () => {
         fetchMock.mockGlobal().post(
-            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/check",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "3637123456"
@@ -172,7 +172,7 @@ describe("Sim Swap", () => {
 
     it("should verify sim swap with max age", async () => {
         fetchMock.mockGlobal().post(
-            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/check",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "3637123456",
@@ -192,7 +192,7 @@ describe("Sim Swap", () => {
 
     it("verify should raise exception on missing phone number", async () => {
         fetchMock.mockGlobal().post(
-            "https://sim-swap.p-eu.rapidapi.com/sim-swap/sim-swap/v0/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     networkAccessIdentifier: "device@testcsp.net"

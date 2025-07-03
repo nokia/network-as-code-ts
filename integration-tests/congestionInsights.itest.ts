@@ -1,52 +1,106 @@
 import { NetworkAsCodeClient } from "../src";
 import "dotenv/config";
 import { Device } from "../src/models/device";
-import { configureClient } from "./configClient";
+import { configureClient, configureNotificationServerUrl } from "./configClient";
+import { ProxyAgent } from "proxy-agent";
+import fetch from "node-fetch";
+import { v4 as uuid } from 'uuid';
 
 let client: NetworkAsCodeClient;
 let device: Device;
+let notificationUrl: string;
+let agent : ProxyAgent
 
 beforeAll(() => {
     client = configureClient()
     device = client.devices.get({
-        phoneNumber: "+3672123456",
+        phoneNumber: "+3670123456",
     });
+    notificationUrl = configureNotificationServerUrl();
+    agent = new ProxyAgent();
 });
 
 describe("Congestion Insights", () => {
     const expirationDate = new Date(Date.now() + 5 * 60 * 1000);
     expirationDate.setMilliseconds(0);
 
-    it.skip("can create subscription for congestion insights", async () => {
+    it("can create subscription for congestion insights", async () => {
+        const notificationId: string = uuid();
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
-            "https://example.com/notify",
+            `${notificationUrl}/notify/${notificationId}`,
             "c8974e592c2fa383d4a3960714"
         );
 
         expect(subscription.expiresAt).toEqual(
             new Date(expirationDate.toISOString().replace(".000", ""))
+        );        
+
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/congestion-insights/get/${notificationId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
         );
 
-        subscription.delete();
-    });
+        const data = await notification.json();
 
-    it.skip("can create subscription for congestion insights without auth token", async () => {
+        expect(data).not.toBeNull();
+
+        notification = await fetch(`${notificationUrl}/congestion-insights/delete/${notificationId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
+        const deletionData = await notification.json()
+        expect(deletionData).toEqual([{"message": "Notification deleted"}, 200])
+
+        await subscription.delete();
+
+    },20 * 1000);
+
+    it("can create subscription for congestion insights without auth token", async () => {
+        const notificationId: string = uuid();
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
-            "https://example.com/notify"
+            `${notificationUrl}/notify/${notificationId}`
         );
 
         expect(subscription.expiresAt).toEqual(
             new Date(expirationDate.toISOString().replace(".000", ""))
         );
+        
 
-        subscription.delete();
-    });
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/congestion-insights/get/${notificationId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
 
-    it.skip("can get a subscription by id", async () => {
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+
+        notification = await fetch(`${notificationUrl}/congestion-insights/delete/${notificationId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
+        const deletionData = await notification.json()
+        expect(deletionData).toEqual([{"message": "Notification deleted"}, 200]) 
+
+        await subscription.delete();
+
+    },20 * 1000);
+
+    it("can get a subscription by id", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -61,10 +115,47 @@ describe("Congestion Insights", () => {
         expect(subscription2.subscriptionId).toBe(subscription.subscriptionId);
         expect(subscription2.startsAt).toEqual(subscription.startsAt);
 
-        subscription.delete();
+        await subscription.delete();
     });
 
-    it.skip("can get a list of subscriptions", async () => {
+    it("can get subscription start and expiration", async () => {
+        const subscription = await client.insights.subscribeToCongestionInfo(
+            device,
+            expirationDate,
+            "https://example.com/notify"
+        );
+
+        expect(subscription.startsAt).toBeDefined()
+        expect(subscription.expiresAt).toBeDefined()
+
+        expect(subscription.startsAt instanceof Date).toBeTruthy();
+
+        await subscription.delete();
+    });
+
+    it("can get start and expiration from selected subscription", async () => {
+        const subscription = await client.insights.subscribeToCongestionInfo(
+            device,
+            expirationDate,
+            "https://example.com/notify"
+        );
+
+        const subscriptionFromList = (await client.insights.getSubscriptions())[0]
+
+        expect(subscriptionFromList.startsAt).toBeDefined()
+        expect(subscriptionFromList.expiresAt).toBeDefined()
+        
+        const subscriptionById = await client.insights.get(
+            subscription.subscriptionId
+        );
+
+        expect(subscriptionById.startsAt).toBeDefined()
+        expect(subscriptionById.expiresAt).toBeDefined()
+
+        await subscription.delete();
+    });
+
+    it("can get a list of subscriptions", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -82,10 +173,10 @@ describe("Congestion Insights", () => {
             ).length
         ).toBe(1);
 
-        subscription.delete();
+        await subscription.delete();
     });
 
-    it.skip("should fetch current congestion level relevant to a given device", async () => {
+    it("should fetch current congestion level relevant to a given device", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -109,10 +200,10 @@ describe("Congestion Insights", () => {
             );
         });
 
-        subscription.delete();
+        await subscription.delete();
     });
 
-    it.skip("should fetch prediction/historical data between two time stamps:", async () => {
+    it("should fetch prediction/historical data between two time stamps:", async () => {
         const subscription = await client.insights.subscribeToCongestionInfo(
             device,
             expirationDate,
@@ -137,6 +228,6 @@ describe("Congestion Insights", () => {
             );
         });
 
-        subscription.delete();
+        await subscription.delete();
     });
 });

@@ -58,7 +58,7 @@ async verifyLocation(
         maxAge,
     };
 
-    const response = await fetch(`${this.baseUrl}/v1/verify`, {
+    const response = await fetch(`${this.baseUrl}/verify`, {
         method: "POST",
         headers: this.headers,
         body: JSON.stringify(body),
