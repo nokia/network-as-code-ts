@@ -33,7 +33,7 @@ beforeEach(() => {
         (req: any): any => {
             expect(req.headers).toEqual({
                 "Content-Type": "application/json",
-                "X-RapidAPI-Host": "nac-authorization-server.nokia.rapidapi.com",
+                "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                 "X-RapidAPI-Key": 'TEST_TOKEN',
             })
         },
@@ -46,11 +46,11 @@ beforeEach(() => {
     );
 
     fetchMock.mockGlobal().get(
-        "https://network-as-code1.p-eu.rapidapi.com/.well-known/openid-configuration",
+        "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
         (req: any): any => {
             expect(req.headers).toEqual({
                 "Content-Type": "application/json",
-                "X-RapidAPI-Host": "well-known-metadata.nokia.rapidapi.com",
+                "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                 "X-RapidAPI-Key": 'TEST_TOKEN',
             })
         },
@@ -97,7 +97,7 @@ describe("Number Verification access token and verifying number tests", () => {
                 expect(req.headers).toEqual({
                     "Authorization": "testTokenTypeBearer testAccessToken123456",
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "number-verification.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 }),
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -119,7 +119,7 @@ describe("Number Verification access token and verifying number tests", () => {
                 expect(req.headers).toEqual({
                     "Authorization": "testTokenTypeBearer testAccessToken123456",
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "number-verification.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 }),
                 expect(JSON.parse(req.body.toString())).toEqual({
@@ -152,7 +152,7 @@ describe("Number Verification access token and verifying number tests", () => {
                 expect(req.headers).toEqual({
                     "Authorization": "testTokenTypeBearer testAccessToken123456",
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "number-verification.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 })},
                 { response: 
