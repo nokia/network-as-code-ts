@@ -59,7 +59,7 @@ const CREDENTIALS_BASE_URL_PROD =
     "https://network-as-code.p-eu.rapidapi.com/oauth2/v1";
 
 const AUTHORIZATION_ENDPOINTS_BASE_URL_PROD =
-    "https://network-as-code1.p-eu.rapidapi.com/.well-known";
+    "https://network-as-code.p-eu.rapidapi.com/.well-known";
 
 const NUMBER_VERIFICATION_BASE_URL_PROD = 
     "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0";
