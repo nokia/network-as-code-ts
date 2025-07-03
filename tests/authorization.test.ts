@@ -47,7 +47,7 @@ describe("Number Verification successfull authentication tests", () => {
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "netowrk-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
             },
@@ -64,7 +64,7 @@ describe("Number Verification successfull authentication tests", () => {
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "netowrk-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
             },
@@ -107,7 +107,7 @@ describe("Number Verification authentication tests errors", () => {
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "netowrk-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": "TEST_TOKEN",
                 });
             },
@@ -129,7 +129,7 @@ describe("Number Verification authentication tests errors", () => {
         (_: any, req: any): any => {
             expect(req.headers).toEqual({
                 "Content-Type": "application/json",
-                "X-RapidAPI-Host": "netowrk-as-code.nokia.rapidapi.com",
+                "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                 "X-RapidAPI-Key": "TEST_TOKEN",
             });
         },
@@ -151,7 +151,7 @@ describe("Number Verification authentication tests errors", () => {
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "netowrk-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
             },
@@ -173,7 +173,7 @@ describe("Number Verification authentication tests errors", () => {
             (_: any, req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "netowrk-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
                 });
             },
