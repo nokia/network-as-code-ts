@@ -2,23 +2,23 @@ import { beforeAll, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
-import { configureClient } from "./configClient";
+import { configureClient, configureNotificationServerUrl } from "./configClient";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 
 
 let client: NetworkAsCodeClient;
 let device: Device;
-let httpsAgent: ProxyAgent;
-let httpAgent: ProxyAgent;
+let agent: ProxyAgent;
+let notificationUrl: string;
 
 beforeAll(() => {
     client = configureClient();
     device = client.devices.get({
         phoneNumber: "+3637123456",
     });
-    httpsAgent = httpsAgent;
-    httpAgent = new ProxyAgent();
+    agent = new ProxyAgent()
+    notificationUrl = configureNotificationServerUrl();
 });
 
 describe("Number Verification authentication", () => {
@@ -52,7 +52,7 @@ describe("Number Verification authentication", () => {
 
 describe("Number Verification NaC auth code and access token", () => {
     it("should get NaC auth code", async () => {
-        const redirectUri= "https://example.com/redirect";
+        const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
@@ -60,31 +60,23 @@ describe("Number Verification NaC auth code and access token", () => {
             scope,
             loginHint
         );
-        const callbackResponse: any = await fetch(callback, {
-            redirect: "manual",
+        await fetch(callback, {
             method: "GET",
-            agent: httpsAgent
+            agent: agent
         });
-        const firstRedirect = callbackResponse.headers.get("location");
-        const firstResponse: any = await fetch(firstRedirect, {
-            redirect: "manual",
-            method: "GET",
-            agent: httpAgent
-        });
-        const secondRedirect = firstResponse.headers.get("location");
-        const secondResponse: any = await fetch(secondRedirect, {
-            redirect: "manual",
-            method: "GET",
-            agent: httpsAgent
-        });
-        const location = secondResponse.headers.get("location");
-        const codeIndex = location.search("code=");
-        const code = location.slice(codeIndex + 5);
+
+        const response =  await fetch(`${notificationUrl}/nv-get-code`,
+                    {
+                        method: "GET",
+                        agent: agent
+                    });
+        const data = await response.json() as any;
+        const code = data.code
         expect(code).toBeTruthy();
     });
 
     it("should get single use access token", async () => {
-        const redirectUri= "https://example.com/redirect";
+        const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
@@ -92,26 +84,18 @@ describe("Number Verification NaC auth code and access token", () => {
             scope,
             loginHint
         );
-        const callbackResponse: any = await fetch(callback, {
-            redirect: "manual",
+        await fetch(callback, {
             method: "GET",
-            agent: httpsAgent
+            agent: agent
         });
-        const firstRedirect = callbackResponse.headers.get("location");
-        const firstResponse: any = await fetch(firstRedirect, {
-            redirect: "manual",
-            method: "GET",
-            agent: httpAgent
-        });
-        const secondRedirect = firstResponse.headers.get("location");
-        const secondResponse: any = await fetch(secondRedirect, {
-            redirect: "manual",
-            method: "GET",
-            agent: httpsAgent
-        });
-        const location = secondResponse.headers.get("location");
-        const codeIndex = location.search("code=");
-        const code = location.slice(codeIndex + 5);
+
+        const response =  await fetch(`${notificationUrl}/nv-get-code`,
+                    {
+                        method: "GET",
+                        agent: agent
+                    });
+        const data = await response.json() as any;
+        const code = data.code
         const accessToken: any = await device.getSingleUseAccessToken(code);
         expect(accessToken.accessToken).toBeTruthy();
         expect(accessToken.tokenType).toBeTruthy();
@@ -121,7 +105,7 @@ describe("Number Verification NaC auth code and access token", () => {
 
 describe("Number verification", () => {   
     it("should verify number", async () => {
-        const redirectUri= "https://example.com/redirect";
+        const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
@@ -129,26 +113,18 @@ describe("Number verification", () => {
             scope,
             loginHint
         );
-        const callbackResponse: any = await fetch(callback, {
-            redirect: "manual",
+        await fetch(callback, {
             method: "GET",
-            agent: httpsAgent
+            agent: agent
         });
-        const firstRedirect = callbackResponse.headers.get("location");
-        const firstResponse: any = await fetch(firstRedirect, {
-            redirect: "manual",
-            method: "GET",
-            agent: httpAgent
-        });
-        const secondRedirect = firstResponse.headers.get("location");
-        const secondResponse: any = await fetch(secondRedirect, {
-            redirect: "manual",
-            method: "GET",
-            agent: httpsAgent
-        });
-        const location = secondResponse.headers.get("location");
-        const codeIndex = location.search("code=");
-        const code = location.slice(codeIndex + 5);
+
+        const response =  await fetch(`${notificationUrl}/nv-get-code`,
+                    {
+                        method: "GET",
+                        agent: agent
+                    });
+        const data = await response.json() as any;
+        const code = data.code
         const result: boolean = await device.verifyNumber(code);
         expect(result).toBeTruthy();
     }, 7000);
@@ -166,34 +142,26 @@ describe("Number verification", () => {
 });
 describe("Get Phone Number", () => {
     it("should get device phone number", async () => {
-        const redirectUri= "https://example.com/redirect";
-        const scope = "dpv:FraudPreventionAndDetection number-verification:device-phone-number:read";
+        const redirectUri= `${notificationUrl}/nv`;
+        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
             loginHint
         );
-        const callbackResponse: any = await fetch(callback, {
-            redirect: "manual",
+        await fetch(callback, {
             method: "GET",
-            agent: httpsAgent
+            agent: agent
         });
-        const firstRedirect = callbackResponse.headers.get("location");
-        const firstResponse: any = await fetch(firstRedirect, {
-            redirect: "manual",
-            method: "GET",
-            agent: httpAgent
-        });
-        const secondRedirect = firstResponse.headers.get("location");
-        const secondResponse: any = await fetch(secondRedirect, {
-            redirect: "manual",
-            method: "GET",
-            agent: httpsAgent
-        });
-        const location = secondResponse.headers.get("location");
-        const codeIndex = location.search("code=");
-        const code = location.slice(codeIndex + 5);
+
+        const response =  await fetch(`${notificationUrl}/nv-get-code`,
+                    {
+                        method: "GET",
+                        agent: agent
+                    });
+        const data = await response.json() as any;
+        const code = data.code
         const result: string = await device.getPhoneNumber(code);
         expect(result).toBeDefined();
     }, 7000);
