@@ -36,7 +36,7 @@ describe("Device Status", () => {
         expect(subscription.eventSubscriptionId).toBeDefined();
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -46,7 +46,7 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/device-status/delete/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -73,7 +73,7 @@ describe("Device Status", () => {
         );
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -83,7 +83,7 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/device-status/delete/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -108,7 +108,7 @@ describe("Device Status", () => {
         expect(subscription.notificationAuthToken).toEqual("my-token");
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -118,7 +118,7 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/device-status/delete/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent

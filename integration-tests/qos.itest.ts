@@ -245,7 +245,7 @@ describe("Qos", () => {
         expect(session.profile).toEqual("QOS_L");
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/qod/get/${session.id}`,
+        let notification = await fetch(`${notificationUrl}/qod/${session.id}`,
             {
                 method: "GET",
                 agent: agent
@@ -261,7 +261,7 @@ describe("Qos", () => {
         session.deleteSession();
         
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        notification = await fetch(`${notificationUrl}/qod/delete/${session.id}`,
+        notification = await fetch(`${notificationUrl}/qod/${session.id}`,
             {
                 method: "DELETE",
                 agent: agent
@@ -287,7 +287,7 @@ describe("Qos", () => {
         session.deleteSession();
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/qod/get/${session.id}`,
+        let notification = await fetch(`${notificationUrl}/qod/${session.id}`,
             {
                 method: "GET",
                 agent: agent
@@ -299,7 +299,7 @@ describe("Qos", () => {
         const deletionInfo = data[1]
         expect(deletionInfo).toHaveProperty("data.statusInfo", "DELETE_REQUESTED")
 
-        notification = await fetch(`${notificationUrl}/qod/delete/${session.id}`,
+        notification = await fetch(`${notificationUrl}/qod/${session.id}`,
             {
                 method: "DELETE",
                 agent: agent

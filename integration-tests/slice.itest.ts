@@ -188,7 +188,7 @@ describe("Slicing", () => {
         );
 
         const pollNotifications = async () => {
-            let notification = await fetch(`${notificationUrl}/network-slice/get/${slice.name}`,
+            let notification = await fetch(`${notificationUrl}/network-slice/${slice.name}`,
             {
                 method: "GET",
                 agent: agent
@@ -237,7 +237,7 @@ describe("Slicing", () => {
 
         expect(lastNotification['current_slice_state']).toEqual("DELETED");
 
-        await fetch(`${notificationUrl}/network-slice/delete/${slice.name}`,
+        await fetch(`${notificationUrl}/network-slice/${slice.name}`,
             {
                 method: "DELETE",
                 agent: agent

@@ -38,7 +38,7 @@ describe("Congestion Insights", () => {
         );        
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/congestion-insights/get/${notificationId}`,
+        let notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -49,7 +49,7 @@ describe("Congestion Insights", () => {
 
         expect(data).not.toBeNull();
 
-        notification = await fetch(`${notificationUrl}/congestion-insights/delete/${notificationId}`,
+        notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -76,7 +76,7 @@ describe("Congestion Insights", () => {
         
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/congestion-insights/get/${notificationId}`,
+        let notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -87,7 +87,7 @@ describe("Congestion Insights", () => {
 
         expect(data).not.toBeNull();
 
-        notification = await fetch(`${notificationUrl}/congestion-insights/delete/${notificationId}`,
+        notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent

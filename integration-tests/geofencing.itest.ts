@@ -33,7 +33,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -42,7 +42,7 @@ describe("Geofencing", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent 
@@ -63,7 +63,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -73,7 +73,7 @@ describe("Geofencing", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -99,7 +99,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -109,7 +109,7 @@ describe("Geofencing", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -138,7 +138,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -148,7 +148,7 @@ describe("Geofencing", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/delete/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent
