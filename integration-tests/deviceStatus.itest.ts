@@ -35,6 +35,7 @@ describe("Device Status", () => {
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
 
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             {
@@ -46,6 +47,8 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
+
+        // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
@@ -72,6 +75,7 @@ describe("Device Status", () => {
             new Date(tomorrowDate.toISOString().replace(".000", ""))
         );
 
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             {
@@ -83,6 +87,8 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
+
+        // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
@@ -107,6 +113,7 @@ describe("Device Status", () => {
         expect(subscription.maxNumOfReports).toEqual(2);
         expect(subscription.notificationAuthToken).toEqual("my-token");
 
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             {
@@ -118,6 +125,8 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
+
+        // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
