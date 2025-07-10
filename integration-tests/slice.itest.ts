@@ -187,6 +187,7 @@ describe("Slicing", () => {
             }
         );
 
+        // Function for polling subscription notifications 
         const pollNotifications = async () => {
             let notification = await fetch(`${notificationUrl}/network-slice/${slice.name}`,
             {
