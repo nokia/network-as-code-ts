@@ -36,7 +36,7 @@ describe("Congestion Insights", () => {
         expect(subscription.expiresAt).toEqual(
             new Date(expirationDate.toISOString().replace(".000", ""))
         );        
-
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             {
@@ -49,6 +49,7 @@ describe("Congestion Insights", () => {
 
         expect(data).not.toBeNull();
 
+        // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             { 
                 method: 'DELETE',
@@ -74,7 +75,7 @@ describe("Congestion Insights", () => {
             new Date(expirationDate.toISOString().replace(".000", ""))
         );
         
-
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             {
@@ -87,6 +88,7 @@ describe("Congestion Insights", () => {
 
         expect(data).not.toBeNull();
 
+        // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             { 
                 method: 'DELETE',
