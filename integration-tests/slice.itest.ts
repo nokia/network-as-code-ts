@@ -3,7 +3,6 @@ import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
-import { Slice } from "../src/models/slice";
 import { Device } from "../src/models/device";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 

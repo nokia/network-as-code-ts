@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
+import { beforeAll, describe, expect} from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { configureClient } from "./configClient";

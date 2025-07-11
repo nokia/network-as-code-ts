@@ -24,9 +24,9 @@ import { AccessToken } from "./authentication";
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
  * #### Public Attributes:
-            publicAddress (float): the `public_address` of a device IPv4 address object.
-            privateAddress (float): the `private_address` of a device IPv4 address object.
-            publicPort (Optional[CivicAddress]): the `public_port` of a device IPv4 address object.
+            publicAddress (string): the `public_address` of a device IPv4 address object.
+            privateAddress (string): the `private_address` of a device IPv4 address object.
+            publicPort (number): the `public_port` of a device IPv4 address object.
  */
 export interface DeviceIpv4Addr {
     publicAddress?: string;

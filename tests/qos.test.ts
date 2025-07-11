@@ -628,7 +628,7 @@ describe("Qos", () => {
         );
         expect(session.duration).toEqual(60);
         await session.extendSession(200);
-        expect(await session.duration).toEqual(260);
+        expect(session.duration).toEqual(260);
     });
 
     test("should create a session with notification info", async () => {
