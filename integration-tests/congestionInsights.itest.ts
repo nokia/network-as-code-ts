@@ -36,9 +36,9 @@ describe("Congestion Insights", () => {
         expect(subscription.expiresAt).toEqual(
             new Date(expirationDate.toISOString().replace(".000", ""))
         );        
-
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/congestion-insights/get/${notificationId}`,
+        let notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -49,7 +49,8 @@ describe("Congestion Insights", () => {
 
         expect(data).not.toBeNull();
 
-        notification = await fetch(`${notificationUrl}/congestion-insights/delete/${notificationId}`,
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -74,9 +75,9 @@ describe("Congestion Insights", () => {
             new Date(expirationDate.toISOString().replace(".000", ""))
         );
         
-
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/congestion-insights/get/${notificationId}`,
+        let notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -87,7 +88,8 @@ describe("Congestion Insights", () => {
 
         expect(data).not.toBeNull();
 
-        notification = await fetch(`${notificationUrl}/congestion-insights/delete/${notificationId}`,
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/congestion-insights/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
