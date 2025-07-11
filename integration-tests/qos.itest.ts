@@ -4,7 +4,6 @@ import { Device, DeviceIpv4Addr } from "../src/models/device";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 import "dotenv/config";
-import { QoDSession } from "../src/models/session";
 
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 

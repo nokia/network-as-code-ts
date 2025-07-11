@@ -84,16 +84,7 @@ describe("Location", () => {
                                 longitude: 0.0,
                                 latitude: 0.0,
                             },
-                        },
-                        civicAddress: {
-                            country: "Finland",
-                            A1: "",
-                            A2: "",
-                            A3: "",
-                            A4: "",
-                            A5: "",
-                            A6: "",
-                        },
+                        }
                     }),
                 })
             }
@@ -114,16 +105,7 @@ describe("Location", () => {
                         latitude: 0.0,
                     },
                     radius: 1000,
-                },
-                civicAddress: {
-                    country: "Finland",
-                    A1: "",
-                    A2: "",
-                    A3: "",
-                    A4: "",
-                    A5: "",
-                    A6: "",
-                },
+                }
             })
         );
 
@@ -132,38 +114,6 @@ describe("Location", () => {
         expect(location.longitude).toBe(0.0);
         expect(location.latitude).toBe(0.0);
         expect(location.radius).toBe(1000);
-        expect(location.civicAddress).toBeDefined();
-    });
-
-    it("should get location without civic address", async () => {
-        fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/location-retrieval/v0/retrieve",
-            JSON.stringify({
-                area: {
-                    center: {
-                        longitude: 0.0,
-                        latitude: 0.0,
-                    },
-                    radius: 1000,
-                },
-                civicAddress: {
-                    country: "Finland",
-                    A1: "",
-                    A2: "",
-                    A3: "",
-                    A4: "",
-                    A5: "",
-                    A6: "",
-                },
-            })
-        );
-
-        const location = await device.getLocation(60);
-
-        expect(location.longitude).toBe(0.0);
-        expect(location.latitude).toBe(0.0);
-        expect(location.radius).toBe(1000);
-        expect(location.civicAddress).toBeDefined();
     });
 
     it("can omit maxAge if 60 seconds is fine", async () => {
@@ -183,7 +133,6 @@ describe("Location", () => {
 
         expect(location.longitude).toBe(0.0);
         expect(location.latitude).toBe(0.0);
-        expect(location.civicAddress).toBeUndefined();
     });
 
     it("should send location verification request to the right URL with right parameters", async () => {
