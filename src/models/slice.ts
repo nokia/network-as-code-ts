@@ -20,6 +20,21 @@ import { Device } from "./device";
 import { QoDSession } from "./session";
 
 /**
+ * An interface representing the `Customer` model.
+ * #### Public Attributes:
+            @param name (string): The name of the Customer.
+            @param description (Optional[string]): The description of the Slice.
+            @param address (Optional[string]): Address of the customer ordering slice creation.
+            @param contact (Optional[string]): Contact of the customer ordering slice creation.
+ */
+export interface Customer {
+    name: string;
+    description?: string;
+    address?: string;
+    contact?: string;
+}
+
+/**
  * An interface representing the `NetworkIdentifier` model.
  * #### Public Attributes:
             @param mnc (string): the `mnc` of a network identifier object.
@@ -318,15 +333,21 @@ export class Slice {
     /**
  *  Attach network slice.
  * #### Args:
-            @param device (Device): Device object that the slice is being attached to
+            @param device (Device): Device object that the slice is being attached to.
+            @param customer (Customer): Customer who orders the device attach operations. 
             @param notificationAuthToken (string): Authorization token for notification sending.
             @param notificationUrl (string): Notification URL for attachment-related events.
             @param trafficCategories (TrafficCategories): It should contain the OSId, according to the OS and the OsAppId
 
             @example```TypeScript
-            device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80})
+            device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80}, imsi="1223334444")
             const new_attachment = await mySlice.attach(
                     device,
+                    {
+                        name:"Joe Doe", description:"B2B_5G_eMBB_Slice",
+                        address:"123 Main Street, Anytown, USA 12345",
+                        contact:"(555) 123-4567"
+                    }
                     "replace-with-your-auth-token",
                     // Use HTTPS to send notifications
                     // about slice attachments.
@@ -343,6 +364,7 @@ export class Slice {
     */
     async attach(
         device: Device,
+        customer?: Customer,
         notificationAuthToken?: string,
         notificationUrl?: string,
         trafficCategories?: TrafficCategories
@@ -350,6 +372,7 @@ export class Slice {
         const newAttachment: any = await this._api.sliceAttach.attach(
             device,
             this.name as string,
+            customer as Customer,
             notificationAuthToken,
             notificationUrl,
             trafficCategories

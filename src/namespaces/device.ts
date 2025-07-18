@@ -22,6 +22,7 @@ export interface DeviceGetArgs {
     ipv4Address?: DeviceIpv4Addr;
     ipv6Address?: string;
     phoneNumber?: string;
+    imsi?: number;
 }
 
 /**
@@ -38,6 +39,7 @@ export class Devices extends Namespace {
                 - ipv4Address (DeviceIpv4Addr | undefined): ipv4 address of the subscription.
                 - ipv6Address (string | undefined): ipv6 address of the subscription.
                 - phoneNumber (string | undefined): phone number of the subscription.
+                - imsi (string | undefined): IMSI of the subscription.
 
             @example ```TypeScript
             const device = client.devices.get({
@@ -48,6 +50,7 @@ export class Devices extends Namespace {
                         publicPort: 80,
                     },
                     phoneNumber: "+36705345345",
+                    imsi: 1223334444,
         });
             ```
             @returns Device
@@ -57,6 +60,7 @@ export class Devices extends Namespace {
         ipv4Address,
         ipv6Address,
         phoneNumber,
+        imsi,
     }: DeviceGetArgs): Device {
         if (
             !networkAccessIdentifier &&
@@ -76,7 +80,8 @@ export class Devices extends Namespace {
             networkAccessIdentifier,
             ipv4Address,
             ipv6Address,
-            phoneNumber
+            phoneNumber,
+            imsi,
         );
         return retDevice;
     }
