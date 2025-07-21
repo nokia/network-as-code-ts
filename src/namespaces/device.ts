@@ -39,7 +39,7 @@ export class Devices extends Namespace {
                 - ipv4Address (DeviceIpv4Addr | undefined): ipv4 address of the subscription.
                 - ipv6Address (string | undefined): ipv6 address of the subscription.
                 - phoneNumber (string | undefined): phone number of the subscription.
-                - imsi (string | undefined): IMSI of the subscription.
+                - imsi (number | undefined): IMSI of the subscription.
 
             @example ```TypeScript
             const device = client.devices.get({

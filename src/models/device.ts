@@ -69,7 +69,7 @@ export interface QodOptionalArgs {
         phoneNumber(string): Phone Number string
         ipv4Address (DeviceIpv4Addr): Ipv4 address of the device.
         ipv6Address (string): Ipv6 address of the device.
-        imsi (string): IMSI of the device.
+        imsi (number): IMSI of the device.
 
     #### Public Methods:
         createQodSession (QoDSession): Creates a session for the device.

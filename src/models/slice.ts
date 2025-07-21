@@ -340,7 +340,7 @@ export class Slice {
             @param trafficCategories (TrafficCategories): It should contain the OSId, according to the OS and the OsAppId
 
             @example```TypeScript
-            device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80}, imsi="1223334444")
+            device = client.devices.get("testuser@open5glab.net", {public_address="1.1.1.2", private_address="1.1.1.2", public_port=80}, imsi=1223334444)
             const new_attachment = await mySlice.attach(
                     device,
                     {
