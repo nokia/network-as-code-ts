@@ -95,6 +95,7 @@ beforeAll((): any => {
         },
         ipv6Address: "2041:0000:140F::875B:131B",
         phoneNumber: "3637123456",
+        imsi:1223334444
     });
     return client;
 });
@@ -536,6 +537,7 @@ describe("Slicing", () => {
                     resource: {
                         device: {
                             phoneNumber: "+12065550100",
+                            imsi:1223334444,
                         },
                         sliceId: "sdk-integration-slice-5",
                     },
@@ -564,6 +566,7 @@ describe("Slicing", () => {
                         ipv6Address: device.ipv6Address
                     },
                     sliceId: "sliceone",
+                    customer:{name:"SDK_Customer"},
                     trafficCategories: {
                         apps: {
                             os: "97a498e3-fc92-5c94-8986-0333d06e4e47",
@@ -586,6 +589,9 @@ describe("Slicing", () => {
 
         await slice.attach(
             device,
+            {
+                name: "SDK_customer"
+            },
             "c8974e592c2fa383d4a3960714",
             "https://example.com/notifications",
             {
@@ -611,6 +617,7 @@ describe("Slicing", () => {
                     resource: {
                         device: {
                             phoneNumber: "+12065550100",
+                            imsi:1223334444,
                         },
                         sliceId: "sliceone",
                     },
@@ -626,6 +633,8 @@ describe("Slicing", () => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     device: {
                         phoneNumber: device.phoneNumber,
+                        imsi: device.imsi,
+
                     },
                     sliceId: "sliceone",
                 });
@@ -639,6 +648,7 @@ describe("Slicing", () => {
         );
         const device = client.devices.get({
             phoneNumber: "+3637123456",
+            imsi:1223334444,
         });
         await slice.attach(device);
     });

@@ -29,6 +29,7 @@ describe("Slicing", () => {
             phoneNumber: `+3670${
                 Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
             }`,
+            imsi: 1223334444,
         });
 
     });
@@ -247,7 +248,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test.skip("should attach device to slice and detach with all params", async () => {
+    test("should attach device to slice and detach with all params", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
@@ -274,6 +275,9 @@ describe("Slicing", () => {
 
         const newAttachment = await slice.attach(
             device,
+            { 
+                name:"SDK_Customer",    
+            },
             "c8974e592c2fa383d4a3960714",
             "https://example.com/notifications",
             {
@@ -307,7 +311,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test.skip("should attach device to slice and detach with manadatory params", async () => {
+    test("should attach device to slice and detach with manadatory params", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
@@ -333,10 +337,10 @@ describe("Slicing", () => {
         expect(slice.state).toEqual("OPERATING");
 
         const device = client.devices.get({
-            phoneNumber: "+3637123456",
+            phoneNumber: "+3637123456", imsi: 1223334444
         });
 
-        const newAttachment = await slice.attach(device);
+        const newAttachment = await slice.attach(device,{name: "SDK_Customer"});
 
         await sleep(30000);
 

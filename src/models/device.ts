@@ -69,6 +69,7 @@ export interface QodOptionalArgs {
         phoneNumber(string): Phone Number string
         ipv4Address (DeviceIpv4Addr): Ipv4 address of the device.
         ipv6Address (string): Ipv6 address of the device.
+        imsi (number): IMSI of the device.
 
     #### Public Methods:
         createQodSession (QoDSession): Creates a session for the device.
@@ -89,12 +90,14 @@ export class Device {
     phoneNumber?: string;
     ipv4Address?: DeviceIpv4Addr;
     ipv6Address?: string;
+    imsi?: number;
     constructor(
         api: APIClient,
         networkAccessIdentifier?: string,
         ipv4Address?: DeviceIpv4Addr,
         ipv6Address?: string,
-        phoneNumber?: string
+        phoneNumber?: string,
+        imsi?: number
     ) {
         this._api = api;
         this._sessions = [];
@@ -102,6 +105,7 @@ export class Device {
         this.ipv4Address = ipv4Address;
         this.ipv6Address = ipv6Address;
         this.phoneNumber = phoneNumber;
+        this.imsi = imsi;
     }
 
     get networkAccessId(): string | undefined {
@@ -115,6 +119,7 @@ export class Device {
             phoneNumber: this.phoneNumber,
             ipv4Address: this.ipv4Address,
             ipv6Address: this.ipv6Address,
+            imsi: this.imsi,
         };
     }
 
