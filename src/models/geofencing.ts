@@ -17,6 +17,11 @@
 import { APIClient } from "../api";
 
 
+export enum EventType {
+    AREA_ENTERED = "org.camaraproject.geofencing-subscriptions.v0.area-entered",
+    AREA_LEFT = "org.camaraproject.geofencing-subscriptions.v0.area-left"
+}
+
 export interface PlainCredential {
     credentialType: "PLAIN",
     identifier: string,

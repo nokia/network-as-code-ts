@@ -15,8 +15,10 @@
  */
 
 import { Device } from "../models/device";
-import { SubscribeOptionalArgs, Subscription } from "../models/deviceStatus";
+import { SubscribeOptionalArgs, Subscription, EventType } from "../models/deviceStatus";
 import { Namespace } from "./namespace";
+
+
 
 export class DeviceStatus extends Namespace {
     /**
@@ -37,9 +39,14 @@ export class DeviceStatus extends Namespace {
     ): Promise<Subscription> {
         const subscriptionExpireTime = optionalArgs?.subscriptionExpireTime;
 
+        let typeValue = eventType
+        if (Object.keys(EventType).includes(eventType as EventType)) {
+            typeValue = EventType[eventType as keyof typeof EventType]
+        }
+
         const jsonData = await this.api.deviceStatus.subscribe(
             device,
-            eventType,
+            typeValue,
             notificationUrl,
             {
                 subscriptionExpireTime:
@@ -54,7 +61,7 @@ export class DeviceStatus extends Namespace {
             this.api,
             jsonData.subscriptionId,
             device,
-            eventType,
+            typeValue,
             notificationUrl,
             optionalArgs?.notificationAuthToken,
             optionalArgs?.maxNumberOfReports,

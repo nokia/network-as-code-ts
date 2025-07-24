@@ -19,7 +19,8 @@ import fetch from "node-fetch";
 
 import { errorHandler } from "../errors";
 import { Device } from "../models/device";
-import { GeofencingSubscriptionParams } from "../models/geofencing";
+import { GeofencingSubscriptionParams, EventType } from "../models/geofencing";
+import { types } from "@babel/core";
 
 export class GeofencingAPI {
     private baseUrl: string;
@@ -48,7 +49,6 @@ export class GeofencingAPI {
         const body: any = {
             protocol: "HTTP",
             sink: params.sink,
-            types: params.types,
             config: {
                 subscriptionDetail: {
                     device: device.toJson(),
@@ -63,6 +63,17 @@ export class GeofencingAPI {
                 }
             }
         };
+
+        let typeList = [];
+        for (let item of params.types){
+            if (Object.keys(EventType).includes(item as EventType)) {
+                typeList.push(EventType[item as keyof typeof EventType])
+            }
+            else {
+                typeList.push(item)
+            }
+        };
+        body.types = typeList;
 
         if (params.sinkCredential) {
             body.sinkCredential = params.sinkCredential ? Object.fromEntries(Object.entries(params.sinkCredential as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined)) : undefined;
@@ -79,7 +90,7 @@ export class GeofencingAPI {
         if (params.initialEvent) {
             body.config.initialEvent = params.initialEvent;
         }
-
+        console.log(body)
         const response = await fetch(`${this.baseUrl}/subscriptions`, {
             method: "POST",
             headers: this.headers,
