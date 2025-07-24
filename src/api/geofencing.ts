@@ -20,7 +20,7 @@ import fetch from "node-fetch";
 import { errorHandler } from "../errors";
 import { Device } from "../models/device";
 import { GeofencingSubscriptionParams, EventType } from "../models/geofencing";
-import { types } from "@babel/core";
+
 
 export class GeofencingAPI {
     private baseUrl: string;
@@ -64,8 +64,8 @@ export class GeofencingAPI {
             }
         };
 
-        let typeList = [];
-        for (let item of params.types){
+        const typeList = [];
+        for (const item of params.types){
             if (Object.keys(EventType).includes(item as EventType)) {
                 typeList.push(EventType[item as keyof typeof EventType])
             }
