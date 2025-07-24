@@ -58,6 +58,37 @@ describe("Device Status", () => {
         subscription.delete();
     },20 * 1000);
 
+    it("can create a connectivity subscription using event type enum and delete it", async () => {
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            "CONNECTIVITY_DATA",
+            `${notificationUrl}/notify`
+        );
+        expect(subscription.eventSubscriptionId).toBeDefined();
+
+        // Fetching the subscription notification
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
+        subscription.delete();
+    },20 * 1000);
+
     it("can create a connectivity subscription with expiry", async () => {
         const tomorrowDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
         tomorrowDate.setMilliseconds(0);
