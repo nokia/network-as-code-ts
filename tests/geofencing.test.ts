@@ -2,6 +2,7 @@
 import fetchMock from '@fetch-mock/jest';
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
+import { EventType } from '../src/models/geofencing';
 
 jest.mock("node-fetch", () => {
 	const nodeFetch = jest.requireActual("node-fetch");
@@ -212,7 +213,7 @@ describe("Geofencing", () => {
             device,
             {
                 sink: "https://example.com/",
-                types: ["AREA_ENTERED"],
+                types: [EventType.AREA_ENTERED],
                 latitude: -90,
                 longitude: -180,
                 radius: 2001,

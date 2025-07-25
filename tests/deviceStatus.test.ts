@@ -2,6 +2,7 @@ import fetchMock from '@fetch-mock/jest';
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
+import { EventType } from '../src/models/deviceStatus';
 
 jest.mock("node-fetch", () => {
 	const nodeFetch = jest.requireActual("node-fetch");
@@ -98,7 +99,7 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY_DATA",
+            EventType.CONNECTIVITY_DATA,
             "https://example.com/notify"
         );
 
@@ -119,7 +120,7 @@ describe("Device Status", () => {
                             publicPort: 80,
                         },
                     },
-                    type: "CONNECTIVITY",
+                    type: "org.camaraproject.device-status.v0.connectivity-sms",
                 },
                 webhook: {
                     notificationUrl: "https://example.com/notify",
@@ -130,7 +131,7 @@ describe("Device Status", () => {
 
         await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY",
+            EventType.CONNECTIVITY_DATA,
             "https://example.com/notify"
         );
 
@@ -151,7 +152,7 @@ describe("Device Status", () => {
                             publicPort: 80,
                         },
                     },
-                    type: "CONNECTIVITY",
+                    type: "org.camaraproject.device-status.v0.roaming-status",
                 },
                 webhook: {
                     notificationUrl: "https://example.com/notify",
@@ -162,7 +163,7 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY",
+            EventType.ROAMING_STATUS,
             "https://example.com/notify"
         );
 

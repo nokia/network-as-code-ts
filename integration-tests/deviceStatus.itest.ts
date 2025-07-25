@@ -1,6 +1,7 @@
 import { NetworkAsCodeClient } from "../src";
 import "dotenv/config";
 import { Device } from "../src/models/device";
+import { EventType } from "../src/models/deviceStatus";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
@@ -61,7 +62,7 @@ describe("Device Status", () => {
     it("can create a connectivity subscription using event type enum and delete it", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY_DATA",
+            EventType.CONNECTIVITY_DATA,
             `${notificationUrl}/notify`
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
@@ -95,7 +96,7 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "org.camaraproject.device-status.v0.connectivity-data",
+            EventType["CONNECTIVITY_SMS"],
             `${notificationUrl}/notify`,
             {
                 subscriptionExpireTime: tomorrowDate,

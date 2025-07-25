@@ -39,7 +39,7 @@ export interface AccessTokenCredential {
 export interface GeofencingSubscriptionParams {
     sink: string,
     protocol?: string,
-    types: string[],
+    types: EventType[] | string[],
     latitude: number,
     longitude: number,
     radius: number,

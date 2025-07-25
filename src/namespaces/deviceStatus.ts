@@ -25,7 +25,7 @@ export class DeviceStatus extends Namespace {
      *  Create subscription for device connectivity status.
      * 
             @param device (Device): Identifier of the device.
-            @param eventType (string): Event type of the subscription.
+            @param eventType (EventType | string): Event type of the subscription.
             @param notificationUrl (string): Notification URL for session-related events.
             @param optionalArgs (SubscribeOptionalArgs): optional arguments(subscriptionExpireTime, maxNumberOfReports, notificationAuthToken)
             @returns Promise<Subscription>
@@ -33,20 +33,15 @@ export class DeviceStatus extends Namespace {
 
     async subscribe(
         device: Device,
-        eventType: string,
+        eventType: EventType | string,
         notificationUrl: string,
         optionalArgs?: SubscribeOptionalArgs
     ): Promise<Subscription> {
         const subscriptionExpireTime = optionalArgs?.subscriptionExpireTime;
 
-        let typeValue = eventType
-        if (Object.keys(EventType).includes(eventType as EventType)) {
-            typeValue = EventType[eventType as keyof typeof EventType]
-        }
-
         const jsonData = await this.api.deviceStatus.subscribe(
             device,
-            typeValue,
+            eventType,
             notificationUrl,
             {
                 subscriptionExpireTime:
@@ -61,7 +56,7 @@ export class DeviceStatus extends Namespace {
             this.api,
             jsonData.subscriptionId,
             device,
-            typeValue,
+            eventType,
             notificationUrl,
             optionalArgs?.notificationAuthToken,
             optionalArgs?.maxNumberOfReports,

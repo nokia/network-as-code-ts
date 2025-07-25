@@ -4,6 +4,7 @@ import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 import "dotenv/config";
 import { Device } from "../src/models/device";
+import { EventType } from "../src/models/geofencing";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 
 let client: NetworkAsCodeClient;
@@ -57,7 +58,7 @@ describe("Geofencing", () => {
     it("should subscribe for geofencing event area entered using event type enum", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
-            types: ["AREA_ENTERED"],
+            types: [EventType.AREA_ENTERED],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
             radius: 2000
@@ -165,7 +166,7 @@ describe("Geofencing", () => {
         expirationDate.setMilliseconds(0);
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
-            types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
+            types: [EventType.AREA_LEFT],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
             radius: 2000,
