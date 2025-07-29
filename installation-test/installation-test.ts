@@ -2,7 +2,7 @@
 
 import { NetworkAsCodeClient } from "network-as-code";
 
-test.skip("nac", async () => {
+test("nac", async () => {
     const NAC_TOKEN = process.env["NAC_TOKEN"];
     const client = new NetworkAsCodeClient(NAC_TOKEN as string, true);
 
