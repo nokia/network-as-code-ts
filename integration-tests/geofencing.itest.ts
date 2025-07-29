@@ -120,7 +120,7 @@ describe("Geofencing", () => {
             });
 
         subscription.delete();
-    }, 20* 1000);
+    },20* 1000);
 
     it("should subscribe for geofencing event with plain credential", async () => {
         const subscription = await client.geofencing.subscribe(device, {
