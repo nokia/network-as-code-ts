@@ -298,6 +298,8 @@ describe("Slicing", () => {
             newAttachment["nac_resource_id"]
         );
 
+        expect(attachment.resource.traffic_categories).toBeTruthy()
+
         await slice.detach(device);
 
         await slice.deactivate();

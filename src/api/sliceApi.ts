@@ -250,7 +250,7 @@ export class AttachAPI {
         }
 
         if (trafficCategories) {
-            payload.trafficCategories = trafficCategories;
+            payload.traffic_categories = trafficCategories;
         }
         if (notificationUrl) {
             payload.webhook = {
