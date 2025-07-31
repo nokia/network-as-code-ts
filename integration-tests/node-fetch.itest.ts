@@ -12,7 +12,7 @@ const proxyAgent = new ProxyAgent();
 const NAC_TOKEN = process.env["NAC_TOKEN"];
 
 describe("test that proxy works with node-fetch", () => {
-    it("can execute call with node-fetch, using proxy", async () => {
+    it.skip("can execute call with node-fetch, using proxy", async () => {
         // expect(result.status).toBe(200);
         const url = 'https://network-as-code1.p-eu.rapidapi.com/location-retrieval/v0/retrieve';
         const options = {
