@@ -7,13 +7,8 @@ test("nac", async () => {
     const client = new NetworkAsCodeClient(NAC_TOKEN as string, true);
 
     let device = client.devices.get({
-        networkAccessIdentifier: "test-device@testcsp.net",
-        ipv4Address: {
-            publicAddress: "1.1.1.2",
-            privateAddress: "1.1.1.2",
-            publicPort: 80,
-        },
-    });
+            phoneNumber: "+36719991000"
+        });
 
     let location = await device.getLocation();
 
