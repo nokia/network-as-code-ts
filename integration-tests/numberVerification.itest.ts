@@ -143,7 +143,7 @@ describe("Number verification", () => {
 describe("Get Phone Number", () => {
     it("should get device phone number", async () => {
         const redirectUri= `${notificationUrl}/nv`;
-        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
+        const scope = "dpv:FraudPreventionAndDetection number-verification:device-phone-number:read";
         const loginHint = "+3637123456";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,

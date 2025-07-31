@@ -24,7 +24,7 @@ describe("test that proxy works with node-fetch", () => {
             },
             body: JSON.stringify({
                 device: {
-                    networkAccessIdentifier: "testuser@testcsp.net",
+                     phoneNumber: "+36719991000",
                 },
                 maxAge: 60
             }),
