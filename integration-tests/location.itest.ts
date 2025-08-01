@@ -12,7 +12,7 @@ beforeAll((): any => {
 describe("Location retrieval and verification", () => {
     it("should retrieve location of a test device", async () => {
         let device = client.devices.get({
-            phoneNumber: "+3671123456"
+            phoneNumber: "+36719991001"
         });
 
         let location = await device.getLocation();
@@ -26,7 +26,7 @@ describe("Location retrieval and verification", () => {
 
     it("should verify location of a test device", async () => {
         let device = client.devices.get({
-            phoneNumber: "+3671123456"
+            phoneNumber: "+36719991001"
         });
 
         let isHere = await device.verifyLocation(

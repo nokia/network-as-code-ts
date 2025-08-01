@@ -7,7 +7,7 @@ const main = async () => {
   const client = new NetworkAsCodeClient(NAC_TOKEN, true);
 
   let device = client.devices.get({
-            phoneNumber: "+3671123456"
+            phoneNumber: "+36719991001"
         });
 
   let location = await device.getLocation();
