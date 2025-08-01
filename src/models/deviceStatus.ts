@@ -19,7 +19,7 @@ import { Device } from "./device";
 
 
 export enum EventType {
-    CONNECTIVITY_DATA= "org.camaraproject.device-status.v0.connectivity-data",
+    CONNECTIVITY_DATA = "org.camaraproject.device-status.v0.connectivity-data",
     CONNECTIVITY_SMS = "org.camaraproject.device-status.v0.connectivity-sms",
     CONNECTIVITY_DISCONNECTED = "org.camaraproject.device-status.v0.connectivity-disconnected",
     ROAMING_STATUS = "org.camaraproject.device-status.v0.roaming-status",
