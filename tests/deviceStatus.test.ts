@@ -131,7 +131,7 @@ describe("Device Status", () => {
 
         await client.deviceStatus.subscribe(
             device,
-            EventType.CONNECTIVITY_DATA,
+            EventType.CONNECTIVITY_SMS,
             "https://example.com/notify"
         );
 

@@ -100,7 +100,7 @@ describe("Number Verification NaC auth code and access token", () => {
         expect(accessToken.accessToken).toBeTruthy();
         expect(accessToken.tokenType).toBeTruthy();
         expect(accessToken.expiresIn).toBeTruthy();
-    },7000);
+    });
 });
 
 describe("Number verification", () => {   
