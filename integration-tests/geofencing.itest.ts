@@ -4,6 +4,7 @@ import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 import "dotenv/config";
 import { Device } from "../src/models/device";
+import { EventType } from "../src/models/geofencing";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 
 let client: NetworkAsCodeClient;
@@ -25,6 +26,39 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
+            latitude: 47.48627616952785,
+            longitude: 19.07915612501993,
+            radius: 2000
+        });
+
+        expect(subscription.eventSubscriptionId).toBeTruthy();
+
+        // Fetching the subscription notification
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            });
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent 
+            });
+
+        subscription.delete();
+    },20 * 1000);
+
+    it("should subscribe for geofencing event area entered using event type enum", async () => {
+        const subscription = await client.geofencing.subscribe(device, {
+            sink: `${notificationUrl}/notify`,
+            types: [EventType.AREA_ENTERED],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
             radius: 2000
@@ -86,7 +120,7 @@ describe("Geofencing", () => {
             });
 
         subscription.delete();
-    }, 20* 1000);
+    },20* 1000);
 
     it("should subscribe for geofencing event with plain credential", async () => {
         const subscription = await client.geofencing.subscribe(device, {
@@ -132,7 +166,7 @@ describe("Geofencing", () => {
         expirationDate.setMilliseconds(0);
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
-            types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
+            types: [EventType.AREA_LEFT],
             latitude: 47.48627616952785,
             longitude: 19.07915612501993,
             radius: 2000,

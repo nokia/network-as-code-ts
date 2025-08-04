@@ -2,6 +2,7 @@ import fetchMock from '@fetch-mock/jest';
 
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
+import { EventType } from '../src/models/deviceStatus';
 
 jest.mock("node-fetch", () => {
 	const nodeFetch = jest.requireActual("node-fetch");
@@ -72,6 +73,39 @@ describe("Device Status", () => {
         expect(subscription.eventType).toBe("CONNECTIVITY");
     });
 
+
+    it("can invoke subscription to CONNECTIVITY_DATA updates", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
+            JSON.stringify({
+                subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
+                subscriptionDetail: {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    type: "org.camaraproject.device-status.v0.connectivity-data",
+                },
+                webhook: {
+                    notificationUrl: "https://example.com/notify",
+                },
+                startsAt: "2024-01-11T11:53:20.293671Z",
+            })
+        );
+
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            EventType.CONNECTIVITY_DATA,
+            "https://example.com/notify"
+        );
+
+        expect(subscription.eventType).toBe("org.camaraproject.device-status.v0.connectivity-data");
+    });
+
     it("sends a request out on subscribe", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-status/v0/subscriptions",
@@ -86,7 +120,7 @@ describe("Device Status", () => {
                             publicPort: 80,
                         },
                     },
-                    type: "CONNECTIVITY",
+                    type: "org.camaraproject.device-status.v0.connectivity-sms",
                 },
                 webhook: {
                     notificationUrl: "https://example.com/notify",
@@ -97,7 +131,7 @@ describe("Device Status", () => {
 
         await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY",
+            EventType.CONNECTIVITY_SMS,
             "https://example.com/notify"
         );
 
@@ -118,7 +152,7 @@ describe("Device Status", () => {
                             publicPort: 80,
                         },
                     },
-                    type: "CONNECTIVITY",
+                    type: "org.camaraproject.device-status.v0.roaming-status",
                 },
                 webhook: {
                     notificationUrl: "https://example.com/notify",
@@ -129,7 +163,7 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "CONNECTIVITY",
+            EventType.ROAMING_STATUS,
             "https://example.com/notify"
         );
 

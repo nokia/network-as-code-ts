@@ -15,15 +15,17 @@
  */
 
 import { Device } from "../models/device";
-import { SubscribeOptionalArgs, Subscription } from "../models/deviceStatus";
+import { SubscribeOptionalArgs, Subscription, EventType } from "../models/deviceStatus";
 import { Namespace } from "./namespace";
+
+
 
 export class DeviceStatus extends Namespace {
     /**
      *  Create subscription for device connectivity status.
      * 
             @param device (Device): Identifier of the device.
-            @param eventType (string): Event type of the subscription.
+            @param eventType (EventType | string): Event type of the subscription.
             @param notificationUrl (string): Notification URL for session-related events.
             @param optionalArgs (SubscribeOptionalArgs): optional arguments(subscriptionExpireTime, maxNumberOfReports, notificationAuthToken)
             @returns Promise<Subscription>
@@ -31,7 +33,7 @@ export class DeviceStatus extends Namespace {
 
     async subscribe(
         device: Device,
-        eventType: string,
+        eventType: EventType | string,
         notificationUrl: string,
         optionalArgs?: SubscribeOptionalArgs
     ): Promise<Subscription> {

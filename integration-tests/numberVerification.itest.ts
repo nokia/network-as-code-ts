@@ -127,7 +127,7 @@ describe("Number verification", () => {
         const code = data.code
         const result: boolean = await device.verifyNumber(code);
         expect(result).toBeTruthy();
-    }, 7000);
+    });
 
     it("should return 400 APIError", async () => {
         try {
@@ -164,5 +164,5 @@ describe("Get Phone Number", () => {
         const code = data.code
         const result: string = await device.getPhoneNumber(code);
         expect(result).toBeDefined();
-    }, 7000);
+    });
 });

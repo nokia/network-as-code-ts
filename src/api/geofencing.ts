@@ -21,6 +21,7 @@ import { errorHandler } from "../errors";
 import { Device } from "../models/device";
 import { GeofencingSubscriptionParams } from "../models/geofencing";
 
+
 export class GeofencingAPI {
     private baseUrl: string;
     private headers: HeadersInit;
@@ -79,7 +80,6 @@ export class GeofencingAPI {
         if (params.initialEvent) {
             body.config.initialEvent = params.initialEvent;
         }
-
         const response = await fetch(`${this.baseUrl}/subscriptions`, {
             method: "POST",
             headers: this.headers,
