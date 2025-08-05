@@ -99,7 +99,6 @@ export class APIClient {
     constructor(
         token: string,
         envMode: string | undefined = undefined,
-        rapidHostProd: string | undefined = undefined,
         qosBaseUrl: string | undefined = undefined,
         locationRetrievalBaseUrl: string | undefined = undefined,
         locationVerifyBaseUrl: string | undefined = undefined,
