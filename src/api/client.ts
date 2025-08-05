@@ -27,6 +27,7 @@ import { AuthorizationEndpointsAPI } from "./authorizatioEndpointsApi";
 import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
+import { CallForwardingApi } from "./callForwardingApi";
 
 const QOS_URL = "/qod/v0";
 
@@ -95,6 +96,7 @@ export class APIClient {
     credentials: CredentialsAPI;
     verification: NumberVerificationAPI;
     accesstoken: AccessTokenAPI;
+    callForwarding: CallForwardingApi;
 
     constructor(
         token: string,
