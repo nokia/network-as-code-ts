@@ -16,7 +16,7 @@ export const configureClient = (): NetworkAsCodeClient => {
 
   const client = new NetworkAsCodeClient(
     NAC_TOKEN as string,
-    nacEnv
+    nacEnv ? nacEnv : "dev"
   );
   return client;
 }
