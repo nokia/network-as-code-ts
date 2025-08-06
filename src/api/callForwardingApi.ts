@@ -39,7 +39,7 @@ export class CallForwardingApi {
         this.agent = agent;
     }
 
-    async retrieveCallForwardingServices(phoneNumber: string) {
+    async retrieveCallForwarding(phoneNumber: string) {
         const response = await fetch(`${this.baseUrl}/call-forwardings`, {
                     method: "POST",
                     headers: this.headers,

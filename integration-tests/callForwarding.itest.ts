@@ -33,7 +33,7 @@ describe("Call forwarding retrieval and verification of unconditional forwarding
             phoneNumber: "+367199991000"
         });
 
-        let response = await device.getForwardingServices()
+        let response = await device.getCallForwarding()
         let types = ['inactive', 'unconditional', 'conditional_busy', 'conditional_not_reachable', 'conditional_no_answer']
 
         expect(response instanceof Array).toBeTruthy();

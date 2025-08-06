@@ -430,12 +430,12 @@ export class Device {
      * Get the information about Call Forwarding Services active for the given device.
      * @returns string[]: Active Call Forwarding Service types for the given device.
      */
-    async getForwardingServices(): Promise<string[]> {
+    async getCallForwarding(): Promise<string[]> {
         if (!this.phoneNumber) {
             throw new InvalidParameterError("Device phone number is required.");
         }
         
-        const response: any = await this._api.callForwarding.retrieveCallForwardingServices(
+        const response: any = await this._api.callForwarding.retrieveCallForwarding(
             this.phoneNumber
         );
 

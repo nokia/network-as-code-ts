@@ -76,7 +76,7 @@ describe("Call Forwarding Signal", () => {
             }
         );
 
-        const result = await device.getForwardingServices();
+        const result = await device.getCallForwarding();
         let types = ['inactive', 'unconditional', 'conditional_busy', 'conditional_not_reachable', 'conditional_no_answer']
 
         expect(result instanceof Array).toBeTruthy();
@@ -117,7 +117,7 @@ describe("Call Forwarding Signal", () => {
         });
 
         expect(
-            async () => await deviceWithoutNumber.getForwardingServices()
+            async () => await deviceWithoutNumber.getCallForwarding()
         ).rejects.toThrow(InvalidParameterError);
     });
 });
