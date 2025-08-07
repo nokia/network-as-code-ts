@@ -4,11 +4,11 @@ import { NetworkAsCodeClient } from "network-as-code";
 
 const main = async () => {
   const NAC_TOKEN = process.env["NAC_TOKEN"];
-  const client = new NetworkAsCodeClient(NAC_TOKEN, true);
+  const client = new NetworkAsCodeClient(NAC_TOKEN, "dev");
 
   let device = client.devices.get({
-            phoneNumber: "+36719991001"
-        });
+    phoneNumber: "+36719991001"
+  });
 
   let location = await device.getLocation();
 
