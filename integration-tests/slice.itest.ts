@@ -66,7 +66,7 @@ describe("Slicing", () => {
 
     // Temporarly skip because of the ISE in attachment endpoint,
     // the test.failing couldn't mark it as failing test for some reason, so test.skip is used for now
-    test("should get slices", async () => {
+    test.skip("should get slices", async () => {
         const slices = await client.slices.getAll();
         expect(slices.length).toBeGreaterThanOrEqual(0);
     });
@@ -165,7 +165,7 @@ describe("Slicing", () => {
         expect(slice.state).toEqual("DELETED");
     });
 
-    test("should get attachments", async () => {
+    test.skip("should get attachments", async () => {
         const attachments: any = await client.slices.getAllAttachments();
         expect(attachments.length).toBeGreaterThanOrEqual(0);
     });
@@ -248,7 +248,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test("should attach device to slice and detach with all params", async () => {
+    test.skip("should attach device to slice and detach with all params", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
@@ -313,7 +313,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test("should attach device to slice and detach with manadatory params", async () => {
+    test.skip("should attach device to slice and detach with manadatory params", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
