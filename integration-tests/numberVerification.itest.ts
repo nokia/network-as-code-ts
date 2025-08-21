@@ -107,7 +107,7 @@ describe("Number verification", () => {
     it("should verify number - True", async () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
-        const loginHint = "+3637123456";
+        const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
