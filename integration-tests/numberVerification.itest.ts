@@ -15,7 +15,7 @@ let notificationUrl: string;
 beforeAll(() => {
     client = configureClient();
     device = client.devices.get({
-        phoneNumber: "+3637123456",
+        phoneNumber: "+99999991000",
     });
     agent = new ProxyAgent()
     notificationUrl = configureNotificationServerUrl();
@@ -39,14 +39,14 @@ describe("Number Verification authentication", () => {
         const endpoints: any = await client.authentication.endpoints();
         const redirectUri= "https://example.com/redirect";
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
-        const loginHint = "+3637123456";
+        const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
             loginHint
         );
         expect(callback)
-        .toEqual(`${endpoints.authorizationEndpoint}?response_type=code&client_id=${credentials.clientId}&redirect_uri=https%3A%2F%2Fexample.com%2Fredirect&scope=dpv%3AFraudPreventionAndDetection%20number-verification%3Averify&login_hint=%2B3637123456`);
+        .toEqual(`${endpoints.authorizationEndpoint}?response_type=code&client_id=${credentials.clientId}&redirect_uri=https%3A%2F%2Fexample.com%2Fredirect&scope=dpv%3AFraudPreventionAndDetection%20number-verification%3Averify&login_hint=%2B99999991000`);
     });
 });
 
@@ -54,7 +54,7 @@ describe("Number Verification NaC auth code and access token", () => {
     it("should get NaC auth code", async () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
-        const loginHint = "+3637123456";
+        const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
@@ -78,7 +78,7 @@ describe("Number Verification NaC auth code and access token", () => {
     it("should get single use access token", async () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
-        const loginHint = "+3637123456";
+        const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
@@ -104,10 +104,10 @@ describe("Number Verification NaC auth code and access token", () => {
 });
 
 describe("Number verification", () => {   
-    it("should verify number", async () => {
+    it("should verify number - True", async () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
-        const loginHint = "+3637123456";
+        const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
@@ -129,6 +129,31 @@ describe("Number verification", () => {
         expect(result).toBeTruthy();
     });
 
+    it.skip("should verify number - False", async () => {
+        const redirectUri= `${notificationUrl}/nv`;
+        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
+        const loginHint = "+99999991001";
+        const callback = await client.authentication.createAuthenticationLink(
+            redirectUri,
+            scope,
+            loginHint
+        );
+        await fetch(callback, {
+            method: "GET",
+            agent: agent
+        });
+
+        const response =  await fetch(`${notificationUrl}/nv-get-code`,
+                    {
+                        method: "GET",
+                        agent: agent
+                    });
+        const data = await response.json() as any;
+        const code = data.code
+        const result: boolean = await device.verifyNumber(code);
+        expect(result).toBeFalsy();
+    });
+
     it("should return 400 APIError", async () => {
         try {
             await device.getSingleUseAccessToken("1234567");            
@@ -144,7 +169,7 @@ describe("Get Phone Number", () => {
     it("should get device phone number", async () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:device-phone-number:read";
-        const loginHint = "+3637123456";
+        const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,

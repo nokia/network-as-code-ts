@@ -15,7 +15,7 @@ describe("Sim Swap retrieval and verification", () => {
 
     beforeEach(() => {
         device = client.devices.get({
-            phoneNumber: "+3637123456",
+            phoneNumber: "+99999991000",
         });
     });
     it("should retrieve sim swap of a test device", async () => {
@@ -29,4 +29,23 @@ describe("Sim Swap retrieval and verification", () => {
     it("should verify sim swap with max age", async () => {
         expect(device.verifySimSwap(120)).toBeTruthy();
     });
+
+    it("should verify sim swap - True", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991000",
+        });
+
+       expect(device.verifySimSwap(120)).resolves.toBeTruthy();
+
+    });
+
+    it("should verify sim swap - False", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991001",
+        });
+
+        expect(device.verifySimSwap(120)).resolves.toBeFalsy();
+
+    });
+
 });

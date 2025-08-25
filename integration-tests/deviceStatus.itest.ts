@@ -96,7 +96,7 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            EventType["CONNECTIVITY_SMS"],
+            "org.camaraproject.device-status.v0.connectivity-data",
             `${notificationUrl}/notify`,
             {
                 subscriptionExpireTime: tomorrowDate,
@@ -209,15 +209,53 @@ describe("Device Status", () => {
         subscription.delete();
     });
 
-    it("can poll device connectivity", async () => {
+    it("can poll device connectivity status sms", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991000"
+        });
+
+        const status = await device.getConnectivity();
+
+        expect(status).toBe("CONNECTED_SMS");
+    });
+
+    it("can poll device connectivity status connected", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991001"
+        });
+        
         const status = await device.getConnectivity();
 
         expect(status).toBe("CONNECTED_DATA");
     });
 
-    it("can poll device roaming status", async () => {
+    it("can poll device connectivity status not connected", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991002"
+        });
+        
+        const status = await device.getConnectivity();
+
+        expect(status).toBe("NOT_CONNECTED");
+    });
+
+    it("can poll device roaming status true", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991000"
+        });
+        
         const status = await device.getRoaming();
 
         expect(status.roaming).toBeTruthy();
+    });
+
+    it("can poll device roaming status false", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991001"
+        });
+        
+        const status = await device.getRoaming();
+
+        expect(status.roaming).toBeFalsy();
     });
 });
