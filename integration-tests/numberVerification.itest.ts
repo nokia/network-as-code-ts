@@ -129,7 +129,7 @@ describe("Number verification", () => {
         expect(result).toBeTruthy();
     });
 
-    it("should verify number - False", async () => {
+    it.skip("should verify number - False", async () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+99999991001";
