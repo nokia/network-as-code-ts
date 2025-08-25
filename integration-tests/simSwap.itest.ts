@@ -35,7 +35,7 @@ describe("Sim Swap retrieval and verification", () => {
             phoneNumber: "+99999991000",
         });
 
-        expect(device.verifySimSwap(120)).toBeTruthy();
+       expect(device.verifySimSwap(120)).resolves.toBeTruthy();
 
     });
 
@@ -44,7 +44,7 @@ describe("Sim Swap retrieval and verification", () => {
             phoneNumber: "+99999991001",
         });
 
-        expect(device.verifySimSwap(120)).toBeFalsy();
+        expect(device.verifySimSwap(120)).resolves.toBeFalsy();
 
     });
 

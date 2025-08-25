@@ -1,6 +1,7 @@
 import { NetworkAsCodeClient } from "../src";
 import "dotenv/config";
 import { Device } from "../src/models/device";
+import { EventType } from "../src/models/deviceStatus";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
@@ -31,6 +32,37 @@ describe("Device Status", () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             "org.camaraproject.device-status.v0.connectivity-data",
+            `${notificationUrl}/notify`
+        );
+        expect(subscription.eventSubscriptionId).toBeDefined();
+
+        // Fetching the subscription notification
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
+        subscription.delete();
+    },20 * 1000);
+
+    it("can create a connectivity subscription using event type enum and delete it", async () => {
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            EventType.CONNECTIVITY_DATA,
             `${notificationUrl}/notify`
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
