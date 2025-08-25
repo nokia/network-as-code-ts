@@ -12,7 +12,7 @@ beforeAll((): any => {
 describe("Call forwarding retrieval and verification of unconditional forwarding", () => {
     it("should check if device is unconditionally forwarding a call", async () => {
         let device = client.devices.get({
-            phoneNumber: "+367199991000"
+            phoneNumber: "+367199991111"
         });
         
         let response = await device.verifyUnconditionalForwarding()
@@ -21,7 +21,7 @@ describe("Call forwarding retrieval and verification of unconditional forwarding
 
     it("should check if device is not unconditionally forwarding a call", async () => {
         let device = client.devices.get({
-            phoneNumber: "+367199991001"
+            phoneNumber: "+999999991001"
         });
 
         let response = await device.verifyUnconditionalForwarding()
@@ -30,7 +30,7 @@ describe("Call forwarding retrieval and verification of unconditional forwarding
 
     it("gets list of call forwarding services", async () => {
         let device = client.devices.get({
-            phoneNumber: "+367199991000"
+            phoneNumber: "+999999991111"
         });
 
         let response = await device.getCallForwarding()

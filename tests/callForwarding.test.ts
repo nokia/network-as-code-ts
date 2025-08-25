@@ -24,7 +24,7 @@ let device: Device;
 beforeAll((): any => {
     client = new NetworkAsCodeClient("TEST_TOKEN");
     device = client.devices.get({
-        phoneNumber: "+367199991000"
+        phoneNumber: "+999999991000"
     });
     return client;
 });
@@ -40,10 +40,10 @@ afterEach(() => {
 describe("Call Forwarding Signal", () => {
     it("should verify unconditional call forwarding", async () => {
         fetchMock.mockGlobal().post(
-            "https://call-forwarding-signal.p-eu.rapidapi.com/unconditional-call-forwardings",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/unconditional-call-forwardings",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+367199991000"
+                    phoneNumber: "+999999991000"
                 });
             },
             { response: Promise.resolve({
@@ -60,10 +60,10 @@ describe("Call Forwarding Signal", () => {
 
     it("should get list of call forwarding services", async () => {
         fetchMock.mockGlobal().post(
-            "https://call-forwarding-signal.p-eu.rapidapi.com/call-forwardings",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/call-forwardings",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+367199991000"
+                    phoneNumber: "+999999991000"
                 });
             },
             { response: Promise.resolve({
@@ -85,7 +85,7 @@ describe("Call Forwarding Signal", () => {
 
     it("should raise exception if verifying forwarding without phone number", async () => {
         fetchMock.mockGlobal().post(
-            "https://call-forwarding-signal.p-eu.rapidapi.com/unconditional-call-forwardings",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/unconditional-call-forwardings",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     networkAccessIdentifier: "device@testcsp.net"
@@ -104,7 +104,7 @@ describe("Call Forwarding Signal", () => {
 
     it("should raise exception if getting forwarding services without phone number", async () => {
         fetchMock.mockGlobal().post(
-            "https://call-forwarding-signal.p-eu.rapidapi.com/call-forwardings",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/call-forwardings",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     networkAccessIdentifier: "device@testcsp.net"

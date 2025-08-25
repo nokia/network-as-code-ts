@@ -53,6 +53,8 @@ const AUTHORIZATION_ENDPOINTS_URL = "/.well-known";
 
 const NUMBER_VERIFICATION_URL =  "/passthrough/camara/v1/number-verification/number-verification/v0";
 
+const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3"
+
 const agent = new ProxyAgent();
 
 /*
@@ -113,6 +115,7 @@ export class APIClient {
         authorizationEndpointsBaseUrl: string | undefined = undefined,
         credentialsBaseUrl: string | undefined = undefined,
         verificationBaseUrl: string | undefined = undefined,
+        callForwardingBaseUrl: string | undefined = undefined,
     ) {
       const baseUrl = environmentBaseUrl(envMode);
       const hostname = environmentHostname(envMode);
@@ -248,6 +251,17 @@ export class APIClient {
       );
 
       this.accesstoken = new AccessTokenAPI(
+        agent
+      );
+
+      if (!callForwardingBaseUrl) {
+        callForwardingBaseUrl = `${baseUrl}${CALL_FORWARDING_URL}`
+      }
+
+      this.callForwarding = new CallForwardingApi(
+        callForwardingBaseUrl,
+        token,
+        hostname,
         agent
       );
     }
