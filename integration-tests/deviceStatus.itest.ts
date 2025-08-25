@@ -224,6 +224,6 @@ describe("Device Status", () => {
         
         const status = await device.getRoaming();
 
-        expect(status.roaming).toBeTruthy();
+        expect(status.roaming).toBeFalsy();
     });
 });

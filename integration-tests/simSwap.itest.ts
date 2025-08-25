@@ -39,7 +39,7 @@ describe("Sim Swap retrieval and verification", () => {
 
     });
 
-    it("should verify sim swap - True", async () => {
+    it("should verify sim swap - False", async () => {
         device = client.devices.get({
             phoneNumber: "+99999991001",
         });

@@ -39,7 +39,7 @@ describe("Number Verification authentication", () => {
         const endpoints: any = await client.authentication.endpoints();
         const redirectUri= "https://example.com/redirect";
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
-        const loginHint = "+3637123456";
+        const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
