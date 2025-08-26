@@ -27,6 +27,7 @@ import { AuthorizationEndpointsAPI } from "./authorizatioEndpointsApi";
 import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
+import { CallForwardingApi } from "./callForwardingApi";
 
 const QOS_URL = "/qod/v0";
 
@@ -51,6 +52,8 @@ const CREDENTIALS_URL = "/oauth2/v1";
 const AUTHORIZATION_ENDPOINTS_URL = "/.well-known";
 
 const NUMBER_VERIFICATION_URL =  "/passthrough/camara/v1/number-verification/number-verification/v0";
+
+const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3"
 
 const agent = new ProxyAgent();
 
@@ -95,6 +98,7 @@ export class APIClient {
     credentials: CredentialsAPI;
     verification: NumberVerificationAPI;
     accesstoken: AccessTokenAPI;
+    callForwarding: CallForwardingApi;
 
     constructor(
         token: string,
@@ -111,6 +115,7 @@ export class APIClient {
         authorizationEndpointsBaseUrl: string | undefined = undefined,
         credentialsBaseUrl: string | undefined = undefined,
         verificationBaseUrl: string | undefined = undefined,
+        callForwardingBaseUrl: string | undefined = undefined,
     ) {
       const baseUrl = environmentBaseUrl(envMode);
       const hostname = environmentHostname(envMode);
@@ -246,6 +251,17 @@ export class APIClient {
       );
 
       this.accesstoken = new AccessTokenAPI(
+        agent
+      );
+
+      if (!callForwardingBaseUrl) {
+        callForwardingBaseUrl = `${baseUrl}${CALL_FORWARDING_URL}`
+      }
+
+      this.callForwarding = new CallForwardingApi(
+        callForwardingBaseUrl,
+        token,
+        hostname,
         agent
       );
     }

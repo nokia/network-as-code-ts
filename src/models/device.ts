@@ -426,4 +426,36 @@ export class Device {
 
     }
 
+    /**
+     * Get the information about Call Forwarding Services active for the given device.
+     * @returns string[]: Active Call Forwarding Service types for the given device.
+     */
+    async getCallForwarding(): Promise<string[]> {
+        if (!this.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        }
+        
+        const response: any = await this._api.callForwarding.retrieveCallForwarding(
+            this.phoneNumber
+        );
+
+        return response;
+    }
+
+    /**
+     * Verify if device has unconditional call forwarding active.
+     * @returns true/false
+     */
+    async verifyUnconditionalForwarding(): Promise<boolean> {
+        if (!this.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        }
+        
+        const response: any = await this._api.callForwarding.verifyUnconditionalForwarding(
+            this.phoneNumber
+        );
+
+        return response['active'];
+    }
+
 }
