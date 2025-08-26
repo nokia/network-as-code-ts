@@ -12,7 +12,7 @@ beforeAll((): any => {
 describe("Call forwarding retrieval and verification of unconditional forwarding", () => {
     it("should check if device is unconditionally forwarding a call", async () => {
         let device = client.devices.get({
-            phoneNumber: "+367199991111"
+            phoneNumber: "+99999991111"
         });
         
         let response = await device.verifyUnconditionalForwarding()

@@ -17,7 +17,7 @@ console.log(result)
 
 // To get information about an active "call forwarding setup" for the given device,
 // use the following snippet:
-const services = myDevice.getCallForwarding()
+const services = await myDevice.getCallForwarding()
 
 // Show active Call Forwarding Services
 console.log(services)
