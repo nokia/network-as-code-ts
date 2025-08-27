@@ -47,8 +47,8 @@ export class NetworkAsCodeClient {
     private _authentication: Authentication;
 
 
-    constructor(token: string, devMode?: boolean) {
-        this._api = new APIClient(token, devMode);
+    constructor(token: string, envMode?: string) {
+        this._api = new APIClient(token, envMode);
         this._devices = new Devices(this._api);
         this._sessions = new Sessions(this._api);
         this._deviceStatus = new DeviceStatus(this._api);

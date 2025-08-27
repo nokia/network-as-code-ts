@@ -1,6 +1,7 @@
 import { NetworkAsCodeClient } from "../src";
 import "dotenv/config";
 import { Device } from "../src/models/device";
+import { EventType } from "../src/models/deviceStatus";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
@@ -35,8 +36,9 @@ describe("Device Status", () => {
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
 
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -46,7 +48,40 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/device-status/delete/${subscription.eventSubscriptionId}`,
+
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent
+            });
+
+        subscription.delete();
+    },20 * 1000);
+
+    it("can create a connectivity subscription using event type enum and delete it", async () => {
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            EventType.CONNECTIVITY_DATA,
+            `${notificationUrl}/notify`
+        );
+        expect(subscription.eventSubscriptionId).toBeDefined();
+
+        // Fetching the subscription notification
+        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            }
+        );
+
+        const data = await notification.json();
+
+        expect(data).not.toBeNull();
+
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -72,8 +107,9 @@ describe("Device Status", () => {
             new Date(tomorrowDate.toISOString().replace(".000", ""))
         );
 
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -83,7 +119,9 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/device-status/delete/${subscription.eventSubscriptionId}`,
+
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -107,8 +145,9 @@ describe("Device Status", () => {
         expect(subscription.maxNumOfReports).toEqual(2);
         expect(subscription.notificationAuthToken).toEqual("my-token");
 
+        // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/get/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
@@ -118,7 +157,9 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-        notification = await fetch(`${notificationUrl}/device-status/delete/${subscription.eventSubscriptionId}`,
+
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -168,15 +209,53 @@ describe("Device Status", () => {
         subscription.delete();
     });
 
-    it("can poll device connectivity", async () => {
+    it("can poll device connectivity status sms", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991000"
+        });
+
+        const status = await device.getConnectivity();
+
+        expect(status).toBe("CONNECTED_SMS");
+    });
+
+    it("can poll device connectivity status connected", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991001"
+        });
+        
         const status = await device.getConnectivity();
 
         expect(status).toBe("CONNECTED_DATA");
     });
 
-    it("can poll device roaming status", async () => {
+    it("can poll device connectivity status not connected", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991002"
+        });
+        
+        const status = await device.getConnectivity();
+
+        expect(status).toBe("NOT_CONNECTED");
+    });
+
+    it("can poll device roaming status true", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991000"
+        });
+        
         const status = await device.getRoaming();
 
         expect(status.roaming).toBeTruthy();
+    });
+
+    it("can poll device roaming status false", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991001"
+        });
+        
+        const status = await device.getRoaming();
+
+        expect(status.roaming).toBeFalsy();
     });
 });

@@ -17,6 +17,18 @@
 import { APIClient } from "../api";
 import { Device } from "./device";
 
+
+export enum EventType {
+    CONNECTIVITY_DATA = "org.camaraproject.device-status.v0.connectivity-data",
+    CONNECTIVITY_SMS = "org.camaraproject.device-status.v0.connectivity-sms",
+    CONNECTIVITY_DISCONNECTED = "org.camaraproject.device-status.v0.connectivity-disconnected",
+    ROAMING_STATUS = "org.camaraproject.device-status.v0.roaming-status",
+    ROAMING_ON = "org.camaraproject.device-status.v0.roaming-on",
+    ROAMING_OFF = "org.camaraproject.device-status.v0.roaming-off",
+    ROAMING_CHANGE_COUNTRY = "org.camaraproject.device-status.v0.roaming-change-country"
+}
+
+
 export interface SubscribeOptionalArgs {
     subscriptionExpireTime?: Date | string;
     maxNumberOfReports?: number;

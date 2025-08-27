@@ -21,6 +21,7 @@ import {
     SliceInfo,
     SliceOptionalArgs,
     TrafficCategories,
+    Customer,
 } from "../models/slice";
 import { errorHandler, InvalidParameterError } from "../errors";
 import { Device } from "../models/device";
@@ -229,6 +230,7 @@ export class AttachAPI {
     async attach(
         device: Device,
         sliceId: string,
+        customer?: Customer,
         notificationAuthToken?: string,
         notificationUrl?: string,
         trafficCategories?: TrafficCategories
@@ -239,12 +241,16 @@ export class AttachAPI {
         const payload: any = {
             device: {
                 phoneNumber: device.phoneNumber,
+                imsi: device.imsi,
             },
             sliceId,
         };
+        if (customer) {
+            payload.customer = customer;
+        }
 
         if (trafficCategories) {
-            payload.trafficCategories = trafficCategories;
+            payload.traffic_categories = trafficCategories;
         }
         if (notificationUrl) {
             payload.webhook = {

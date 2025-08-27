@@ -54,6 +54,7 @@ pipeline {
   environment {
     NAC_TOKEN = credentials('NAC_TOKEN')
     NAC_TOKEN_PROD = credentials('NAC_TOKEN_PROD')
+    NAC_TOKEN_STAGE = credentials('NAC_TOKEN_STAGE')
     TEAMS_WEBHOOK = credentials('TEAMS_WEBHOOK')
     NPM_AUTH_TOKEN = credentials('NPM_AUTH_TOKEN')
     SDK_NOTIFICATION_SERVER_URL = credentials('SDK_NOTIFICATION_SERVER_URL')
@@ -180,7 +181,7 @@ pipeline {
                     """
                     if(env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("rc-")){
                         sh '''
-                            PRODTEST=1 http_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
+                            NAC_ENV=staging http_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
                         '''
                     }
                 }
@@ -199,7 +200,7 @@ pipeline {
                     """
                     if(env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")){
                         sh '''
-                            PRODTEST=1 http_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
+                            NAC_ENV=staging http_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" https_proxy="http://fihel1d-proxy.emea.nsn-net.net:8080" npm run integration
                         '''
                     }
                 }

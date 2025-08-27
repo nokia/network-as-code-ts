@@ -4,13 +4,21 @@ import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 
 export const configureClient = (): NetworkAsCodeClient => {
-    const prodTest = process.env["PRODTEST"];
-    const NAC_TOKEN = prodTest ? process.env["NAC_TOKEN_PROD"] : process.env["NAC_TOKEN"];
-    const client = new NetworkAsCodeClient(
-        NAC_TOKEN as string,
-        prodTest ? false : true
-    );
-    return client;
+  const nacEnv = process.env["NAC_ENV"];
+    
+  let NAC_TOKEN = process.env["NAC_TOKEN"];
+
+  if (nacEnv === "prod") {
+    NAC_TOKEN = process.env["NAC_TOKEN_PROD"];
+  } else if (nacEnv === "staging") {
+    NAC_TOKEN = process.env["NAC_TOKEN_STAGE"];
+  }
+
+  const client = new NetworkAsCodeClient(
+    NAC_TOKEN as string,
+    nacEnv ? nacEnv : "dev"
+  );
+  return client;
 }
 
 export const configureNotificationServerUrl = () : string => {

@@ -24,9 +24,9 @@ import { AccessToken } from "./authentication";
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
  * #### Public Attributes:
-            publicAddress (float): the `public_address` of a device IPv4 address object.
-            privateAddress (float): the `private_address` of a device IPv4 address object.
-            publicPort (Optional[CivicAddress]): the `public_port` of a device IPv4 address object.
+            publicAddress (string): the `public_address` of a device IPv4 address object.
+            privateAddress (string): the `private_address` of a device IPv4 address object.
+            publicPort (number): the `public_port` of a device IPv4 address object.
  */
 export interface DeviceIpv4Addr {
     publicAddress?: string;
@@ -69,6 +69,7 @@ export interface QodOptionalArgs {
         phoneNumber(string): Phone Number string
         ipv4Address (DeviceIpv4Addr): Ipv4 address of the device.
         ipv6Address (string): Ipv6 address of the device.
+        imsi (number): IMSI of the device.
 
     #### Public Methods:
         createQodSession (QoDSession): Creates a session for the device.
@@ -89,12 +90,14 @@ export class Device {
     phoneNumber?: string;
     ipv4Address?: DeviceIpv4Addr;
     ipv6Address?: string;
+    imsi?: number;
     constructor(
         api: APIClient,
         networkAccessIdentifier?: string,
         ipv4Address?: DeviceIpv4Addr,
         ipv6Address?: string,
-        phoneNumber?: string
+        phoneNumber?: string,
+        imsi?: number
     ) {
         this._api = api;
         this._sessions = [];
@@ -102,6 +105,7 @@ export class Device {
         this.ipv4Address = ipv4Address;
         this.ipv6Address = ipv6Address;
         this.phoneNumber = phoneNumber;
+        this.imsi = imsi;
     }
 
     get networkAccessId(): string | undefined {
@@ -115,6 +119,7 @@ export class Device {
             phoneNumber: this.phoneNumber,
             ipv4Address: this.ipv4Address,
             ipv6Address: this.ipv6Address,
+            imsi: this.imsi,
         };
     }
 
@@ -419,6 +424,38 @@ export class Device {
 
         return response["devicePhoneNumber"];
 
+    }
+
+    /**
+     * Get the information about Call Forwarding Services active for the given device.
+     * @returns string[]: Active Call Forwarding Service types for the given device.
+     */
+    async getCallForwarding(): Promise<string[]> {
+        if (!this.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        }
+        
+        const response: any = await this._api.callForwarding.retrieveCallForwarding(
+            this.phoneNumber
+        );
+
+        return response;
+    }
+
+    /**
+     * Verify if device has unconditional call forwarding active.
+     * @returns true/false
+     */
+    async verifyUnconditionalForwarding(): Promise<boolean> {
+        if (!this.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        }
+        
+        const response: any = await this._api.callForwarding.verifyUnconditionalForwarding(
+            this.phoneNumber
+        );
+
+        return response['active'];
     }
 
 }

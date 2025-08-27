@@ -113,7 +113,6 @@ async getLocation(device: Device, maxAge = 60): Promise<Location> {
     return {
         latitude: jsonData.area.center.latitude,
         longitude: jsonData.area.center.longitude,
-        civicAddress: jsonData.civicAddress,
         radius: jsonData.area.radius,
     };
 }

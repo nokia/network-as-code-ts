@@ -27,7 +27,6 @@ const location = await myDevice.getLocation(3600);
 
 console.log(location.latitude);
 console.log(location.longitude);
-console.log(location.civicAddress);
 
 // For estimations, use the `verifyLocation()` method
 // with the geo-coordinates and maximum age in seconds.

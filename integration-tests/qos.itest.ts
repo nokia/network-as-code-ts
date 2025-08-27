@@ -4,7 +4,6 @@ import { Device, DeviceIpv4Addr } from "../src/models/device";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 import "dotenv/config";
-import { QoDSession } from "../src/models/session";
 
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 
@@ -244,8 +243,9 @@ describe("Qos", () => {
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_L");
 
+        // Fetching the session notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/qod/get/${session.id}`,
+        let notification = await fetch(`${notificationUrl}/qod/${session.id}`,
             {
                 method: "GET",
                 agent: agent
@@ -260,8 +260,9 @@ describe("Qos", () => {
 
         session.deleteSession();
         
+        // Deleting the session notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        notification = await fetch(`${notificationUrl}/qod/delete/${session.id}`,
+        notification = await fetch(`${notificationUrl}/qod/${session.id}`,
             {
                 method: "DELETE",
                 agent: agent
@@ -286,8 +287,9 @@ describe("Qos", () => {
 
         session.deleteSession();
 
+        // Fetching the session notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/qod/get/${session.id}`,
+        let notification = await fetch(`${notificationUrl}/qod/${session.id}`,
             {
                 method: "GET",
                 agent: agent
@@ -299,7 +301,8 @@ describe("Qos", () => {
         const deletionInfo = data[1]
         expect(deletionInfo).toHaveProperty("data.statusInfo", "DELETE_REQUESTED")
 
-        notification = await fetch(`${notificationUrl}/qod/delete/${session.id}`,
+        // Deleting the session notification
+        notification = await fetch(`${notificationUrl}/qod/${session.id}`,
             {
                 method: "DELETE",
                 agent: agent

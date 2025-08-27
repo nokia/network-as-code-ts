@@ -3,7 +3,6 @@ import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
-import { Slice } from "../src/models/slice";
 import { Device } from "../src/models/device";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 
@@ -30,6 +29,7 @@ describe("Slicing", () => {
             phoneNumber: `+3670${
                 Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
             }`,
+            imsi: 1223334444,
         });
 
     });
@@ -66,7 +66,7 @@ describe("Slicing", () => {
 
     // Temporarly skip because of the ISE in attachment endpoint,
     // the test.failing couldn't mark it as failing test for some reason, so test.skip is used for now
-    test("should get slices", async () => {
+    test.skip("should get slices", async () => {
         const slices = await client.slices.getAll();
         expect(slices.length).toBeGreaterThanOrEqual(0);
     });
@@ -141,6 +141,8 @@ describe("Slicing", () => {
 
         const fetchedSlice = await client.slices.get(slice.name as string);
         expect(slice.sid).toEqual(fetchedSlice.sid);
+
+        await slice.delete();
     });
 
     test("should mark a deleted slice's state as 'Deleted'", async () => {
@@ -163,42 +165,86 @@ describe("Slicing", () => {
         expect(slice.state).toEqual("DELETED");
     });
 
-    test("should get attachments", async () => {
+    test.skip("should get attachments", async () => {
         const attachments: any = await client.slices.getAllAttachments();
         expect(attachments.length).toBeGreaterThanOrEqual(0);
     });
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test("should deactivate and delete", async () => {
+    test("Should deactivate and delete with notification polling", async() => {
+        let lastNotification: {[key: string]: any};
+        let data: {[key: string]: any}[];
+        const random = Math.floor(Math.random() * 1000) + 1;
+
         const slice = await client.slices.create(
             { mcc: "236", mnc: "30" },
             { serviceType: "eMBB", differentiator: "444444" },
-            "https://notify.me/here",
+            `${notificationUrl}/notify`,
             {
-                name: "sdk-integration-slice-3",
+                name: `slice${random}`,
                 notificationAuthToken: "my-token",
             }
         );
 
-        await slice.waitFor("AVAILABLE");
+        // Function for polling subscription notifications 
+        const pollNotifications = async () => {
+            let notification = await fetch(`${notificationUrl}/network-slice/${slice.name}`,
+            {
+                method: "GET",
+                agent: agent
+            });
 
-        expect(slice.state).toEqual("AVAILABLE");
+            data = await notification.json() as { [key: string]: any }[];
 
-        await slice.activate();
+            return data[data.length-1];
+        }
 
-        await slice.waitFor("OPERATING");
+        // Wait for the notifiction to take action
+        await new Promise(resolve => setTimeout(resolve, 120 * 1000));
 
-        expect(slice.state).toEqual("OPERATING");
+        lastNotification = await pollNotifications()
 
-        await slice.deactivate();
+        expect(lastNotification['current_slice_state']).toEqual("AVAILABLE");
 
-        await slice.waitFor("AVAILABLE");
+        slice.activate()
+        
+        // Poll the notification server until slice is operating
+        while (lastNotification['current_slice_state'] === "AVAILABLE") {
+            await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+            
+            lastNotification = await pollNotifications()
+        }
 
-        expect(slice.state).toEqual("AVAILABLE");
+        expect(lastNotification['current_slice_state']).toEqual("OPERATING");
+        slice.deactivate()
 
-        await slice.delete();
-    }, 720000);
+        // Poll the notification server until slice is deactivated
+        while (lastNotification['current_slice_state'] === "OPERATING") {
+            await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+            
+            lastNotification = await pollNotifications()
+        }
+
+        expect(lastNotification['current_slice_state']).toEqual("AVAILABLE");
+        slice.delete()
+
+         // Poll the notification server until slice is deactivated
+        while (lastNotification['current_slice_state'] === "AVAILABLE") {
+            await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+            
+            lastNotification = await pollNotifications()
+        }
+
+        expect(lastNotification['current_slice_state']).toEqual("DELETED");
+
+        await fetch(`${notificationUrl}/network-slice/${slice.name}`,
+            {
+                method: "DELETE",
+                agent: agent
+            });
+
+        }, 720000);
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
@@ -229,6 +275,9 @@ describe("Slicing", () => {
 
         const newAttachment = await slice.attach(
             device,
+            { 
+                name:"SDK_Customer",    
+            },
             "c8974e592c2fa383d4a3960714",
             "https://example.com/notifications",
             {
@@ -248,6 +297,8 @@ describe("Slicing", () => {
         expect(attachment["nac_resource_id"]).toEqual(
             newAttachment["nac_resource_id"]
         );
+
+        expect(attachment.resource.traffic_categories).toBeTruthy()
 
         await slice.detach(device);
 
@@ -288,10 +339,10 @@ describe("Slicing", () => {
         expect(slice.state).toEqual("OPERATING");
 
         const device = client.devices.get({
-            phoneNumber: "+3637123456",
+            phoneNumber: "+3637123456", imsi: 1223334444
         });
 
-        const newAttachment = await slice.attach(device);
+        const newAttachment = await slice.attach(device,{name: "SDK_Customer"});
 
         await sleep(30000);
 
@@ -312,86 +363,5 @@ describe("Slicing", () => {
         expect(slice.state).toEqual("AVAILABLE");
 
         await slice.delete();
-    }, 720000);
-
-    test("Should receive notifications", async() => {
-        let lastNotification: {[key: string]: any};
-        let data: {[key: string]: any}[];
-        const random = Math.floor(Math.random() * 1000) + 1;
-
-        const slice = await client.slices.create(
-            { mcc: "236", mnc: "30" },
-            { serviceType: "eMBB", differentiator: "444444" },
-            `${notificationUrl}/notify`,
-            {
-                name: `slice${random}`,
-                notificationAuthToken: "my-token",
-            }
-        );
-
-        await slice.waitFor("AVAILABLE");
-        expect(slice.state).toEqual("AVAILABLE");
-
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/network-slice/get/${slice.name}`,
-            {
-                method: "GET",
-                agent: agent
-            });
-        
-        data = await notification.json() as { [key: string]: any }[];
-        lastNotification = data[data.length-1];
-        expect(lastNotification['current_slice_state']).toEqual("AVAILABLE");
-
-        await slice.activate();
-
-        await slice.waitFor("OPERATING");
-
-        expect(slice.state).toEqual("OPERATING");
-
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        notification = await fetch(`${notificationUrl}/network-slice/get/${slice.name}`,
-            {
-                method: "GET",
-                agent: agent
-            });
-        
-        data = await notification.json() as { [key: string]: any }[];
-        lastNotification = data[data.length-1];
-
-        expect(lastNotification['current_slice_state']).toEqual("OPERATING");
-
-        await slice.deactivate();
-
-        await slice.waitFor("AVAILABLE");
-
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        notification = await fetch(`${notificationUrl}/network-slice/get/${slice.name}`,
-            {
-                method: "GET",
-                agent: agent
-            });
-        data = await notification.json() as { [key: string]: any }[];
-        lastNotification = data[data.length-1];
-        expect(lastNotification['current_slice_state']).toEqual("AVAILABLE");
-
-        await slice.delete();
-        // Waiting 2 minutes for delete notification to be sent
-        await new Promise(resolve => setTimeout(resolve, 2 * 60 * 1000));
-        notification = await fetch(`${notificationUrl}/network-slice/get/${slice.name}`,
-            {
-                method: "GET",
-                agent: agent
-            });
-        data = await notification.json() as { [key: string]: any }[];
-        lastNotification = data[data.length-1];
-
-        expect(lastNotification['current_slice_state']).toEqual("DELETED");
-
-        notification = await fetch(`${notificationUrl}/network-slice/delete/${slice.name}`,
-            {
-                method: "DELETE",
-                agent: agent
-            });
     }, 720000);
 });

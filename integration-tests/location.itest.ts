@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, test } from "@jest/globals";
+import { beforeAll, describe, expect} from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { configureClient } from "./configClient";
@@ -12,12 +12,7 @@ beforeAll((): any => {
 describe("Location retrieval and verification", () => {
     it("should retrieve location of a test device", async () => {
         let device = client.devices.get({
-            networkAccessIdentifier: "test-device@testcsp.net",
-            ipv4Address: {
-                publicAddress: "1.1.1.2",
-                privateAddress: "1.1.1.2",
-                publicPort: 80,
-            },
+            phoneNumber: "+36719991001"
         });
 
         let location = await device.getLocation();
@@ -31,12 +26,7 @@ describe("Location retrieval and verification", () => {
 
     it("should verify location of a test device", async () => {
         let device = client.devices.get({
-            networkAccessIdentifier: "test-device@testcsp.net",
-            ipv4Address: {
-                publicAddress: "1.1.1.2",
-                privateAddress: "1.1.1.2",
-                publicPort: 80,
-            },
+            phoneNumber: "+36719991001"
         });
 
         let isHere = await device.verifyLocation(
