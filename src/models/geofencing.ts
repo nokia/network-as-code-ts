@@ -40,11 +40,7 @@ export interface GeofencingSubscriptionParams {
     sink: string,
     protocol?: string,
     types: EventType[] | string[],
-    areaType: string,
-    latitude?: number,
-    longitude?: number,
-    radius?: number,
-    poiName?: string,
+    area: Circle | POI,
     sinkCredential?: PlainCredential | AccessTokenCredential,
     subscriptionExpireTime?: Date | string,
     subscriptionMaxEvents?: number,
@@ -106,19 +102,7 @@ export class GeofencingSubscription {
             jsonData.types,
             jsonData.sink,
             jsonData.startsAt, 
-            jsonData.config.subscriptionDetail.area.areaType === "CIRCLE" ? 
-            {
-                areaType: "CENTER",
-                center: {   
-                        latitude: jsonData.config.subscriptionDetail.area.center.latitude,      
-                        longitude: jsonData.config.subscriptionDetail.area.center.longitude 
-                }, 
-                radius: jsonData.config.subscriptionDetail.area.radius
-            }: 
-            {
-                areaType: "POI",
-                poiName: jsonData.config.subscriptionDetail.area.poiName               
-            }
+            jsonData.config.subscriptionDetail.area
         );
     }
 }

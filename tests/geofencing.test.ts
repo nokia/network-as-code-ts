@@ -117,12 +117,9 @@ describe("Geofencing", () => {
         const geofencingSubscription = await client.geofencing.subscribe(
             device,
             {
-                areaType: "CIRCLE",
                 sink: "https://example.com/",
                 types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-                latitude: -90,
-                longitude: -180,
-                radius: 2001,
+                area: {areaType: "CIRCLE,", center: {latitude: -90, longitude: -180}, radius: 2001},
                 subscriptionExpireTime: new Date("2025-01-23T10:40:30.616Z"),
                 subscriptionMaxEvents: 1,
                 initialEvent: false
@@ -132,7 +129,7 @@ describe("Geofencing", () => {
         expect(geofencingSubscription.eventSubscriptionId).toBe("de87e438-58b4-42c3-9d49-0fbfbd878305")
         expect(geofencingSubscription.types).toEqual(["org.camaraproject.geofencing-subscriptions.v0.area-entered"])
         expect(geofencingSubscription.sink).toBe("https://example.com/")
-        expect(geofencingSubscription.area).toEqual({"areaType": "CENTER", "center": {"latitude": -90, "longitude": -180}, "radius": 2001})
+        expect(geofencingSubscription.area).toEqual({"areaType": "CIRCLE", "center": {"latitude": -90, "longitude": -180}, "radius": 2001})
     })
 
     it("should allow subscribing to geofencing information with EventType", async () => {
@@ -203,10 +200,9 @@ describe("Geofencing", () => {
         const geofencingSubscription = await client.geofencing.subscribe(
             device,
             {
-                areaType: "POI",
                 sink: "https://example.com/",
                 types: [EventType.AREA_ENTERED],
-                poiName: "Testing",
+                area: {areaType: "POI", poiName: "Testing"},
                 subscriptionExpireTime: new Date("2025-01-23T10:40:30.616Z"),
                 subscriptionMaxEvents: 1,
                 initialEvent: false
@@ -262,12 +258,9 @@ describe("Geofencing", () => {
         const geofencingSubscription = await client.geofencing.subscribe(
             device,
             {
-                areaType: "CIRCLE",
                 sink: "https://example.com/",
                 types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-                latitude: -90,
-                longitude: -180,
-                radius: 2001,
+                area: {areaType: "CIRCLE", center: {latitude: -90, longitude: -180}, radius: 2001},
                 subscriptionExpireTime: new Date("2025-01-23T10:40:30.616Z"),
                 subscriptionMaxEvents: 1,
                 initialEvent: false
@@ -403,6 +396,4 @@ describe("Geofencing", () => {
 
         expect(subscriptions.length).toBe(2)
     })
-
-    
 })
