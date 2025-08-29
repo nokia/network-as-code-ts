@@ -43,13 +43,16 @@ export class Credentials {
 export class Endpoints {
     authorizationEndpoint: string;
     tokenEndpoint: string;
+    fastFlowCspAuthEndpoint: string;
 
     constructor(
         authorizationEndpoint: string, 
-        tokenEndpoint: string
+        tokenEndpoint: string,
+        fastFlowCspAuthEndpoint: string
     ) {
         this.authorizationEndpoint = authorizationEndpoint;
-        this.tokenEndpoint = tokenEndpoint;    
+        this.tokenEndpoint = tokenEndpoint;
+        this.fastFlowCspAuthEndpoint = fastFlowCspAuthEndpoint;    
     }
 }
 

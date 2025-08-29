@@ -57,7 +57,8 @@ beforeEach(() => {
         { response: Promise.resolve({
             body: JSON.stringify({
                 authorization_endpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize",
-                token_endpoint: "https://tokenTestEndpoint/oauth2/v1/token"
+                token_endpoint: "https://tokenTestEndpoint/oauth2/v1/token",
+                fast_flow_csp_auth_endpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url"
             })
         })}
     );

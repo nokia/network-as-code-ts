@@ -39,12 +39,11 @@ export class NumberVerificationAPI {
         this.agent = agent;
     }
 
-    async verifyNumber(payload: any, authenticatorHeader: string) {
-        this.headers = {...this.headers, "Authorization": authenticatorHeader}
-        const response = await fetch(`${this.baseUrl}/verify`, {
+    async verifyNumber(body: any, code: string, state: string) {
+        const response = await fetch(`${this.baseUrl}/verify?code=${code}&state=${state}`, {
             method: "POST",
             headers: this.headers,
-            body: JSON.stringify(payload),
+            body: JSON.stringify(body),
             agent: this.agent,
         });
 

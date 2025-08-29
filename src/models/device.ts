@@ -420,27 +420,21 @@ export class Device {
         return singleUseToken;
     }
 
-
     /**
      * Verify if the device uses the phone number.
      * @param code (string): The previously obtained NaC authorization code.
      * @returns true/false
      */
-    async verifyNumber(code: string): Promise<boolean> {
+    async verifyNumber(code: string, state: string): Promise<boolean> {
         if (!this.phoneNumber) {
             throw new InvalidParameterError("Device phone number is required.");
         };
 
-        const singleUseToken = await this.getSingleUseAccessToken(code);
-        const payload = {
-            phoneNumber: this.phoneNumber
-        };
-        
-        const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
-
+        const body = this.phoneNumber
         const response: any = await this._api.verification.verifyNumber(
-            payload, 
-            authenticatorHeader
+            code,
+            state,
+            body
         );
 
         return response["devicePhoneNumberVerified"];

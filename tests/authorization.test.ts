@@ -71,7 +71,8 @@ describe("Number Verification successfull authentication tests", () => {
             { response: Promise.resolve({
                 body: JSON.stringify({
                     authorization_endpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize",
-                    token_endpoint: "https://tokenTestEndpoint/oauth2/v1/token"
+                    token_endpoint: "https://tokenTestEndpoint/oauth2/v1/token",
+                    fast_flow_csp_auth_endpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url"
                 }),
             })
             }       
@@ -85,17 +86,17 @@ describe("Number Verification successfull authentication tests", () => {
 
     it("should get the endpoints", async () => {
         expect(await client.authentication.endpoints())
-        .toEqual({authorizationEndpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize", tokenEndpoint: "https://tokenTestEndpoint/oauth2/v1/token"});
+        .toEqual({authorizationEndpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize", tokenEndpoint: "https://tokenTestEndpoint/oauth2/v1/token", fastFlowCspAuthEndpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url"});
     });
     
     it("should create and return an authentication link", async () => {
         expect(await client.authentication.createAuthenticationLink("testRedirectUri", "testScope", "testLoginHint123"))
-        .toEqual("https://authorizationTestEndpoint/oauth2/v1/authorize?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=testLoginHint123");
+        .toEqual("https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=testLoginHint123");
     });
 
     it("should create and return an authentication link, with optional parameters and encoded text", async () => {
         expect(await client.authentication.createAuthenticationLink("testRedirectUri", "testScope", "test login hint", "stateTestÄÄä"))
-        .toEqual("https://authorizationTestEndpoint/oauth2/v1/authorize?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=test%20login%20hint&state=stateTest%C3%84%C3%84%C3%A4");
+        .toEqual("https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=test%20login%20hint&state=stateTest%C3%84%C3%84%C3%A4");
     });
 });
 

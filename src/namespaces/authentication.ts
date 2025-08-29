@@ -55,10 +55,12 @@ export class Authentication extends Namespace {
         const response: any = await this.api.authorizationEndpoints.fetchEndpoints();
         const authorizationEndpoint = response["authorization_endpoint"];
         const tokenEndpoint = response["token_endpoint"];
+        const fastFlowCspAuthEndpoint = response["fast_flow_csp_auth_endpoint"];
 
         const authEndpoints = new Endpoints(
             authorizationEndpoint,
-            tokenEndpoint
+            tokenEndpoint,
+            fastFlowCspAuthEndpoint
         );
 
         return authEndpoints;
@@ -89,15 +91,15 @@ export class Authentication extends Namespace {
             {name: "redirect_uri", value: redirectUri},
             {name: "scope", value: scope},
             {name: "login_hint", value: loginHint},
-            {name: "state", value: state}
+            {name: "state", value: state},
+            {name: "prompt", value: "none"}
         ];
 
         const filterUndefined =  params.filter(x => x.value !== undefined);
         const stringifyValueField = filterUndefined.map(({name, value})=> ({name, value:String(value)}));
         const encodedParams = stringifyValueField.map((param) => `${encodeURIComponent(param.name)}=${encodeURIComponent(param.value)}`).join('&');
-    
-
-        const authenticationUrl = `${endpoints.authorizationEndpoint}?${encodedParams}`;
+        
+        const authenticationUrl = `${endpoints.fastFlowCspAuthEndpoint}?${encodedParams}`;
         return authenticationUrl; 
     }
     
