@@ -58,11 +58,11 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-            area: {areaType: "POI", poiName: "TestingPOI"}
+            area: {areaType: "POI", poiName: "StatueOfLiberty"}
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
-        expect(subscription.area).toEqual({"areaType": "POI", "poiName": "TestingPOI"})
+        expect(subscription.area).toEqual({"areaType": "POI", "poiName": "StatueOfLiberty"})
 
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
@@ -121,7 +121,7 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
-            area: {areaType: "POI", poiName: "TestingPOI"}
+            area: {areaType: "POI", poiName: "StatueOfLiberty"}
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -192,7 +192,7 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: [EventType.AREA_LEFT],
-            area: {areaType: "POI", poiName: "TestingPOI"},
+            area: {areaType: "POI", poiName: "StatueOfLiberty"},
             sinkCredential: {
                 credentialType:"ACCESSTOKEN",
                 accessToken: "some-access-token",
