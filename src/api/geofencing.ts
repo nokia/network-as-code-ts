@@ -54,16 +54,22 @@ export class GeofencingAPI {
                 subscriptionDetail: {
                     device: device.toJson(),
                     area: {
-                        areaType: "CIRCLE",
-                        center: {
-                            latitude: params.latitude,
-                            longitude: params.longitude
-                        },
-                        radius: params.radius
+                        areaType: params.areaType
                     }
                 }
             }
         };
+
+        if(params.areaType === "CIRCLE") {
+            body.config.subscriptionDetail.area.center = {
+                latitude: params.latitude, 
+                longitude: params.longitude
+            }
+            body.config.subscriptionDetail.area.radius = params.radius;
+        }
+        else {
+            body.config.subscriptionDetail.area.poiName = params.poiName;
+        }
 
         if (params.sinkCredential) {
             body.sinkCredential = params.sinkCredential ? Object.fromEntries(Object.entries(params.sinkCredential as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined)) : undefined;
@@ -80,6 +86,7 @@ export class GeofencingAPI {
         if (params.initialEvent) {
             body.config.initialEvent = params.initialEvent;
         }
+
         const response = await fetch(`${this.baseUrl}/subscriptions`, {
             method: "POST",
             headers: this.headers,
