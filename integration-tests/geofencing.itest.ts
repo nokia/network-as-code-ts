@@ -22,7 +22,7 @@ beforeAll(() => {
 });
 
 describe("Geofencing", () => {
-    it("should subscribe for geofencing areaType Circle event area entered", async () => {
+    it("should subscribe for geofencing with areaType Circle and event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             areaType: "CIRCLE",
             sink: `${notificationUrl}/notify`,
@@ -57,7 +57,7 @@ describe("Geofencing", () => {
         subscription.delete();
     },20 * 1000);
 
-    it("should subscribe for geofencing areaType POI event area entered", async () => {
+    it("should subscribe for geofencing with areaType POI and event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             areaType: "POI",
             sink: `${notificationUrl}/notify`,
@@ -129,7 +129,7 @@ describe("Geofencing", () => {
             areaType: "POI",
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
-            poiName: "StatueOfLiberty"
+            poiName: "TestingPOI"
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -204,7 +204,7 @@ describe("Geofencing", () => {
             areaType: "POI",
             sink: `${notificationUrl}/notify`,
             types: [EventType.AREA_LEFT],
-            poiName: "StatueOfLiberty",
+            poiName: "TestingPOI",
             sinkCredential: {
                 credentialType:"ACCESSTOKEN",
                 accessToken: "some-access-token",
