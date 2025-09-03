@@ -119,9 +119,7 @@ describe("Geofencing", () => {
             {
                 sink: "https://example.com/",
                 types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-                latitude: -90,
-                longitude: -180,
-                radius: 2001,
+                area: {areaType: "CIRCLE,", center: {latitude: -90, longitude: -180}, radius: 2001},
                 subscriptionExpireTime: new Date("2025-01-23T10:40:30.616Z"),
                 subscriptionMaxEvents: 1,
                 initialEvent: false
@@ -131,9 +129,7 @@ describe("Geofencing", () => {
         expect(geofencingSubscription.eventSubscriptionId).toBe("de87e438-58b4-42c3-9d49-0fbfbd878305")
         expect(geofencingSubscription.types).toEqual(["org.camaraproject.geofencing-subscriptions.v0.area-entered"])
         expect(geofencingSubscription.sink).toBe("https://example.com/")
-        expect(geofencingSubscription.latitude).toBe(-90)
-        expect(geofencingSubscription.longitude).toBe(-180)
-        expect(geofencingSubscription.radius).toBe(2001)
+        expect(geofencingSubscription.area).toEqual({"areaType": "CIRCLE", "center": {"latitude": -90, "longitude": -180}, "radius": 2001})
     })
 
     it("should allow subscribing to geofencing information with EventType", async () => {
@@ -156,12 +152,8 @@ describe("Geofencing", () => {
                                 },
                             },
                             "area": {
-                                "areaType": "CIRCLE",
-                                "center": {
-                                    "latitude": -90,
-                                    "longitude": -180
-                                },
-                                "radius": 2001
+                                "areaType": "POI",
+                                "poiName": "Testing"
                             }
                         },
                         "subscriptionExpireTime": "2025-01-23T10:40:30.616Z",
@@ -189,12 +181,8 @@ describe("Geofencing", () => {
                                         "ipv6Address": "2001:db8:85a3:8d3:1319:8a2e:370:7344"
                                     },
                                     "area": {
-                                        "areaType": "CIRCLE",
-                                        "center": {
-                                            "latitude": -90,
-                                            "longitude": -180
-                                        },
-                                        "radius": 2001
+                                        "areaType": "POI",
+                                        "poiName": "Testing"
                                     }
                                 },
                                 "subscriptionExpireTime": "2025-01-23T10:40:30.616Z",
@@ -214,9 +202,7 @@ describe("Geofencing", () => {
             {
                 sink: "https://example.com/",
                 types: [EventType.AREA_ENTERED],
-                latitude: -90,
-                longitude: -180,
-                radius: 2001,
+                area: {areaType: "POI", poiName: "Testing"},
                 subscriptionExpireTime: new Date("2025-01-23T10:40:30.616Z"),
                 subscriptionMaxEvents: 1,
                 initialEvent: false
@@ -226,9 +212,7 @@ describe("Geofencing", () => {
         expect(geofencingSubscription.eventSubscriptionId).toBe("de87e438-58b4-42c3-9d49-0fbfbd878305")
         expect(geofencingSubscription.types).toEqual(["org.camaraproject.geofencing-subscriptions.v0.area-entered"])
         expect(geofencingSubscription.sink).toBe("https://example.com/")
-        expect(geofencingSubscription.latitude).toBe(-90)
-        expect(geofencingSubscription.longitude).toBe(-180)
-        expect(geofencingSubscription.radius).toBe(2001)
+        expect(geofencingSubscription.area).toEqual({"areaType": "POI", "poiName": "Testing"})
     })
 
     // TODO: Test subscription with/without optional params
@@ -276,9 +260,7 @@ describe("Geofencing", () => {
             {
                 sink: "https://example.com/",
                 types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-                latitude: -90,
-                longitude: -180,
-                radius: 2001,
+                area: {areaType: "CIRCLE", center: {latitude: -90, longitude: -180}, radius: 2001},
                 subscriptionExpireTime: new Date("2025-01-23T10:40:30.616Z"),
                 subscriptionMaxEvents: 1,
                 initialEvent: false
@@ -414,6 +396,4 @@ describe("Geofencing", () => {
 
         expect(subscriptions.length).toBe(2)
     })
-
-    
 })
