@@ -19,15 +19,15 @@ describe("Sim Swap retrieval and verification", () => {
         });
     });
     it("should retrieve sim swap of a test device", async () => {
-        expect(device.getSimSwapDate()).toBeTruthy();
+        expect(await device.getSimSwapDate()).toBeTruthy();
     });
 
     it("should verify sim swap without max age", async () => {
-        expect(device.verifySimSwap()).toBeTruthy();
+        expect(await device.verifySimSwap()).toBeTruthy();
     });
 
     it("should verify sim swap with max age", async () => {
-        expect(device.verifySimSwap(120)).toBeTruthy();
+        expect(await device.verifySimSwap(120)).toBeTruthy();
     });
 
     it("should verify sim swap - True", async () => {
@@ -35,7 +35,7 @@ describe("Sim Swap retrieval and verification", () => {
             phoneNumber: "+99999991000",
         });
 
-       expect(device.verifySimSwap(120)).resolves.toBeTruthy();
+       expect(await device.verifySimSwap(120)).toBeTruthy();
 
     });
 
@@ -44,7 +44,7 @@ describe("Sim Swap retrieval and verification", () => {
             phoneNumber: "+99999991001",
         });
 
-        expect(device.verifySimSwap(120)).resolves.toBeFalsy();
+        expect(await device.verifySimSwap(120)).toBeFalsy();
 
     });
 

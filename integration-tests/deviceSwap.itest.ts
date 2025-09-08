@@ -19,15 +19,15 @@ describe("Device Swap retrieval and verification", () => {
         });
     });
     it("should retrieve device swap of a test device", async () => {
-        expect(device.getDeviceSwapDate()).toBeTruthy();
+        expect(await device.getDeviceSwapDate()).toBeTruthy();
     });
 
     it("should verify device swap without max age", async () => {
-        expect(device.verifyDeviceSwap()).toBeTruthy();
+        expect(await device.verifyDeviceSwap()).toBeTruthy();
     });
 
     it("should verify device swap with max age", async () => {
-        expect(device.verifyDeviceSwap(120)).toBeTruthy();
+        expect(await device.verifyDeviceSwap(120)).toBeTruthy();
     });
 
     it("should verify device swap - True", async () => {
@@ -35,7 +35,7 @@ describe("Device Swap retrieval and verification", () => {
             phoneNumber: "+99999991000",
         });
 
-       expect(device.verifyDeviceSwap(120)).resolves.toBeTruthy();
+       expect(await device.verifyDeviceSwap(120)).toBeTruthy();
 
     });
 
@@ -44,7 +44,7 @@ describe("Device Swap retrieval and verification", () => {
             phoneNumber: "+99999991001",
         });
 
-        expect(device.verifyDeviceSwap(120)).resolves.toBeFalsy();
+        expect(await device.verifyDeviceSwap(120)).toBeFalsy();
 
     });
 

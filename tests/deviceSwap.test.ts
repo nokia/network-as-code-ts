@@ -40,7 +40,7 @@ afterEach(() => {
 describe("Device Swap", () => {
     it("should get the latest device swap date", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-swap/v1/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v0/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "+346661113334"
@@ -73,7 +73,7 @@ describe("Device Swap", () => {
 
     it("should return null if the response doesn't contain latestDeviceChange", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-swap/v1/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v0/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "+346661113334"
@@ -102,7 +102,7 @@ describe("Device Swap", () => {
 
     it("should handle null", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-swap/v1/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v0/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "+346661113334"
@@ -122,7 +122,7 @@ describe("Device Swap", () => {
 
     it("get date should raise exception on missing phone number", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-swap/v1/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v0/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     networkAccessIdentifier: "device@testcsp.net"
@@ -147,7 +147,7 @@ describe("Device Swap", () => {
 
     it("should verify device swap without max age", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-swap/v1/check",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v0/check",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "+346661113334"
@@ -166,7 +166,7 @@ describe("Device Swap", () => {
 
     it("should verify device swap with max age", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-swap/v1/check",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v0/check",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     phoneNumber: "+346661113334",
@@ -186,7 +186,7 @@ describe("Device Swap", () => {
 
     it("verify should raise exception on missing phone number", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-swap/v1/check",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v0/check",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     networkAccessIdentifier: "device@testcsp.net"
