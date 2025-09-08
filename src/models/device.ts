@@ -354,6 +354,43 @@ export class Device {
     
 
     /**
+     * Get the latest device swap date.
+     * @returns latest device swap date-time(string)
+     */
+    async getDeviceSwapDate(): Promise<Date | null> {
+        if (!this.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        }
+
+        const response: any = await this._api.deviceSwap.fetchDeviceSwapDate(
+            this.phoneNumber
+        );
+
+        if (response["latestDeviceChange"]) {
+            return new Date(Date.parse(response["latestDeviceChange"]));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Verify if there was device swap.
+     * @param max_age (Optional[number]): Max acceptable age for device swap verification info in hours
+     * @returns true/false
+     */
+    async verifyDeviceSwap(maxAge?: number): Promise<boolean> {
+        if (!this.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        }
+
+        const response: any = await this._api.deviceSwap.verifyDeviceSwap(
+            this.phoneNumber,
+            maxAge
+        );
+        return response["swapped"];
+    }
+
+    /**
      * Retrieves the access token and its information.
      * @param code (string): The previously obtained NaC authorization code.
      * @returns Promise<AccessToken>: The retreived access token, its type and when it expires.
