@@ -86,5 +86,5 @@ console.log(phoneNumber) // "+123456789"
 
 /* If you used fast flow to get the code, you need to add the state to the 
 getPhoneNumber method call as a parameter. */
-const phoneNumbenResultWithFastFlow = await device.getPhoneNumber(code, state);
-console.log(phoneNumbenResultWithFastFlow);
+const phoneNumberWithFastFlow = await device.getPhoneNumber(code, state);
+console.log(phoneNumberWithFastFlow);
