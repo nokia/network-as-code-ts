@@ -204,5 +204,22 @@ describe("Number Verification access token and verifying number tests", () => {
         expect(await device.getPhoneNumber("testCode1234")).toMatch("+123456789");
     });
     
+   it("should get phone number with fast flow", async () => {
+        fetchMock.mockGlobal().get(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/device-phone-number?code=testCode1234&state=testState", 
+            (req: any): any => {
+                expect(req.headers).toEqual({
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+                })},
+                { response: 
+                    JSON.stringify({
+                        devicePhoneNumber: "+123456789"
+                })});
+
+        expect(await device.getPhoneNumber("testCode1234", "testState")).toMatch("+123456789");
+    });
+
 });
 
