@@ -341,4 +341,31 @@ describe("Get Phone Number", () => {
         const result: string = await device.getPhoneNumber(code);
         expect(result).toBeDefined();
     });
+
+    it("should get device phone number with fast flow", async () => {
+        const redirectUri= `${notificationUrl}/nv`;
+        const scope = "dpv:FraudPreventionAndDetection number-verification:device-phone-number:read";
+        const loginHint = "+99999991000";
+        const state = "testState"
+        const callback = await client.authentication.createFastFlowAuthenticationLink(
+            redirectUri,
+            scope,
+            loginHint,
+            state
+        );
+        await fetch(callback, {
+            method: "GET",
+            agent: agent
+        });
+
+        const response =  await fetch(`${notificationUrl}/nv-get-code`,
+            {
+                method: "GET",
+                agent: agent
+            });
+        const data = await response.json() as any;
+        const code = data.code;
+        const result: string = await device.getPhoneNumber(code, state);
+        expect(result).toBeDefined();
+    });
 });

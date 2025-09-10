@@ -39,7 +39,7 @@ export class NumberVerificationAPI {
         this.agent = agent;
     }
 
-    async verifyNumber(payload: any, authenticatorHeader?: any, code?: any, state?: string) {        
+    async verifyNumber(payload: any, authenticatorHeader?: any, code?: string, state?: string) {        
         if (!state) {
             this.headers = {...this.headers, "Authorization": authenticatorHeader}
             const response = await fetch(`${this.baseUrl}/verify`, {
@@ -65,9 +65,21 @@ export class NumberVerificationAPI {
         return await response.json(); 
     }
 
-    async getPhoneNumber(authenticatorHeader: string) {
-        this.headers = {...this.headers, "Authorization": authenticatorHeader}
-        const response = await fetch(`${this.baseUrl}/device-phone-number`, {
+    async getPhoneNumber(authenticatorHeader?: any, code?: string, state?: string) {
+        if (!state) {
+            this.headers = {...this.headers, "Authorization": authenticatorHeader}
+            const response = await fetch(`${this.baseUrl}/device-phone-number`, {
+                method: "GET",
+                headers: this.headers,
+                agent: this.agent,
+            });
+
+            errorHandler(response);
+
+            return await response.json();
+        }
+
+        const response = await fetch(`${this.baseUrl}/device-phone-number?code=${code}&state=${state}`, {
             method: "GET",
             headers: this.headers,
             agent: this.agent,

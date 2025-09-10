@@ -38,7 +38,7 @@ const callback = await client.authentication.createAuthenticationLink(
     state
 );
 
-// for the number verification functionality you can alternatively create a callbacklink using the fast flow functionality
+// you can alternatively create a callbacklink using the fast flow functionality
 const fastFlowCallback = await client.authentication.createFastFlowAuthenticationLink(
     redirectUri,
     scope,
@@ -64,8 +64,6 @@ app.listen(port, () => {
 });
 
 
-
-
 // Add your authorization code here.
 const code = "NaC-authorization-code";
 
@@ -73,19 +71,20 @@ const code = "NaC-authorization-code";
 /* You can use the Number Verification API with the obtained authorization code.
  The verifyNumber endpoint will respond with a true or false value. */
 const verificationResult = await device.verifyNumber(code);
-
 console.log(verificationResult);
 
 
 /* If you used fast flow to get the code, you need to add the state to the 
 verifyNumber method call as a parameter. */
-const verificationResultWithFastFlow = await device.verifyNumber(code);
-
+const verificationResultWithFastFlow = await device.verifyNumber(code, state);
 console.log(verificationResultWithFastFlow);
 
 
 // The getPhoneNumber endpoint will respond with the phone number of the used Device.
-
 const phoneNumber = await device.getPhoneNumber(code);
-
 console.log(phoneNumber) // "+123456789"
+
+/* If you used fast flow to get the code, you need to add the state to the 
+getPhoneNumber method call as a parameter. */
+const phoneNumbenResultWithFastFlow = await device.getPhoneNumber(code, state);
+console.log(phoneNumbenResultWithFastFlow);

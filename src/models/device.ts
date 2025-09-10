@@ -462,16 +462,26 @@ export class Device {
      * @param code (string): The previously obtained NaC authorization code.
      * @returns (string): The phone number
      */
-    async getPhoneNumber(code: string): Promise<string> {
-        const singleUseToken = await this.getSingleUseAccessToken(code);
-        
-        const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
+    async getPhoneNumber(code: string, state?: string): Promise<string> {
+        if (!state) {
+            const singleUseToken = await this.getSingleUseAccessToken(code);
+            
+            const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
+
+            const response: any = await this._api.verification.getPhoneNumber(
+                authenticatorHeader
+            );
+
+            return response["devicePhoneNumber"];
+        }
 
         const response: any = await this._api.verification.getPhoneNumber(
-            authenticatorHeader
+            undefined,
+            code,
+            state
         );
-
         return response["devicePhoneNumber"];
+
 
     }
 
