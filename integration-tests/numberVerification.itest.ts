@@ -11,6 +11,7 @@ let client: NetworkAsCodeClient;
 let device: Device;
 let agent: ProxyAgent;
 let notificationUrl: string;
+let httpsAgent: ProxyAgent;
 
 beforeAll(() => {
     client = configureClient();
@@ -34,14 +35,29 @@ describe("Number Verification authentication", () => {
         expect(endpoints.tokenEndpoint).toBeTruthy();
         expect(endpoints.fastFlowCspAuthEndpoint).toBeTruthy();
     });
-/*
+
     it("should create authentication link", async () => {
         const credentials: any = await client.authentication.credentials();
         const endpoints: any = await client.authentication.endpoints();
         const redirectUri= "https://example.com/redirect";
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+99999991000";
-        const state = "blaaa"
+        const callback = await client.authentication.createAuthenticationLink(
+            redirectUri,
+            scope,
+            loginHint
+        );
+        expect(callback)
+        .toEqual(`${endpoints.authorizationEndpoint}?response_type=code&client_id=${credentials.clientId}&redirect_uri=https%3A%2F%2Fexample.com%2Fredirect&scope=dpv%3AFraudPreventionAndDetection%20number-verification%3Averify&login_hint=%2B99999991000`);
+    });
+
+    it("should create fast flow authentication link", async () => {
+        const credentials: any = await client.authentication.credentials();
+        const endpoints: any = await client.authentication.endpoints();
+        const redirectUri= "https://example.com/redirect";
+        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
+        const loginHint = "+99999991000";
+        const state = "testState"
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
@@ -49,8 +65,8 @@ describe("Number Verification authentication", () => {
             state
         );
         expect(callback)
-        .toEqual(`${endpoints.fastFlowCspAuthTestEndpoint}?response_type=code&client_id=${credentials.clientId}&redirect_uri=https%3A%2F%2Fexample.com%2Fredirect&scope=dpv%3AFraudPreventionAndDetection%20number-verification%3Averify&login_hint=%2B3637123456&state=blaaa&prompt=none`);
-    });*/
+        .toEqual(`${endpoints.fastFlowCspAuthEndpoint}?response_type=code&client_id=${credentials.clientId}&redirect_uri=https%3A%2F%2Fexample.com%2Fredirect&scope=dpv%3AFraudPreventionAndDetection%20number-verification%3Averify&login_hint=%2B99999991000&state=testState`);
+    });
 });
 
 describe("Number Verification NaC auth code and access token", () => {
@@ -58,7 +74,31 @@ describe("Number Verification NaC auth code and access token", () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+99999991000";
-        const state = "blaaa";
+        const callback = await client.authentication.createAuthenticationLink(
+            redirectUri,
+            scope,
+            loginHint
+        );
+        await fetch(callback, {
+            method: "GET",
+            agent: agent
+        });
+
+        const response =  await fetch(`${notificationUrl}/nv-get-code`,
+                    {
+                        method: "GET",
+                        agent: agent
+                    });
+        const data = await response.json() as any;
+        const code = data.code
+        expect(code).toBeTruthy();
+    });
+
+    it("should get NaC auth code with fast flow", async () => {
+        const redirectUri= `${notificationUrl}/nv`;
+        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
+        const loginHint = "+99999991000";
+        const state = "testState";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
@@ -69,26 +109,26 @@ describe("Number Verification NaC auth code and access token", () => {
             method: "GET",
             agent: agent
         });
+
         const response =  await fetch(`${notificationUrl}/nv-get-code`,
-            {
-                method: "GET",
-                agent: agent
-            });
+                    {
+                        method: "GET",
+                        agent: agent
+                    });
         const data = await response.json() as any;
         const code = data.code
         expect(code).toBeTruthy();
     });
 
+
     it("should get single use access token", async () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+99999991000";
-        const state = "blaaa";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
-            loginHint,
-            state
+            loginHint
         );
         await fetch(callback, {
             method: "GET",
@@ -114,7 +154,7 @@ describe("Number verification", () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+99999991000";
-        const state = "blaaa";
+        const state = "testState";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
@@ -138,10 +178,13 @@ describe("Number verification", () => {
     });
 
     it("should verify number - False", async () => {
+        device = client.devices.get({
+            phoneNumber: "+99999991001"
+        });
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
-        const loginHint = "+99999991000";
-        const state = "blaaa";
+        const loginHint = "+99999991001";
+        const state = "testState";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
@@ -180,12 +223,10 @@ describe("Get Phone Number", () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:device-phone-number:read";
         const loginHint = "+99999991000";
-        const state = "blaaa";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
             scope,
-            loginHint,
-            state
+            loginHint
         );
         await fetch(callback, {
             method: "GET",

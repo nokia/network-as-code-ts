@@ -425,16 +425,33 @@ export class Device {
      * @param code (string): The previously obtained NaC authorization code.
      * @returns true/false
      */
-    async verifyNumber(code: string, state: string): Promise<boolean> {
+    async verifyNumber(code: string, state?: string): Promise<boolean> {
         if (!this.phoneNumber) {
             throw new InvalidParameterError("Device phone number is required.");
         };
 
-        const body = this.phoneNumber
+        const payload = {
+            phoneNumber: this.phoneNumber
+        };
+
+        if (!state) {
+            const singleUseToken = await this.getSingleUseAccessToken(code);
+     
+            const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
+            
+            const response: any = await this._api.verification.verifyNumber(
+                payload, 
+                authenticatorHeader
+            );
+
+            return response["devicePhoneNumberVerified"];
+        }
+    
         const response: any = await this._api.verification.verifyNumber(
+            payload,
+            undefined,
             code,
-            state,
-            body
+            state
         );
 
         return response["devicePhoneNumberVerified"];

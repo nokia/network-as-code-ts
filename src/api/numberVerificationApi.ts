@@ -39,11 +39,24 @@ export class NumberVerificationAPI {
         this.agent = agent;
     }
 
-    async verifyNumber(body: any, code: string, state: string) {
+    async verifyNumber(payload: any, authenticatorHeader?: any, code?: any, state?: string) {        
+        if (!state) {
+            this.headers = {...this.headers, "Authorization": authenticatorHeader}
+            const response = await fetch(`${this.baseUrl}/verify`, {
+                method: "POST",
+                headers: this.headers,
+                body: JSON.stringify(payload),
+                agent: this.agent,
+            });
+            errorHandler(response);
+
+            return await response.json(); 
+        }
+
         const response = await fetch(`${this.baseUrl}/verify?code=${code}&state=${state}`, {
             method: "POST",
             headers: this.headers,
-            body: JSON.stringify(body),
+            body: JSON.stringify(payload),
             agent: this.agent,
         });
 
@@ -64,5 +77,4 @@ export class NumberVerificationAPI {
 
         return await response.json(); 
     }
-
 }

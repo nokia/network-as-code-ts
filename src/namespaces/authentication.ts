@@ -91,16 +91,19 @@ export class Authentication extends Namespace {
             {name: "redirect_uri", value: redirectUri},
             {name: "scope", value: scope},
             {name: "login_hint", value: loginHint},
-            {name: "state", value: state},
-            {name: "prompt", value: "none"}
+            {name: "state", value: state}
         ];
 
         const filterUndefined =  params.filter(x => x.value !== undefined);
         const stringifyValueField = filterUndefined.map(({name, value})=> ({name, value:String(value)}));
         const encodedParams = stringifyValueField.map((param) => `${encodeURIComponent(param.name)}=${encodeURIComponent(param.value)}`).join('&');
         
-        const authenticationUrl = `${endpoints.fastFlowCspAuthEndpoint}?${encodedParams}`;
-        return authenticationUrl; 
+        if (state) {
+            const authenticationUrl = `${endpoints.fastFlowCspAuthEndpoint}?${encodedParams}`;
+            return authenticationUrl;
+        }
+
+        const authenticationUrl = `${endpoints.authorizationEndpoint}?${encodedParams}`;
+        return authenticationUrl;
     }
-    
 }
