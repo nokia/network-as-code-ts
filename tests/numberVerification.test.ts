@@ -112,6 +112,26 @@ describe("Number Verification access token and verifying number tests", () => {
         expect(await device.verifyNumber("testCode1234")).toBeTruthy();
     });
 
+    it("should get verify number result as true - fast flow ", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testState", 
+            (req: any): any => {
+                expect(req.headers).toEqual({
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+                }),
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    phoneNumber: "+3637123456"
+                })},
+                { response: 
+                    JSON.stringify({
+                        devicePhoneNumberVerified: true
+                })});
+
+        expect(await device.verifyNumber("testCode1234", "testState")).toBeTruthy();
+    });
+
 
     it("should get verify number result as false", async () => {
         fetchMock.mockGlobal().post(
@@ -132,6 +152,26 @@ describe("Number Verification access token and verifying number tests", () => {
                 })});
 
         expect(await device.verifyNumber("testCode1234")).toBeFalsy();
+    });
+
+    it("should get verify number result as false - fast flow ", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testState", 
+            (req: any): any => {
+                expect(req.headers).toEqual({
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+                }),
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    phoneNumber: "+3637123456"
+                })},
+                { response: 
+                    JSON.stringify({
+                        devicePhoneNumberVerified: false
+                })});
+
+        expect(await device.verifyNumber("testCode1234", "testState")).toBeFalsy();
     });
 
     it("no phonenumber provided, should get verify number result as error", async () => {

@@ -97,13 +97,44 @@ export class Authentication extends Namespace {
         const filterUndefined =  params.filter(x => x.value !== undefined);
         const stringifyValueField = filterUndefined.map(({name, value})=> ({name, value:String(value)}));
         const encodedParams = stringifyValueField.map((param) => `${encodeURIComponent(param.name)}=${encodeURIComponent(param.value)}`).join('&');
-        
-        if (state) {
-            const authenticationUrl = `${endpoints.fastFlowCspAuthEndpoint}?${encodedParams}`;
-            return authenticationUrl;
-        }
 
         const authenticationUrl = `${endpoints.authorizationEndpoint}?${encodedParams}`;
+        return authenticationUrl;
+    }
+
+    /**
+     *  Create a authentication link for end user authentication.
+     * 
+            @param redirectUri (string): Callback uri where the NaC authorization code should be sent to.
+            @param scope (string): Permissions that the authorization endpoint should request from the end user.
+            @param loginHint (string): Device phone number.
+            @param state (string): Value for state, which can be used for CSRF attack checking.
+            @returns Promise<string>
+    */    
+    async createFastFlowAuthenticationLink(
+        redirectUri: string,
+        scope: string,
+        loginHint: string,
+        state: string
+    ): Promise<string> {
+
+        const credentialsInfo = await this.credentials();
+        const endpoints = await this.endpoints();
+        const responseType = "code";
+        const params = [
+            {name: "response_type", value: responseType},
+            {name: "client_id", value: credentialsInfo.clientId},
+            {name: "redirect_uri", value: redirectUri},
+            {name: "scope", value: scope},
+            {name: "login_hint", value: loginHint},
+            {name: "state", value: state}
+        ];
+
+        const filterUndefined =  params.filter(x => x.value !== undefined);
+        const stringifyValueField = filterUndefined.map(({name, value})=> ({name, value:String(value)}));
+        const encodedParams = stringifyValueField.map((param) => `${encodeURIComponent(param.name)}=${encodeURIComponent(param.value)}`).join('&');
+        
+        const authenticationUrl = `${endpoints.fastFlowCspAuthEndpoint}?${encodedParams}`;
         return authenticationUrl;
     }
 }

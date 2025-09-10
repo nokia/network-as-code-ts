@@ -91,17 +91,27 @@ describe("Number Verification successfull authentication tests", () => {
     
     it("should create and return an authentication link", async () => {
         expect(await client.authentication.createAuthenticationLink("testRedirectUri", "testScope", "testLoginHint123"))
-        .toEqual("https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=testLoginHint123");
+        .toEqual("https://authorizationTestEndpoint/oauth2/v1/authorize?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=testLoginHint123");
+    });
+
+    it("should create and return an fast flow authentication link", async () => {
+        expect(await client.authentication.createFastFlowAuthenticationLink("testRedirectUri", "testScope", "testLoginHint123", "testState"))
+        .toEqual("https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=testLoginHint123&state=testState");
     });
 
     it("should create and return an authentication link, with optional parameters and encoded text", async () => {
         expect(await client.authentication.createAuthenticationLink("testRedirectUri", "testScope", "test login hint", "stateTestÄÄä"))
+        .toEqual("https://authorizationTestEndpoint/oauth2/v1/authorize?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=test%20login%20hint&state=stateTest%C3%84%C3%84%C3%A4");
+    });
+
+    it("should create and return an fast flow authentication link, with optional parameters and encoded text", async () => {
+        expect(await client.authentication.createFastFlowAuthenticationLink("testRedirectUri", "testScope", "test login hint", "stateTestÄÄä"))
         .toEqual("https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=test%20login%20hint&state=stateTest%C3%84%C3%84%C3%A4");
     });
 });
 
 
-describe("Number Verification authentication tests errors", () => {
+describe("Authentication errors tests", () => {
     it("credential fetching should return APIError", async () => {
         fetchMock.mockGlobal().get(
             "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",

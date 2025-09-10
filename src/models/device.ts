@@ -423,6 +423,7 @@ export class Device {
     /**
      * Verify if the device uses the phone number.
      * @param code (string): The previously obtained NaC authorization code.
+     * @param state (Optional[string]): Optional value for state, which can be used for CSRF attack checking.
      * @returns true/false
      */
     async verifyNumber(code: string, state?: string): Promise<boolean> {
@@ -436,9 +437,8 @@ export class Device {
 
         if (!state) {
             const singleUseToken = await this.getSingleUseAccessToken(code);
-     
             const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
-            
+
             const response: any = await this._api.verification.verifyNumber(
                 payload, 
                 authenticatorHeader
