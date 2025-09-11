@@ -130,10 +130,7 @@ export class Authentication extends Namespace {
             {name: "state", value: state}
         ];
 
-        const filterUndefined =  params.filter(x => x.value !== undefined);
-        const stringifyValueField = filterUndefined.map(({name, value})=> ({name, value:String(value)}));
-        const encodedParams = stringifyValueField.map((param) => `${encodeURIComponent(param.name)}=${encodeURIComponent(param.value)}`).join('&');
-        
+        const encodedParams = params.map((param) => `${encodeURIComponent(param.name)}=${encodeURIComponent(param.value)}`).join('&');
         const authenticationUrl = `${endpoints.fastFlowCspAuthEndpoint}?${encodedParams}`;
         return authenticationUrl;
     }

@@ -30,7 +30,7 @@ const scope = "number-verification:verify";
 const loginHint = device.phoneNumber;
 const state = "foobar";
 
-// create a callbacklink
+// Create a callbacklink
 const callback = await client.authentication.createAuthenticationLink(
     redirectUri,
     scope,
@@ -38,7 +38,8 @@ const callback = await client.authentication.createAuthenticationLink(
     state
 );
 
-// you can alternatively create a callbacklink using the fast flow functionality
+// You can alternatively create a callbacklink using the fast flow functionality
+// In the fast flow implementation, the state parameter is mandatory
 const fastFlowCallback = await client.authentication.createFastFlowAuthenticationLink(
     redirectUri,
     scope,
@@ -54,7 +55,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.get("/redirect", (req: Request, res: Response) => {
-    res.send(`This is your authorization code: ${req.query.code}`)
+    res.send(`This is your authorization code: ${req.query.code} This is your state variable, if set: ${req.query.state}.`)
 
     res.status(200).end();
 });
@@ -74,7 +75,7 @@ const verificationResult = await device.verifyNumber(code);
 console.log(verificationResult);
 
 
-/* If you used fast flow to get the code, you need to add the state to the 
+/* If you used fast flow to get the authorization code, you need to add the state to the 
 verifyNumber method call as a parameter. */
 const verificationResultWithFastFlow = await device.verifyNumber(code, state);
 console.log(verificationResultWithFastFlow);

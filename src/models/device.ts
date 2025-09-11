@@ -422,8 +422,8 @@ export class Device {
 
     /**
      * Verify if the device uses the phone number.
-     * @param code (string): The previously obtained NaC authorization code.
-     * @param state (Optional[string]): Optional value for state, which can be used for CSRF attack checking.
+     * @param code (string): The previously obtained authorization code.
+     * @param state (Optional[string]): Value transfered back and forth in the flow, used to check for a CSRF attack.
      * @returns true/false
      */
     async verifyNumber(code: string, state?: string): Promise<boolean> {
@@ -459,8 +459,8 @@ export class Device {
 
     /**
      * Get the phone number of the used Device.
-     * @param code (string): The previously obtained NaC authorization code.
-     * @param state (Optional[string]): Optional value for state, which can be used for CSRF attack checking.
+     * @param code (string): The previously obtained authorization code.
+     * @param state (Optional[string]): Value transfered back and forth in the flow, used to check for a CSRF attack.
      * @returns (string): The phone number
      */
     async getPhoneNumber(code: string, state?: string): Promise<string> {
@@ -482,8 +482,6 @@ export class Device {
             state
         );
         return response["devicePhoneNumber"];
-
-
     }
 
     /**
