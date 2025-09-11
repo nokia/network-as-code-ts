@@ -111,7 +111,7 @@ describe("Number Verification NaC auth code and access token", () => {
         expect(code).toBeTruthy();
     });
 
-    it("should get NaC auth code with state", async () => {
+    it("should get NaC auth code and state with state", async () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+99999991000";
@@ -133,11 +133,11 @@ describe("Number Verification NaC auth code and access token", () => {
                 agent: agent
             });
         const data = await response.json() as any;
-        const code = data.code;
-        expect(code).toBeTruthy();
+        expect(data.code).toBeTruthy();
+        expect(data.state).toBeTruthy();
     });
 
-    it("should get NaC auth code with fast flow", async () => {
+    it("should get NaC auth code and state with fast flow", async () => {
         const redirectUri= `${notificationUrl}/nv`;
         const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
         const loginHint = "+99999991000";
@@ -159,8 +159,8 @@ describe("Number Verification NaC auth code and access token", () => {
                         agent: agent
                     });
         const data = await response.json() as any;
-        const code = data.code;
-        expect(code).toBeTruthy();
+        expect(data.code).toBeTruthy();
+        expect(data.state).toBeTruthy();
     });
 
 
@@ -240,8 +240,7 @@ describe("Number verification", () => {
                 agent: agent
             });
         const data = await response.json() as any;
-        const code = data.code;
-        const result: boolean = await device.verifyNumber(code, state);
+        const result: boolean = await device.verifyNumber(data.code, data.state);
         expect(result).toBeTruthy();
     });
 
@@ -300,8 +299,7 @@ describe("Number verification", () => {
                 agent: agent
             });
         const data = await response.json() as any;
-        const code = data.code;
-        const result: boolean = await device.verifyNumber(code, state);
+        const result: boolean = await device.verifyNumber(data.code, data.state);
         expect(result).toBeFalsy();
     });
 
@@ -364,8 +362,7 @@ describe("Get Phone Number", () => {
                 agent: agent
             });
         const data = await response.json() as any;
-        const code = data.code;
-        const result: string = await device.getPhoneNumber(code, state);
+        const result: string = await device.getPhoneNumber(data.code, data.state);
         expect(result).toBeDefined();
     });
 });
