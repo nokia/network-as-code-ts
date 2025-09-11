@@ -39,6 +39,7 @@ export class Credentials {
     #### Public Attributes:
        @param authorizationEndpoint (string): Endpoint from where end user can get authenticated and can get the NaC authorization code.
        @param tokenEndpoint (string): Endpoint from where can get access token.
+       @param fastFlowCspAuthEndpoint (string): Fast flow endpoint from where end user can get authenticated and can get the NaC authorization code.
  */
 export class Endpoints {
     authorizationEndpoint: string;

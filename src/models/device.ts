@@ -460,6 +460,7 @@ export class Device {
     /**
      * Get the phone number of the used Device.
      * @param code (string): The previously obtained NaC authorization code.
+     * @param state (Optional[string]): Optional value for state, which can be used for CSRF attack checking.
      * @returns (string): The phone number
      */
     async getPhoneNumber(code: string, state?: string): Promise<string> {
