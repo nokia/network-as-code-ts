@@ -20,6 +20,7 @@ import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { AccessToken } from "./authentication";
+import { MatchCustomerParams } from "./knowYourCustomer";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -405,7 +406,6 @@ export class Device {
         );
 
         return response["devicePhoneNumberVerified"];
-
     }
 
     /**
@@ -458,4 +458,31 @@ export class Device {
         return response['active'];
     }
 
+    /**
+     * Match a customer identity against the account data bound to their phone number.
+     * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the Operator systems.
+     * @param code (string): The previously obtained NaC authorization code.
+     * @returns true/false
+     */
+    async matchCustomer(
+        params: MatchCustomerParams,
+        code?: string
+    ): Promise<boolean> {
+        if (code) {
+            const singleUseToken = await this.getSingleUseAccessToken(code);
+            const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
+
+            const response: any = await this._api.knowYourCustomer.matchCustomer(
+                params,
+                authenticatorHeader
+            );
+
+            return await response;
+        }
+        const response: any = await this._api.knowYourCustomer.matchCustomer(
+            params
+        );
+
+        return await response;
+    }
 }

@@ -28,6 +28,7 @@ import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
 import { CallForwardingApi } from "./callForwardingApi";
+import { KnowYourCustomerAPI } from "./KnowYourCustomerApi";
 
 const QOS_URL = "/qod/v0";
 
@@ -54,6 +55,8 @@ const AUTHORIZATION_ENDPOINTS_URL = "/.well-known";
 const NUMBER_VERIFICATION_URL =  "/passthrough/camara/v1/number-verification/number-verification/v0";
 
 const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3"
+
+const KNOW_YOUR_CUSTOMER_URL = "/passthrough/camara/v1/kyc-match/v0.3"
 
 const agent = new ProxyAgent();
 
@@ -99,6 +102,7 @@ export class APIClient {
     verification: NumberVerificationAPI;
     accesstoken: AccessTokenAPI;
     callForwarding: CallForwardingApi;
+    knowYourCustomer: KnowYourCustomerAPI;
 
     constructor(
         token: string,
@@ -116,6 +120,7 @@ export class APIClient {
         credentialsBaseUrl: string | undefined = undefined,
         verificationBaseUrl: string | undefined = undefined,
         callForwardingBaseUrl: string | undefined = undefined,
+        knowYourCustomerBaseUrl: string | undefined = undefined
     ) {
       const baseUrl = environmentBaseUrl(envMode);
       const hostname = environmentHostname(envMode);
@@ -260,6 +265,17 @@ export class APIClient {
 
       this.callForwarding = new CallForwardingApi(
         callForwardingBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!knowYourCustomerBaseUrl) {
+        knowYourCustomerBaseUrl = `${baseUrl}${KNOW_YOUR_CUSTOMER_URL}`
+      }
+
+      this.knowYourCustomer = new KnowYourCustomerAPI(
+        knowYourCustomerBaseUrl,
         token,
         hostname,
         agent
