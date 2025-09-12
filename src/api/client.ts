@@ -28,7 +28,7 @@ import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
 import { CallForwardingApi } from "./callForwardingApi";
-import { KnowYourCustomerAPI } from "./KnowYourCustomerApi";
+import { KnowYourCustomerAPI } from "./knowYourCustomerApi";
 
 const QOS_URL = "/qod/v0";
 

@@ -38,7 +38,7 @@ describe("Know Your Customer authentication", () => {
         const credentials: any = await client.authentication.credentials();
         const endpoints: any = await client.authentication.endpoints();
         const redirectUri= "https://example.com/redirect";
-        const scope = "WHAT HERE? dpv:FraudPreventionAndDetection know-your-customer:match OR SOMRTHING?";
+        const scope = "dpv:FraudPreventionAndDetection kyc-match:match"; //this correct?
         const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -52,9 +52,9 @@ describe("Know Your Customer authentication", () => {
 
 describe("Know Your Customer with access token", () => { 
     it("should get auth code", async () => {
-        // HOW TO GET THE AUTH CODE HERE...? ALL OF THIS IS GUESSES:
+        // HOW TO GET THE AUTH CODE HERE...?:
         const redirectUri= `${notificationUrl}/kyc`; // no /kyc yet exists
-        const scope = "WHAT HERE? dpv:FraudPreventionAndDetection know-your-customer:match OR SOMETHING??"
+        const scope = "dpv:FraudPreventionAndDetection kyc-match:match"; //this correct?
         const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -77,9 +77,9 @@ describe("Know Your Customer with access token", () => {
     });
 
     it("should get single use access token", async () => {
-        // HOW TO GET THE AUTH CODE HERE...? ALL OF THIS IS GUESSES:
+        // HOW TO GET THE AUTH CODE HERE...?:
         const redirectUri= `${notificationUrl}/kyc`; // no /kyc yet exists
-        const scope = "WHAT HERE? dpv:FraudPreventionAndDetection know-your-customer:match OR SOMETHING??"
+        const scope = "dpv:FraudPreventionAndDetection kyc-match:match"; //this correct?
         const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -107,9 +107,9 @@ describe("Know Your Customer with access token", () => {
 
 describe("Know Your Customer - Match", () => {   
     it("should match customer", async () => {
-        // HOW TO GET THE AUTH CODE HERE...? ALL OF THIS IS GUESSES:
+        // HOW TO GET THE AUTH CODE HERE...?:
         const redirectUri= `${notificationUrl}/kyc`; // no /kyc yet exists
-        const scope = "WHAT HERE? dpv:FraudPreventionAndDetection know-your-customer:match OR SOMETHING??"
+        const scope = "dpv:FraudPreventionAndDetection kyc-match:match"; //this correct?
         const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
