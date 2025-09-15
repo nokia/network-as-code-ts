@@ -1,7 +1,7 @@
 import fetchMock from '@fetch-mock/jest';
-
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
+import { InvalidParameterError } from '../src/errors';
 
 jest.mock("node-fetch", () => {
 	const nodeFetch = jest.requireActual("node-fetch");
@@ -82,11 +82,10 @@ beforeEach(() => {
     );
 });
 
-
-
 afterEach(() => {
     fetchMock.unmockGlobal();
 });
+
 
 describe("Know Your Customer", () => {
     it("know your Customer without Access token", async () => {
@@ -195,16 +194,7 @@ describe("Know Your Customer", () => {
                         middleNames: "TestMiddleNames",
                         familyNameAtBirth: "TestFamilyNameAtBirth",
                         address: "TestAddress",
-                        streetName: "TestStreetName",
-                        streetNumber: "TestStreetNumber",
-                        postalCode: "TestPostalCode",
-                        region: "TestRegion",
-                        locality: "TestLocality",
-                        country: "TestCountry",
-                        houseNumberExtension: "TestHouseNumberExtension",
-                        birthdate: "TestBirthdate",
-                        email: "TestEmail",
-                        gender: "TestGender"
+                        streetName: "TestStreetName"
                     }
                 )
             },
@@ -220,17 +210,7 @@ describe("Know Your Customer", () => {
                     familyNameAtBirthMatch: 'false',
                     familyNameAtBirthMatchScore: 90,
                     addressMatch: 'true',
-                    streetNameMatch: 'true',
-                    streetNumberMatch: 'not_available',
-                    postalCodeMatch: 'not_available',
-                    regionMatch: 'not_available',
-                    localityMatch: 'not_available',
-                    countryMatch: 'not_available',
-                    houseNumberExtensionMatch: 'not_available',
-                    birthdateMatch: 'not_available',
-                    emailMatch: 'not_available',
-                    emailMatchScore: "not_available",
-                    genderMatch: 'not_available'
+                    streetNameMatch: 'true'
             })});
 
         await device.matchCustomer(
@@ -286,6 +266,7 @@ describe("Know Your Customer", () => {
             },
             { response: 
                 JSON.stringify({
+                    idDocumentMatch: 'true',
                     nameMatch: 'true',
                     givenNameMatch: 'not_available',
                     familyNameMatch: 'not_available',
@@ -332,5 +313,35 @@ describe("Know Your Customer", () => {
             },
             "testCode1234"
         );
+    });
+
+    it("missing both phone number and authorization code throws error", async () => {
+        try {
+            await device.matchCustomer(
+                {
+                    idDocument: "123456",
+                    name: "testName",
+                    givenName: "testGivenName",
+                    familyName: "TestFamilyName",
+                    nameKanaHankaku: "TestNameKanaHankaku",
+                    nameKanaZenkaku: "TestNameKanaZenkaku",
+                    middleNames: "TestMiddleNames",
+                    familyNameAtBirth: "TestFamilyNameAtBirth",
+                    address: "TestAddress",
+                    streetName: "TestStreetName",
+                    streetNumber: "TestStreetNumber",
+                    postalCode: "TestPostalCode",
+                    region: "TestRegion",
+                    locality: "TestLocality",
+                    country: "TestCountry",
+                    houseNumberExtension: "TestHouseNumberExtension",
+                    birthdate: "TestBirthdate",
+                    email: "TestEmail",
+                    gender: "TestGender"
+                }
+            );
+        } catch (error) {
+            expect(error).toBeInstanceOf(InvalidParameterError);
+        }
     });
 });

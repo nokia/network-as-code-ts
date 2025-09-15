@@ -20,7 +20,7 @@ import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { AccessToken } from "./authentication";
-import { MatchCustomerParams } from "./knowYourCustomer";
+import { MatchCustomerParams, KYCResult } from "./knowYourCustomer";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -461,13 +461,16 @@ export class Device {
     /**
      * Match a customer identity against the account data bound to their phone number.
      * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the Operator systems.
-     * @param code (string): The previously obtained NaC authorization code.
-     * @returns true/false
+     * @param code (string): The previously obtained authorization code.
+     * @returns Promise<KYCResult>: The result of the matching process for each requested attribute.
      */
     async matchCustomer(
         params: MatchCustomerParams,
         code?: string
-    ): Promise<boolean> {
+    ): Promise<KYCResult> {
+        if (!params.phoneNumber && !code) {
+            throw new InvalidParameterError("Either device phone number or authorization code is required.");
+        }
         if (code) {
             const singleUseToken = await this.getSingleUseAccessToken(code);
             const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
