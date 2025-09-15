@@ -460,9 +460,9 @@ export class Device {
 
     /**
      * Match a customer identity against the account data bound to their phone number.
-     * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the Operator systems.
+     * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
      * @param code (string): The previously obtained authorization code.
-     * @returns Promise<KYCResult>: The result of the matching process for each requested attribute.
+     * @returns Promise<KYCResult>: Contains the result of matching the provided parameter values to the data in the operator system.
      */
     async matchCustomer(
         params: MatchCustomerParams,

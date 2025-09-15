@@ -5,6 +5,7 @@ import { Device } from "../src/models/device";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
+import { KYCResult } from "../src/models/knowYourCustomer";
 
 
 let client: NetworkAsCodeClient;
@@ -106,7 +107,25 @@ describe("Know Your Customer with access token", () => {
 });
 
 describe("Know Your Customer - Match", () => {   
-    it("should match customer", async () => {
+    it("should match customer with phone number but no authorization code", async () => {
+        const params = {
+            phoneNumber: "+999999991000",
+            idDocument: "123456",
+            name: "testName",
+            givenName: "testGivenName",
+            familyName: "TestFamilyName",
+            nameKanaHankaku: "TestNameKanaHankaku",
+            nameKanaZenkaku: "TestNameKanaZenkaku",
+            middleNames: "TestMiddleNames",
+            familyNameAtBirth: "TestFamilyNameAtBirth",
+            address: "TestAddress",
+            streetName: "TestStreetName"
+        }
+        const result: KYCResult = await device.matchCustomer(params);
+        expect(result).toBeTruthy(); // CHECK RESULT BETTER
+    });
+
+    it("should match customer with authorization code but no phone number", async () => {
         // HOW TO GET THE AUTH CODE HERE...?:
         const redirectUri= `${notificationUrl}/kyc`; // no /kyc yet exists
         const scope = "dpv:FraudPreventionAndDetection kyc-match:match"; //this correct?
@@ -129,7 +148,6 @@ describe("Know Your Customer - Match", () => {
         const data = await response.json() as any;
         const code = data.code
         const params = {
-            phoneNumber: "+999999991000",
             idDocument: "123456",
             name: "testName",
             givenName: "testGivenName",
@@ -141,69 +159,72 @@ describe("Know Your Customer - Match", () => {
             address: "TestAddress",
             streetName: "TestStreetName"
         }
-        const result: boolean = await device.matchCustomer(params, code);
+        const result: KYCResult = await device.matchCustomer(params, code);
         expect(result).toBeTruthy(); // CHECK RESULT BETTER
     });
-/*
-    it.skip("should verify number - False", async () => {
-        const redirectUri= `${notificationUrl}/nv`;
-        const scope = "dpv:FraudPreventionAndDetection number-verification:verify";
-        const loginHint = "+99999991001";
-        const callback = await client.authentication.createAuthenticationLink(
-            redirectUri,
-            scope,
-            loginHint
-        );
-        await fetch(callback, {
-            method: "GET",
-            agent: agent
-        });
 
-        const response =  await fetch(`${notificationUrl}/nv-get-code`,
-                    {
-                        method: "GET",
-                        agent: agent
-                    });
-        const data = await response.json() as any;
-        const code = data.code
-        const result: boolean = await device.verifyNumber(code);
-        expect(result).toBeFalsy();
-    });
-
-    it("should return 400 APIError", async () => {
+    it("wrong authorization code should return 400 APIError", async () => {
         try {
-            await device.getSingleUseAccessToken("1234567");            
-            expect(true).toBe(false);
+            await device.matchCustomer(
+                {
+                    idDocument: "123456",
+                    name: "testName",
+                    givenName: "testGivenName",
+                    familyName: "TestFamilyName",
+                    nameKanaHankaku: "TestNameKanaHankaku",
+                    nameKanaZenkaku: "TestNameKanaZenkaku",
+                    middleNames: "TestMiddleNames",
+                    familyNameAtBirth: "TestFamilyNameAtBirth",
+                    address: "TestAddress",
+                    streetName: "TestStreetName",
+                    streetNumber: "TestStreetNumber",
+                    postalCode: "TestPostalCode",
+                    region: "TestRegion",
+                    locality: "TestLocality",
+                    country: "TestCountry",
+                    houseNumberExtension: "TestHouseNumberExtension",
+                    birthdate: "TestBirthdate",
+                    email: "TestEmail",
+                    gender: "TestGender"
+                },
+                "123456"
+            );
         } catch (error){
             expect(error).toBeDefined();
             const err = error as Error;
             expect(err.message).toEqual("400 - Bad Request");
         }
     });
-});
-describe("Get Phone Number", () => {
-    it("should get device phone number", async () => {
-        const redirectUri= `${notificationUrl}/nv`;
-        const scope = "dpv:FraudPreventionAndDetection number-verification:device-phone-number:read";
-        const loginHint = "+99999991000";
-        const callback = await client.authentication.createAuthenticationLink(
-            redirectUri,
-            scope,
-            loginHint
-        );
-        await fetch(callback, {
-            method: "GET",
-            agent: agent
-        });
 
-        const response =  await fetch(`${notificationUrl}/nv-get-code`,
-                    {
-                        method: "GET",
-                        agent: agent
-                    });
-        const data = await response.json() as any;
-        const code = data.code
-        const result: string = await device.getPhoneNumber(code);
-        expect(result).toBeDefined();
-    });*/
+    it("wrong phone number should return 403 AuthenticationError", async () => {
+        try {
+            await device.matchCustomer(
+                {   phoneNumber: "+12345678",
+                    idDocument: "123456",
+                    name: "testName",
+                    givenName: "testGivenName",
+                    familyName: "TestFamilyName",
+                    nameKanaHankaku: "TestNameKanaHankaku",
+                    nameKanaZenkaku: "TestNameKanaZenkaku",
+                    middleNames: "TestMiddleNames",
+                    familyNameAtBirth: "TestFamilyNameAtBirth",
+                    address: "TestAddress",
+                    streetName: "TestStreetName",
+                    streetNumber: "TestStreetNumber",
+                    postalCode: "TestPostalCode",
+                    region: "TestRegion",
+                    locality: "TestLocality",
+                    country: "TestCountry",
+                    houseNumberExtension: "TestHouseNumberExtension",
+                    birthdate: "TestBirthdate",
+                    email: "TestEmail",
+                    gender: "TestGender"
+                }
+            );
+        } catch (error){
+            expect(error).toBeDefined();
+            const err = error as Error;
+            expect(err.message).toEqual("403 - Forbidden");
+        }
+    });
 });
