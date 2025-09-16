@@ -62,21 +62,16 @@ export class KYCMatchResult {
     streetNumberMatch?: string;
     streetNumberMatchScore?: number;
     postalCodeMatch?: string;
-    postalCodeMatchScore?: string;
     regionMatch?: string;
     regionMatchScore?: number;
     localityMatch?: string;
     localityMatchScore?: number;
     countryMatch?: string;
-    countryMatchScore?: number;
     houseNumberExtensionMatch?: string;
-    houseNumberExtensionMatchScore?: number;
     birthdateMatch?: string;
-    birthdateMatchScore?: number;
     emailMatch?: string;
     emailMatchScore?: number;
     genderMatch?: string;
-    genderMatchScore?: number;
 
     constructor(
         idDocumentMatch: string,
@@ -101,21 +96,16 @@ export class KYCMatchResult {
         streetNumberMatch: string,
         streetNumberMatchScore: number,
         postalCodeMatch: string,
-        postalCodeMatchScore: string,
         regionMatch: string,
         regionMatchScore: number,
         localityMatch: string,
         localityMatchScore: number,
         countryMatch: string,
-        countryMatchScore: number,
         houseNumberExtensionMatch: string,
-        houseNumberExtensionMatchScore: number,
         birthdateMatch: string,
-        birthdateMatchScore: number,
         emailMatch: string,
         emailMatchScore: number,
-        genderMatch: string,
-        genderMatchScore: number
+        genderMatch: string
     ) {
         this.idDocumentMatch = idDocumentMatch;
         this.nameMatch = nameMatch;
@@ -139,21 +129,16 @@ export class KYCMatchResult {
         this.streetNumberMatch = streetNumberMatch;
         this.streetNumberMatchScore = streetNumberMatchScore;
         this.postalCodeMatch = postalCodeMatch;
-        this.postalCodeMatchScore = postalCodeMatchScore;
         this.regionMatch = regionMatch;
         this.regionMatchScore = regionMatchScore;
         this.localityMatch = localityMatch;
         this.localityMatchScore = localityMatchScore;
         this.countryMatch = countryMatch;
-        this.countryMatchScore = countryMatchScore;
         this.houseNumberExtensionMatch = houseNumberExtensionMatch;
-        this.houseNumberExtensionMatchScore = houseNumberExtensionMatchScore;
         this.birthdateMatch = birthdateMatch;
-        this.birthdateMatchScore = birthdateMatchScore;
         this.emailMatch = emailMatch;
         this.emailMatchScore = emailMatchScore;
         this.genderMatch = genderMatch;
-        this.genderMatchScore = genderMatchScore;
     }
 
 
@@ -181,21 +166,16 @@ export class KYCMatchResult {
             jsonData.streetNumberMatch,
             jsonData.streetNumberMatchScore,
             jsonData.postalCodeMatch,
-            jsonData.postalCodeMatchScore,
             jsonData.regionMatch,
             jsonData.regionMatchScore,
             jsonData.localityMatch,
             jsonData.localityMatchScore,
             jsonData.countryMatch,
-            jsonData.countryMatchScore,
             jsonData.houseNumberExtensionMatch,
-            jsonData.houseNumberExtensionMatchScore,
             jsonData.birthdateMatch,
-            jsonData.birthdateMatchScore,
             jsonData.emailMatch,
             jsonData.emailMatchScore,
-            jsonData.genderMatch,
-            jsonData.genderMatchScore
+            jsonData.genderMatch
         );
     }
 }

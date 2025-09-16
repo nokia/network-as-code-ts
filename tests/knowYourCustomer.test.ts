@@ -194,7 +194,8 @@ describe("Know Your Customer", () => {
                         middleNames: "TestMiddleNames",
                         familyNameAtBirth: "TestFamilyNameAtBirth",
                         address: "TestAddress",
-                        streetName: "TestStreetName"
+                        streetName: "TestStreetName",
+                        email: "TestEmail"
                     }
                 )
             },
@@ -210,7 +211,8 @@ describe("Know Your Customer", () => {
                     familyNameAtBirthMatch: 'false',
                     familyNameAtBirthMatchScore: 90,
                     addressMatch: 'true',
-                    streetNameMatch: 'true'
+                    streetNameMatch: 'true',
+                    email: "true"
             })});
 
         await device.matchCustomer(
@@ -225,7 +227,8 @@ describe("Know Your Customer", () => {
                 middleNames: "TestMiddleNames",
                 familyNameAtBirth: "TestFamilyNameAtBirth",
                 address: "TestAddress",
-                streetName: "TestStreetName"
+                streetName: "TestStreetName",
+                email: "TestEmail"
             }
         );
     });
@@ -285,11 +288,9 @@ describe("Know Your Customer", () => {
                     countryMatch: 'true',
                     houseNumberExtensionMatch: 'not_available',
                     birthdateMatch: 'false',
-                    birthdateMatchScore: 66,
                     emailMatch: 'false',
                     emailMatchScore: 87,
                     genderMatch: 'false',
-                    genderMatchScore: 88
             })});
 
         await device.matchCustomer(
