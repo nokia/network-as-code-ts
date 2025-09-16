@@ -17,7 +17,7 @@ const device = client.devices.get({
 // In this case the device phone number is required to be provided in the parameters.
 
 
-// Add here the customer identity data which to be used in matching
+// Add the customer identity data here, which is to be used in matching
 // a customer against the account data bound to their phone number.
 const parameters =
     {
@@ -52,7 +52,7 @@ console.log(customerMatchResult)
 
 /* 
 Alternativelly you can retrieve an authorization code and use the code in the matchCustomer method. 
-In this case, no device phone number will be needed to be provided in the parameters.
+In this case, no device phone number is required to be provided in the parameters.
 
 This authorization_endpoint should be requested by the end user device and not in the backend
  of your application, since the requesting device is used to determine authorization 
@@ -102,7 +102,7 @@ app.listen(port, () => {
 // Add your authorization code here.
 const code = "NaC-authorization-code";
 
-// Add here the customer identity data which to be used in matching
+// Add the customer identity data here, which is to be used in matching
 // a customer against the account data bound to their phone number.
 const parametersUsingAuthCode =
     {
@@ -128,7 +128,8 @@ const parametersUsingAuthCode =
     }
 
 /* You can use the KYC Match API with the obtained authorization code.
- The KYC Match endpoint will respond with  */
+ The KYC Match endpoint will respond with the result of the matching for each requested attribute.
+ Result values for each attribute can be true, false or not_available.*/
 const customerMatchAuthCodeResult = await device.matchCustomer(parametersUsingAuthCode, code);
 
 console.log(customerMatchAuthCodeResult);
