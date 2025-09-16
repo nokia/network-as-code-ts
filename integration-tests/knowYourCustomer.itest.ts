@@ -5,7 +5,7 @@ import { Device } from "../src/models/device";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
-import { KYCResult } from "../src/models/knowYourCustomer";
+import { KYCMatchResult } from "../src/models/knowYourCustomer";
 
 
 let client: NetworkAsCodeClient;
@@ -121,7 +121,7 @@ describe("Know Your Customer - Match", () => {
             address: "TestAddress",
             streetName: "TestStreetName"
         }
-        const result: KYCResult = await device.matchCustomer(params);
+        const result: KYCMatchResult = await device.matchCustomer(params);
         expect(result).toBeTruthy(); // CHECK RESULT BETTER
     });
 
@@ -159,7 +159,7 @@ describe("Know Your Customer - Match", () => {
             address: "TestAddress",
             streetName: "TestStreetName"
         }
-        const result: KYCResult = await device.matchCustomer(params, code);
+        const result: KYCMatchResult = await device.matchCustomer(params, code);
         expect(result).toBeTruthy(); // CHECK RESULT BETTER
     });
 

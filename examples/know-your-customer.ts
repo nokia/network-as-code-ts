@@ -16,28 +16,31 @@ const device = client.devices.get({
 // You can use the matchCustomer method without and authorization code.
 // In this case the device phone number is required to be provided in the parameters.
 
+
+// Add here the customer identity data which to be used in matching
+// a customer against the account data bound to their phone number.
 const parameters =
     {
-        phoneNumber: "+999999991000",
-        idDocument: "123456",
-        name: "testName",
-        givenName: "testGivenName",
-        familyName: "TestFamilyName",
-        nameKanaHankaku: "TestNameKanaHankaku",
-        nameKanaZenkaku: "TestNameKanaZenkaku",
-        middleNames: "TestMiddleNames",
-        familyNameAtBirth: "TestFamilyNameAtBirth",
-        address: "TestAddress",
-        streetName: "TestStreetName",
-        streetNumber: "TestStreetNumber",
-        postalCode: "TestPostalCode",
-        region: "TestRegion",
-        locality: "TestLocality",
-        country: "TestCountry",
-        houseNumberExtension: "TestHouseNumberExtension",
-        birthdate: "TestBirthdate",
-        email: "TestEmail",
-        gender: "TestGender"
+        phoneNumber: '+99999991000',
+        idDocument: "66666666q",
+        name: "Federica Sanchez Arjona",
+        givenName: "Federica",
+        familyName: "Sanchez Arjona",
+        nameKanaHankaku: "federica",
+        nameKanaZenkaku: "Frederica",
+        middleNames: "Sanchez",
+        familyNameAtBirth: "YYYY",
+        address: "Tokyo-to Chiyoda-ku Iidabashi 3-10-10",
+        streetName: "Nicolas Salmeron",
+        streetNumber: "4",
+        postalCode: "1028460",
+        region: "Tokyo",
+        locality: "ZZZZ",
+        country: "JP",
+        houseNumberExtension: "VVVV",
+        birthdate: "1978-08-22",
+        email: "abc@example.com",
+        gender: "OTHER"
     }
 
 const customerMatchResult = await device.matchCustomer(parameters);
@@ -99,32 +102,33 @@ app.listen(port, () => {
 // Add your authorization code here.
 const code = "NaC-authorization-code";
 
-// Customer identity data to match a customer against the account data bound to their phone number.
-const parametersWithAuthCode =
+// Add here the customer identity data which to be used in matching
+// a customer against the account data bound to their phone number.
+const parametersUsingAuthCode =
     {
-        idDocument: "123456",
-        name: "testName",
-        givenName: "testGivenName",
-        familyName: "TestFamilyName",
-        nameKanaHankaku: "TestNameKanaHankaku",
-        nameKanaZenkaku: "TestNameKanaZenkaku",
-        middleNames: "TestMiddleNames",
-        familyNameAtBirth: "TestFamilyNameAtBirth",
-        address: "TestAddress",
-        streetName: "TestStreetName",
-        streetNumber: "TestStreetNumber",
-        postalCode: "TestPostalCode",
-        region: "TestRegion",
-        locality: "TestLocality",
-        country: "TestCountry",
-        houseNumberExtension: "TestHouseNumberExtension",
-        birthdate: "TestBirthdate",
-        email: "TestEmail",
-        gender: "TestGender"
+        idDocument: "66666666q",
+        name: "Federica Sanchez Arjona",
+        givenName: "Federica",
+        familyName: "Sanchez Arjona",
+        nameKanaHankaku: "federica",
+        nameKanaZenkaku: "Frederica",
+        middleNames: "Sanchez",
+        familyNameAtBirth: "YYYY",
+        address: "Tokyo-to Chiyoda-ku Iidabashi 3-10-10",
+        streetName: "Nicolas Salmeron",
+        streetNumber: "4",
+        postalCode: "1028460",
+        region: "Tokyo",
+        locality: "ZZZZ",
+        country: "JP",
+        houseNumberExtension: "VVVV",
+        birthdate: "1978-08-22",
+        email: "abc@example.com",
+        gender: "OTHER"
     }
 
 /* You can use the KYC Match API with the obtained authorization code.
  The KYC Match endpoint will respond with  */
-const customerMatchAuthCodeResult = await device.matchCustomer(parametersWithAuthCode, code);
+const customerMatchAuthCodeResult = await device.matchCustomer(parametersUsingAuthCode, code);
 
 console.log(customerMatchAuthCodeResult);
