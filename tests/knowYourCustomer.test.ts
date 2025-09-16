@@ -129,7 +129,7 @@ describe("Know Your Customer", () => {
                     givenNameMatch: 'not_available',
                     familyNameMatch: 'not_available',
                     nameKanaHankakuMatch: 'true',
-                    nameKanaZenkakuMatch: 'false',
+                    nameKanaZenkakuMatch: 'true',
                     middleNamesMatch: 'true',
                     familyNameAtBirthMatch: 'false',
                     familyNameAtBirthMatchScore: 90,
@@ -141,10 +141,10 @@ describe("Know Your Customer", () => {
                     localityMatch: 'not_available',
                     countryMatch: 'true',
                     houseNumberExtensionMatch: 'not_available',
-                    birthdateMatch: 'false',
+                    birthdateMatch: 'true',
                     emailMatch: 'false',
                     emailMatchScore: 87,
-                    genderMatch: 'false'
+                    genderMatch: 'true'
             })});
 
         await device.matchCustomer(
@@ -205,7 +205,7 @@ describe("Know Your Customer", () => {
                     givenNameMatch: 'not_available',
                     familyNameMatch: 'not_available',
                     nameKanaHankakuMatch: 'true',
-                    nameKanaZenkakuMatch: 'false',
+                    nameKanaZenkakuMatch: 'true',
                     middleNamesMatch: 'true',
                     familyNameAtBirthMatch: 'false',
                     familyNameAtBirthMatchScore: 90,
@@ -272,6 +272,7 @@ describe("Know Your Customer", () => {
                     familyNameMatch: 'not_available',
                     nameKanaHankakuMatch: 'true',
                     nameKanaZenkakuMatch: 'false',
+                    nameKanaZenkakuMatchScore: 70,
                     middleNamesMatch: 'true',
                     familyNameAtBirthMatch: 'false',
                     familyNameAtBirthMatchScore: 90,
@@ -284,9 +285,11 @@ describe("Know Your Customer", () => {
                     countryMatch: 'true',
                     houseNumberExtensionMatch: 'not_available',
                     birthdateMatch: 'false',
+                    birthdateMatchScore: 66,
                     emailMatch: 'false',
                     emailMatchScore: 87,
-                    genderMatch: 'false'
+                    genderMatch: 'false',
+                    genderMatchScore: 88
             })});
 
         await device.matchCustomer(

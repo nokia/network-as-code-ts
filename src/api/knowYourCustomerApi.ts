@@ -16,7 +16,7 @@
 
 import { errorHandler } from "../errors";
 import { ProxyAgent } from "proxy-agent";
-import { KYCResult } from "../models/knowYourCustomer";
+import { KYCMatchResult } from "../models/knowYourCustomer";
 
 import fetch from "node-fetch";
 
@@ -54,6 +54,6 @@ export class KnowYourCustomerAPI {
 
         errorHandler(response);
 
-        return KYCResult.fromJson(response.json() as Promise<any>)
+        return KYCMatchResult.fromJson(response.json() as Promise<any>)
     }
 }

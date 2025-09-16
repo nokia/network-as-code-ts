@@ -39,95 +39,163 @@ export interface MatchCustomerParams {
 }
 
 
-export class KYCResult {
-    phoneNumber?: string;
-    idDocument?: string;
-    name?: string;
-    givenName?: string;
-    familyName?: string;
-    nameKanaHankaku?: string;
-    nameKanaZenkaku?: string;
-    middleNames?: string;
-    familyNameAtBirth?: string;
-    address?: string;
-    streetName?: string;
-    streetNumber?: string;
-    postalCode?: string;
-    region?: string;
-    locality?: string;
-    country?: string;
-    houseNumberExtension?: string;
-    birthdate?: string;
-    email?: string;
-    gender?: string;
+export class KYCMatchResult {
+    idDocumentMatch?: string;
+    nameMatch?: string;
+    nameMatchScore?: number;
+    givenNameMatch?: string;
+    givenNameMatchScore?: number;
+    familyNameMatch?: string;
+    familyNameMatchScore?: number;
+    nameKanaHankakuMatch?: string;
+    nameKanaHankakuMatchScore?: number;
+    nameKanaZenkakuMatch?: string;
+    nameKanaZenkakuMatchScore?: number;
+    middleNamesMatch?: string;
+    middleNamesMatchScore?: number;
+    familyNameAtBirthMatch?: string;
+    familyNameAtBirthMatchScore?: number;
+    addressMatch?: string;
+    addressMatchScore?: number;
+    streetNameMatch?: string;
+    streetNameMatchScore?: number;
+    streetNumberMatch?: string;
+    streetNumberMatchScore?: number;
+    postalCodeMatch?: string;
+    postalCodeMatchScore?: string;
+    regionMatch?: string;
+    regionMatchScore?: number;
+    localityMatch?: string;
+    localityMatchScore?: number;
+    countryMatch?: string;
+    countryMatchScore?: number;
+    houseNumberExtensionMatch?: string;
+    houseNumberExtensionMatchScore?: number;
+    birthdateMatch?: string;
+    birthdateMatchScore?: number;
+    emailMatch?: string;
+    emailMatchScore?: number;
+    genderMatch?: string;
+    genderMatchScore?: number;
 
     constructor(
-        phoneNumber: string,
-        idDocument: string,
-        name: string,
-        givenName: string,
-        familyName: string,
-        nameKanaHankaku: string,
-        nameKanaZenkaku: string,
-        middleNames: string,
-        familyNameAtBirth: string,
-        address: string,
-        streetName: string,
-        streetNumber: string,
-        postalCode: string,
-        region: string,
-        locality: string,
-        country: string,
-        houseNumberExtension: string,
-        birthdate: string,
-        email: string,
-        gender: string
+        idDocumentMatch: string,
+        nameMatch: string,
+        nameMatchScore: number,
+        givenNameMatch: string,
+        givenNameMatchScore: number,
+        familyNameMatch: string,
+        familyNameMatchScore: number,
+        nameKanaHankakuMatch: string,
+        nameKanaHankakuMatchScore: number,
+        nameKanaZenkakuMatch: string,
+        nameKanaZenkakuMatchScore: number,
+        middleNamesMatch: string,
+        middleNamesMatchScore: number,
+        familyNameAtBirthMatch: string,
+        familyNameAtBirthMatchScore: number,
+        addressMatch: string,
+        addressMatchScore: number,
+        streetNameMatch: string,
+        streetNameMatchScore: number,
+        streetNumberMatch: string,
+        streetNumberMatchScore: number,
+        postalCodeMatch: string,
+        postalCodeMatchScore: string,
+        regionMatch: string,
+        regionMatchScore: number,
+        localityMatch: string,
+        localityMatchScore: number,
+        countryMatch: string,
+        countryMatchScore: number,
+        houseNumberExtensionMatch: string,
+        houseNumberExtensionMatchScore: number,
+        birthdateMatch: string,
+        birthdateMatchScore: number,
+        emailMatch: string,
+        emailMatchScore: number,
+        genderMatch: string,
+        genderMatchScore: number
     ) {
-        this.phoneNumber = phoneNumber;
-        this.idDocument = idDocument;
-        this.name = name;
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.nameKanaHankaku = nameKanaHankaku;
-        this.nameKanaZenkaku = nameKanaZenkaku;
-        this.middleNames = middleNames;
-        this.familyNameAtBirth = familyNameAtBirth;
-        this.address = address;
-        this.streetName = streetName;
-        this.streetNumber = streetNumber;
-        this.postalCode = postalCode;
-        this.region = region;
-        this.locality = locality;
-        this.country = country;
-        this.houseNumberExtension = houseNumberExtension;
-        this.birthdate = birthdate;
-        this.email = email;
-        this.gender = gender;
+        this.idDocumentMatch = idDocumentMatch;
+        this.nameMatch = nameMatch;
+        this.nameMatchScore = nameMatchScore;
+        this.givenNameMatch = givenNameMatch;
+        this.givenNameMatchScore = givenNameMatchScore;
+        this.familyNameMatch = familyNameMatch;
+        this.familyNameMatchScore = familyNameMatchScore;
+        this.nameKanaHankakuMatch = nameKanaHankakuMatch;
+        this.nameKanaHankakuMatchScore = nameKanaHankakuMatchScore;
+        this.nameKanaZenkakuMatch = nameKanaZenkakuMatch;
+        this.nameKanaZenkakuMatchScore = nameKanaZenkakuMatchScore;
+        this.middleNamesMatch = middleNamesMatch;
+        this.middleNamesMatchScore = middleNamesMatchScore;
+        this.familyNameAtBirthMatch = familyNameAtBirthMatch;
+        this.familyNameAtBirthMatchScore = familyNameAtBirthMatchScore;
+        this.addressMatch = addressMatch;
+        this.addressMatchScore = addressMatchScore;
+        this.streetNameMatch = streetNameMatch;
+        this.streetNameMatchScore = streetNameMatchScore;
+        this.streetNumberMatch = streetNumberMatch;
+        this.streetNumberMatchScore = streetNumberMatchScore;
+        this.postalCodeMatch = postalCodeMatch;
+        this.postalCodeMatchScore = postalCodeMatchScore;
+        this.regionMatch = regionMatch;
+        this.regionMatchScore = regionMatchScore;
+        this.localityMatch = localityMatch;
+        this.localityMatchScore = localityMatchScore;
+        this.countryMatch = countryMatch;
+        this.countryMatchScore = countryMatchScore;
+        this.houseNumberExtensionMatch = houseNumberExtensionMatch;
+        this.houseNumberExtensionMatchScore = houseNumberExtensionMatchScore;
+        this.birthdateMatch = birthdateMatch;
+        this.birthdateMatchScore = birthdateMatchScore;
+        this.emailMatch = emailMatch;
+        this.emailMatchScore = emailMatchScore;
+        this.genderMatch = genderMatch;
+        this.genderMatchScore = genderMatchScore;
     }
 
 
-    static fromJson(jsonData: any): KYCResult {
-        return new KYCResult(
-            jsonData.phoneNumber,
-            jsonData.idDocument,
-            jsonData.name,
-            jsonData.givenName, 
-            jsonData.familyName,
-            jsonData.nameKanaHankaku,
-            jsonData.nameKanaZenkaku,
-            jsonData.middleNames,
-            jsonData.familyNameAtBirth, 
-            jsonData.address,
-            jsonData.streetName,
-            jsonData.streetNumber,
-            jsonData.postalCode,
-            jsonData.region, 
-            jsonData.locality,
-            jsonData.country,
-            jsonData.houseNumberExtension,
-            jsonData.birthdate, 
-            jsonData.email,
-            jsonData.gender
+    static fromJson(jsonData: any): KYCMatchResult {
+        return new KYCMatchResult(
+            jsonData.idDocumentMatch,
+            jsonData.nameMatch,
+            jsonData.nameMatchScore,
+            jsonData.givenNameMatch,
+            jsonData.givenNameMatchScore,
+            jsonData.familyNameMatch,
+            jsonData.familyNameMatchScore,
+            jsonData.nameKanaHankakuMatch,
+            jsonData.nameKanaHankakuMatchScore,
+            jsonData.nameKanaZenkakuMatch,
+            jsonData.nameKanaZenkakuMatchScore,
+            jsonData.middleNamesMatch,
+            jsonData.middleNamesMatchScore,
+            jsonData.familyNameAtBirthMatch,
+            jsonData.familyNameAtBirthMatchScore,
+            jsonData.addressMatch,
+            jsonData.addressMatchScore,
+            jsonData.streetNameMatch,
+            jsonData.streetNameMatchScore,
+            jsonData.streetNumberMatch,
+            jsonData.streetNumberMatchScore,
+            jsonData.postalCodeMatch,
+            jsonData.postalCodeMatchScore,
+            jsonData.regionMatch,
+            jsonData.regionMatchScore,
+            jsonData.localityMatch,
+            jsonData.localityMatchScore,
+            jsonData.countryMatch,
+            jsonData.countryMatchScore,
+            jsonData.houseNumberExtensionMatch,
+            jsonData.houseNumberExtensionMatchScore,
+            jsonData.birthdateMatch,
+            jsonData.birthdateMatchScore,
+            jsonData.emailMatch,
+            jsonData.emailMatchScore,
+            jsonData.genderMatch,
+            jsonData.genderMatchScore
         );
     }
 }
