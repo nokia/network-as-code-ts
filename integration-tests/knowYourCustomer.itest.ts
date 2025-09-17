@@ -39,7 +39,7 @@ describe("Know Your Customer authentication", () => {
         const credentials: any = await client.authentication.credentials();
         const endpoints: any = await client.authentication.endpoints();
         const redirectUri= "https://example.com/redirect";
-        const scope = "dpv:FraudPreventionAndDetection kyc-match:match"; //this correct?
+        const scope = "dpv:FraudPreventionAndDetection kyc-match:match";
         const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -47,15 +47,14 @@ describe("Know Your Customer authentication", () => {
             loginHint
         );
         expect(callback)
-        .toEqual(`${endpoints.authorizationEndpoint}?response_type=code&client_id=${credentials.clientId}&redirect_uri=https%3A%2F%2Fexample.com%2Fredirect&scope=dpv%3AFraudPreventionAndDetection%20know-your-customer%3Amatch&login_hint=%2B99999991000`);
+        .toEqual(`${endpoints.authorizationEndpoint}?response_type=code&client_id=${credentials.clientId}&redirect_uri=https%3A%2F%2Fexample.com%2Fredirect&scope=dpv%3AFraudPreventionAndDetection%20kyc-match%3Amatch&login_hint=%2B99999991000`);
     });
 });
 
 describe("Know Your Customer with access token", () => { 
     it("should get auth code", async () => {
-        // HOW TO GET THE AUTH CODE HERE...?:
-        const redirectUri= `${notificationUrl}/kyc`; // no /kyc yet exists
-        const scope = "dpv:FraudPreventionAndDetection kyc-match:match"; //this correct?
+        const redirectUri= `${notificationUrl}/kyc`;
+        const scope = "dpv:FraudPreventionAndDetection kyc-match:match";
         const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -67,7 +66,7 @@ describe("Know Your Customer with access token", () => {
             agent: agent
         });
 
-        const response =  await fetch(`${notificationUrl}/kyc-get-code`, // no /kyc-get-code exists yet
+        const response =  await fetch(`${notificationUrl}/kyc-get-code`,
             {
                 method: "GET",
                 agent: agent
@@ -78,9 +77,8 @@ describe("Know Your Customer with access token", () => {
     });
 
     it("should get single use access token", async () => {
-        // HOW TO GET THE AUTH CODE HERE...?:
-        const redirectUri= `${notificationUrl}/kyc`; // no /kyc yet exists
-        const scope = "dpv:FraudPreventionAndDetection kyc-match:match"; //this correct?
+        const redirectUri= `${notificationUrl}/kyc`;
+        const scope = "dpv:FraudPreventionAndDetection kyc-match:match";
         const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -92,7 +90,7 @@ describe("Know Your Customer with access token", () => {
             agent: agent
         });
 
-        const response =  await fetch(`${notificationUrl}/kyc-get-code`, // no /kyc-get-code exists yet
+        const response =  await fetch(`${notificationUrl}/kyc-get-code`,
             {
                 method: "GET",
                 agent: agent
@@ -126,9 +124,8 @@ describe("Know Your Customer - Match", () => {
     });
 
     it("should match customer with authorization code but no phone number", async () => {
-        // HOW TO GET THE AUTH CODE HERE...?:
-        const redirectUri= `${notificationUrl}/kyc`; // no /kyc yet exists
-        const scope = "dpv:FraudPreventionAndDetection kyc-match:match"; //this correct?
+        const redirectUri= `${notificationUrl}/kyc`;
+        const scope = "dpv:FraudPreventionAndDetection kyc-match:match";
         const loginHint = "+99999991000";
         const callback = await client.authentication.createAuthenticationLink(
             redirectUri,
@@ -140,7 +137,7 @@ describe("Know Your Customer - Match", () => {
             agent: agent
         });
 
-        const response =  await fetch(`${notificationUrl}/kyc-get-code`, // no /kyc-get-code exists yet
+        const response =  await fetch(`${notificationUrl}/kyc-get-code`,
             {
                 method: "GET",
                 agent: agent

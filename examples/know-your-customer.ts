@@ -27,7 +27,7 @@ const parameters =
         givenName: "Federica",
         familyName: "Sanchez Arjona",
         nameKanaHankaku: "federica",
-        nameKanaZenkaku: "Frederica",
+        nameKanaZenkaku: "Ｆｅｄｅｒｉｃａ",
         middleNames: "Sanchez",
         familyNameAtBirth: "YYYY",
         address: "Tokyo-to Chiyoda-ku Iidabashi 3-10-10",
@@ -46,7 +46,6 @@ const parameters =
 const customerMatchResult = await device.matchCustomer(parameters);
 
 console.log(customerMatchResult)
-
 
 
 
@@ -98,7 +97,6 @@ app.listen(port, () => {
 
 
 
-
 // Add your authorization code here.
 const code = "NaC-authorization-code";
 
@@ -111,7 +109,7 @@ const parametersUsingAuthCode =
         givenName: "Federica",
         familyName: "Sanchez Arjona",
         nameKanaHankaku: "federica",
-        nameKanaZenkaku: "Frederica",
+        nameKanaZenkaku: "Ｆｅｄｅｒｉｃａ",
         middleNames: "Sanchez",
         familyNameAtBirth: "YYYY",
         address: "Tokyo-to Chiyoda-ku Iidabashi 3-10-10",
