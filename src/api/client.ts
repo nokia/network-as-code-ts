@@ -22,6 +22,7 @@ import { DeviceStatusAPI } from "./deviceStatusAPI";
 import { AttachAPI, SliceAPI } from "./sliceApi";
 import { CongestionInsightsAPI } from "./congestionInsightsApi";
 import { SimSwapAPI } from "./simSwapApi";
+import { DeviceSwapAPI } from "./deviceSwapApi";
 import { GeofencingAPI } from "./geofencing";
 import { AuthorizationEndpointsAPI } from "./authorizatioEndpointsApi";
 import { CredentialsAPI } from "./credentialsApi";
@@ -44,6 +45,8 @@ const SLICE_ATTACH_URL = "/device-attach/v0";
 const CONGESTION_INSIGHTS_URL = "/congestion-insights/v0";
 
 const SIM_SWAP_URL = "/passthrough/camara/v1/sim-swap/sim-swap/v0";
+
+const DEVICE_SWAP_URL = "/passthrough/camara/v1/device-swap/device-swap/v1";
 
 const GEOFENCING_URL = "/geofencing-subscriptions/v0.3";
 
@@ -93,6 +96,7 @@ export class APIClient {
     sliceAttach: AttachAPI;
     insights: CongestionInsightsAPI;
     simSwap: SimSwapAPI;
+    deviceSwap: DeviceSwapAPI;
     geofencing: GeofencingAPI;
     authorizationEndpoints: AuthorizationEndpointsAPI;
     credentials: CredentialsAPI;
@@ -111,6 +115,7 @@ export class APIClient {
         sliceAttachBaseUrl: string | undefined = undefined,
         congestionInsightsBaseUrl: string | undefined = undefined,
         simSwapBaseUrl: string | undefined = undefined,
+        deviceSwapBaseUrl: string | undefined = undefined,
         geofencingBaseUrl: string | undefined = undefined,
         authorizationEndpointsBaseUrl: string | undefined = undefined,
         credentialsBaseUrl: string | undefined = undefined,
@@ -201,6 +206,17 @@ export class APIClient {
 
       this.simSwap = new SimSwapAPI(
         simSwapBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!deviceSwapBaseUrl) {
+        deviceSwapBaseUrl = `${baseUrl}${DEVICE_SWAP_URL}`
+      }
+
+      this.deviceSwap = new DeviceSwapAPI(
+        deviceSwapBaseUrl,
         token,
         hostname,
         agent
