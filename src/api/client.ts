@@ -46,7 +46,7 @@ const CONGESTION_INSIGHTS_URL = "/congestion-insights/v0";
 
 const SIM_SWAP_URL = "/passthrough/camara/v1/sim-swap/sim-swap/v0";
 
-const DEVICE_SWAP_URL = "/passthrough/camara/v1/device-swap/device-swap/v0";
+const DEVICE_SWAP_URL = "/passthrough/camara/v1/device-swap/device-swap/v1";
 
 const GEOFENCING_URL = "/geofencing-subscriptions/v0.3";
 

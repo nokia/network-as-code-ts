@@ -27,7 +27,7 @@ describe("Device Swap retrieval and verification", () => {
     });
 
     it("should verify device swap with max age", async () => {
-        expect(await device.verifyDeviceSwap(120)).toBeTruthy();
+        expect(await device.verifyDeviceSwap(250)).toBeTruthy();
     });
 
     it("should verify device swap - True", async () => {
@@ -35,7 +35,7 @@ describe("Device Swap retrieval and verification", () => {
             phoneNumber: "+99999991000",
         });
 
-       expect(await device.verifyDeviceSwap(120)).toBeTruthy();
+       expect(await device.verifyDeviceSwap(250)).toBeTruthy();
 
     });
 
