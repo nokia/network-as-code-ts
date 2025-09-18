@@ -21,6 +21,7 @@ import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { AccessToken } from "./authentication";
 import { MatchCustomerParams } from "./kycMatch";
+import { VerifyAgeParams } from "./kycAgeVerification";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -507,6 +508,31 @@ export class Device {
             params.phoneNumber = this.phoneNumber;
         }
         const response: any = await this._api.kycMatch.matchCustomer(
+            params
+        );
+
+        return await response;
+    }
+    
+    async verifyCustomerAge(
+        params: VerifyAgeParams,
+        code?: string
+    ): Promise<any> {
+        if (!params.phoneNumber && !code) {
+            throw new InvalidParameterError("Either device phone number or authorization code is required.");
+        }
+        if (code) {
+            const singleUseToken = await this.getSingleUseAccessToken(code);
+            const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
+
+            const response: any = await this._api.kycAgeVerification.verifyCustomerAge(
+                params,
+                authenticatorHeader
+            );
+
+            return await response;
+        }
+        const response: any = await this._api.kycAgeVerification.verifyCustomerAge(
             params
         );
 
