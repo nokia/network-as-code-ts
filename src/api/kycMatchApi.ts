@@ -21,7 +21,7 @@ import { ProxyAgent } from "proxy-agent";
 
 import fetch from "node-fetch";
 
-export class KnowYourCustomerAPI {
+export class KYCMatchAPI {
     private baseUrl: string;
     private headers: HeadersInit;
     private agent: ProxyAgent;

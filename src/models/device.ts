@@ -475,14 +475,14 @@ export class Device {
             const singleUseToken = await this.getSingleUseAccessToken(code);
             const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
 
-            const response: any = await this._api.knowYourCustomer.matchCustomer(
+            const response: any = await this._api.kycMatch.matchCustomer(
                 params,
                 authenticatorHeader
             );
 
             return await response;
         }
-        const response: any = await this._api.knowYourCustomer.matchCustomer(
+        const response: any = await this._api.kycMatch.matchCustomer(
             params
         );
 

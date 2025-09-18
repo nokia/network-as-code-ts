@@ -90,7 +90,7 @@ afterEach(() => {
 describe("Know Your Customer", () => {
     it("know your customer without access token", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/v0.3/match",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
@@ -175,7 +175,7 @@ describe("Know Your Customer", () => {
 
     it("know your customer with not all attributes requested", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/v0.3/match",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
@@ -235,7 +235,7 @@ describe("Know Your Customer", () => {
 
     it("should get access token with provided code and use token in matchCustomer call", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/v0.3/match",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Authorization": "testTokenTypeBearer testAccessToken123456",
