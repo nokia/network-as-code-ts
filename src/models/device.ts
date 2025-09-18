@@ -20,7 +20,7 @@ import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { AccessToken } from "./authentication";
-import { MatchCustomerParams } from "./knowYourCustomer";
+import { MatchCustomerParams } from "./kycMatch";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
