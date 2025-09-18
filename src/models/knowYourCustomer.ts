@@ -38,7 +38,7 @@ export interface MatchCustomerParams {
     gender?: string
 }
 
-
+/*
 export class KYCMatchResult {
     idDocumentMatch?: string;
     nameMatch?: string;
@@ -178,4 +178,4 @@ export class KYCMatchResult {
             jsonData.genderMatch
         );
     }
-}
+}*/

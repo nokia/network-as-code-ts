@@ -20,7 +20,7 @@ import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { AccessToken } from "./authentication";
-import { MatchCustomerParams, KYCMatchResult } from "./knowYourCustomer";
+import { MatchCustomerParams } from "./knowYourCustomer";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -462,12 +462,12 @@ export class Device {
      * Match a customer identity against the account data bound to their phone number.
      * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
      * @param code (string): The previously obtained authorization code.
-     * @returns Promise<KYCMatchResult>: Contains the result of matching the provided parameter values to the data in the operator system.
+     * @returns Promise<any>: Contains the result of matching the provided parameter values to the data in the operator system.
      */
     async matchCustomer(
         params: MatchCustomerParams,
         code?: string
-    ): Promise<KYCMatchResult> {
+    ): Promise<any> {
         if (!params.phoneNumber && !code) {
             throw new InvalidParameterError("Either device phone number or authorization code is required.");
         }

@@ -56,7 +56,7 @@ const NUMBER_VERIFICATION_URL =  "/passthrough/camara/v1/number-verification/num
 
 const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3";
 
-const KNOW_YOUR_CUSTOMER_URL = "/passthrough/camara/v1/kyc-match/v0.3";
+const KNOW_YOUR_CUSTOMER_URL = "/passthrough/camara/v1/passthrough/kyc-match/v0.3";
 
 const agent = new ProxyAgent();
 

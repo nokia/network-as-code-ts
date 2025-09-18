@@ -5,7 +5,6 @@ import { Device } from "../src/models/device";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
-import { KYCMatchResult } from "../src/models/knowYourCustomer";
 
 
 let client: NetworkAsCodeClient;
@@ -65,7 +64,6 @@ describe("Know Your Customer with access token", () => {
             method: "GET",
             agent: agent
         });
-
         const response =  await fetch(`${notificationUrl}/kyc-get-code`,
             {
                 method: "GET",
@@ -108,19 +106,33 @@ describe("Know Your Customer - Match", () => {
     it("should match customer with phone number but no authorization code", async () => {
         const params = {
             phoneNumber: "+999999991000",
-            idDocument: "123456",
-            name: "testName",
-            givenName: "testGivenName",
-            familyName: "TestFamilyName",
-            nameKanaHankaku: "TestNameKanaHankaku",
-            nameKanaZenkaku: "TestNameKanaZenkaku",
-            middleNames: "TestMiddleNames",
-            familyNameAtBirth: "TestFamilyNameAtBirth",
-            address: "TestAddress",
-            streetName: "TestStreetName"
+            idDocument: "66666666q",
+            name: "Federica Sanchez Arjona",
+            givenName: "Federica",
+            familyName: "Sanchez Arjona",
+            nameKanaHankaku: "federica",
+            nameKanaZenkaku: "Ｆｅｄｅｒｉｃａ",
+            middleNames: "Sanchez",
+            familyNameAtBirth: "YYYY",
+            address: "Tokyo-to Chiyoda-ku Iidabashi 3-10-10",
+            streetName: "Nicolas Salmeron",
+            streetNumber: "4",
+            postalCode: "1028460",
+            region: "Tokyo",
+            locality: "ZZZZ",
+            country: "JP",
+            houseNumberExtension: "VVVV",
+            birthdate: "1978-08-22",
+            email: "abc@example.com",
+            gender: "OTHER"
         }
-        const result: KYCMatchResult = await device.matchCustomer(params);
-        expect(result).toBeTruthy(); // CHECK RESULT BETTER
+        const result: any = await device.matchCustomer(params);
+        expect(result).toBeTruthy();
+        expect(result.familyName === "false");
+        expect(result.address === "false");
+        expect(result.familyNameAtBirth === "false");
+        expect(result.streetNumber === "false");
+        expect(result.houseNumberExtension === "false");
     });
 
     it("should match customer with authorization code but no phone number", async () => {
@@ -145,19 +157,33 @@ describe("Know Your Customer - Match", () => {
         const data = await response.json() as any;
         const code = data.code
         const params = {
-            idDocument: "123456",
-            name: "testName",
-            givenName: "testGivenName",
-            familyName: "TestFamilyName",
-            nameKanaHankaku: "TestNameKanaHankaku",
-            nameKanaZenkaku: "TestNameKanaZenkaku",
-            middleNames: "TestMiddleNames",
-            familyNameAtBirth: "TestFamilyNameAtBirth",
-            address: "TestAddress",
-            streetName: "TestStreetName"
+            idDocument: "66666666q",
+            name: "Federica Sanchez Arjona",
+            givenName: "Federica",
+            familyName: "Sanchez Arjona",
+            nameKanaHankaku: "federica",
+            nameKanaZenkaku: "Ｆｅｄｅｒｉｃａ",
+            middleNames: "Sanchez",
+            familyNameAtBirth: "YYYY",
+            address: "Tokyo-to Chiyoda-ku Iidabashi 3-10-10",
+            streetName: "Nicolas Salmeron",
+            streetNumber: "4",
+            postalCode: "1028460",
+            region: "Tokyo",
+            locality: "ZZZZ",
+            country: "JP",
+            houseNumberExtension: "VVVV",
+            birthdate: "1978-08-22",
+            email: "abc@example.com",
+            gender: "OTHER"
         }
-        const result: KYCMatchResult = await device.matchCustomer(params, code);
-        expect(result).toBeTruthy(); // CHECK RESULT BETTER
+        const result: any = await device.matchCustomer(params, code);
+        expect(result).toBeTruthy();
+        expect(result.familyName === "false");
+        expect(result.address === "false");
+        expect(result.familyNameAtBirth === "false");
+        expect(result.streetNumber === "false");
+        expect(result.houseNumberExtension === "false");
     });
 
     it("wrong authorization code should return 400 APIError", async () => {
