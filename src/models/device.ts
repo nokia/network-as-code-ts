@@ -522,6 +522,9 @@ export class Device {
             throw new InvalidParameterError("Either device phone number or authorization code is required.");
         }
         if (code) {
+            if (params.phoneNumber) {
+                throw new InvalidParameterError("If a authentication code is used a device phone number must not be provided.");
+            }
             const singleUseToken = await this.getSingleUseAccessToken(code);
             const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
 
