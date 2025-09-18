@@ -87,8 +87,8 @@ afterEach(() => {
 });
 
 
-describe("Know Your Customer", () => {
-    it("know your customer without access token", async () => {
+describe("KYC Match", () => {
+    it("KYC Match without access token", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
             (req: any): any => {
@@ -173,7 +173,7 @@ describe("Know Your Customer", () => {
         );
     });
 
-    it("know your customer with not all attributes requested", async () => {
+    it("KYC Match with not all attributes requested", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
             (req: any): any => {

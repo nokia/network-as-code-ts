@@ -21,7 +21,7 @@ beforeAll(() => {
     notificationUrl = configureNotificationServerUrl();
 });
 
-describe("Know Your Customer authentication", () => {
+describe("KYC Match authentication", () => {
     it("should retrieve credentials", async () => {
         const credentials: any = await client.authentication.credentials();
         expect(credentials.clientId).toBeTruthy();
@@ -50,7 +50,7 @@ describe("Know Your Customer authentication", () => {
     });
 });
 
-describe("Know Your Customer with access token", () => { 
+describe("KYC Match with access token", () => { 
     it("should get auth code", async () => {
         const redirectUri= `${notificationUrl}/kyc`;
         const scope = "dpv:FraudPreventionAndDetection kyc-match:match";
@@ -102,7 +102,7 @@ describe("Know Your Customer with access token", () => {
     });
 });
 
-describe("Know Your Customer - Match", () => {   
+describe("KYC Match", () => {   
     it("should match customer with phone number but no authorization code", async () => {
         const params = {
             phoneNumber: "+999999991000",
