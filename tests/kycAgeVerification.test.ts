@@ -29,57 +29,6 @@ beforeAll(() => {
 
 beforeEach(() => {
     fetchMock.mockReset();
-    fetchMock.mockGlobal().get(
-        "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
-        (req: any): any => {
-            expect(req.headers).toEqual({
-                "Content-Type": "application/json",
-                "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                "X-RapidAPI-Key": 'TEST_TOKEN',
-            })
-        },
-        { response: Promise.resolve({
-            body: JSON.stringify({
-                client_id: "123456",
-                client_secret: "secret123"
-            })
-        })}  
-    );
-
-    fetchMock.mockGlobal().get(
-        "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
-        (req: any): any => {
-            expect(req.headers).toEqual({
-                "Content-Type": "application/json",
-                "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                "X-RapidAPI-Key": 'TEST_TOKEN',
-            })
-        },
-        { response: Promise.resolve({
-            body: JSON.stringify({
-                authorization_endpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize",
-                token_endpoint: "https://tokenTestEndpoint/oauth2/v1/token"
-            })
-        })}
-    );
-
-    fetchMock.mockGlobal().post(  
-        "https://tokenTestEndpoint/oauth2/v1/token", 
-        (req: any): any => {
-            expect(req.headers).toEqual({
-                "Content-Type": "application/x-www-form-urlencoded"
-            }),
-            expect(req.body).toEqual({
-                "client_id":"123456&client_secret=secret123&grant_type=authorization_code&code=testCode1234"
-        })},
-        { response: Promise.resolve({
-            body: JSON.stringify({
-                access_token: "testAccessToken123456",
-                token_type: "testTokenTypeBearer",
-                expires_in: "testExpiresIn"
-            })
-        })}
-    );
 });
 
 afterEach(() => {
@@ -88,7 +37,7 @@ afterEach(() => {
 
 
 describe("KYC Age Verification", () => {
-    it("KYC age verification without access token", async () => {
+    it("KYC age verification", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-age-verification/v0.1/verify",
             (req: any): any => {
@@ -188,12 +137,11 @@ describe("KYC Age Verification", () => {
         );
     });
 
-    it("should get access token with provided code and use token in verify age call", async () => {
+    it("missing phone number will add it in the backend and work", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-age-verification/v0.1/verify",
             (req: any): any => {
                 expect(req.headers).toEqual({
-                    "Authorization": "testTokenTypeBearer testAccessToken123456",
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN'
@@ -210,7 +158,8 @@ describe("KYC Age Verification", () => {
                         birthdate: "1978-08-22",
                         email: "federicaSanchez.Arjona@example.com",
                         includeContentLock: true,
-                        includeParentalControl: true
+                        includeParentalControl: true,
+                        phoneNumber: "+99999991000"
                     }
                 )
             },
@@ -236,30 +185,7 @@ describe("KYC Age Verification", () => {
                 email: "federicaSanchez.Arjona@example.com",
                 includeContentLock: true,
                 includeParentalControl: true
-            },
-            "testCode1234"
+            }
         );
-    });
-
-    it("missing both phone number and authorization code throws error", async () => {
-        try {
-            await device.verifyCustomerAge(
-                {
-                    ageThreshold: 18,
-                    idDocument: "66666666q",
-                    name: "Federica Sanchez Arjona",
-                    givenName: "Federica",
-                    familyName: "Sanchez Arjona",
-                    middleNames: "Sanchez",
-                    familyNameAtBirth: "YYYY",
-                    birthdate: "1978-08-22",
-                    email: "federicaSanchez.Arjona@example.com",
-                    includeContentLock: true,
-                    includeParentalControl: true
-                }
-            );
-        } catch (error) {
-            expect(error).toBeInstanceOf(InvalidParameterError);
-        }
     });
 });
