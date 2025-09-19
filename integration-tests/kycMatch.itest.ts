@@ -2,24 +2,18 @@ import { beforeAll, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
-import { configureClient, configureNotificationServerUrl } from "./configClient";
-import { ProxyAgent } from "proxy-agent";
+import { configureClient } from "./configClient";
 
 
 let client: NetworkAsCodeClient;
 let device: Device;
-let agent: ProxyAgent;
-let notificationUrl: string;
 
 beforeAll(() => {
     client = configureClient();
     device = client.devices.get({
         phoneNumber: "+99999991000",
     });
-    agent = new ProxyAgent()
-    notificationUrl = configureNotificationServerUrl();
 });
-
 
 
 describe("KYC Match", () => {   
@@ -48,11 +42,10 @@ describe("KYC Match", () => {
         }
         const result: any = await device.matchCustomer(params);
         expect(result).toBeTruthy();
-        expect(result.familyName).toBeFalsy();
-        expect(result.address).toBeFalsy();
-        expect(result.familyNameAtBirth).toBeFalsy();
-        expect(result.streetNumber).toBeFalsy();
-        expect(result.houseNumberExtension).toBeFalsy();
+        expect(result.familyNameMatch).toBe("false");
+        expect(result.addressMatch).toBe("false");
+        expect(result.familyNameAtBirthMatch).toBe("false");
+        expect(result.streetNumberMatch).toBe("false");
     });
 
     it("should match customer with not all params requested", async () => {
@@ -72,13 +65,12 @@ describe("KYC Match", () => {
         }
         const result: any = await device.matchCustomer(params);
         expect(result).toBeTruthy();
-        expect(result.familyName).toBeUndefined();
-        expect(result.address).toBeUndefined();
-        expect(result.familyNameAtBirth).toBeFalsy();
-        expect(result.streetNumber).toBeUndefined();
+        expect(result.familyNameMatch).toBe(null);
+        expect(result.addressMatch).toBe(null);
+        expect(result.streetNumberMatch).toBe("false");
     });
 
-   it("if missing phone number from request body, ahould add in the backend it and work ", async () => {
+   it("if missing phone number from request body, should add in the backend it and work ", async () => {
         const params = {
             idDocument: "66666666q",
             name: "Federica Sanchez Arjona",
@@ -102,11 +94,10 @@ describe("KYC Match", () => {
         }
         const result: any = await device.matchCustomer(params);
         expect(result).toBeTruthy();
-        expect(result.familyName).toBeFalsy();
-        expect(result.address).toBeFalsy();
-        expect(result.familyNameAtBirth).toBeFalsy();
-        expect(result.streetNumber).toBeFalsy();
-        expect(result.houseNumberExtension).toBeFalsy();
+        expect(result.familyNameMatch).toBe("false");
+        expect(result.addressMatch).toBe("false");
+        expect(result.familyNameAtBirthMatch).toBe("false");
+        expect(result.streetNumberMatch).toBe("false");;
     });
 
     it("wrong phone number should return 403 AuthenticationError", async () => {
