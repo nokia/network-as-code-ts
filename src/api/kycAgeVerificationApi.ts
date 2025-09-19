@@ -16,7 +16,6 @@
 
 import { errorHandler } from "../errors";
 import { ProxyAgent } from "proxy-agent";
-//import { KYCMatchResult } from "../models/knowYourCustomer";
 
 
 import fetch from "node-fetch";
@@ -41,10 +40,7 @@ export class KYCAgeVerificationAPI {
         this.agent = agent;
     }
 
-    async verifyCustomerAge(params: any, authenticatorHeader?: string) {
-        if (authenticatorHeader) {
-            this.headers = {...this.headers, "Authorization": authenticatorHeader}
-        }
+    async verifyCustomerAge(params: any) {
         const bodyParams = Object.fromEntries(Object.entries(params as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined));
         const response = await fetch(`${this.baseUrl}/verify`, {
             method: "POST",

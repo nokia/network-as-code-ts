@@ -515,25 +515,10 @@ export class Device {
     }
     
     async verifyCustomerAge(
-        params: VerifyAgeParams,
-        code?: string
+        params: VerifyAgeParams
     ): Promise<any> {
-        if (!params.phoneNumber && !code) {
-            throw new InvalidParameterError("Either device phone number or authorization code is required.");
-        }
-        if (code) {
-            if (params.phoneNumber) {
-                throw new InvalidParameterError("If a authentication code is used a device phone number must not be provided.");
-            }
-            const singleUseToken = await this.getSingleUseAccessToken(code);
-            const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
-
-            const response: any = await this._api.kycAgeVerification.verifyCustomerAge(
-                params,
-                authenticatorHeader
-            );
-
-            return await response;
+        if (!params.phoneNumber) {
+            params.phoneNumber = this.phoneNumber;
         }
         const response: any = await this._api.kycAgeVerification.verifyCustomerAge(
             params
