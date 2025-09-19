@@ -496,6 +496,27 @@ export class Device {
         return response['active'];
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     /**
      * Match a customer identity against the account data bound to their phone number.
      * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
