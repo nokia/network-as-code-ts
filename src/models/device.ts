@@ -496,27 +496,6 @@ export class Device {
         return response['active'];
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
     /**
      * Match a customer identity against the account data bound to their phone number.
      * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
@@ -534,8 +513,13 @@ export class Device {
 
         return await response;
     }
-   
-    async verifyCustomerAge(
+
+    /**
+     * Match a customer identity against the account data bound to their phone number.
+     * @param params (VerifyAgeParams): A subscribers data to be checked to confirm that the subscriber is the contract owner.
+     * @returns Promise<any>: Result of when the age of the user is the same age or older than the age threshold provided. 
+     */   
+    async verifyAge(
         params: VerifyAgeParams
     ): Promise<any> {
         if (!params.phoneNumber) {
