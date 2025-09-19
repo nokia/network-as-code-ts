@@ -29,6 +29,7 @@ import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
 import { CallForwardingApi } from "./callForwardingApi";
+import { KYCMatchAPI } from "./kycMatchApi";
 
 const QOS_URL = "/qod/v0";
 
@@ -56,7 +57,9 @@ const AUTHORIZATION_ENDPOINTS_URL = "/.well-known";
 
 const NUMBER_VERIFICATION_URL =  "/passthrough/camara/v1/number-verification/number-verification/v0";
 
-const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3"
+const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3";
+
+const KYC_MATCH = "/passthrough/camara/v1/passthrough/kyc-match/v0.3";
 
 const agent = new ProxyAgent();
 
@@ -103,6 +106,7 @@ export class APIClient {
     verification: NumberVerificationAPI;
     accesstoken: AccessTokenAPI;
     callForwarding: CallForwardingApi;
+    kycMatch: KYCMatchAPI;
 
     constructor(
         token: string,
@@ -121,6 +125,7 @@ export class APIClient {
         credentialsBaseUrl: string | undefined = undefined,
         verificationBaseUrl: string | undefined = undefined,
         callForwardingBaseUrl: string | undefined = undefined,
+        kycMatchBaseUrl: string | undefined = undefined
     ) {
       const baseUrl = environmentBaseUrl(envMode);
       const hostname = environmentHostname(envMode);
@@ -276,6 +281,17 @@ export class APIClient {
 
       this.callForwarding = new CallForwardingApi(
         callForwardingBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!kycMatchBaseUrl) {
+        kycMatchBaseUrl = `${baseUrl}${KYC_MATCH}`
+      }
+
+      this.kycMatch = new KYCMatchAPI(
+        kycMatchBaseUrl,
         token,
         hostname,
         agent

@@ -20,6 +20,7 @@ import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { AccessToken } from "./authentication";
+import { MatchCustomerParams } from "./kycMatch";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -442,7 +443,6 @@ export class Device {
         );
 
         return response["devicePhoneNumberVerified"];
-
     }
 
     /**
@@ -495,4 +495,21 @@ export class Device {
         return response['active'];
     }
 
+    /**
+     * Match a customer identity against the account data bound to their phone number.
+     * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
+     * @returns Promise<any>: Contains the result of matching the provided parameter values to the data in the operator system.
+     */
+    async matchCustomer(
+        params: MatchCustomerParams
+    ): Promise<any> {
+        if (!params.phoneNumber) {
+            params.phoneNumber = this.phoneNumber;
+        }
+        const response: any = await this._api.kycMatch.matchCustomer(
+            params
+        );
+
+        return await response;
+    }
 }

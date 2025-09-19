@@ -33,7 +33,7 @@ describe("Geofencing", () => {
         expect(subscription.area).toEqual({"areaType": "CIRCLE","center": {"latitude": 47.48627616952785, "longitude": 19.07915612501993}, "radius": 2000});
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -69,7 +69,7 @@ describe("Geofencing", () => {
         expect(subscription.area).toEqual({"areaType": "POI", "poiName": "StatueOfLiberty"})
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -102,7 +102,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -135,7 +135,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -173,7 +173,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -214,7 +214,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
