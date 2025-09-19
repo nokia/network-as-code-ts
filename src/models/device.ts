@@ -515,9 +515,9 @@ export class Device {
     }
 
     /**
-     * Match a customer identity against the account data bound to their phone number.
-     * @param params (VerifyAgeParams): A subscribers data to be checked to confirm that the subscriber is the contract owner.
-     * @returns Promise<any>: Result of when the age of the user is the same age or older than the age threshold provided. 
+     * Check if the user of the line is older than a provided age.
+     * @param params (VerifyAgeParams): Contains age threshold which to compare user age to, subscription phone number and other optional subscriber info.
+     * @returns Promise<any>: true/false/not_available for if the age of the user is the same or older than the age threshold provided. Also results for other optional request params. 
      */   
     async verifyAge(
         params: VerifyAgeParams

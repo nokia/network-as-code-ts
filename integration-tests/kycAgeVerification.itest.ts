@@ -2,23 +2,17 @@ import { beforeAll, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
-import { configureClient, configureNotificationServerUrl } from "./configClient";
-import { ProxyAgent } from "proxy-agent";
-import fetch from "node-fetch";
+import { configureClient } from "./configClient";
 
 
 let client: NetworkAsCodeClient;
 let device: Device;
-let agent: ProxyAgent;
-let notificationUrl: string;
 
 beforeAll(() => {
     client = configureClient();
     device = client.devices.get({
         phoneNumber: "+99999991000",
     });
-    agent = new ProxyAgent()
-    notificationUrl = configureNotificationServerUrl();
 });
 
 describe("KYC Age Verification", () => {   
