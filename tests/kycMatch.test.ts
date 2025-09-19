@@ -29,57 +29,6 @@ beforeAll(() => {
 
 beforeEach(() => {
     fetchMock.mockReset();
-    fetchMock.mockGlobal().get(
-        "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
-        (req: any): any => {
-            expect(req.headers).toEqual({
-                "Content-Type": "application/json",
-                "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                "X-RapidAPI-Key": 'TEST_TOKEN',
-            })
-        },
-        { response: Promise.resolve({
-            body: JSON.stringify({
-                client_id: "123456",
-                client_secret: "secret123"
-            })
-        })}  
-    );
-
-    fetchMock.mockGlobal().get(
-        "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
-        (req: any): any => {
-            expect(req.headers).toEqual({
-                "Content-Type": "application/json",
-                "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                "X-RapidAPI-Key": 'TEST_TOKEN',
-            })
-        },
-        { response: Promise.resolve({
-            body: JSON.stringify({
-                authorization_endpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize",
-                token_endpoint: "https://tokenTestEndpoint/oauth2/v1/token"
-            })
-        })}
-    );
-
-    fetchMock.mockGlobal().post(  
-        "https://tokenTestEndpoint/oauth2/v1/token", 
-        (req: any): any => {
-            expect(req.headers).toEqual({
-                "Content-Type": "application/x-www-form-urlencoded"
-            }),
-            expect(req.body).toEqual({
-                "client_id":"123456&client_secret=secret123&grant_type=authorization_code&code=testCode1234"
-        })},
-        { response: Promise.resolve({
-            body: JSON.stringify({
-                access_token: "testAccessToken123456",
-                token_type: "testTokenTypeBearer",
-                expires_in: "testExpiresIn"
-            })
-        })}
-    );
 });
 
 afterEach(() => {
@@ -88,7 +37,7 @@ afterEach(() => {
 
 
 describe("KYC Match", () => {
-    it("KYC Match without access token", async () => {
+    it("KYC Match should match customer", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
             (req: any): any => {
@@ -233,12 +182,11 @@ describe("KYC Match", () => {
         );
     });
 
-    it("should get access token with provided code and use token in matchCustomer call", async () => {
+    it("should add the device phone number to the body in the backend", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
             (req: any): any => {
                 expect(req.headers).toEqual({
-                    "Authorization": "testTokenTypeBearer testAccessToken123456",
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN'
@@ -263,7 +211,8 @@ describe("KYC Match", () => {
                         houseNumberExtension: "TestHouseNumberExtension",
                         birthdate: "TestBirthdate",
                         email: "TestEmail",
-                        gender: "TestGender"
+                        gender: "TestGender",
+                        phoneNumber: "+999999991000"
                     }
                 )
             },
@@ -274,8 +223,7 @@ describe("KYC Match", () => {
                     givenNameMatch: 'not_available',
                     familyNameMatch: 'not_available',
                     nameKanaHankakuMatch: 'true',
-                    nameKanaZenkakuMatch: 'false',
-                    nameKanaZenkakuMatchScore: 70,
+                    nameKanaZenkakuMatch: 'true',
                     middleNamesMatch: 'true',
                     familyNameAtBirthMatch: 'false',
                     familyNameAtBirthMatchScore: 90,
@@ -287,10 +235,10 @@ describe("KYC Match", () => {
                     localityMatch: 'not_available',
                     countryMatch: 'true',
                     houseNumberExtensionMatch: 'not_available',
-                    birthdateMatch: 'false',
+                    birthdateMatch: 'true',
                     emailMatch: 'false',
                     emailMatchScore: 87,
-                    genderMatch: 'false',
+                    genderMatch: 'true'
             })});
 
         await device.matchCustomer(
@@ -314,38 +262,7 @@ describe("KYC Match", () => {
                 birthdate: "TestBirthdate",
                 email: "TestEmail",
                 gender: "TestGender"
-            },
-            "testCode1234"
+            }
         );
-    });
-
-    it("missing both phone number and authorization code throws error", async () => {
-        try {
-            await device.matchCustomer(
-                {
-                    idDocument: "123456",
-                    name: "testName",
-                    givenName: "testGivenName",
-                    familyName: "TestFamilyName",
-                    nameKanaHankaku: "TestNameKanaHankaku",
-                    nameKanaZenkaku: "TestNameKanaZenkaku",
-                    middleNames: "TestMiddleNames",
-                    familyNameAtBirth: "TestFamilyNameAtBirth",
-                    address: "TestAddress",
-                    streetName: "TestStreetName",
-                    streetNumber: "TestStreetNumber",
-                    postalCode: "TestPostalCode",
-                    region: "TestRegion",
-                    locality: "TestLocality",
-                    country: "TestCountry",
-                    houseNumberExtension: "TestHouseNumberExtension",
-                    birthdate: "TestBirthdate",
-                    email: "TestEmail",
-                    gender: "TestGender"
-                }
-            );
-        } catch (error) {
-            expect(error).toBeInstanceOf(InvalidParameterError);
-        }
     });
 });

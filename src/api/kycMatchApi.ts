@@ -41,10 +41,7 @@ export class KYCMatchAPI {
         this.agent = agent;
     }
 
-    async matchCustomer(params: any, authenticatorHeader?: string) {
-        if (authenticatorHeader) {
-            this.headers = {...this.headers, "Authorization": authenticatorHeader}
-        }
+    async matchCustomer(params: any) {
         const bodyParams = Object.fromEntries(Object.entries(params as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined));
         const response = await fetch(`${this.baseUrl}/match`, {
             method: "POST",

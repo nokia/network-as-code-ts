@@ -461,26 +461,13 @@ export class Device {
     /**
      * Match a customer identity against the account data bound to their phone number.
      * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
-     * @param code (string): The previously obtained authorization code.
      * @returns Promise<any>: Contains the result of matching the provided parameter values to the data in the operator system.
      */
     async matchCustomer(
-        params: MatchCustomerParams,
-        code?: string
+        params: MatchCustomerParams
     ): Promise<any> {
-        if (!params.phoneNumber && !code) {
-            throw new InvalidParameterError("Either device phone number or authorization code is required.");
-        }
-        if (code) {
-            const singleUseToken = await this.getSingleUseAccessToken(code);
-            const authenticatorHeader = `${singleUseToken.tokenType} ${singleUseToken.accessToken}`;
-
-            const response: any = await this._api.kycMatch.matchCustomer(
-                params,
-                authenticatorHeader
-            );
-
-            return await response;
+        if (!params.phoneNumber) {
+            params.phoneNumber = this.phoneNumber;
         }
         const response: any = await this._api.kycMatch.matchCustomer(
             params
