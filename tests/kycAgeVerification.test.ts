@@ -72,7 +72,7 @@ describe("KYC Age Verification", () => {
                     parentalControl:false
             })});
 
-        await device.verifyCustomerAge(
+        await device.verifyAge(
             {
                 ageThreshold: 18,
                 phoneNumber: "+99999991000",
@@ -122,7 +122,7 @@ describe("KYC Age Verification", () => {
                     parentalControl:false
             })});
 
-        await device.verifyCustomerAge(
+        await device.verifyAge(
             {
                 ageThreshold: 18,
                 phoneNumber: "+99999991000",
@@ -172,7 +172,7 @@ describe("KYC Age Verification", () => {
                     parentalControl:false
             })});
 
-        await device.verifyCustomerAge(
+        await device.verifyAge(
             {
                 ageThreshold: 18,
                 idDocument: "66666666q",

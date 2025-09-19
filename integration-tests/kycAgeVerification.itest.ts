@@ -37,7 +37,7 @@ describe("KYC Age Verification", () => {
             includeContentLock: true,
             includeParentalControl: true
         }
-        const result: any = await device.verifyCustomerAge(params);
+        const result: any = await device.verifyAge(params);
         expect(result).toBeTruthy();
         expect(result.ageCheck).toBeTruthy()
     });
@@ -56,14 +56,14 @@ describe("KYC Age Verification", () => {
             includeContentLock: true,
             includeParentalControl: true
         }
-        const result: any = await device.verifyCustomerAge(params);
+        const result: any = await device.verifyAge(params);
         expect(result).toBeTruthy();
         expect(result.ageCheck).toBeTruthy()
     });
 
     it("wrong phone number should return 403 AuthenticationError", async () => {
         try {
-            await device.verifyCustomerAge(
+            await device.verifyAge(
                 {   
                     ageThreshold: 18,
                     phoneNumber: "+1234567",

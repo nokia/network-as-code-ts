@@ -513,14 +513,14 @@ export class Device {
 
         return await response;
     }
-    
+   
     async verifyCustomerAge(
         params: VerifyAgeParams
     ): Promise<any> {
         if (!params.phoneNumber) {
             params.phoneNumber = this.phoneNumber;
         }
-        const response: any = await this._api.kycAgeVerification.verifyCustomerAge(
+        const response: any = await this._api.kycAgeVerification.verifyAge(
             params
         );
 

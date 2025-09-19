@@ -40,7 +40,7 @@ export class KYCAgeVerificationAPI {
         this.agent = agent;
     }
 
-    async verifyCustomerAge(params: any) {
+    async verifyAge(params: any) {
         const bodyParams = Object.fromEntries(Object.entries(params as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined));
         const response = await fetch(`${this.baseUrl}/verify`, {
             method: "POST",
