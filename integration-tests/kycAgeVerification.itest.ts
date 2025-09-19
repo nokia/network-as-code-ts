@@ -39,7 +39,7 @@ describe("KYC Age Verification", () => {
         }
         const result: any = await device.verifyAge(params);
         expect(result).toBeTruthy();
-        expect(result.ageCheck).toBeTruthy()
+        expect(result.ageCheck).toBe("true")
     });
 
    it("if missing phone number from request body, ahould add in the backend it and work ", async () => {
@@ -58,7 +58,7 @@ describe("KYC Age Verification", () => {
         }
         const result: any = await device.verifyAge(params);
         expect(result).toBeTruthy();
-        expect(result.ageCheck).toBeTruthy()
+        expect(result.ageCheck).toBe("true")
     });
 
     it("wrong phone number should return 403 AuthenticationError", async () => {
