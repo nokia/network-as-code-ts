@@ -21,6 +21,7 @@ import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { AccessToken } from "./authentication";
 import { MatchCustomerParams } from "./kycMatch";
+import { VerifyAgeParams } from "./kycAgeVerification";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -507,6 +508,24 @@ export class Device {
             params.phoneNumber = this.phoneNumber;
         }
         const response: any = await this._api.kycMatch.matchCustomer(
+            params
+        );
+
+        return await response;
+    }
+
+    /**
+     * Check if the user of the line is older than a provided age.
+     * @param params (VerifyAgeParams): Contains age threshold which to compare user age to, subscription phone number and other optional subscriber info.
+     * @returns Promise<any>: true/false/not_available for if the age of the user is the same or older than the age threshold provided. Also results for other optional request params. 
+     */   
+    async verifyAge(
+        params: VerifyAgeParams
+    ): Promise<any> {
+        if (!params.phoneNumber) {
+            params.phoneNumber = this.phoneNumber;
+        }
+        const response: any = await this._api.kycAgeVerification.verifyAge(
             params
         );
 

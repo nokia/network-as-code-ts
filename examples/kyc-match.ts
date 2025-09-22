@@ -5,15 +5,11 @@ import { NetworkAsCodeClient } from "network-as-code";
 const client = new NetworkAsCodeClient("<your-application-key-here>");
 
 
-// Then, create a device object for the phone number you want to check */
+// Then, create a device object for the phone number. */
 const device = client.devices.get({
     // The phone number accepts the "+" sign, but not spaces or "()" marks
     phoneNumber: "+999999991000"
 });
-
-
-// You can use the matchCustomer method without and authorization code.
-// In this case the device phone number is required to be provided in the parameters.
 
 
 // Add the customer identity data here, which is to be used in matching
