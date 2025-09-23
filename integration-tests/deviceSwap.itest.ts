@@ -23,29 +23,25 @@ describe("Device Swap retrieval and verification", () => {
     });
 
     it("should verify device swap without max age", async () => {
-        expect(await device.verifyDeviceSwap()).toBeTruthy();
+        expect(await device.verifyDeviceSwap()).toBe(true)
     });
 
     it("should verify device swap with max age", async () => {
-        expect(await device.verifyDeviceSwap(250)).toBeTruthy();
+        expect(await device.verifyDeviceSwap(250)).toBe(true)
     });
 
     it("should verify device swap - True", async () => {
         device = client.devices.get({
-            phoneNumber: "+99999991000",
+            phoneNumber: "+99999991000"
         });
 
-       expect(await device.verifyDeviceSwap(250)).toBeTruthy();
-
+        expect(await device.verifyDeviceSwap()).toBe(true)
     });
 
     it("should verify device swap - False", async () => {
         device = client.devices.get({
-            phoneNumber: "+99999991001",
+            phoneNumber: "+99999991001"
         });
-
-        expect(await device.verifyDeviceSwap(120)).toBeFalsy();
-
+        expect(await device.verifyDeviceSwap(120)).toBe(false)
     });
-
 });
