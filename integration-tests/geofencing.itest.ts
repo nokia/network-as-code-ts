@@ -22,28 +22,65 @@ beforeAll(() => {
 });
 
 describe("Geofencing", () => {
-    it("should subscribe for geofencing event area entered", async () => {
+    it("should subscribe for geofencing with areaType Circle and event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-            latitude: 47.48627616952785,
-            longitude: 19.07915612501993,
-            radius: 2000
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000}
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
+        expect(subscription.area).toEqual({"areaType": "CIRCLE","center": {"latitude": 47.48627616952785, "longitude": 19.07915612501993}, "radius": 2000});
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
             });
 
-        const data = await notification.json();
+        const data: any = await notification.json();
 
         expect(data).not.toBeNull();
+        expect(data[0]["data"]["area"]["areaType"]).toEqual("CIRCLE");
+        expect(data[0]["data"]["area"]["center"]["latitude"]).toEqual(47.48627616952785);
+        expect(data[0]["data"]["area"]["radius"]).toEqual(2000);
+
+
+        // Deleting the subscription notification
+        notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
+            { 
+                method: 'DELETE',
+                agent: agent 
+            });
+
+        subscription.delete();
+    },20 * 1000);
+
+    it("should subscribe for geofencing with areaType POI and event area entered", async () => {
+        const subscription = await client.geofencing.subscribe(device, {
+            sink: `${notificationUrl}/notify`,
+            types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
+            area: {areaType: "POI", poiName: "StatueOfLiberty"}
+        });
+
+        expect(subscription.eventSubscriptionId).toBeTruthy();
+        expect(subscription.area).toEqual({"areaType": "POI", "poiName": "StatueOfLiberty"})
+
+        // Fetching the subscription notification
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
+        let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
+            {
+                method: "GET",
+                agent: agent
+            });
+
+        const data: any = await notification.json();
+
+        expect(data).not.toBeNull();
+        expect(data[0]["data"]["area"]["areaType"]).toEqual("POI");
+        expect(data[0]["data"]["area"]["poiName"]).toEqual("StatueOfLiberty");
 
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
@@ -59,24 +96,24 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: [EventType.AREA_ENTERED],
-            latitude: 47.48627616952785,
-            longitude: 19.07915612501993,
-            radius: 2000
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000}
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
                 agent: agent
             });
 
-        const data = await notification.json();
+        const data: any = await notification.json();
 
         expect(data).not.toBeNull();
+        expect(data[0]["data"]["area"]["areaType"]).toEqual("CIRCLE");
+
 
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
@@ -92,15 +129,13 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
-            latitude: 47.48627616952785,
-            longitude: 19.07915612501993,
-            radius: 2000
+            area: {areaType: "POI", poiName: "StatueOfLiberty"}
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -108,9 +143,10 @@ describe("Geofencing", () => {
             }
         );
 
-        const data = await notification.json();
+        const data: any = await notification.json();
 
         expect(data).not.toBeNull();
+        expect(data[0]["data"]["area"]["areaType"]).toEqual("POI");
 
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
@@ -126,9 +162,7 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
-            latitude: 47.48627616952785,
-            longitude: 19.07915612501993,
-            radius: 2000,
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000},
             sinkCredential: {
                 credentialType:"PLAIN",
                 identifier: "client-id",
@@ -139,7 +173,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -147,9 +181,10 @@ describe("Geofencing", () => {
             }
         );
 
-        const data = await notification.json();
+        const data: any = await notification.json();
 
         expect(data).not.toBeNull();
+        expect(data[0]["data"]["area"]["areaType"]).toEqual("CIRCLE");
 
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
@@ -167,9 +202,7 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: [EventType.AREA_LEFT],
-            latitude: 47.48627616952785,
-            longitude: 19.07915612501993,
-            radius: 2000,
+            area: {areaType: "POI", poiName: "StatueOfLiberty"},
             sinkCredential: {
                 credentialType:"ACCESSTOKEN",
                 accessToken: "some-access-token",
@@ -181,7 +214,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 5 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -189,9 +222,10 @@ describe("Geofencing", () => {
             }
         );
 
-        const data = await notification.json();
+        const data: any = await notification.json();
 
         expect(data).not.toBeNull();
+        expect(data[0]["data"]["area"]["areaType"]).toEqual("POI");
 
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
@@ -207,9 +241,7 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: "https://example.com/notif",
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-            latitude: 47.48627616952785,
-            longitude: 19.07915612501993,
-            radius: 2000
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000}
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -225,9 +257,7 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: "https://example.com/notif",
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-            latitude: 47.48627616952785,
-            longitude: 19.07915612501993,
-            radius: 2000
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000}
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -243,9 +273,7 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: "https://example.com/notif",
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-            latitude: 47.48627616952785,
-            longitude: 19.07915612501993,
-            radius: 2000
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000}
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();

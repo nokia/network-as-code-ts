@@ -1,5 +1,11 @@
 # Changelog
 
+## Version 5.2.0
+
+Changes:
+- Added support for Device Swap
+- Added support for KYC Match and KYC Age Verification
+
 ## Version 5.0.0
 
 Breaking Changes:

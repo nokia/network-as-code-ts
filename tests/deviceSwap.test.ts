@@ -24,13 +24,7 @@ let device: Device;
 beforeAll((): any => {
     client = new NetworkAsCodeClient("TEST_TOKEN");
     device = client.devices.get({
-        ipv4Address: {
-            publicAddress: "1.1.1.2",
-            privateAddress: "1.1.1.2",
-            publicPort: 80
-        },
-        ipv6Address: "2041:0000:140F::875B:131B",
-        phoneNumber: "3637123456"
+        phoneNumber: "+346661113334"
     });
     return client;
 });
@@ -43,46 +37,46 @@ afterEach(() => {
     fetchMock.unmockGlobal();
 });
 
-describe("Sim Swap", () => {
-    it("should get the latest sim swap date", async () => {
+describe("Device Swap", () => {
+    it("should get the latest device swap date", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "3637123456"
+                    phoneNumber: "+346661113334"
                 });
             },
             { response: Promise.resolve({
                 body: JSON.stringify({
-                    latestSimChange: "2024-06-19T10:36:59.976Z"
+                    latestDeviceChange: "2024-06-19T10:36:59.976Z"
                 })
             })
             }
         );
 
-        const latestSimSwapDate = await device.getSimSwapDate();
-        expect(latestSimSwapDate).toEqual(
+        const latestDeviceSwapDate = await device.getDeviceSwapDate();
+        expect(latestDeviceSwapDate).toEqual(
             new Date(Date.parse("2024-06-19T10:36:59.976Z"))
         );
     });
 
-    it("should throw InvalidParameter error for no phone number - getSimSwapDate()", async () => {
+    it("should throw InvalidParameter error for no phone number - getDeviceSwapDate()", async () => {
         const device = client.devices.get({
             networkAccessIdentifier: "testuser@open5glab.net"
         });
         try {
-            await device.getSimSwapDate();
+            await device.getDeviceSwapDate();
         } catch (error) {
             expect(error).toBeInstanceOf(InvalidParameterError);
         }
     });
 
-    it("should return null if the response doesn't contain latestSimChange", async () => {
+    it("should return null if the response doesn't contain latestDeviceChange", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "3637123456"
+                    phoneNumber: "+346661113334"
                 });
             },
             { response: Promise.resolve({
@@ -91,16 +85,16 @@ describe("Sim Swap", () => {
             }
         );
 
-        const response = await device.getSimSwapDate();
+        const response = await device.getDeviceSwapDate();
         expect(response).toBeNull();
     });
 
-    it("should throw InvalidParameter error for no phone number - verifySimSwap()", async () => {
+    it("should throw InvalidParameter error for no phone number - verifyDeviceSwap()", async () => {
         const device = client.devices.get({
             networkAccessIdentifier: "testuser@open5glab.net"
         });
         try {
-            await device.verifySimSwap();
+            await device.verifyDeviceSwap();
         } catch (error) {
             expect(error).toBeInstanceOf(InvalidParameterError);
         }
@@ -108,27 +102,27 @@ describe("Sim Swap", () => {
 
     it("should handle null", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "3637123456"
+                    phoneNumber: "+346661113334"
                 });
             },
             { response: Promise.resolve({
                 body: JSON.stringify({
-                    latestSimChange: null
+                    latestDeviceChange: null
                 })
             })
             }
         );
 
-        const latestSimSwapDate = await device.getSimSwapDate();
-        expect(latestSimSwapDate).toBeNull();
+        const latestDeviceSwapDate = await device.getDeviceSwapDate();
+        expect(latestDeviceSwapDate).toBeNull();
     });
 
-    it("should raise exception on missing phone number", async () => {
+    it("get date should raise exception on missing phone number", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     networkAccessIdentifier: "device@testcsp.net"
@@ -136,7 +130,7 @@ describe("Sim Swap", () => {
             },
             { response: Promise.resolve({
                 body: JSON.stringify({
-                    latestSimChange: null
+                    latestDeviceChange: null
                 })
             })
             }
@@ -147,16 +141,16 @@ describe("Sim Swap", () => {
         });
 
         expect(
-            async () => await deviceWithoutNumber.getSimSwapDate()
+            async () => await deviceWithoutNumber.getDeviceSwapDate()
         ).rejects.toThrow(InvalidParameterError);
     });
 
-    it("should verify sim swap without max age", async () => {
+    it("should verify device swap without max age", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/check",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "3637123456"
+                    phoneNumber: "+346661113334"
                 });
             },
             { response: Promise.resolve({
@@ -167,15 +161,15 @@ describe("Sim Swap", () => {
             }
         );
 
-        expect(await device.verifySimSwap()).toEqual(true);
+        expect(await device.verifyDeviceSwap()).toEqual(true);
     });
 
-    it("should verify sim swap with max age", async () => {
+    it("should verify device swap with max age", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/check",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "3637123456",
+                    phoneNumber: "+346661113334",
                     maxAge: 120
                 });
             },
@@ -187,12 +181,12 @@ describe("Sim Swap", () => {
             }
         );
 
-        expect(await device.verifySimSwap(120)).toEqual(true);
+        expect(await device.verifyDeviceSwap(120)).toEqual(true);
     });
 
     it("verify should raise exception on missing phone number", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/check",
             (_: any, req: any): any => {
                 expect(JSON.parse(req.body.toString())).toEqual({
                     networkAccessIdentifier: "device@testcsp.net"
@@ -200,7 +194,7 @@ describe("Sim Swap", () => {
             },
             { response: Promise.resolve({
                 body: JSON.stringify({
-                    latestSimChange: null
+                    latestDeviceChange: null
                 })
             })
             }
@@ -211,7 +205,7 @@ describe("Sim Swap", () => {
         });
 
         expect(
-            async () => await deviceWithoutNumber.verifySimSwap()
+            async () => await deviceWithoutNumber.verifyDeviceSwap()
         ).rejects.toThrow(InvalidParameterError);
     });
 });

@@ -40,43 +40,52 @@ export interface GeofencingSubscriptionParams {
     sink: string,
     protocol?: string,
     types: EventType[] | string[],
-    latitude: number,
-    longitude: number,
-    radius: number,
+    area: Circle | POI,
     sinkCredential?: PlainCredential | AccessTokenCredential,
     subscriptionExpireTime?: Date | string,
     subscriptionMaxEvents?: number,
     initialEvent?: boolean
 }
 
+export interface Center {
+    latitude: number;
+    longitude: number;
+}
+
+export interface Circle {
+    areaType: string;
+    center: Center;
+    radius: number;
+}
+
+export interface POI {
+    areaType: string;
+    poiName: string;
+}
+
+
 export class GeofencingSubscription {
     private api: APIClient;
     eventSubscriptionId: string;
     types: string[];
     sink: string;
-    latitude: number;
-    longitude: number;
-    radius: number;
     startsAt: Date;
+    area: Circle | POI;
 
     constructor(
         api: APIClient,
         eventSubscriptionId: string,
         types: string[],
         sink: string,
-        latitude: number,
-        longitude: number,
-        radius: number,
         startsAt: Date,
+        area: Circle | POI
     ) {
         this.api = api;
         this.eventSubscriptionId = eventSubscriptionId;
         this.types = types;
         this.sink = sink;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.radius = radius;
         this.startsAt = startsAt;
+        this.area = area;
     }
 
     /**
@@ -92,10 +101,8 @@ export class GeofencingSubscription {
             jsonData.id,
             jsonData.types,
             jsonData.sink,
-            jsonData.config.subscriptionDetail.area.center.latitude,
-            jsonData.config.subscriptionDetail.area.center.longitude,
-            jsonData.config.subscriptionDetail.area.radius,
-            jsonData.startsAt,
+            jsonData.startsAt, 
+            jsonData.config.subscriptionDetail.area
         );
     }
 }

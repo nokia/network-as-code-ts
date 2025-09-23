@@ -20,6 +20,8 @@ import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { AccessToken } from "./authentication";
+import { MatchCustomerParams } from "./kycMatch";
+import { VerifyAgeParams } from "./kycAgeVerification";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -354,6 +356,43 @@ export class Device {
     
 
     /**
+     * Get the latest device swap date.
+     * @returns latest device swap date-time(string)
+     */
+    async getDeviceSwapDate(): Promise<Date | null> {
+        if (!this.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        }
+
+        const response: any = await this._api.deviceSwap.fetchDeviceSwapDate(
+            this.phoneNumber
+        );
+
+        if (response["latestDeviceChange"]) {
+            return new Date(Date.parse(response["latestDeviceChange"]));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Verify if there was device swap.
+     * @param max_age (Optional[number]): Max acceptable age for device swap verification info in hours
+     * @returns true/false
+     */
+    async verifyDeviceSwap(maxAge?: number): Promise<boolean> {
+        if (!this.phoneNumber) {
+            throw new InvalidParameterError("Device phone number is required.");
+        }
+
+        const response: any = await this._api.deviceSwap.verifyDeviceSwap(
+            this.phoneNumber,
+            maxAge
+        );
+        return response["swapped"];
+    }
+
+    /**
      * Retrieves the access token and its information.
      * @param code (string): The previously obtained NaC authorization code.
      * @returns Promise<AccessToken>: The retreived access token, its type and when it expires.
@@ -405,7 +444,6 @@ export class Device {
         );
 
         return response["devicePhoneNumberVerified"];
-
     }
 
     /**
@@ -458,4 +496,39 @@ export class Device {
         return response['active'];
     }
 
+    /**
+     * Match a customer identity against the account data bound to their phone number.
+     * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
+     * @returns Promise<any>: Contains the result of matching the provided parameter values to the data in the operator system.
+     */
+    async matchCustomer(
+        params: MatchCustomerParams
+    ): Promise<any> {
+        if (!params.phoneNumber) {
+            params.phoneNumber = this.phoneNumber;
+        }
+        const response: any = await this._api.kycMatch.matchCustomer(
+            params
+        );
+
+        return await response;
+    }
+
+    /**
+     * Check if the user of the line is older than a provided age.
+     * @param params (VerifyAgeParams): Contains age threshold which to compare user age to, subscription phone number and other optional subscriber info.
+     * @returns Promise<any>: true/false/not_available for if the age of the user is the same or older than the age threshold provided. Also results for other optional request params. 
+     */   
+    async verifyAge(
+        params: VerifyAgeParams
+    ): Promise<any> {
+        if (!params.phoneNumber) {
+            params.phoneNumber = this.phoneNumber;
+        }
+        const response: any = await this._api.kycAgeVerification.verifyAge(
+            params
+        );
+
+        return await response;
+    }
 }

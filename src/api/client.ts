@@ -22,12 +22,15 @@ import { DeviceStatusAPI } from "./deviceStatusAPI";
 import { AttachAPI, SliceAPI } from "./sliceApi";
 import { CongestionInsightsAPI } from "./congestionInsightsApi";
 import { SimSwapAPI } from "./simSwapApi";
+import { DeviceSwapAPI } from "./deviceSwapApi";
 import { GeofencingAPI } from "./geofencing";
 import { AuthorizationEndpointsAPI } from "./authorizatioEndpointsApi";
 import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
 import { CallForwardingApi } from "./callForwardingApi";
+import { KYCMatchAPI } from "./kycMatchApi";
+import { KYCAgeVerificationAPI } from "./kycAgeVerificationApi";
 
 const QOS_URL = "/qod/v0";
 
@@ -45,6 +48,8 @@ const CONGESTION_INSIGHTS_URL = "/congestion-insights/v0";
 
 const SIM_SWAP_URL = "/passthrough/camara/v1/sim-swap/sim-swap/v0";
 
+const DEVICE_SWAP_URL = "/passthrough/camara/v1/device-swap/device-swap/v1";
+
 const GEOFENCING_URL = "/geofencing-subscriptions/v0.3";
 
 const CREDENTIALS_URL = "/oauth2/v1";
@@ -53,7 +58,11 @@ const AUTHORIZATION_ENDPOINTS_URL = "/.well-known";
 
 const NUMBER_VERIFICATION_URL =  "/passthrough/camara/v1/number-verification/number-verification/v0";
 
-const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3"
+const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3";
+
+const KYC_MATCH = "/passthrough/camara/v1/passthrough/kyc-match/v0.3";
+
+const KYC_AGE_VERIFICATION = "/passthrough/camara/v1/passthrough/kyc-age-verification/v0.1"
 
 const agent = new ProxyAgent();
 
@@ -93,12 +102,15 @@ export class APIClient {
     sliceAttach: AttachAPI;
     insights: CongestionInsightsAPI;
     simSwap: SimSwapAPI;
+    deviceSwap: DeviceSwapAPI;
     geofencing: GeofencingAPI;
     authorizationEndpoints: AuthorizationEndpointsAPI;
     credentials: CredentialsAPI;
     verification: NumberVerificationAPI;
     accesstoken: AccessTokenAPI;
     callForwarding: CallForwardingApi;
+    kycMatch: KYCMatchAPI;
+    kycAgeVerification: KYCAgeVerificationAPI;
 
     constructor(
         token: string,
@@ -111,11 +123,14 @@ export class APIClient {
         sliceAttachBaseUrl: string | undefined = undefined,
         congestionInsightsBaseUrl: string | undefined = undefined,
         simSwapBaseUrl: string | undefined = undefined,
+        deviceSwapBaseUrl: string | undefined = undefined,
         geofencingBaseUrl: string | undefined = undefined,
         authorizationEndpointsBaseUrl: string | undefined = undefined,
         credentialsBaseUrl: string | undefined = undefined,
         verificationBaseUrl: string | undefined = undefined,
         callForwardingBaseUrl: string | undefined = undefined,
+        kycMatchBaseUrl: string | undefined = undefined,
+        kycAgeVerificationBaseUrl: string | undefined = undefined
     ) {
       const baseUrl = environmentBaseUrl(envMode);
       const hostname = environmentHostname(envMode);
@@ -206,6 +221,17 @@ export class APIClient {
         agent
       );
 
+      if (!deviceSwapBaseUrl) {
+        deviceSwapBaseUrl = `${baseUrl}${DEVICE_SWAP_URL}`
+      }
+
+      this.deviceSwap = new DeviceSwapAPI(
+        deviceSwapBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
       if (!geofencingBaseUrl) {
         geofencingBaseUrl = `${baseUrl}${GEOFENCING_URL}`
       }
@@ -260,6 +286,28 @@ export class APIClient {
 
       this.callForwarding = new CallForwardingApi(
         callForwardingBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!kycMatchBaseUrl) {
+        kycMatchBaseUrl = `${baseUrl}${KYC_MATCH}`
+      }
+
+      this.kycMatch = new KYCMatchAPI(
+        kycMatchBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!kycAgeVerificationBaseUrl) {
+        kycAgeVerificationBaseUrl = `${baseUrl}${KYC_AGE_VERIFICATION}`
+      }
+
+      this.kycAgeVerification = new KYCAgeVerificationAPI(
+        kycAgeVerificationBaseUrl,
         token,
         hostname,
         agent

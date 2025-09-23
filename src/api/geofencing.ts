@@ -53,14 +53,7 @@ export class GeofencingAPI {
             config: {
                 subscriptionDetail: {
                     device: device.toJson(),
-                    area: {
-                        areaType: "CIRCLE",
-                        center: {
-                            latitude: params.latitude,
-                            longitude: params.longitude
-                        },
-                        radius: params.radius
-                    }
+                    area: params.area
                 }
             }
         };
