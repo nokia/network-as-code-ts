@@ -21,7 +21,7 @@ import { errorHandler } from "../errors";
 import { Device, RoamingStatus } from "../models/device";
 import { SubscribeOptionalArgs } from "../models/deviceStatus";
 
-export class DeviceStatusAPI {
+export class DeviceReachabilityStatusAPI {
     private baseUrl: string;
     private headers: HeadersInit;
     private agent: ProxyAgent;
@@ -73,7 +73,7 @@ export class DeviceStatusAPI {
             }
         }
 
-        const response = await fetch(`${this.baseUrl}/subscriptions`, {
+        const response = await fetch(`${this.baseUrl}-subscriptions/v0.7/subscriptions`, {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
@@ -87,7 +87,7 @@ export class DeviceStatusAPI {
 
     async delete(eventSubscriptionId: string) {
         const response = await fetch(
-            `${this.baseUrl}/subscriptions/${eventSubscriptionId}`,
+            `${this.baseUrl}-subscriptions/v0.7/subscriptions/${eventSubscriptionId}`,
             {
                 method: "DELETE",
                 headers: this.headers,
@@ -100,7 +100,7 @@ export class DeviceStatusAPI {
 
     async get(eventSubscriptionId: string) {
         const response = await fetch(
-            `${this.baseUrl}/subscriptions/${eventSubscriptionId}`,
+            `${this.baseUrl}-subscriptions/v0.7/subscriptions/${eventSubscriptionId}`,
             {
                 method: "GET",
                 headers: this.headers,
@@ -114,7 +114,7 @@ export class DeviceStatusAPI {
     }
 
     async getSubscriptions() {
-        const response = await fetch(`${this.baseUrl}/subscriptions`, {
+        const response = await fetch(`${this.baseUrl}-subscriptions/v0.7/subscriptions`, {
             method: "GET",
             headers: this.headers,
             agent: this.agent,
@@ -125,8 +125,8 @@ export class DeviceStatusAPI {
         return response.json() as Promise<any>;
     }
 
-    async getConnectivity(device: Device) {
-        const response = await fetch(`${this.baseUrl}/connectivity`, {
+    async getReachability(device: Device) {
+        const response = await fetch(`${this.baseUrl}/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,
@@ -139,9 +139,115 @@ export class DeviceStatusAPI {
 
         return response.json() as Promise<any>;
     }
+}
+
+
+export class DeviceRoamingStatusAPI {
+    private baseUrl: string;
+    private headers: HeadersInit;
+    private agent: ProxyAgent;
+
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent
+    ) {
+        this.baseUrl = baseUrl;
+        this.headers = {
+            "Content-Type": "application/json",
+            "X-RapidAPI-Host": rapidHost,
+            "X-RapidAPI-Key": rapidKey,
+        };
+        this.agent = agent;
+    }
+
+    async subscribe(
+        device: Device,
+        eventType: string,
+        notificationUrl: string,
+        optionalArgs?: SubscribeOptionalArgs
+    ): Promise<any> {
+        const body: any = {
+            subscriptionDetail: {
+                device: device.toJson(),
+                type: eventType,
+            },
+            webhook: {
+                notificationUrl: notificationUrl,
+            },
+        };
+
+        if (optionalArgs) {
+            if (optionalArgs.maxNumberOfReports) {
+                body.maxNumberOfReports = optionalArgs.maxNumberOfReports;
+            }
+
+            if (optionalArgs.subscriptionExpireTime) {
+                body.subscriptionExpireTime =
+                    optionalArgs.subscriptionExpireTime;
+            }
+
+            if (optionalArgs.notificationAuthToken) {
+                body.webhook.notificationAuthToken =
+                    optionalArgs.notificationAuthToken;
+            }
+        }
+
+        const response = await fetch(`${this.baseUrl}-subscriptions/v0.7/subscriptions`, {
+            method: "POST",
+            headers: this.headers,
+            body: JSON.stringify(body),
+            agent: this.agent,
+        });
+
+        errorHandler(response);
+
+        return response.json() as Promise<any>;
+    }
+
+    async delete(eventSubscriptionId: string) {
+        const response = await fetch(
+            `${this.baseUrl}-subscriptions/v0.7/subscriptions/${eventSubscriptionId}`,
+            {
+                method: "DELETE",
+                headers: this.headers,
+                agent: this.agent,
+            }
+        );
+
+        errorHandler(response);
+    }
+
+    async get(eventSubscriptionId: string) {
+        const response = await fetch(
+            `${this.baseUrl}-subscriptions/v0.7/subscriptions/${eventSubscriptionId}`,
+            {
+                method: "GET",
+                headers: this.headers,
+                agent: this.agent,
+            }
+        );
+
+        errorHandler(response);
+
+        return response.json() as Promise<any>;
+    }
+
+    async getSubscriptions() {
+        const response = await fetch(`${this.baseUrl}-subscriptions/v0.7/subscriptions`, {
+            method: "GET",
+            headers: this.headers,
+            agent: this.agent,
+        });
+
+        errorHandler(response);
+
+        return response.json() as Promise<any>;
+    }
 
     async getRoaming(device: Device) {
-        const response = await fetch(`${this.baseUrl}/roaming`, {
+        const response = await fetch(`${this.baseUrl}/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,

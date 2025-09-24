@@ -38,19 +38,36 @@ export class DeviceStatus extends Namespace {
         optionalArgs?: SubscribeOptionalArgs
     ): Promise<Subscription> {
         const subscriptionExpireTime = optionalArgs?.subscriptionExpireTime;
-
-        const jsonData = await this.api.deviceStatus.subscribe(
-            device,
-            eventType,
-            notificationUrl,
-            {
-                subscriptionExpireTime:
-                    subscriptionExpireTime instanceof Date
-                        ? subscriptionExpireTime.toISOString()
-                        : subscriptionExpireTime,
-                ...optionalArgs,
-            }
-        );
+        let jsonData: any;
+        
+        if(eventType.includes("roaming")) {
+            jsonData = await this.api.deviceRoamingStatus.subscribe(
+                device,
+                eventType,
+                notificationUrl,
+                {
+                    subscriptionExpireTime:
+                        subscriptionExpireTime instanceof Date
+                            ? subscriptionExpireTime.toISOString()
+                            : subscriptionExpireTime,
+                    ...optionalArgs,
+                }
+            );
+        }
+        else {
+            jsonData = await this.api.deviceReachabilityStatus.subscribe(
+                device,
+                eventType,
+                notificationUrl,
+                {
+                    subscriptionExpireTime:
+                        subscriptionExpireTime instanceof Date
+                            ? subscriptionExpireTime.toISOString()
+                            : subscriptionExpireTime,
+                    ...optionalArgs,
+                }
+            );            
+        }
 
         return new Subscription(
             this.api,
@@ -74,8 +91,8 @@ export class DeviceStatus extends Namespace {
             ```
             @returns Promise<Subscription>
     */
-    async get(eventSubscriptionId: string): Promise<Subscription> {
-        const jsonData = await this.api.deviceStatus.get(eventSubscriptionId);
+    async getRoamingSubscription(eventSubscriptionId: string): Promise<Subscription> {
+        const jsonData = await this.api.deviceRoamingStatus.get(eventSubscriptionId);
 
         const deviceDetails = jsonData.subscriptionDetail.device;
 
@@ -99,7 +116,41 @@ export class DeviceStatus extends Namespace {
             jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
         );
     }
+    /**
+     *  Get a subscription by its external ID.
+     * 
+            @param eventSubscriptionId (string): Resource ID
+            @example ```TypeScript 
+            const subscription = await client.deviceStatus.get(subscription.eventSubscriptionId);
+            ```
+            @returns Promise<Subscription>
+    */
 
+    async getReachabilitySubscription(eventSubscriptionId: string): Promise<Subscription> {
+        const jsonData = await this.api.deviceReachabilityStatus.get(eventSubscriptionId);
+
+        const deviceDetails = jsonData.subscriptionDetail.device;
+
+        const device = new Device(
+            this.api,
+            deviceDetails.networkAccessIdentifier,
+            deviceDetails.ipv4Address,
+            deviceDetails.ipv6Address,
+            deviceDetails.phoneNumber
+        );
+
+        return new Subscription(
+            this.api,
+            eventSubscriptionId,
+            device,
+            jsonData.subscriptionDetail["type"],
+            jsonData.webhook.notificationUrl,
+            jsonData.webhook.notificationAuthToken,
+            jsonData.maxNumberOfReports,
+            jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
+            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
+        );
+    }
     /**
      *  Get a list of active subscriptions
      * 
@@ -109,7 +160,9 @@ export class DeviceStatus extends Namespace {
             @returns Promise<Subscription[]>
     */
     async getSubscriptions(): Promise<Subscription[]> {
-        const jsonData = await this.api.deviceStatus.getSubscriptions();
+        const jsonReachabilityData = await this.api.deviceReachabilityStatus.getSubscriptions();
+        const jsonRoamingData = await this.api.deviceRoamingStatus.getSubscriptions();
+        const jsonData = jsonReachabilityData.concat(jsonRoamingData);
 
         return jsonData.map((entry: any) => {
             const deviceDetails = entry.subscriptionDetail.device;

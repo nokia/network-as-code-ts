@@ -19,13 +19,13 @@ import { Device } from "./device";
 
 
 export enum EventType {
-    CONNECTIVITY_DATA = "org.camaraproject.device-status.v0.connectivity-data",
-    CONNECTIVITY_SMS = "org.camaraproject.device-status.v0.connectivity-sms",
-    CONNECTIVITY_DISCONNECTED = "org.camaraproject.device-status.v0.connectivity-disconnected",
-    ROAMING_STATUS = "org.camaraproject.device-status.v0.roaming-status",
-    ROAMING_ON = "org.camaraproject.device-status.v0.roaming-on",
-    ROAMING_OFF = "org.camaraproject.device-status.v0.roaming-off",
-    ROAMING_CHANGE_COUNTRY = "org.camaraproject.device-status.v0.roaming-change-country"
+    REACHABILITY_DATA = "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data",
+    REACHABILITY_SMS = "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms",
+    REACHABILITY_DISCONNECTED = "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-disconnected",
+    ROAMING_STATUS = "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status",
+    ROAMING_ON = "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on",
+    ROAMING_OFF = "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-off",
+    ROAMING_CHANGE_COUNTRY = "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-change-country"
 }
 
 
@@ -86,7 +86,13 @@ export class Subscription {
     /**
      *  Delete device connectivity status
      */
-    async delete() {
-        this.api.deviceStatus.delete(this.eventSubscriptionId);
+    async deleteRoaming() {
+        this.api.deviceRoamingStatus.delete(this.eventSubscriptionId);
+    }
+    /**
+     *  Delete device connectivity status
+     */
+    async deleteReachability() {
+        this.api.deviceReachabilityStatus.delete(this.eventSubscriptionId);
     }
 }
