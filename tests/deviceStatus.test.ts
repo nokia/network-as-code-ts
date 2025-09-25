@@ -264,8 +264,98 @@ describe("Device Status", () => {
         );
 
         const subscriptions = await client.deviceStatus.getSubscriptions();
-        console.log(subscriptions)
-    });    
+        expect(subscriptions.length).toBe(4);
+    });
+
+    it("can delete a reachability subscription", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions",
+            JSON.stringify({
+                subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
+                subscriptionDetail: {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    type: "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms"
+                },
+                webhook: {
+                    notificationUrl: "https://example.com/notify",
+                },
+                startsAt: "2024-01-11T11:53:20.293671Z",
+            })
+        );
+
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            EventType.REACHABILITY_SMS,
+            "https://example.com/notify"
+        );
+
+        fetchMock.mockGlobal().delete(
+        "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
+        (_: any, req: any): any => {
+            expect(req.method).toBe("DELETE");
+        },
+            { response: Promise.resolve({
+                status: 200,
+            })}
+        
+        );
+
+        await subscription.delete();
+
+        expect(fetchMock.callHistory.calls().length).toBe(2);
+    });
+
+    it("can delete a roaming subscription", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions",
+            JSON.stringify({
+                subscriptionId: "89cc1355-2ff1-4091-a935-54817c124680360",
+                subscriptionDetail: {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    type: "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on"
+                },
+                webhook: {
+                    notificationUrl: "https://example.com/notify",
+                },
+                startsAt: "2024-01-11T11:53:20.293671Z",
+            })
+        );
+
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            EventType.ROAMING_ON,
+            "https://example.com/notify"
+        );
+
+        fetchMock.mockGlobal().delete(
+        "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c124680360",
+        (_: any, req: any): any => {
+            expect(req.method).toBe("DELETE");
+        },
+            { response: Promise.resolve({
+                status: 200,
+            })}
+        
+        );
+
+        await subscription.delete();
+
+        expect(fetchMock.callHistory.calls().length).toBe(2);
+    });
 
 /*
     it("sends a request out on subscribe", async () => {
