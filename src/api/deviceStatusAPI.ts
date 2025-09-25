@@ -21,7 +21,7 @@ import { errorHandler } from "../errors";
 import { Device, RoamingStatus } from "../models/device";
 import { SubscribeOptionalArgs } from "../models/deviceStatus";
 
-export class DeviceReachabilityStatusAPI {
+export class DeviceStatusAPI {
     private baseUrl: string;
     private headers: HeadersInit;
     private agent: ProxyAgent;
@@ -72,8 +72,12 @@ export class DeviceReachabilityStatusAPI {
                     optionalArgs.notificationAuthToken;
             }
         }
+        let url: string = "/device-reachability-status-subscriptions/v0.7"
+        if (eventType.includes("roaming")){
+            url = "/device-roaming-status-subscriptions/v0.7"
+        }
 
-        const response = await fetch(`${this.baseUrl}-subscriptions/v0.7/subscriptions`, {
+        const response = await fetch(`${this.baseUrl}${url}/subscriptions`, {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
@@ -85,9 +89,9 @@ export class DeviceReachabilityStatusAPI {
         return response.json() as Promise<any>;
     }
 
-    async delete(eventSubscriptionId: string) {
+    async delete(eventSubscriptionId: string, url: string) {
         const response = await fetch(
-            `${this.baseUrl}-subscriptions/v0.7/subscriptions/${eventSubscriptionId}`,
+            `${this.baseUrl}${url}/subscriptions/${eventSubscriptionId}`,
             {
                 method: "DELETE",
                 headers: this.headers,
@@ -98,9 +102,9 @@ export class DeviceReachabilityStatusAPI {
         errorHandler(response);
     }
 
-    async get(eventSubscriptionId: string) {
+    async get(eventSubscriptionId: string, url: string) {
         const response = await fetch(
-            `${this.baseUrl}-subscriptions/v0.7/subscriptions/${eventSubscriptionId}`,
+            `${this.baseUrl}${url}/subscriptions/${eventSubscriptionId}`,
             {
                 method: "GET",
                 headers: this.headers,
@@ -114,19 +118,31 @@ export class DeviceReachabilityStatusAPI {
     }
 
     async getSubscriptions() {
-        const response = await fetch(`${this.baseUrl}-subscriptions/v0.7/subscriptions`, {
+        const reachabilityResponse = await fetch(`${this.baseUrl}/device-reachability-status-subscriptions/v0.7/subscriptions`, {
             method: "GET",
             headers: this.headers,
             agent: this.agent,
         });
 
-        errorHandler(response);
+        errorHandler(reachabilityResponse);
 
-        return response.json() as Promise<any>;
+        const roamingResponse = await fetch(`${this.baseUrl}/device-roaming-status-subscriptions/v0.7/subscriptions`, {
+            method: "GET",
+            headers: this.headers,
+            agent: this.agent,
+        });
+
+        errorHandler(roamingResponse);
+        
+        const roaming: any = await roamingResponse.json()
+        const reachability: any = await reachabilityResponse.json()
+        const response: any = [...reachability, ...roaming]
+
+        return response
     }
 
     async getReachability(device: Device) {
-        const response = await fetch(`${this.baseUrl}/v1/retrieve`, {
+        const response = await fetch(`${this.baseUrl}/device-reachability-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,
@@ -139,115 +155,9 @@ export class DeviceReachabilityStatusAPI {
 
         return response.json() as Promise<any>;
     }
-}
-
-
-export class DeviceRoamingStatusAPI {
-    private baseUrl: string;
-    private headers: HeadersInit;
-    private agent: ProxyAgent;
-
-    constructor(
-        baseUrl: string,
-        rapidKey: string,
-        rapidHost: string,
-        agent: ProxyAgent
-    ) {
-        this.baseUrl = baseUrl;
-        this.headers = {
-            "Content-Type": "application/json",
-            "X-RapidAPI-Host": rapidHost,
-            "X-RapidAPI-Key": rapidKey,
-        };
-        this.agent = agent;
-    }
-
-    async subscribe(
-        device: Device,
-        eventType: string,
-        notificationUrl: string,
-        optionalArgs?: SubscribeOptionalArgs
-    ): Promise<any> {
-        const body: any = {
-            subscriptionDetail: {
-                device: device.toJson(),
-                type: eventType,
-            },
-            webhook: {
-                notificationUrl: notificationUrl,
-            },
-        };
-
-        if (optionalArgs) {
-            if (optionalArgs.maxNumberOfReports) {
-                body.maxNumberOfReports = optionalArgs.maxNumberOfReports;
-            }
-
-            if (optionalArgs.subscriptionExpireTime) {
-                body.subscriptionExpireTime =
-                    optionalArgs.subscriptionExpireTime;
-            }
-
-            if (optionalArgs.notificationAuthToken) {
-                body.webhook.notificationAuthToken =
-                    optionalArgs.notificationAuthToken;
-            }
-        }
-
-        const response = await fetch(`${this.baseUrl}-subscriptions/v0.7/subscriptions`, {
-            method: "POST",
-            headers: this.headers,
-            body: JSON.stringify(body),
-            agent: this.agent,
-        });
-
-        errorHandler(response);
-
-        return response.json() as Promise<any>;
-    }
-
-    async delete(eventSubscriptionId: string) {
-        const response = await fetch(
-            `${this.baseUrl}-subscriptions/v0.7/subscriptions/${eventSubscriptionId}`,
-            {
-                method: "DELETE",
-                headers: this.headers,
-                agent: this.agent,
-            }
-        );
-
-        errorHandler(response);
-    }
-
-    async get(eventSubscriptionId: string) {
-        const response = await fetch(
-            `${this.baseUrl}-subscriptions/v0.7/subscriptions/${eventSubscriptionId}`,
-            {
-                method: "GET",
-                headers: this.headers,
-                agent: this.agent,
-            }
-        );
-
-        errorHandler(response);
-
-        return response.json() as Promise<any>;
-    }
-
-    async getSubscriptions() {
-        const response = await fetch(`${this.baseUrl}-subscriptions/v0.7/subscriptions`, {
-            method: "GET",
-            headers: this.headers,
-            agent: this.agent,
-        });
-
-        errorHandler(response);
-
-        return response.json() as Promise<any>;
-    }
 
     async getRoaming(device: Device) {
-        const response = await fetch(`${this.baseUrl}/v1/retrieve`, {
+        const response = await fetch(`${this.baseUrl}/device-roaming-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,

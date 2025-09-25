@@ -86,13 +86,23 @@ export class Subscription {
     /**
      *  Delete device connectivity status
      */
+    async delete() {
+        let url: string = "/device-reachability-status-subscriptions/v0.7"
+        if (this.eventType.includes("roaming")){
+            url = "/device-roaming-status-subscriptions/v0.7"
+        }
+        this.api.deviceStatus.delete(this.eventSubscriptionId, url);
+    }
+
+    /*
     async deleteRoaming() {
-        this.api.deviceRoamingStatus.delete(this.eventSubscriptionId);
+        const url: string = "/device-roaming-status-subscriptions/v0.7";
+        this.api.deviceStatus.delete(this.eventSubscriptionId, url);
     }
-    /**
-     *  Delete device connectivity status
-     */
+
     async deleteReachability() {
-        this.api.deviceReachabilityStatus.delete(this.eventSubscriptionId);
+        const url: string = "/device-reachability-status-subscriptions/v0.7";
+        this.api.deviceStatus.delete(this.eventSubscriptionId, url);
     }
+        */
 }
