@@ -18,7 +18,7 @@ import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 
 import { errorHandler } from "../errors";
-import { Device, RoamingStatus } from "../models/device";
+import { Device, RoamingStatus, ReachabilityStatus } from "../models/device";
 import { SubscribeOptionalArgs } from "../models/deviceStatus";
 
 export class DeviceStatusAPI {
@@ -141,7 +141,7 @@ export class DeviceStatusAPI {
         return response
     }
 
-    async getReachability(device: Device) {
+    async getReachability(device: Device): Promise<ReachabilityStatus> {
         const response = await fetch(`${this.baseUrl}/device-reachability-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
@@ -153,10 +153,10 @@ export class DeviceStatusAPI {
 
         errorHandler(response);
 
-        return response.json() as Promise<any>;
+        return response.json() as Promise<ReachabilityStatus>;
     }
 
-    async getRoaming(device: Device) {
+    async getRoaming(device: Device): Promise<RoamingStatus> {
         const response = await fetch(`${this.baseUrl}/device-roaming-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,

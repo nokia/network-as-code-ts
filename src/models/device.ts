@@ -44,9 +44,23 @@ export interface DeviceIpv4Addr {
  *          countryName (string[]): list of country names, if any, for this country code
  */
 export interface RoamingStatus {
+    lastStatusTime?: Date | string;
     roaming: boolean;
     countryCode?: number;
     countryName?: string[];
+}
+
+/**
+ * An interface representing roaming status
+ * #### Public attributes
+ *          roaming (boolean): indicates whether this device is currently roaming
+ *          countryCode (number): code for the country in which the roaming is happening
+ *          countryName (string[]): list of country names, if any, for this country code
+ */
+export interface ReachabilityStatus {
+    lastStatusTime?: Date | string;
+    reachable: boolean;
+    connectivity?: string[];
 }
 
 export interface QodOptionalArgs {
@@ -270,10 +284,12 @@ export class Device {
      * Retrieves the current connectivity status of the device
      * @returns Promise<string>: The connectivity status, e.g. "CONNECTED_DATA"
      */
-    async getReachability(): Promise<string> {
+    async getReachability(): Promise<any> {
         const json = await this._api.deviceStatus.getReachability(this);
-
-        return json["connectivityStatus"];
+        if (json["reachable"]) {
+            return json["connectivity"];
+        }
+        return "Not reachable";
     }
 
     /**
