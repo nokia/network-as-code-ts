@@ -427,7 +427,7 @@ describe("Device Status", () => {
 
         const status = await device.getReachability();
 
-        expect(status).toStrictEqual(["SMS"]);
+        expect(status).toStrictEqual({"connectivity": ["SMS"], "lastStatusTime": "2024-02-20T10:41:38.657Z", "reachable": true});
     });
 
     it("allows polling device roaming status", async () => {

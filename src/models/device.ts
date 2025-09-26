@@ -285,11 +285,7 @@ export class Device {
      * @returns Promise<string>: The connectivity status, e.g. "CONNECTED_DATA"
      */
     async getReachability(): Promise<any> {
-        const json = await this._api.deviceStatus.getReachability(this);
-        if (json["reachable"]) {
-            return json["connectivity"];
-        }
-        return "Not reachable";
+        return this._api.deviceStatus.getReachability(this);
     }
 
     /**
