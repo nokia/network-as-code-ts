@@ -30,9 +30,24 @@ export enum EventType {
 
 
 export interface SubscribeOptionalArgs {
-    subscriptionExpireTime?: Date | string;
-    maxNumberOfReports?: number;
-    notificationAuthToken?: string;
+    subscriptionExpireTime?: Date | string,
+    subscriptionMaxEvents?: number,
+    sinkCredential?: PlainCredential | AccessTokenCredential,
+    initialEvent?: boolean
+}
+
+export interface PlainCredential {
+    credentialType: "PLAIN",
+    identifier: string,
+    secret: string
+
+}
+
+export interface AccessTokenCredential {
+    credentialType: "ACCESSTOKEN",
+    accessToken: string,
+    accessTokenType?: string,
+    accessTokenExpiresUtc: Date | string
 }
 
 /**
@@ -54,10 +69,10 @@ export class Subscription {
     private api: APIClient;
     eventSubscriptionId: string;
     device: Device;
-    eventType: string;
-    notificationUrl: string;
-    maxNumOfReports?: number;
-    notificationAuthToken?: string;
+    eventType: string[];
+    sink: string;
+    sinkCredential?: PlainCredential | AccessTokenCredential;
+    subscriptionMaxEvents?: number;
     startsAt?: Date;
     expiresAt?: Date;
 
@@ -65,10 +80,10 @@ export class Subscription {
         api: APIClient,
         eventSubscriptionId: string,
         device: Device,
-        eventType: string,
-        notificationUrl: string,
-        notificationAuthToken?: string,
-        maxNumOfReports?: number,
+        eventType: string[],
+        sink: string,
+        sinkCredential?: PlainCredential | AccessTokenCredential,
+        subscriptionMaxEvents?: number,
         startsAt?: Date,
         expiresAt?: Date
     ) {
@@ -76,11 +91,11 @@ export class Subscription {
         this.eventSubscriptionId = eventSubscriptionId;
         this.device = device;
         this.eventType = eventType;
-        this.notificationUrl = notificationUrl;
+        this.sink = sink;
+        this.sinkCredential = sinkCredential;
         this.startsAt = startsAt;
         this.expiresAt = expiresAt;
-        this.maxNumOfReports = maxNumOfReports;
-        this.notificationAuthToken = notificationAuthToken;
+        this.subscriptionMaxEvents = subscriptionMaxEvents;
     }
 
     /**
