@@ -33,16 +33,21 @@ export class DeviceStatus extends Namespace {
 
     async subscribe(
         device: Device,
-        eventType: EventType | string,
-        notificationUrl: string,
+        types: EventType[] | string[],
+        sink: string,
         optionalArgs?: SubscribeOptionalArgs
-    ): Promise<Subscription> {
+    ): Promise<any> {
         const subscriptionExpireTime = optionalArgs?.subscriptionExpireTime;
 
+        let url: string = "/device-reachability-status-subscriptions/v0.7"
+        if (types[0].includes("roaming")){
+            url = "/device-roaming-status-subscriptions/v0.7"
+        }
         const jsonData = await this.api.deviceStatus.subscribe(
+            url,
             device,
-            eventType,
-            notificationUrl,
+            types,
+            sink,
             {
                 subscriptionExpireTime:
                     subscriptionExpireTime instanceof Date
@@ -56,10 +61,10 @@ export class DeviceStatus extends Namespace {
             this.api,
             jsonData.subscriptionId,
             device,
-            eventType,
-            notificationUrl,
-            optionalArgs?.notificationAuthToken,
-            optionalArgs?.maxNumberOfReports,
+            types,
+            sink,
+            optionalArgs?.sinkCredential,
+            optionalArgs?.subscriptionMaxEvents,
             jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
             jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
         );

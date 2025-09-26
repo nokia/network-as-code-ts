@@ -66,11 +66,11 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "REACHABILITY",
+            ["REACHABILITY"],
             "https://example.com/notify"
         );
 
-        expect(subscription.eventType).toBe("REACHABILITY");
+        expect(subscription.eventType).toStrictEqual(["REACHABILITY"]);
     });
 
 
@@ -99,11 +99,11 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            EventType.REACHABILITY_DATA,
+            [EventType.REACHABILITY_DATA],
             "https://example.com/notify"
         );
 
-        expect(subscription.eventType).toBe("org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data");
+        expect(subscription.eventType).toStrictEqual(["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"]);
     });
 
     it("can invoke subscription to ROAMING_STATUS updates", async () => {
@@ -131,11 +131,11 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            EventType.ROAMING_STATUS,
+            [EventType.ROAMING_STATUS],
             "https://example.com/notify"
         );
 
-        expect(subscription.eventType).toBe("org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status");
+        expect(subscription.eventType).toStrictEqual(["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status"]);
     });
 
     it("can invoke subscription to roaming status updates", async () => {
@@ -163,11 +163,11 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status",
+            ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status"],
             "https://example.com/notify"
         );
 
-        expect(subscription.eventType).toBe("org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status");
+        expect(subscription.eventType).toStrictEqual(["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status"]);
     });
 
 
@@ -292,7 +292,7 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            EventType.REACHABILITY_SMS,
+            [EventType.REACHABILITY_SMS],
             "https://example.com/notify"
         );
 
@@ -337,7 +337,7 @@ describe("Device Status", () => {
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            EventType.ROAMING_ON,
+            [EventType.ROAMING_ON],
             "https://example.com/notify"
         );
 

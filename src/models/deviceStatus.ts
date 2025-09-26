@@ -103,7 +103,8 @@ export class Subscription {
      */
     async delete() {
         let url: string = "/device-reachability-status-subscriptions/v0.7"
-        if (this.eventType.includes("roaming")){
+        console.log(this.eventType)
+        if (this.eventType[0].includes("roaming")){
             url = "/device-roaming-status-subscriptions/v0.7"
         }
         this.api.deviceStatus.delete(this.eventSubscriptionId, url);

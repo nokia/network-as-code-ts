@@ -58,7 +58,6 @@ export class DeviceStatusAPI {
             }
         };
 
-
         if (optionalArgs) {
             if (optionalArgs.subscriptionMaxEvents) {
                 body.subscriptionMaxEvents = optionalArgs.subscriptionMaxEvents;
