@@ -178,7 +178,8 @@ export class APIClient {
         deviceReachabilityStatusBaseUrl,
         token,
         hostname,
-        agent
+        agent,
+        baseUrl
       );
 
       if (!deviceRoamingStatusBaseUrl) {
@@ -189,7 +190,8 @@ export class APIClient {
         deviceRoamingStatusBaseUrl,
         token,
         hostname,
-        agent
+        agent,
+        baseUrl
       );
 
       if (!sliceBaseUrl) {

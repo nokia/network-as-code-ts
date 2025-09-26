@@ -127,17 +127,21 @@ class DeviceStatus {
 }
 
 export class DeviceReachabilityStatusAPI extends DeviceStatus{
+    private nacBaseUrl: string;
+
     constructor(
         baseUrl: string,
         rapidKey: string,
         rapidHost: string,
         agent: ProxyAgent,
+        base: string
     ) {
         super(baseUrl, rapidKey, rapidHost, agent);
+        this.nacBaseUrl = base
     }
 
     async getReachability(device: Device): Promise<ReachabilityStatus> {
-        const response = await fetch(`${this.baseUrl}/retrieve`, {
+        const response = await fetch(`${this.nacBaseUrl}/device-reachability-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,
@@ -153,17 +157,21 @@ export class DeviceReachabilityStatusAPI extends DeviceStatus{
 }
 
 export class DeviceRoamingStatusAPI extends DeviceStatus{
+    private nacBaseUrl: string;
     constructor(
         baseUrl: string,
         rapidKey: string,
         rapidHost: string,
         agent: ProxyAgent,
+        base: string
     ) {
         super(baseUrl, rapidKey, rapidHost, agent);
+        this.nacBaseUrl = base;
     }
+    
 
     async getRoaming(device: Device): Promise<RoamingStatus> {
-        const response = await fetch(`${this.baseUrl}/retrieve`, {
+        const response = await fetch(`${this.nacBaseUrl}/device-roaming-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,

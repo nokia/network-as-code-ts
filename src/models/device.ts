@@ -297,7 +297,7 @@ export class Device {
         /*const roamingStatus: RoamingStatus = await this._api.deviceRoamingStatus.getRoaming(this);
 
         return roamingStatus*/
-        await this._api.deviceRoamingStatus.getRoaming(this);
+        return await this._api.deviceRoamingStatus.getRoaming(this);
     }
 
     toJson(): any {
