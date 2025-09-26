@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 
@@ -42,24 +41,27 @@ export class DeviceStatusAPI {
     }
 
     async subscribe(
+        url: string,
         device: Device,
-        eventType: string,
-        notificationUrl: string,
+        types: string[],
+        sink: string,
         optionalArgs?: SubscribeOptionalArgs
     ): Promise<any> {
         const body: any = {
-            subscriptionDetail: {
-                device: device.toJson(),
-                type: eventType,
-            },
-            webhook: {
-                notificationUrl: notificationUrl,
-            },
+            protocol: "HTTP",
+            sink: sink,
+            types: types,
+            config: {
+                subscriptionDetail: {
+                    device: device.toJson()
+                }
+            }
         };
 
+
         if (optionalArgs) {
-            if (optionalArgs.maxNumberOfReports) {
-                body.maxNumberOfReports = optionalArgs.maxNumberOfReports;
+            if (optionalArgs.subscriptionMaxEvents) {
+                body.subscriptionMaxEvents = optionalArgs.subscriptionMaxEvents;
             }
 
             if (optionalArgs.subscriptionExpireTime) {
@@ -67,14 +69,10 @@ export class DeviceStatusAPI {
                     optionalArgs.subscriptionExpireTime;
             }
 
-            if (optionalArgs.notificationAuthToken) {
-                body.webhook.notificationAuthToken =
-                    optionalArgs.notificationAuthToken;
+            if (optionalArgs.sinkCredential) {
+                body.sinkCredential = optionalArgs.sinkCredential ? Object.fromEntries(Object.entries(optionalArgs.sinkCredential as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined)) : undefined;
             }
-        }
-        let url: string = "/device-reachability-status-subscriptions/v0.7"
-        if (eventType.includes("roaming")){
-            url = "/device-roaming-status-subscriptions/v0.7"
+
         }
 
         const response = await fetch(`${this.baseUrl}${url}/subscriptions`, {
