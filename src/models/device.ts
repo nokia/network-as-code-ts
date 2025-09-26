@@ -285,15 +285,19 @@ export class Device {
      * @returns Promise<string>: The connectivity status, e.g. "CONNECTED_DATA"
      */
     async getReachability(): Promise<any> {
-        return this._api.deviceStatus.getReachability(this);
+        return this._api.deviceReachabilityStatus.getReachability(this);
     }
 
     /**
      * Retrieves the current connectivity status of the device
      * @returns Promise<RoamingStatus>: The roaming status for whether the device is roaming and in what network
      */
-    async getRoaming(): Promise<RoamingStatus> {
-        return this._api.deviceStatus.getRoaming(this);
+    async getRoaming(): Promise<any> {
+
+        /*const roamingStatus: RoamingStatus = await this._api.deviceRoamingStatus.getRoaming(this);
+
+        return roamingStatus*/
+        await this._api.deviceRoamingStatus.getRoaming(this);
     }
 
     toJson(): any {

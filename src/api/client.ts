@@ -18,7 +18,7 @@ import { ProxyAgent } from "proxy-agent";
 
 import { QodAPI } from "./qodApi";
 import { LocationRetrievalAPI, LocationVerifyAPI } from "./locationApi";
-import { DeviceStatusAPI } from "./deviceStatusAPI";
+import { DeviceReachabilityStatusAPI, DeviceRoamingStatusAPI } from "./deviceStatusAPI";
 import { AttachAPI, SliceAPI } from "./sliceApi";
 import { CongestionInsightsAPI } from "./congestionInsightsApi";
 import { SimSwapAPI } from "./simSwapApi";
@@ -41,6 +41,10 @@ const LOCATION_VERIFY_URL = "/location-verification/v1";
 const SLICE_URL = "/slice/v1";
 
 const SLICE_ATTACH_URL = "/device-attach/v0";
+
+const DEVICE_REACHABILITY_STATUS_URL = "/device-reachability-status-subscriptions/v0.7";
+
+const DEVICE_ROAMING_STATUS_URL = "/device-roaming-status-subscriptions/v0.7";
 
 const CONGESTION_INSIGHTS_URL = "/congestion-insights/v0";
 
@@ -97,7 +101,8 @@ export class APIClient {
     locationVerify: LocationVerifyAPI;
     slicing: SliceAPI;
     sliceAttach: AttachAPI;
-    deviceStatus: DeviceStatusAPI;
+    deviceReachabilityStatus: DeviceReachabilityStatusAPI;
+    deviceRoamingStatus: DeviceRoamingStatusAPI;
     insights: CongestionInsightsAPI;
     simSwap: SimSwapAPI;
     deviceSwap: DeviceSwapAPI;
@@ -116,7 +121,8 @@ export class APIClient {
         qosBaseUrl: string | undefined = undefined,
         locationRetrievalBaseUrl: string | undefined = undefined,
         locationVerifyBaseUrl: string | undefined = undefined,
-        deviceStatusBaseUrl: string | undefined = undefined,
+        deviceReachabilityStatusBaseUrl: string | undefined = undefined,
+        deviceRoamingStatusBaseUrl: string | undefined = undefined,
         sliceBaseUrl: string | undefined = undefined,
         sliceAttachBaseUrl: string | undefined = undefined,
         congestionInsightsBaseUrl: string | undefined = undefined,
@@ -164,12 +170,23 @@ export class APIClient {
         agent
       );
 
-      if (!deviceStatusBaseUrl) {
-        deviceStatusBaseUrl = `${baseUrl}`
+      if (!deviceReachabilityStatusBaseUrl) {
+        deviceReachabilityStatusBaseUrl = `${baseUrl}${DEVICE_REACHABILITY_STATUS_URL}`
       }
 
-      this.deviceStatus = new DeviceStatusAPI(
-        deviceStatusBaseUrl,
+      this.deviceReachabilityStatus = new DeviceReachabilityStatusAPI(
+        deviceReachabilityStatusBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!deviceRoamingStatusBaseUrl) {
+        deviceRoamingStatusBaseUrl = `${baseUrl}${DEVICE_ROAMING_STATUS_URL}`
+      }
+
+      this.deviceRoamingStatus = new DeviceRoamingStatusAPI(
+        deviceRoamingStatusBaseUrl,
         token,
         hostname,
         agent

@@ -20,16 +20,15 @@ import { errorHandler } from "../errors";
 import { Device, RoamingStatus, ReachabilityStatus } from "../models/device";
 import { SubscribeOptionalArgs } from "../models/deviceStatus";
 
-export class DeviceStatusAPI {
-    private baseUrl: string;
-    private headers: HeadersInit;
-    private agent: ProxyAgent;
-
+class DeviceStatus {
+    baseUrl: string;
+    headers: HeadersInit;
+    agent: ProxyAgent;
     constructor(
         baseUrl: string,
         rapidKey: string,
         rapidHost: string,
-        agent: ProxyAgent
+        agent: ProxyAgent,
     ) {
         this.baseUrl = baseUrl;
         this.headers = {
@@ -39,9 +38,7 @@ export class DeviceStatusAPI {
         };
         this.agent = agent;
     }
-
     async subscribe(
-        url: string,
         device: Device,
         types: string[],
         sink: string,
@@ -73,8 +70,9 @@ export class DeviceStatusAPI {
             }
 
         }
+        console.log(`${this.baseUrl}/subscriptions`)
 
-        const response = await fetch(`${this.baseUrl}${url}/subscriptions`, {
+        const response = await fetch(`${this.baseUrl}/subscriptions`, {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(body),
@@ -86,9 +84,9 @@ export class DeviceStatusAPI {
         return response.json() as Promise<any>;
     }
 
-    async delete(eventSubscriptionId: string, url: string) {
+    async delete(eventSubscriptionId: string) {
         const response = await fetch(
-            `${this.baseUrl}${url}/subscriptions/${eventSubscriptionId}`,
+            `${this.baseUrl}/subscriptions/${eventSubscriptionId}`,
             {
                 method: "DELETE",
                 headers: this.headers,
@@ -99,9 +97,9 @@ export class DeviceStatusAPI {
         errorHandler(response);
     }
 
-    async get(eventSubscriptionId: string, url: string) {
+    async get(eventSubscriptionId: string) {
         const response = await fetch(
-            `${this.baseUrl}${url}/subscriptions/${eventSubscriptionId}`,
+            `${this.baseUrl}/subscriptions/${eventSubscriptionId}`,
             {
                 method: "GET",
                 headers: this.headers,
@@ -115,31 +113,31 @@ export class DeviceStatusAPI {
     }
 
     async getSubscriptions() {
-        const reachabilityResponse = await fetch(`${this.baseUrl}/device-reachability-status-subscriptions/v0.7/subscriptions`, {
+        const response = await fetch(`${this.baseUrl}/subscriptions`, {
             method: "GET",
             headers: this.headers,
             agent: this.agent,
         });
 
-        errorHandler(reachabilityResponse);
+        errorHandler(response);
 
-        const roamingResponse = await fetch(`${this.baseUrl}/device-roaming-status-subscriptions/v0.7/subscriptions`, {
-            method: "GET",
-            headers: this.headers,
-            agent: this.agent,
-        });
+        return response.json() as Promise<any>
+    }
 
-        errorHandler(roamingResponse);
-        
-        const roaming: any = await roamingResponse.json()
-        const reachability: any = await reachabilityResponse.json()
-        const response: any = [...reachability, ...roaming]
+}
 
-        return response
+export class DeviceReachabilityStatusAPI extends DeviceStatus{
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent,
+    ) {
+        super(baseUrl, rapidKey, rapidHost, agent);
     }
 
     async getReachability(device: Device): Promise<ReachabilityStatus> {
-        const response = await fetch(`${this.baseUrl}/device-reachability-status/v1/retrieve`, {
+        const response = await fetch(`${this.baseUrl}/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,
@@ -152,9 +150,20 @@ export class DeviceStatusAPI {
 
         return response.json() as Promise<ReachabilityStatus>;
     }
+}
+
+export class DeviceRoamingStatusAPI extends DeviceStatus{
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent,
+    ) {
+        super(baseUrl, rapidKey, rapidHost, agent);
+    }
 
     async getRoaming(device: Device): Promise<RoamingStatus> {
-        const response = await fetch(`${this.baseUrl}/device-roaming-status/v1/retrieve`, {
+        const response = await fetch(`${this.baseUrl}/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,

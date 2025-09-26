@@ -307,7 +307,7 @@ describe("Device Status", () => {
         
         );
 
-        await subscription.delete();
+        await subscription.deleteReachability()
 
         expect(fetchMock.callHistory.calls().length).toBe(2);
     });
@@ -352,7 +352,7 @@ describe("Device Status", () => {
         
         );
 
-        await subscription.delete();
+        await subscription.deleteRoaming();
 
         expect(fetchMock.callHistory.calls().length).toBe(2);
     });

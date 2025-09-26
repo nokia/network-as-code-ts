@@ -101,24 +101,12 @@ export class Subscription {
     /**
      *  Delete device connectivity status
      */
-    async delete() {
-        let url: string = "/device-reachability-status-subscriptions/v0.7"
-        console.log(this.eventType)
-        if (this.eventType[0].includes("roaming")){
-            url = "/device-roaming-status-subscriptions/v0.7"
-        }
-        this.api.deviceStatus.delete(this.eventSubscriptionId, url);
-    }
-
-    /*
     async deleteRoaming() {
-        const url: string = "/device-roaming-status-subscriptions/v0.7";
-        this.api.deviceStatus.delete(this.eventSubscriptionId, url);
+        this.api.deviceRoamingStatus.delete(this.eventSubscriptionId);
     }
 
     async deleteReachability() {
-        const url: string = "/device-reachability-status-subscriptions/v0.7";
-        this.api.deviceStatus.delete(this.eventSubscriptionId, url);
+        this.api.deviceReachabilityStatus.delete(this.eventSubscriptionId);
     }
-        */
+
 }
