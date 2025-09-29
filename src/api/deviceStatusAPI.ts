@@ -70,8 +70,6 @@ class DeviceStatus {
             }
 
         }
-        console.log(`${this.baseUrl}/subscriptions`)
-
         const response = await fetch(`${this.baseUrl}/subscriptions`, {
             method: "POST",
             headers: this.headers,

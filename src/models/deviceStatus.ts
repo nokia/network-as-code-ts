@@ -51,60 +51,68 @@ export interface AccessTokenCredential {
 }
 
 /**
- *  A class representing the `ConnectivitySubscription` model.
+ *  A class representing the `DeviceStatusSubscription` model.
  * #### Private Attributes:
         @param api(APIClient): An API client object.
     #### Public Attributes:
         @param eventSubscriptionId (string): IIt represents the subscription identifier.
         @param device (Device): Identifier of the device
-        @param eventType (string): The status type you want to check, which can be connectivity or roaming.
-        @param notificationUrl (string): Notification URL for session-related events.
-        @param maxNumOfReports (string): Number of notifications until the subscription is available.
+        @param sink (string): The URL where events shall be delivered.
+        @param eventType (string[]): The status type(s) you want to check, which can be reachability or roaming.
+        @param subscriptionExpireTime (string): Date when the subscription will expire.
+        @param subscriptionMaxEvents (string): The maximum amount of event reports that can be created.
         @param startsAt (optional): It represents when this subscription started.
         @param expiresAt (optional): It represents when this subscription should expire.
     #### Public Methods:
-        @method delete(): Deletes device connectivity status subscription.
+        @method deleteRoaming(): Deletes device roaming status subscription.
+        @method deleteReachability(): Deletes device reachability status subscription.
  */
-export class Subscription {
+export class DeviceStatusSubscription {
     private api: APIClient;
     eventSubscriptionId: string;
     device: Device;
-    eventType: string[];
     sink: string;
-    sinkCredential?: PlainCredential | AccessTokenCredential;
+    eventType: string[];
+    subscriptionExpireTime?: string;
     subscriptionMaxEvents?: number;
     startsAt?: Date;
     expiresAt?: Date;
+    status?: string;
 
     constructor(
         api: APIClient,
         eventSubscriptionId: string,
         device: Device,
-        eventType: string[],
         sink: string,
-        sinkCredential?: PlainCredential | AccessTokenCredential,
+        eventType: string[],
+        subscriptionExpireTime?: string,
         subscriptionMaxEvents?: number,
         startsAt?: Date,
-        expiresAt?: Date
+        expiresAt?: Date,
+        status?: string
     ) {
         this.api = api;
         this.eventSubscriptionId = eventSubscriptionId;
         this.device = device;
-        this.eventType = eventType;
         this.sink = sink;
-        this.sinkCredential = sinkCredential;
+        this.eventType = eventType;
         this.startsAt = startsAt;
         this.expiresAt = expiresAt;
+        this.subscriptionExpireTime = subscriptionExpireTime;
         this.subscriptionMaxEvents = subscriptionMaxEvents;
+        this.status = status;
     }
 
     /**
-     *  Delete device connectivity status
+     *  Delete device roaming status subscription
      */
     async deleteRoaming() {
         this.api.deviceRoamingStatus.delete(this.eventSubscriptionId);
     }
 
+    /**
+     *  Delete device reachability status subscription
+     */
     async deleteReachability() {
         this.api.deviceReachabilityStatus.delete(this.eventSubscriptionId);
     }

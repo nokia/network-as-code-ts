@@ -39,6 +39,7 @@ export interface DeviceIpv4Addr {
 /**
  * An interface representing roaming status
  * #### Public attributes
+ *          lastStatusTime (Date | string): last time that the device status was updated
  *          roaming (boolean): indicates whether this device is currently roaming
  *          countryCode (number): code for the country in which the roaming is happening
  *          countryName (string[]): list of country names, if any, for this country code
@@ -51,11 +52,11 @@ export interface RoamingStatus {
 }
 
 /**
- * An interface representing roaming status
+ * An interface representing reachability status
  * #### Public attributes
- *          roaming (boolean): indicates whether this device is currently roaming
- *          countryCode (number): code for the country in which the roaming is happening
- *          countryName (string[]): list of country names, if any, for this country code
+ *          lastStatusTime (Date | string): last time that the device status was updated
+ *          reachable (boolean): indicates overall device reachability
+ *          connectivity (string[]): indicates whether or not the device is connected to the network for DATA/SMS usage
  */
 export interface ReachabilityStatus {
     lastStatusTime?: Date | string;
@@ -281,23 +282,21 @@ export class Device {
     }
 
     /**
-     * Retrieves the current connectivity status of the device
-     * @returns Promise<string>: The connectivity status, e.g. "CONNECTED_DATA"
+     * Retrieves the current reachability status of the device
+     * @returns Promise<ReachabilityStatus>: The reachability status (true/false) and possibly the time when the status was last updated and the connectivity type (DATA/SMS).
      */
-    async getReachability(): Promise<any> {
-        return this._api.deviceReachabilityStatus.getReachability(this);
+    async getReachability(): Promise<ReachabilityStatus> {
+        const response: ReachabilityStatus = await this._api.deviceReachabilityStatus.getReachability(this);
+        return response;
     }
 
     /**
-     * Retrieves the current connectivity status of the device
-     * @returns Promise<RoamingStatus>: The roaming status for whether the device is roaming and in what network
+     * Retrieves the current roaming status of the device
+     * @returns Promise<RoamingStatus>: The roaming status (true/false) and possibly the time when the status was last updated and the country code and name.
      */
-    async getRoaming(): Promise<any> {
-
-        /*const roamingStatus: RoamingStatus = await this._api.deviceRoamingStatus.getRoaming(this);
-
-        return roamingStatus*/
-        return await this._api.deviceRoamingStatus.getRoaming(this);
+    async getRoaming(): Promise<RoamingStatus> {
+        const response: RoamingStatus = await this._api.deviceRoamingStatus.getRoaming(this);
+        return response;
     }
 
     toJson(): any {

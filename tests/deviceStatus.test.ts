@@ -45,22 +45,28 @@ describe("Device Status", () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions",
             JSON.stringify({
-                subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                subscriptionDetail: {
-                    device: {
-                        networkAccessIdentifier: "test-device@testcsp.net",
-                        ipv4Address: {
-                            publicAddress: "1.1.1.2",
-                            privateAddress: "1.1.1.2",
-                            publicPort: 80,
-                        },
+                id: "89cc1355-2ff1-4091-a935-54817c821260",
+                sink: "https://example.com/notify",
+                protocol: "HTTP",
+                types: ["REACHABILITY"],
+                config: {
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            }
+                        }
                     },
-                    type: "REACHABILITY",
-                },
-                webhook: {
-                    notificationUrl: "https://example.com/notify",
+                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                    subscriptionMaxEvents: 5,
+                    initialEvent: true
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
+                expiresAt: "2024-07-03T21:12:02.871Z",
+                status: "ACTIVE"
             })
         );
 
@@ -78,22 +84,28 @@ describe("Device Status", () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions",
             JSON.stringify({
-                subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                subscriptionDetail: {
-                    device: {
-                        networkAccessIdentifier: "test-device@testcsp.net",
-                        ipv4Address: {
-                            publicAddress: "1.1.1.2",
-                            privateAddress: "1.1.1.2",
-                            publicPort: 80,
-                        },
+                id: "89cc1355-2ff1-4091-a935-54817c821260",
+                sink: "https://example.com/notify",
+                protocol: "HTTP",
+                types: ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
+                config: {
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            }
+                        }
                     },
-                    type: "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data",
-                },
-                webhook: {
-                    notificationUrl: "https://example.com/notify",
+                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                    subscriptionMaxEvents: 5,
+                    initialEvent: true
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
+                expiresAt: "2024-07-03T21:12:02.871Z",
+                status: "ACTIVE"
             })
         );
 
@@ -110,22 +122,28 @@ describe("Device Status", () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions",
             JSON.stringify({
-                subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                subscriptionDetail: {
-                    device: {
-                        networkAccessIdentifier: "test-device@testcsp.net",
-                        ipv4Address: {
-                            publicAddress: "1.1.1.2",
-                            privateAddress: "1.1.1.2",
-                            publicPort: 80,
-                        },
+                id: "89cc1355-2ff1-4091-a935-54817c821260",
+                sink: "https://example.com/notify",
+                protocol: "HTTP",
+                types: ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status"],
+                config: {
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            }
+                        }
                     },
-                    type: "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status",
-                },
-                webhook: {
-                    notificationUrl: "https://example.com/notify",
+                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                    subscriptionMaxEvents: 5,
+                    initialEvent: true
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
+                expiresAt: "2024-07-03T21:12:02.871Z",
+                status: "ACTIVE"
             })
         );
 
@@ -142,22 +160,28 @@ describe("Device Status", () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions",
             JSON.stringify({
-                subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                subscriptionDetail: {
-                    device: {
-                        networkAccessIdentifier: "test-device@testcsp.net",
-                        ipv4Address: {
-                            publicAddress: "1.1.1.2",
-                            privateAddress: "1.1.1.2",
-                            publicPort: 80,
-                        },
+                id: "89cc1355-2ff1-4091-a935-54817c821260",
+                sink: "https://example.com/notify",
+                protocol: "HTTP",
+                types: ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status"],
+                config: {
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            }
+                        }
                     },
-                    type: "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status",
-                },
-                webhook: {
-                    notificationUrl: "https://example.com/notify",
+                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                    subscriptionMaxEvents: 5,
+                    initialEvent: true
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
+                expiresAt: "2024-07-03T21:12:02.871Z",
+                status: "ACTIVE"
             })
         );
 
@@ -176,37 +200,53 @@ describe("Device Status", () => {
             "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions",
             JSON.stringify([
                 {
-                    subscriptionDetail: {
-                        device: {
-                            networkAccessIdentifier: "testuser@testcsp.net",
+                    id: "89cc1355-2ff1-4091-a935-54817c8212601",
+                    sink: "https://example.com/notify",
+                    protocol: "HTTP",
+                    types: ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
+                    config: {
+                        subscriptionDetail: {
+                            device: {
+                                networkAccessIdentifier: "test-device@testcsp.net",
+                                ipv4Address: {
+                                    publicAddress: "1.1.1.2",
+                                    privateAddress: "1.1.1.2",
+                                    publicPort: 80,
+                                }
+                            }
                         },
-                        type: "org.camaraproject.device-status.v0.connectivity-data",
+                        subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                        subscriptionMaxEvents: 5,
+                        initialEvent: true
                     },
-                    maxNumberOfReports: 1,
-                    webhook: {
-                        notificationUrl: "https://example.com",
-                    },
-                    subscriptionId: "34e9e3ee-e281-4f47-bbc2-2431e6abbef0",
-                    eventSubscriptionId: "34e9e3ee-e281-4f47-bbc2-2431e6abbef0",
-                    startsAt: "2024-04-09T11:14:50.254312Z",
-                    expiresAt: "2024-04-10T14:13:29.766268",
+                    startsAt: "2024-01-11T11:53:20.293671Z",
+                    expiresAt: "2024-07-03T21:12:02.871Z",
+                    status: "ACTIVE"
                 },
                 {
-                    subscriptionDetail: {
-                        device: {
-                            networkAccessIdentifier: "testuser@testcsp.net",
+                    id: "89cc1355-2ff1-4091-a935-54817c8212602",
+                    sink: "https://example.com/notify",
+                    protocol: "HTTP",
+                    types: ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
+                    config: {
+                        subscriptionDetail: {
+                            device: {
+                                networkAccessIdentifier: "test-device@testcsp.net",
+                                ipv4Address: {
+                                    publicAddress: "1.1.1.2",
+                                    privateAddress: "1.1.1.2",
+                                    publicPort: 80,
+                                }
+                            }
                         },
-                        type: "org.camaraproject.device-status.v0.connectivity-data",
+                        subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                        subscriptionMaxEvents: 5,
+                        initialEvent: true
                     },
-                    maxNumberOfReports: 1,
-                    webhook: {
-                        notificationUrl: "https://example.com",
-                    },
-                    subscriptionId: "51b24d1a-26ae-4c9d-b114-2086da958c50",
-                    eventSubscriptionId: "51b24d1a-26ae-4c9d-b114-2086da958c50",
-                    startsAt: "2024-04-09T11:21:22.871187Z",
-                    expiresAt: "2024-04-10T14:13:29Z",
-                }  
+                    startsAt: "2024-01-11T11:53:20.293671Z",
+                    expiresAt: "2024-07-03T21:12:02.871Z",
+                    status: "ACTIVE"
+                }
             ])
         );
 
@@ -215,50 +255,52 @@ describe("Device Status", () => {
             "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions",
             JSON.stringify([
                 {
-                    subscriptionDetail: {
-                        device: {
-                            networkAccessIdentifier:
-                                "sdk-integration@testcsp.net",
-                            ipv4Address: {
-                                publicAddress: "1.1.1.2",
-                                privateAddress: "1.1.1.2",
-                                publicPort: 80,
-                            },
+                    id: "89cc1355-2ff1-4091-a935-54817c8212603",
+                    sink: "https://example.com/notify",
+                    protocol: "HTTP",
+                    types: ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status"],
+                    config: {
+                        subscriptionDetail: {
+                            device: {
+                                networkAccessIdentifier: "test-device@testcsp.net",
+                                ipv4Address: {
+                                    publicAddress: "1.1.1.2",
+                                    privateAddress: "1.1.1.2",
+                                    publicPort: 80,
+                                }
+                            }
                         },
-                        type: "org.camaraproject.device-status.v0.roaming-status",
-                        eventType: "ROAMING_STATUS",
+                        subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                        subscriptionMaxEvents: 5,
+                        initialEvent: true
                     },
-                    maxNumberOfReports: 1,
-                    webhook: {
-                        notificationUrl: "http://192.0.2.0:8080/",
-                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
-                    },
-                    subscriptionId: "815e6da4-813d-4111-987d-5e6036aaa410",
-                    eventSubscriptionId: "815e6da4-813d-4111-987d-5e6036aaa410",
-                    startsAt: "2024-04-05T14:29:56.792078Z",
+                    startsAt: "2024-01-11T11:53:20.293671Z",
+                    expiresAt: "2024-07-03T21:12:02.871Z",
+                    status: "ACTIVE"
                 },
                 {
-                    subscriptionDetail: {
-                        device: {
-                            networkAccessIdentifier:
-                                "sdk-integration@testcsp.net",
-                            ipv4Address: {
-                                publicAddress: "1.1.1.2",
-                                privateAddress: "1.1.1.2",
-                                publicPort: 80,
-                            },
+                    id: "89cc1355-2ff1-4091-a935-54817c8212604",
+                    sink: "https://example.com/notify",
+                    protocol: "HTTP",
+                    types: ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status"],
+                    config: {
+                        subscriptionDetail: {
+                            device: {
+                                networkAccessIdentifier: "test-device@testcsp.net",
+                                ipv4Address: {
+                                    publicAddress: "1.1.1.2",
+                                    privateAddress: "1.1.1.2",
+                                    publicPort: 80,
+                                }
+                            }
                         },
-                        type: "org.camaraproject.device-status.v0.connectivity-data",
+                        subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                        subscriptionMaxEvents: 5,
+                        initialEvent: true
                     },
-                    maxNumberOfReports: 1,
-                    webhook: {
-                        notificationUrl: "http://192.0.2.0:8080/",
-                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
-                    },
-                    subscriptionId: "f6b03776-5e0f-4dbc-abce-30a916f94ad0",
-                    eventSubscriptionId: "f6b03776-5e0f-4dbc-abce-30a916f94ad0",
-                    startsAt: "2024-04-09T11:11:27.052869Z",
-                    expiresAt: "2025-04-08T14:13:29.766268",
+                    startsAt: "2024-01-11T11:53:20.293671Z",
+                    expiresAt: "2024-07-03T21:12:02.871Z",
+                    status: "ACTIVE"
                 }
             ])
         );
@@ -271,22 +313,28 @@ describe("Device Status", () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions",
             JSON.stringify({
-                subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                subscriptionDetail: {
-                    device: {
-                        networkAccessIdentifier: "test-device@testcsp.net",
-                        ipv4Address: {
-                            publicAddress: "1.1.1.2",
-                            privateAddress: "1.1.1.2",
-                            publicPort: 80,
-                        },
+                id: "89cc1355-2ff1-4091-a935-54817c8212604",
+                sink: "https://example.com/notify",
+                protocol: "HTTP",
+                types: ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms"],
+                config: {
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            }
+                        }
                     },
-                    type: "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms"
-                },
-                webhook: {
-                    notificationUrl: "https://example.com/notify",
+                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                    subscriptionMaxEvents: 5,
+                    initialEvent: true
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
+                expiresAt: "2024-07-03T21:12:02.871Z",
+                status: "ACTIVE"
             })
         );
 
@@ -297,7 +345,7 @@ describe("Device Status", () => {
         );
 
         fetchMock.mockGlobal().delete(
-        "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
+        "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c8212604",
         (_: any, req: any): any => {
             expect(req.method).toBe("DELETE");
         },
@@ -316,22 +364,28 @@ describe("Device Status", () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions",
             JSON.stringify({
-                subscriptionId: "89cc1355-2ff1-4091-a935-54817c124680360",
-                subscriptionDetail: {
-                    device: {
-                        networkAccessIdentifier: "test-device@testcsp.net",
-                        ipv4Address: {
-                            publicAddress: "1.1.1.2",
-                            privateAddress: "1.1.1.2",
-                            publicPort: 80,
-                        },
+                id: "89cc1355-2ff1-4091-a935-54817c8212604",
+                sink: "https://example.com/notify",
+                protocol: "HTTP",
+                types: ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on"],
+                config: {
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            }
+                        }
                     },
-                    type: "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on"
-                },
-                webhook: {
-                    notificationUrl: "https://example.com/notify",
+                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                    subscriptionMaxEvents: 5,
+                    initialEvent: true
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
+                expiresAt: "2024-07-03T21:12:02.871Z",
+                status: "ACTIVE"
             })
         );
 
@@ -342,7 +396,7 @@ describe("Device Status", () => {
         );
 
         fetchMock.mockGlobal().delete(
-        "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c124680360",
+        "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c8212604",
         (_: any, req: any): any => {
             expect(req.method).toBe("DELETE");
         },
@@ -357,7 +411,7 @@ describe("Device Status", () => {
         expect(fetchMock.callHistory.calls().length).toBe(2);
     });
 
-    it("can fetch a subscription by id", async () => {
+    it("can fetch a reachability subscription by id", async () => {
         fetchMock.mockGlobal().get(
             "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
             (_: any, req: any): any => {
@@ -366,25 +420,28 @@ describe("Device Status", () => {
                { response: Promise.resolve({
                     status: 200,
                     body: JSON.stringify({
-                        subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                        subscriptionDetail: {
-                            device: {
-                                networkAccessIdentifier:
-                                    "test-device@testcsp.net",
-                                ipv4Address: {
-                                    publicAddress: "1.1.1.2",
-                                    privateAddress: "1.1.1.2",
-                                    publicPort: 80,
-                                },
+                        id: "89cc1355-2ff1-4091-a935-54817c821260",
+                        sink: "https://example.com/notify",
+                        protocol: "HTTP",
+                        types: ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
+                        config: {
+                            subscriptionDetail: {
+                                device: {
+                                    networkAccessIdentifier: "test-device@testcsp.net",
+                                    ipv4Address: {
+                                        publicAddress: "1.1.1.2",
+                                        privateAddress: "1.1.1.2",
+                                        publicPort: 80,
+                                    }
+                                }
                             },
-                            type: "REACHABILITY",
+                            subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                            subscriptionMaxEvents: 5,
+                            initialEvent: true
                         },
-                        webhook: {
-                            notificationUrl: "https://example.com/notify",
-                            notificationAuthToken: "my-token",
-                        },
-                        maxNumberOfReports: 5,
                         startsAt: "2024-01-11T11:53:20.293671Z",
+                        expiresAt: "2024-07-03T21:12:02.871Z",
+                        status: "ACTIVE"
                     }),
                 })
             }
@@ -398,6 +455,49 @@ describe("Device Status", () => {
         );
     });
 
+        it("can fetch a roaming subscription by id", async () => {
+        fetchMock.mockGlobal().get(
+            "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
+            (_: any, req: any): any => {
+                expect(req.method).toBe("GET");
+            },
+               { response: Promise.resolve({
+                    status: 200,
+                    body: JSON.stringify({
+                        id: "89cc1355-2ff1-4091-a935-54817c821260",
+                        sink: "https://example.com/notify",
+                        protocol: "HTTP",
+                        types: ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on"],
+                        config: {
+                            subscriptionDetail: {
+                                device: {
+                                    networkAccessIdentifier: "test-device@testcsp.net",
+                                    ipv4Address: {
+                                        publicAddress: "1.1.1.2",
+                                        privateAddress: "1.1.1.2",
+                                        publicPort: 80,
+                                    }
+                                }
+                            },
+                            subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                            subscriptionMaxEvents: 5,
+                            initialEvent: true
+                        },
+                        startsAt: "2024-01-11T11:53:20.293671Z",
+                        expiresAt: "2024-07-03T21:12:02.871Z",
+                        status: "ACTIVE"
+                    }),
+                })
+            }
+        );
+
+        const subscription = await client.deviceStatus.getRoamingSubscription(
+            "89cc1355-2ff1-4091-a935-54817c821260"
+        );
+        expect(subscription.eventSubscriptionId).toBe(
+            "89cc1355-2ff1-4091-a935-54817c821260"
+        );
+    });
 
     it("allows polling device reachability", async () => {
         fetchMock.mockGlobal().post(
@@ -467,78 +567,226 @@ describe("Device Status", () => {
         });
     });
 
-
-/*
     it("sends a request out on subscribe", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions",
             JSON.stringify({
-                subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                subscriptionDetail: {
-                    device: {
-                        networkAccessIdentifier: "test-device@testcsp.net",
-                        ipv4Address: {
-                            publicAddress: "1.1.1.2",
-                            privateAddress: "1.1.1.2",
-                            publicPort: 80,
-                        },
+                id: "89cc1355-2ff1-4091-a935-54817c8212604",
+                sink: "https://example.com/notify",
+                protocol: "HTTP",
+                types: ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
+                config: {
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            }
+                        }
                     },
-                    type: "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-sms",
-                },
-                webhook: {
-                    notificationUrl: "https://example.com/notify",
+                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                    subscriptionMaxEvents: 5,
+                    initialEvent: true
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
+                expiresAt: "2024-07-03T21:12:02.871Z",
+                status: "ACTIVE"
             })
         );
 
         await client.deviceStatus.subscribe(
             device,
-            EventType.REACHABILITY_SMS,
+            [EventType.REACHABILITY_DATA],
             "https://example.com/notify"
         );
 
         expect(fetchMock.callHistory.calls().length).toBe(1);
     });
 
+
     it("uses the returned response to fill the subscription object", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions",
             JSON.stringify({
-                subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                subscriptionDetail: {
-                    device: {
-                        networkAccessIdentifier: "test-device@testcsp.net",
-                        ipv4Address: {
-                            publicAddress: "1.1.1.2",
-                            privateAddress: "1.1.1.2",
-                            publicPort: 80,
-                        },
+                id: "89cc1355-2ff1-4091-a935-54817c821260",
+                sink: "https://example.com/notify",
+                protocol: "HTTP",
+                types: ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status"],
+                config: {
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            }
+                        }
                     },
-                    type: "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status",
-                },
-                webhook: {
-                    notificationUrl: "https://example.com/notify",
+                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                    subscriptionMaxEvents: 5,
+                    initialEvent: true
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
+                expiresAt: "2024-07-03T21:12:02.871Z",
+                status: "ACTIVE"
             })
         );
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            EventType.ROAMING_STATUS,
+            [EventType.ROAMING_STATUS],
             "https://example.com/notify"
         );
 
         expect(subscription.eventSubscriptionId).toBe(
             "89cc1355-2ff1-4091-a935-54817c821260"
         );
-        expect(subscription.notificationUrl).toBe("https://example.com/notify");
+        expect(subscription.sink).toBe("https://example.com/notify");
         expect(subscription.startsAt).toEqual(
             new Date("2024-01-11T11:53:20.293671Z")
         );
     });
 
+    it("can handle a subscriptionExpireTime given as a Date", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/device-reachability-status-subscriptions/v0.7/subscriptions",
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    sink: "https://example.com/notify",
+                    protocol: "HTTP",
+                    types: ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
+                    config: {
+                        subscriptionDetail: {
+                            device: {
+                                networkAccessIdentifier: "test-device@testcsp.net",
+                                ipv4Address: {
+                                    publicAddress: "1.1.1.2",
+                                    privateAddress: "1.1.1.2",
+                                    publicPort: 80,
+                                }
+                            }
+                        },
+                        subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                        subscriptionMaxEvents: 5,
+                        initialEvent: true
+                    }
+                })
+            },
+                { response: Promise.resolve(
+                    JSON.stringify({
+                        id: "89cc1355-2ff1-4091-a935-54817c8212604",
+                        sink: "https://example.com/notify",
+                        protocol: "HTTP",
+                        types: ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
+                        config: {
+                            subscriptionDetail: {
+                                device: {
+                                    networkAccessIdentifier: "test-device@testcsp.net",
+                                    ipv4Address: {
+                                        publicAddress: "1.1.1.2",
+                                        privateAddress: "1.1.1.2",
+                                        publicPort: 80,
+                                    }
+                                }
+                            },
+                            subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
+                            subscriptionMaxEvents: 5,
+                            initialEvent: true
+                        },
+                        startsAt: "2024-01-11T11:53:20.293671Z",
+                        expiresAt: "2024-07-03T21:12:02.871Z",
+                        status: "ACTIVE"
+                    })
+                )}
+        );
+
+        await client.deviceStatus.subscribe(
+            device,
+            ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
+            "https://example.com/notify",
+            {
+                subscriptionExpireTime: new Date("2024-01-11T11:53:20.000Z"),
+            }
+        );
+    });
+
+ 
+});   
+/*
+
+   it("handles optional parameters in subscription", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/device-reachability-status",
+            (_: any, req: any): any => {
+                expect(JSON.parse(req.body.toString())).toEqual({
+                    subscriptionDetail: {
+                        device: {
+                            networkAccessIdentifier: "test-device@testcsp.net",
+                            ipv4Address: {
+                                publicAddress: "1.1.1.2",
+                                privateAddress: "1.1.1.2",
+                                publicPort: 80,
+                            },
+                        },
+                        type: "REACHABILITY",
+                    },
+                    subscriptionExpireTime: "2024-01-11T11:53:20.293671Z",
+                    maxNumberOfReports: 5,
+                    webhook: {
+                        notificationUrl: "https://example.com/notify",
+                        notificationAuthToken: "asdasd",
+                    },
+                });
+            },
+                { response: Promise.resolve(
+                    JSON.stringify({
+                        subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
+                        subscriptionDetail: {
+                            device: {
+                                networkAccessIdentifier:
+                                    "test-device@testcsp.net",
+                                ipv4Address: {
+                                    publicAddress: "1.1.1.2",
+                                    privateAddress: "1.1.1.2",
+                                    publicPort: 80,
+                                },
+                            },
+                            type: "REACHABILITY",
+                        },
+                        webhook: {
+                            notificationUrl: "https://example.com/notify",
+                            notificationAuthToken: "asdasd",
+                        },
+                        startsAt: "2024-01-11T11:53:20.293671Z",
+                        expiresAt: "2024-01-11T11:53:20.293671Z",
+                    })
+                )}
+            
+        );
+
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            ["REACHABILITY"],
+            "https://example.com/notify",
+            {
+                subscriptionExpireTime: "2024-01-11T11:53:20.293671Z",
+                subscriptionMaxEvents: 5,
+                notificationAuthToken: "asdasd",
+            }
+        );
+
+        expect(subscription.startsAt instanceof Date).toBeTruthy();
+        expect(subscription.expiresAt instanceof Date).toBeTruthy();
+        expect(subscription.subscriptionMaxEvents).toEqual(5);
+
+        expect(subscription.expiresAt).toEqual(
+            new Date("2024-01-11T11:53:20.293671Z")
+        );
+    });
+    
     it("sends the right body to the correct URL for subscription", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions",
@@ -591,130 +839,6 @@ describe("Device Status", () => {
         );
     });
 
-    it("can handle a subscriptionExpireTime given as a Date", async () => {
-        fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-reachability-status",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    subscriptionDetail: {
-                        device: {
-                            networkAccessIdentifier: "test-device@testcsp.net",
-                            ipv4Address: {
-                                publicAddress: "1.1.1.2",
-                                privateAddress: "1.1.1.2",
-                                publicPort: 80,
-                            },
-                        },
-                        type: "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data",
-                    },
-                    subscriptionExpireTime: "2024-01-11T11:53:20.000Z",
-                    webhook: {
-                        notificationUrl: "https://example.com/notify",
-                    },
-                });
-            },
-                { response: Promise.resolve(
-                    JSON.stringify({
-                        subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                        subscriptionDetail: {
-                            device: {
-                                networkAccessIdentifier:
-                                    "test-device@testcsp.net",
-                                ipv4Address: {
-                                    publicAddress: "1.1.1.2",
-                                    privateAddress: "1.1.1.2",
-                                    publicPort: 80,
-                                },
-                            },
-                            type: "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data",
-                        },
-                        webhook: {
-                            notificationUrl: "https://example.com/notify",
-                        },
-                        startsAt: "2024-01-11T11:53:20.293671Z",
-                    })
-                )}
-            
-        );
 
-        await client.deviceStatus.subscribe(
-            device,
-            "org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data",
-            "https://example.com/notify",
-            {
-                subscriptionExpireTime: new Date("2024-01-11T11:53:20.000Z"),
-            }
-        );
-    });
 
-    it("handles optional parameters in subscription", async () => {
-        fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-reachability-status",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    subscriptionDetail: {
-                        device: {
-                            networkAccessIdentifier: "test-device@testcsp.net",
-                            ipv4Address: {
-                                publicAddress: "1.1.1.2",
-                                privateAddress: "1.1.1.2",
-                                publicPort: 80,
-                            },
-                        },
-                        type: "REACHABILITY",
-                    },
-                    subscriptionExpireTime: "2024-01-11T11:53:20.293671Z",
-                    maxNumberOfReports: 5,
-                    webhook: {
-                        notificationUrl: "https://example.com/notify",
-                        notificationAuthToken: "asdasd",
-                    },
-                });
-            },
-                { response: Promise.resolve(
-                    JSON.stringify({
-                        subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                        subscriptionDetail: {
-                            device: {
-                                networkAccessIdentifier:
-                                    "test-device@testcsp.net",
-                                ipv4Address: {
-                                    publicAddress: "1.1.1.2",
-                                    privateAddress: "1.1.1.2",
-                                    publicPort: 80,
-                                },
-                            },
-                            type: "REACHABILITY",
-                        },
-                        webhook: {
-                            notificationUrl: "https://example.com/notify",
-                            notificationAuthToken: "asdasd",
-                        },
-                        startsAt: "2024-01-11T11:53:20.293671Z",
-                        expiresAt: "2024-01-11T11:53:20.293671Z",
-                    })
-                )}
-            
-        );
-
-        const subscription = await client.deviceStatus.subscribe(
-            device,
-            "REACHABILITY",
-            "https://example.com/notify",
-            {
-                subscriptionExpireTime: "2024-01-11T11:53:20.293671Z",
-                maxNumberOfReports: 5,
-                notificationAuthToken: "asdasd",
-            }
-        );
-
-        expect(subscription.startsAt instanceof Date).toBeTruthy();
-        expect(subscription.expiresAt instanceof Date).toBeTruthy();
-        expect(subscription.maxNumOfReports).toEqual(5);
-        expect(subscription.notificationAuthToken).toEqual("asdasd");
-
-        expect(subscription.expiresAt).toEqual(
-            new Date("2024-01-11T11:53:20.293671Z")
-        );
-    }); */
-});
+ */

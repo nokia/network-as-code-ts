@@ -16,20 +16,20 @@
 
 import { DeviceReachabilityStatusAPI, DeviceRoamingStatusAPI } from "../api/deviceStatusAPI";
 import { Device } from "../models/device";
-import { SubscribeOptionalArgs, Subscription, EventType } from "../models/deviceStatus";
+import { SubscribeOptionalArgs, DeviceStatusSubscription, EventType } from "../models/deviceStatus";
 import { Namespace } from "./namespace";
 
 
 
 export class DeviceStatus extends Namespace {
     /**
-     *  Create subscription for device connectivity status.
+     *  Create subscription for device reachability or roaming status.
      * 
             @param device (Device): Identifier of the device.
-            @param eventType (EventType | string): Event type of the subscription.
-            @param notificationUrl (string): Notification URL for session-related events.
-            @param optionalArgs (SubscribeOptionalArgs): optional arguments(subscriptionExpireTime, maxNumberOfReports, notificationAuthToken)
-            @returns Promise<Subscription>
+            @param types (EventType[] | string[]): Event types of the subscription.
+            @param sink (string): The URL where events shall be delivered.
+            @param optionalArgs (SubscribeOptionalArgs): optional arguments(subscriptionExpireTime, subscriptionMaxEvents, sinkCredential, initialEvent)
+            @returns Promise<DeviceStatusSubscription>
     */
 
     async subscribe(
@@ -37,7 +37,7 @@ export class DeviceStatus extends Namespace {
         types: EventType[] | string[],
         sink: string,
         optionalArgs?: SubscribeOptionalArgs
-    ): Promise<any> {
+    ): Promise<DeviceStatusSubscription> {
         const subscriptionExpireTime = optionalArgs?.subscriptionExpireTime;
 
         let api_call: DeviceReachabilityStatusAPI | DeviceRoamingStatusAPI = this.api.deviceReachabilityStatus;
@@ -58,33 +58,34 @@ export class DeviceStatus extends Namespace {
             }
         );
 
-        return new Subscription(
+        return new DeviceStatusSubscription(
             this.api,
-            jsonData.subscriptionId,
+            jsonData.id,
             device,
-            types,
-            sink,
-            optionalArgs?.sinkCredential,
-            optionalArgs?.subscriptionMaxEvents,
+            jsonData.sink,
+            jsonData.types,
+            jsonData.config.subscriptionMaxEvents,
+            jsonData.config.subscriptionExpireTime,
             jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
-            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
+            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined,
+            jsonData.status
         );
     }
 
 
     /**
-     *  Get a subscription by its external ID.
+     *  Get a roaming subscription by its external ID.
      * 
             @param eventSubscriptionId (string): Resource ID
             @example ```TypeScript 
-            const subscription = await client.deviceStatus.get(subscription.eventSubscriptionId);
+            const subscription = await client.deviceStatus.getRoamingSubscription(subscription.eventSubscriptionId);
             ```
-            @returns Promise<Subscription>
+            @returns Promise<DeviceStatusSubscription>
     */
-    async getRoamingSubscription(eventSubscriptionId: string): Promise<Subscription> {
+    async getRoamingSubscription(eventSubscriptionId: string): Promise<DeviceStatusSubscription> {
         const jsonData = await this.api.deviceRoamingStatus.get(eventSubscriptionId,);
 
-        const deviceDetails = jsonData.subscriptionDetail.device;
+        const deviceDetails = jsonData.config.subscriptionDetail.device;
 
         const device = new Device(
             this.api,
@@ -94,32 +95,33 @@ export class DeviceStatus extends Namespace {
             deviceDetails.phoneNumber
         );
 
-        return new Subscription(
+        return new DeviceStatusSubscription(
             this.api,
             eventSubscriptionId,
             device,
-            jsonData.subscriptionDetail["type"],
-            jsonData.webhook.notificationUrl,
-            jsonData.webhook.notificationAuthToken,
-            jsonData.maxNumberOfReports,
+            jsonData.sink,
+            jsonData.types,
+            jsonData.config.subscriptionMaxEvents,
+            jsonData.config.subscriptionExpireTime,
             jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
-            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
+            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined,
+            jsonData.status
         );
     }
     /**
-     *  Get a subscription by its external ID.
+     *  Get a reachability subscription by its external ID.
      * 
             @param eventSubscriptionId (string): Resource ID
             @example ```TypeScript 
-            const subscription = await client.deviceStatus.get(subscription.eventSubscriptionId);
+            const subscription = await client.deviceStatus.getReachabilitySubscription(subscription.eventSubscriptionId);
             ```
-            @returns Promise<Subscription>
+            @returns Promise<DeviceStatusSubscription>
     */
 
-    async getReachabilitySubscription(eventSubscriptionId: string): Promise<Subscription> {
+    async getReachabilitySubscription(eventSubscriptionId: string): Promise<DeviceStatusSubscription> {
         const jsonData = await this.api.deviceReachabilityStatus.get(eventSubscriptionId,);
 
-        const deviceDetails = jsonData.subscriptionDetail.device;
+        const deviceDetails = jsonData.config.subscriptionDetail.device;
 
         const device = new Device(
             this.api,
@@ -129,16 +131,17 @@ export class DeviceStatus extends Namespace {
             deviceDetails.phoneNumber
         );
 
-        return new Subscription(
+        return new DeviceStatusSubscription(
             this.api,
             eventSubscriptionId,
             device,
-            jsonData.subscriptionDetail["type"],
-            jsonData.webhook.notificationUrl,
-            jsonData.webhook.notificationAuthToken,
-            jsonData.maxNumberOfReports,
+            jsonData.sink,
+            jsonData.types,
+            jsonData.config.subscriptionMaxEvents,
+            jsonData.config.subscriptionExpireTime,
             jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
-            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined
+            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined,
+            jsonData.status
         );
     }
     /**
@@ -147,15 +150,15 @@ export class DeviceStatus extends Namespace {
      *      @example ```TypeScript 
             const subscriptions = await client.deviceStatus.getSubscriptions();
             ```
-            @returns Promise<Subscription[]>
+            @returns Promise<DeviceStatusSubscription[]>
     */
-   async getSubscriptions(): Promise<Subscription[]> {
+   async getSubscriptions(): Promise<DeviceStatusSubscription[]> {
         const reachabilityJsonData = await this.api.deviceReachabilityStatus.getSubscriptions();
         const roamingJsonData = await this.api.deviceRoamingStatus.getSubscriptions();
         const jsonData = [...reachabilityJsonData, ...roamingJsonData]
 
         return jsonData.map((entry: any) => {
-            const deviceDetails = entry.subscriptionDetail.device;
+            const deviceDetails = entry.config.subscriptionDetail.device;
 
             const device = new Device(
                 this.api,
@@ -165,16 +168,17 @@ export class DeviceStatus extends Namespace {
                 deviceDetails.phoneNumber
             );
 
-            return new Subscription(
+            return new DeviceStatusSubscription(
                 this.api,
-                entry.subscriptionId,
+                entry.id,
                 device,
-                entry.subscriptionDetail["type"],
-                entry.webhook.notificationUrl,
-                entry.webhook.notificationAuthToken,
-                entry.maxNumberOfReports,
+                entry.sink,
+                entry.types,
+                entry.config.subscriptionMaxEvents,
+                entry.config.subscriptionExpireTime,
                 entry.startsAt ? new Date(entry.startsAt) : undefined,
-                entry.expiresAt ? new Date(entry.expiresAt) : undefined
+                entry.expiresAt ? new Date(entry.expiresAt) : undefined,
+                entry.status
             );
         });
     }
