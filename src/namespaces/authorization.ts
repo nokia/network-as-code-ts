@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Endpoints, Credentials } from "../models/authentication";
+import { Endpoints, Credentials } from "../models/authorization";
 import { Namespace } from "./namespace";
 
 /**
- *  Representation of authentication.
+ *  Representation of authorization.
  * 
  * Through this class many of the parameters of a
-   3-legged authentication flow can be configured and managed.
+   3-legged authorization flow can be configured and managed.
  */
-export class Authentication extends Namespace {
+export class Authorization extends Namespace {
     
     /**
      *  Get the credentials of a client.
@@ -53,57 +53,18 @@ export class Authentication extends Namespace {
     */
     async endpoints(): Promise<Endpoints> {
         const response: any = await this.api.authorizationEndpoints.fetchEndpoints();
-        const authorizationEndpoint = response["authorization_endpoint"];
-        const tokenEndpoint = response["token_endpoint"];
         const fastFlowCspAuthEndpoint = response["fast_flow_csp_auth_endpoint"];
 
         const authEndpoints = new Endpoints(
-            authorizationEndpoint,
-            tokenEndpoint,
             fastFlowCspAuthEndpoint
         );
 
         return authEndpoints;
     }
  
-    /**
-     *  Create a authentication link for end user authentication.
-     * 
-            @param redirectUri (string): Callback uri where the NaC authorization code should be sent to.
-            @param scope (string): Permissions that the authorization endpoint should request from the end user.
-            @param loginHint (string): Device phone number.
-            @param state (Optional[string]): Optional value for state, which can be used for CSRF attack checking.
-            @returns Promise<string>
-    */    
-    async createAuthenticationLink(
-        redirectUri: string,
-        scope: string,
-        loginHint: string,
-        state?: string
-    ): Promise<string> {
-
-        const credentialsInfo = await this.credentials();
-        const endpoints = await this.endpoints();
-        const responseType = "code";
-        const params = [
-            {name: "response_type", value: responseType},
-            {name: "client_id", value: credentialsInfo.clientId},
-            {name: "redirect_uri", value: redirectUri},
-            {name: "scope", value: scope},
-            {name: "login_hint", value: loginHint},
-            {name: "state", value: state}
-        ];
-
-        const filterUndefined =  params.filter(x => x.value !== undefined);
-        const stringifyValueField = filterUndefined.map(({name, value})=> ({name, value:String(value)}));
-        const encodedParams = stringifyValueField.map((param) => `${encodeURIComponent(param.name)}=${encodeURIComponent(param.value)}`).join('&');
-
-        const authenticationUrl = `${endpoints.authorizationEndpoint}?${encodedParams}`;
-        return authenticationUrl;
-    }
 
     /**
-     *  Create a authentication link for end user authentication.
+     *  Create a authorization link for end user authorization.
      * 
             @param redirectUri (string): Callback uri where the NaC authorization code should be sent to.
             @param scope (string): Permissions that the authorization endpoint should request from the end user.
@@ -111,7 +72,7 @@ export class Authentication extends Namespace {
             @param state (string): Value for state, which can be used for CSRF attack checking.
             @returns Promise<string>
     */    
-    async createFastFlowAuthenticationLink(
+    async createAuthorizationLink(
         redirectUri: string,
         scope: string,
         loginHint: string,
@@ -131,7 +92,7 @@ export class Authentication extends Namespace {
         ];
 
         const encodedParams = params.map((param) => `${encodeURIComponent(param.name)}=${encodeURIComponent(param.value)}`).join('&');
-        const authenticationUrl = `${endpoints.fastFlowCspAuthEndpoint}?${encodedParams}`;
-        return authenticationUrl;
+        const auhtorizationUrl = `${endpoints.fastFlowCspAuthEndpoint}?${encodedParams}`;
+        return auhtorizationUrl;
     }
 }

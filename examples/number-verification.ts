@@ -20,27 +20,24 @@ const device = client.devices.get({
  You must provide a redirectUri, where the authorization code will be delivered.
  See the express example provided below.
 
- You can add a state value of your choosing to test for CSRF attacks. Your application then should check, 
+ Add a state value of your choosing to test for CSRF attacks. Your application then should check, 
  that the state value given to the authorization endpoint matches the one returned to the redirect uri.
  If the state values do not match, there has likely been a CSRF attack. In this case your application
  should return a 401 Unauthorized error code. */
 
 const redirectUri = "https://my-example/redirect";
-const scope = "number-verification:verify";
+
+// The scope should be "dpv:FraudPreventionAndDetection number-verification:device-phone-number:read" 
+// when using the getPhoneNumber method to retrieve the device phone number.
+const scope = "dpv:FraudPreventionAndDetection number-verification:verify"; 
+
 const loginHint = device.phoneNumber;
 const state = "foobar";
 
-// Create a callbacklink
-const callback = await client.authentication.createAuthenticationLink(
-    redirectUri,
-    scope,
-    loginHint,
-    state
-);
 
-// You can alternatively create a callbacklink using the fast flow functionality
-// In the fast flow implementation, the state parameter is mandatory
-const fastFlowCallback = await client.authentication.createFastFlowAuthenticationLink(
+
+// Create a callbacklink
+const callback = await client.authentication.createAuthorizationLink(
     redirectUri,
     scope,
     loginHint,
@@ -55,7 +52,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 
 app.get("/redirect", (req: Request, res: Response) => {
-    res.send(`This is your authorization code: ${req.query.code} This is your state variable, if set: ${req.query.state}.`)
+    res.send(`This is your authorization code: ${req.query.code} This is your state variable: ${req.query.state}.`)
 
     res.status(200).end();
 });
@@ -71,21 +68,11 @@ const code = "NaC-authorization-code";
 
 /* You can use the Number Verification API with the obtained authorization code.
  The verifyNumber endpoint will respond with a true or false value. */
-const verificationResult = await device.verifyNumber(code);
+const verificationResult = await device.verifyNumber(code, state);
 console.log(verificationResult);
 
 
-/* If you used fast flow to get the authorization code, you need to add the state to the 
-verifyNumber method call as a parameter. */
-const verificationResultWithFastFlow = await device.verifyNumber(code, state);
-console.log(verificationResultWithFastFlow);
-
 
 // The getPhoneNumber endpoint will respond with the phone number of the used Device.
-const phoneNumber = await device.getPhoneNumber(code);
+const phoneNumber = await device.getPhoneNumber(code, state);
 console.log(phoneNumber) // "+123456789"
-
-/* If you used fast flow to get the code, you need to add the state to the 
-getPhoneNumber method call as a parameter. */
-const phoneNumberWithFastFlow = await device.getPhoneNumber(code, state);
-console.log(phoneNumberWithFastFlow);
