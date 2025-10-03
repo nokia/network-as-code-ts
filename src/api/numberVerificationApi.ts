@@ -39,8 +39,8 @@ export class NumberVerificationAPI {
         this.agent = agent;
     }
 
-    async verifyNumber(payload: any, code: string, state: string) {        
-        const response = await fetch(`${this.baseUrl}/verify?code=${code}&state=${state}`, {
+    async verifyNumber(payload: any, params: URLSearchParams) {
+        const response = await fetch(`${this.baseUrl}/verify?${params.toString()}`, {
             method: "POST",
             headers: this.headers,
             body: JSON.stringify(payload),
@@ -52,8 +52,8 @@ export class NumberVerificationAPI {
         return await response.json(); 
     }
 
-    async getPhoneNumber(code: string, state: string) {
-        const response = await fetch(`${this.baseUrl}/device-phone-number?code=${code}&state=${state}`, {
+    async getPhoneNumber(params: URLSearchParams) {
+        const response = await fetch(`${this.baseUrl}/device-phone-number?${params.toString()}`, {
             method: "GET",
             headers: this.headers,
             agent: this.agent,

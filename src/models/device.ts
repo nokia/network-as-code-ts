@@ -405,11 +405,12 @@ export class Device {
         const payload = {
             phoneNumber: this.phoneNumber
         };
+        const params = new URLSearchParams({code: code, state: state});
+
 
         const response: any = await this._api.verification.verifyNumber(
             payload,
-            code,
-            state
+            params
         );
 
         return response["devicePhoneNumberVerified"];
@@ -422,9 +423,9 @@ export class Device {
      * @returns (string): The phone number
      */
     async getPhoneNumber(code: string, state: string): Promise<string> {
+        const params = new URLSearchParams({code: code, state: state});
         const response: any = await this._api.verification.getPhoneNumber(
-            code,
-            state
+            params
         );
         return response["devicePhoneNumber"];
     }

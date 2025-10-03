@@ -67,9 +67,9 @@ afterEach(() => {
 });
 
 describe("Number Verification, verifying number tests", () => {
-    it("should get verify number result as true ", async () => {
+    it("should get verify number result as true with encoded state parameter in query", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testState", 
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testSt%C3%A4%C3%A4%C3%A4%C3%A4%C3%A4", 
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
@@ -84,7 +84,7 @@ describe("Number Verification, verifying number tests", () => {
                         devicePhoneNumberVerified: true
                 })});
 
-        expect(await device.verifyNumber("testCode1234", "testState")).toBeTruthy();
+        expect(await device.verifyNumber("testCode1234", "testStäääää")).toBeTruthy();
     });
 
     it("should get verify number result as false", async () => {
