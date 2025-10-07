@@ -32,7 +32,7 @@ import { CallForwardingApi } from "./callForwardingApi";
 import { KYCMatchAPI } from "./kycMatchApi";
 import { KYCAgeVerificationAPI } from "./kycAgeVerificationApi";
 
-const QOS_URL = "/qod/v0";
+const QOS_URL = "/quality-on-demand/v1";
 
 const LOCATION_RETRIEVAL_URL = "/location-retrieval/v0";
 

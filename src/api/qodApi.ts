@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-import { Device} from "../models/device";
+import { Device } from "../models/device";
 import { errorHandler } from "../errors";
 import { PortSpec } from "../models/session";
+import { AccessTokenCredential } from "../models/authentication";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 
@@ -61,8 +62,8 @@ export class QodAPI {
             serviceIpv6 (optional): IPv6 address of the service.
             devicePorts (optional): List of the device ports.
             servicePorts (optional): List of the application server ports.
-            notificationUrl (optional): Notification URL for session-related events.
-            notificationToken (optional): Security bearer token to authenticate registration of session.
+            sink (optional): Notification URL for session-related events.
+            sinkCredential (optional): Security bearer token to authenticate registration of session.
 
         Returns:
             Promise<Session>: response of the endpoint, ideally a Session
@@ -75,8 +76,8 @@ export class QodAPI {
         serviceIpv4?: string,
         devicePorts?: PortSpec,
         servicePorts?: PortSpec,
-        notificationUrl?: string,
-        notificationAuthToken?: string
+        sink?: string,
+        sinkCredential?: AccessTokenCredential
     ) {
         const sessionPayload: any = {
             qosProfile: profile,
@@ -84,19 +85,17 @@ export class QodAPI {
             applicationServer: { ipv4Address: serviceIpv4 },
             devicePorts: devicePorts ? devicePorts : undefined,
             applicationServerPorts: servicePorts ? servicePorts : undefined,
-            duration,
+            duration: duration,
         };
 
         if (serviceIpv6) {
             sessionPayload["applicationServer"]["ipv6Address"] = serviceIpv6;
         }
 
-        if (notificationUrl) {
-            sessionPayload["webhook"] = { notificationUrl: notificationUrl };
-
-            if (notificationAuthToken) {
-                sessionPayload["webhook"]["notificationAuthToken"] =
-                    "Bearer " + notificationAuthToken;
+        if (sink) {
+            sessionPayload["sink"] = sink ;
+            if (sinkCredential) {
+                sessionPayload["sinkCredential"] = sinkCredential;
             }
         }
 

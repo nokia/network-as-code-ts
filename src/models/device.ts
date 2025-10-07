@@ -21,6 +21,7 @@ import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { MatchCustomerParams } from "./kycMatch";
 import { VerifyAgeParams } from "./kycAgeVerification";
+import { AccessTokenCredential } from "./authentication";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -54,8 +55,8 @@ export interface QodOptionalArgs {
     serviceIpv6?: string;
     devicePorts?: PortSpec;
     servicePorts?: PortSpec;
-    notificationUrl?: string;
-    notificationAuthToken?: string;
+    sink?: string;
+    sinkCredential?: AccessTokenCredential
 }
 
 /**
@@ -134,13 +135,16 @@ export class Device {
                 - serviceIpv6 (optional): IPv6 address of the service.
                 - devicePorts (optional): List of the device ports.
                 - servicePorts (optional): List of the application server ports.
-                - notificationUrl (optional): Notification URL for session-related events.
-                - notificationAuthToken (optional): Security bearer token to authenticate registration of session.
+                - sink (optional): URL for session-related events.
+                - sinkCredential (optional): Authorization information to protect the notification endpoint. 
             @returns Promise<QoDSession>
 
-            @exmple ```TypeScript
-            session = device.createSession(profile="QOS_L", 
-            {serviceIpv4:"5.6.7.8", serviceIpv6:"2041:0000:140F::875B:131B", notificationUrl:"https://example.com/notifications, notificationToken: "c8974e592c2fa383d4a3960714"})
+            @example ```TypeScript
+            const session = device.createSession("QOS_L", {
+                    duration: 3600,
+                    serviceIpv4: "5.6.7.8",
+                    serviceIpv6: "2041:0000:140F::875B:131B"
+                })
             ```
  */
     async createQodSession(
@@ -151,8 +155,8 @@ export class Device {
             serviceIpv6,
             devicePorts,
             servicePorts,
-            notificationUrl,
-            notificationAuthToken,
+            sink,
+            sinkCredential,
         }: QodOptionalArgs
     ): Promise<QoDSession> {
         // Checks if at least one parameter is set
@@ -170,8 +174,8 @@ export class Device {
             serviceIpv4,
             devicePorts,
             servicePorts,
-            notificationUrl,
-            notificationAuthToken
+            sink,
+            sinkCredential
         );
 
         return QoDSession.convertSessionModel(
