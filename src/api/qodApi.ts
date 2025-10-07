@@ -62,8 +62,8 @@ export class QodAPI {
             serviceIpv6 (optional): IPv6 address of the service.
             devicePorts (optional): List of the device ports.
             servicePorts (optional): List of the application server ports.
-            sink (optional): Notification URL for session-related events.
-            sinkCredential (optional): Security bearer token to authenticate registration of session.
+            sink (optional): URL for session-related events.
+            sinkCredential (optional): Authorization information to protect the notification endpoint. 
 
         Returns:
             Promise<Session>: response of the endpoint, ideally a Session
