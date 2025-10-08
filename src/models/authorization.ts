@@ -37,42 +37,14 @@ export class Credentials {
 /**
  *  A class representing the `Endpoints` model.
     #### Public Attributes:
-       @param authorizationEndpoint (string): Endpoint from where end user can get authenticated and can get the NaC authorization code.
-       @param tokenEndpoint (string): Endpoint from where can get access token.
+       @param fastFlowCspAuthEndpoint (string): Fast flow endpoint from where end user can get authenticated and can get the authorization code.
  */
 export class Endpoints {
-    authorizationEndpoint: string;
-    tokenEndpoint: string;
+    fastFlowCspAuthEndpoint: string;
 
     constructor(
-        authorizationEndpoint: string, 
-        tokenEndpoint: string
+        fastFlowCspAuthEndpoint: string
     ) {
-        this.authorizationEndpoint = authorizationEndpoint;
-        this.tokenEndpoint = tokenEndpoint;    
-    }
-}
-
-/**
- *  A class representing the `AccessToken` model.
-    #### Public Attributes:
-       @param accessToken (string): Sccess token of the client.
-       @param tokenType (string): The type of the access token.
-       @param expiresIn (number): When the access token expires.
- */
-export class AccessToken {
-    accessToken: string;
-    tokenType: string;
-    expiresIn: number;
-
-    constructor(
-        accessToken: string, 
-        tokenType: string,
-        expiresIn: number
-
-    ) {
-        this.accessToken = accessToken;
-        this.tokenType = tokenType;
-        this.expiresIn = expiresIn;    
+        this.fastFlowCspAuthEndpoint = fastFlowCspAuthEndpoint;    
     }
 }
