@@ -16,7 +16,7 @@
 
 import { DeviceReachabilityStatusAPI, DeviceRoamingStatusAPI } from "../api/deviceStatusAPI";
 import { Device } from "../models/device";
-import { SubscribeOptionalArgs, DeviceStatusSubscription, EventType } from "../models/deviceStatus";
+import { SubscribeOptionalArgs, ReachabilityStatusSubscription, RoamingStatusSubscription, DeviceStatusSubscription, EventType } from "../models/deviceStatus";
 import { Namespace } from "./namespace";
 
 
@@ -37,15 +37,20 @@ export class DeviceStatus extends Namespace {
         types: EventType[] | string[],
         sink: string,
         optionalArgs?: SubscribeOptionalArgs
-    ): Promise<DeviceStatusSubscription> {
+    ): Promise<ReachabilityStatusSubscription | RoamingStatusSubscription> {
         const subscriptionExpireTime = optionalArgs?.subscriptionExpireTime;
 
-        let api_call: DeviceReachabilityStatusAPI | DeviceRoamingStatusAPI = this.api.deviceReachabilityStatus;
-        if (types[0].includes("roaming")){
-            api_call = this.api.deviceRoamingStatus
+        let apiCall: DeviceReachabilityStatusAPI | DeviceRoamingStatusAPI = this.api.deviceReachabilityStatus;
+        let subscriptionType = ReachabilityStatusSubscription;
+
+        const roamingTypes = [EventType.ROAMING_CHANGE_COUNTRY, EventType.ROAMING_OFF, EventType.ROAMING_ON, EventType.ROAMING_STATUS]
+
+        if (Object.values(roamingTypes).includes(types[0] as any)){
+            apiCall = this.api.deviceRoamingStatus
+            subscriptionType = RoamingStatusSubscription
         }
 
-        const jsonData = await api_call.subscribe(
+        const jsonData = await apiCall.subscribe(
             device,
             types,
             sink,
@@ -57,8 +62,7 @@ export class DeviceStatus extends Namespace {
                 ...optionalArgs,
             }
         );
-
-        return new DeviceStatusSubscription(
+        return new subscriptionType(
             this.api,
             jsonData.id,
             device,

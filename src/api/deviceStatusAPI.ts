@@ -152,6 +152,7 @@ export class DeviceReachabilityStatusAPI extends DeviceStatus{
 
         return response.json() as Promise<ReachabilityStatus>;
     }
+
 }
 
 export class DeviceRoamingStatusAPI extends DeviceStatus{
