@@ -50,6 +50,12 @@ export interface AccessTokenCredential {
     accessTokenExpiresUtc: Date | string
 }
 
+
+export interface Delete {
+    delete(): any;
+}
+
+
 /**
  *  A class representing the `DeviceStatusSubscription` model.
  * #### Private Attributes:
@@ -68,7 +74,7 @@ export interface AccessTokenCredential {
         @method deleteReachability(): Deletes device reachability status subscription.
  */
 export class DeviceStatusSubscription {
-    private api: APIClient;
+    private _api: APIClient;
     eventSubscriptionId: string;
     device: Device;
     sink: string;
@@ -80,7 +86,7 @@ export class DeviceStatusSubscription {
     status?: string;
 
     constructor(
-        api: APIClient,
+        _api: APIClient,
         eventSubscriptionId: string,
         device: Device,
         sink: string,
@@ -89,9 +95,9 @@ export class DeviceStatusSubscription {
         subscriptionMaxEvents?: number,
         startsAt?: Date,
         expiresAt?: Date,
-        status?: string
+        status?: string,
     ) {
-        this.api = api;
+        this._api = _api;
         this.eventSubscriptionId = eventSubscriptionId;
         this.device = device;
         this.sink = sink;
@@ -103,18 +109,89 @@ export class DeviceStatusSubscription {
         this.status = status;
     }
 
-    /**
-     *  Delete device roaming status subscription
-     */
-    async deleteRoaming() {
-        this.api.deviceRoamingStatus.delete(this.eventSubscriptionId);
+    async delete() {
+        if (this.eventType[0].includes("roaming")){
+            let deleteSub = new DeleteRoaming()
+            deleteSub.delete(this._api, this.eventSubscriptionId)
+        }
+        else {
+            let deleteSub = new DeleteReachability()
+            deleteSub.delete(this._api, this.eventSubscriptionId)
+        }
     }
-
-    /**
-     *  Delete device reachability status subscription
-     */
-    async deleteReachability() {
-        this.api.deviceReachabilityStatus.delete(this.eventSubscriptionId);
-    }
-
 }
+
+
+export interface Delete {
+    delete(api: APIClient, id: string): any;
+}
+
+/**
+ *  Delete device roaming status subscription
+ */
+class DeleteRoaming implements Delete {
+    delete(api?: APIClient, id?: string): any {
+        if (api && id) { 
+        api.deviceRoamingStatus.delete(id)
+        }
+    };
+}
+
+/**
+ *  Delete device reachability status subscription
+ */
+class DeleteReachability implements Delete {
+    delete(api?: APIClient, id?: string): any {
+        if (api && id) { 
+            api.deviceReachabilityStatus.delete(id)
+        }
+    };
+}
+
+
+
+
+
+
+
+
+
+// TESTING 2:
+
+
+export interface DeviceStatusSubscription2 {
+    _api: APIClient;
+    eventSubscriptionId: string;
+    device: Device;
+    sink: string;
+    eventType: string[];
+    subscriptionExpireTime?: string;
+    subscriptionMaxEvents?: number;
+    startsAt?: Date;
+    expiresAt?: Date;
+    status?: string;
+    delete(): void;
+}
+
+
+
+class DeleteRoaming2 implements DeviceStatusSubscription2 {
+    delete(api?: APIClient, id?: string): any {
+        if (api && id) { 
+        api.deviceRoamingStatus.delete(id)
+        }
+    };
+}
+
+/**
+ *  Delete device reachability status subscription
+ */
+class DeleteReachability2 implements Delete {
+    delete(api?: APIClient, id?: string): any {
+        if (api && id) { 
+            api.deviceReachabilityStatus.delete(id)
+        }
+    };
+}
+
+
