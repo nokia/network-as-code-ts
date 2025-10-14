@@ -41,13 +41,11 @@ export class DeviceStatus extends Namespace {
         const subscriptionExpireTime = optionalArgs?.subscriptionExpireTime;
 
         let apiCall: DeviceReachabilityStatusAPI | DeviceRoamingStatusAPI = this.api.deviceReachabilityStatus;
-        let subscriptionType = ReachabilityStatusSubscription;
 
         const roamingTypes = [EventType.ROAMING_CHANGE_COUNTRY, EventType.ROAMING_OFF, EventType.ROAMING_ON, EventType.ROAMING_STATUS]
 
         if (Object.values(roamingTypes).includes(types[0] as any)){
             apiCall = this.api.deviceRoamingStatus
-            subscriptionType = RoamingStatusSubscription
         }
 
         const jsonData = await apiCall.subscribe(
@@ -62,18 +60,33 @@ export class DeviceStatus extends Namespace {
                 ...optionalArgs,
             }
         );
-        return new subscriptionType(
-            this.api,
-            jsonData.id,
-            device,
-            jsonData.sink,
-            jsonData.types,
-            jsonData.config.subscriptionMaxEvents,
-            jsonData.config.subscriptionExpireTime,
-            jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
-            jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined,
-            jsonData.status
-        );
+        if (Object.values(roamingTypes).includes(types[0] as any)){
+            return new RoamingStatusSubscription(
+                this.api,
+                jsonData.id,
+                device,
+                jsonData.sink,
+                jsonData.types,
+                jsonData.config.subscriptionMaxEvents,
+                jsonData.config.subscriptionExpireTime,
+                jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
+                jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined,
+                jsonData.status
+            );
+        } else {
+            return new ReachabilityStatusSubscription(
+                this.api,
+                jsonData.id,
+                device,
+                jsonData.sink,
+                jsonData.types,
+                jsonData.config.subscriptionMaxEvents,
+                jsonData.config.subscriptionExpireTime,
+                jsonData.startsAt ? new Date(jsonData.startsAt) : undefined,
+                jsonData.expiresAt ? new Date(jsonData.expiresAt) : undefined,
+                jsonData.status
+            );            
+        }
     }
 
 
@@ -173,7 +186,6 @@ export class DeviceStatus extends Namespace {
             );
 
             return new DeviceStatusSubscription(
-                this.api,
                 entry.id,
                 device,
                 entry.sink,

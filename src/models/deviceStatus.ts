@@ -70,7 +70,6 @@ export interface AccessTokenCredential {
         @method deleteReachability(): Deletes device reachability status subscription.
  */
 export class DeviceStatusSubscription {
-    _api: APIClient;
     eventSubscriptionId: string;
     device: Device;
     sink: string;
@@ -82,7 +81,6 @@ export class DeviceStatusSubscription {
     status?: string;
 
     constructor(
-        _api: APIClient,
         eventSubscriptionId: string,
         device: Device,
         sink: string,
@@ -93,7 +91,6 @@ export class DeviceStatusSubscription {
         expiresAt?: Date,
         status?: string,
     ) {
-        this._api = _api;
         this.eventSubscriptionId = eventSubscriptionId;
         this.device = device;
         this.sink = sink;
@@ -109,8 +106,9 @@ export class DeviceStatusSubscription {
 
 
 export class RoamingStatusSubscription extends DeviceStatusSubscription{
+    private api: APIClient;
     constructor(
-        _api: APIClient,
+        api: APIClient,
         eventSubscriptionId: string,
         device: Device,
         sink: string,
@@ -122,7 +120,6 @@ export class RoamingStatusSubscription extends DeviceStatusSubscription{
         status?: string,
     ) {
         super(
-        _api,
         eventSubscriptionId,
         device,
         sink,
@@ -132,17 +129,19 @@ export class RoamingStatusSubscription extends DeviceStatusSubscription{
         startsAt,
         expiresAt,
         status);
+        this.api = api;
     }
 
     async delete() {        
-        this._api.deviceRoamingStatus.delete(this.eventSubscriptionId);
+        this.api.deviceRoamingStatus.delete(this.eventSubscriptionId);
     }
 }
 
 
 export class ReachabilityStatusSubscription extends DeviceStatusSubscription{
+    private api: APIClient;
     constructor(
-        _api: APIClient,
+        api: APIClient,
         eventSubscriptionId: string,
         device: Device,
         sink: string,
@@ -154,7 +153,6 @@ export class ReachabilityStatusSubscription extends DeviceStatusSubscription{
         status?: string,
     ) {
         super(
-        _api,
         eventSubscriptionId,
         device,
         sink,
@@ -164,10 +162,11 @@ export class ReachabilityStatusSubscription extends DeviceStatusSubscription{
         startsAt,
         expiresAt,
         status);
+        this.api = api;
     }
 
     async delete() {
-        this._api.deviceReachabilityStatus.delete(this.eventSubscriptionId);
+        this.api.deviceReachabilityStatus.delete(this.eventSubscriptionId);
     }
 }
 
