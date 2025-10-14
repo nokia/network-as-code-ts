@@ -86,7 +86,7 @@ export class DeviceStatus extends Namespace {
             ```
             @returns Promise<DeviceStatusSubscription>
     */
-    async getRoamingSubscription(eventSubscriptionId: string): Promise<DeviceStatusSubscription> {
+    async getRoamingSubscription(eventSubscriptionId: string): Promise<RoamingStatusSubscription> {
         const jsonData = await this.api.deviceRoamingStatus.get(eventSubscriptionId,);
 
         const deviceDetails = jsonData.config.subscriptionDetail.device;
@@ -99,7 +99,7 @@ export class DeviceStatus extends Namespace {
             deviceDetails.phoneNumber
         );
 
-        return new DeviceStatusSubscription(
+        return new RoamingStatusSubscription(
             this.api,
             eventSubscriptionId,
             device,
@@ -122,7 +122,7 @@ export class DeviceStatus extends Namespace {
             @returns Promise<DeviceStatusSubscription>
     */
 
-    async getReachabilitySubscription(eventSubscriptionId: string): Promise<DeviceStatusSubscription> {
+    async getReachabilitySubscription(eventSubscriptionId: string): Promise<ReachabilityStatusSubscription> {
         const jsonData = await this.api.deviceReachabilityStatus.get(eventSubscriptionId,);
 
         const deviceDetails = jsonData.config.subscriptionDetail.device;
@@ -135,7 +135,7 @@ export class DeviceStatus extends Namespace {
             deviceDetails.phoneNumber
         );
 
-        return new DeviceStatusSubscription(
+        return new ReachabilityStatusSubscription(
             this.api,
             eventSubscriptionId,
             device,

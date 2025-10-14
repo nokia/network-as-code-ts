@@ -104,7 +104,7 @@ export class DeviceStatusSubscription {
         this.subscriptionMaxEvents = subscriptionMaxEvents;
         this.status = status;
     }
-    delete(){};
+    async delete(){};
 }
 
 
