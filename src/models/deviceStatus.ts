@@ -16,6 +16,7 @@
 
 import { APIClient } from "../api";
 import { Device } from "./device";
+import { AccessTokenCredential, PlainCredential } from "./authorization";
 
 
 export enum EventType {
@@ -36,28 +37,11 @@ export interface SubscribeOptionalArgs {
     initialEvent?: boolean
 }
 
-export interface PlainCredential {
-    credentialType: "PLAIN",
-    identifier: string,
-    secret: string
-
-}
-
-export interface AccessTokenCredential {
-    credentialType: "ACCESSTOKEN",
-    accessToken: string,
-    accessTokenType?: string,
-    accessTokenExpiresUtc: Date | string
-}
-
-
 
 /**
  *  A class representing the `DeviceStatusSubscription` model.
- * #### Private Attributes:
-        @param _api(APIClient): An API client object.
     #### Public Attributes:
-        @param eventSubscriptionId (string): IIt represents the subscription identifier.
+        @param eventSubscriptionId (string): It represents the subscription identifier.
         @param device (Device): Identifier of the device
         @param sink (string): The URL where events shall be delivered.
         @param eventType (string[]): The status type(s) you want to check, which can be reachability or roaming.
@@ -66,8 +50,7 @@ export interface AccessTokenCredential {
         @param startsAt (optional): It represents when this subscription started.
         @param expiresAt (optional): It represents when this subscription should expire.
     #### Public Methods:
-        @method deleteRoaming(): Deletes device roaming status subscription.
-        @method deleteReachability(): Deletes device reachability status subscription.
+        @method delete(): Deletes device roaming or reachability status subscription.
  */
 export class DeviceStatusSubscription {
     eventSubscriptionId: string;
@@ -105,8 +88,24 @@ export class DeviceStatusSubscription {
 }
 
 
+/**
+ *  A class representing the `RoamingStatusSubscription` model.
+ * #### Private Attributes:
+        @param api(APIClient): An API client object.
+    #### Public Attributes:
+        @param eventSubscriptionId (string): It represents the subscription identifier.
+        @param device (Device): Identifier of the device
+        @param sink (string): The URL where events shall be delivered.
+        @param eventType (string[]): The status type(s) you want to check.
+        @param subscriptionExpireTime (string): Date when the subscription will expire.
+        @param subscriptionMaxEvents (string): The maximum amount of event reports that can be created.
+        @param startsAt (optional): It represents when this subscription started.
+        @param expiresAt (optional): It represents when this subscription should expire.
+    #### Public Methods:
+        @method delete(): Deletes device roaming status subscription.
+ */
 export class RoamingStatusSubscription extends DeviceStatusSubscription{
-    private api: APIClient;
+    #api: APIClient;
     constructor(
         api: APIClient,
         eventSubscriptionId: string,
@@ -129,17 +128,37 @@ export class RoamingStatusSubscription extends DeviceStatusSubscription{
         startsAt,
         expiresAt,
         status);
-        this.api = api;
+        this.#api = api;
     }
 
+
+    /**
+     *  Delete device roaming status subscription
+     */
     async delete() {        
-        this.api.deviceRoamingStatus.delete(this.eventSubscriptionId);
+        this.#api.deviceRoamingStatus.delete(this.eventSubscriptionId);
     }
 }
 
 
+/**
+ *  A class representing the `ReachabilityStatusSubscription` model.
+ * #### Private Attributes:
+        @param api(APIClient): An API client object.
+    #### Public Attributes:
+        @param eventSubscriptionId (string): It represents the subscription identifier.
+        @param device (Device): Identifier of the device
+        @param sink (string): The URL where events shall be delivered.
+        @param eventType (string[]): The status type(s) you want to check.
+        @param subscriptionExpireTime (string): Date when the subscription will expire.
+        @param subscriptionMaxEvents (string): The maximum amount of event reports that can be created.
+        @param startsAt (optional): It represents when this subscription started.
+        @param expiresAt (optional): It represents when this subscription should expire.
+    #### Public Methods:
+        @method delete(): Deletes device reachability status subscription.
+ */
 export class ReachabilityStatusSubscription extends DeviceStatusSubscription{
-    private api: APIClient;
+    #api: APIClient;
     constructor(
         api: APIClient,
         eventSubscriptionId: string,
@@ -162,11 +181,14 @@ export class ReachabilityStatusSubscription extends DeviceStatusSubscription{
         startsAt,
         expiresAt,
         status);
-        this.api = api;
+        this.#api = api;
     }
 
+    /**
+     *  Delete device reachability status subscription
+     */
     async delete() {
-        this.api.deviceReachabilityStatus.delete(this.eventSubscriptionId);
+        this.#api.deviceReachabilityStatus.delete(this.eventSubscriptionId);
     }
 }
 
