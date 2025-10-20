@@ -1,11 +1,12 @@
 import fetchMock from '@fetch-mock/jest';
+import { randomUUID } from "crypto";
+
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
 import {
     APIError,
     ServiceError
 } from "../src/errors"
-
 
 jest.mock("node-fetch", () => {
 	const nodeFetch = jest.requireActual("node-fetch");
@@ -96,6 +97,10 @@ describe("Number Verification successfull authorization tests", () => {
         expect(await client.authorization.createAuthorizationLink("testRedirectUri", "testScope", "test login hint", "stateTestÄÄä"))
         .toEqual("https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=test%20login%20hint&state=stateTest%C3%84%C3%84%C3%A4");
     });
+
+    it("should create a valid UUID with randomUUID", () => {
+        expect(typeof(randomUUID())).toBe("string")
+    })
 });
 
 

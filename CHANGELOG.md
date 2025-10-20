@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 6.0.0
+
+Breaking Changes:
+- Number verification now uses the fast flow and requires the state parameter to be passed in
+
 ## Version 5.2.0
 
 Changes:
