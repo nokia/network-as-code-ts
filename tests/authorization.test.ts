@@ -1,11 +1,12 @@
 import fetchMock from '@fetch-mock/jest';
+import { randomUUID } from "crypto";
+
 import { NetworkAsCodeClient } from "../src";
 import { Device } from "../src/models/device";
 import {
     APIError,
     ServiceError
 } from "../src/errors"
-
 
 jest.mock("node-fetch", () => {
 	const nodeFetch = jest.requireActual("node-fetch");
@@ -40,7 +41,7 @@ afterEach(() => {
 });
 
 
-describe("Number Verification successfull authentication tests", () => {
+describe("Number Verification successfull authorization tests", () => {
     beforeEach(() => {
         fetchMock.mockGlobal().get(
             "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
@@ -70,8 +71,7 @@ describe("Number Verification successfull authentication tests", () => {
             },
             { response: Promise.resolve({
                 body: JSON.stringify({
-                    authorization_endpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize",
-                    token_endpoint: "https://tokenTestEndpoint/oauth2/v1/token"
+                    fast_flow_csp_auth_endpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url"
                 }),
             })
             }       
@@ -80,27 +80,31 @@ describe("Number Verification successfull authentication tests", () => {
     });
 
     it("should get the credentials", async () => {
-        expect(await client.authentication.credentials()).toEqual({clientId: "123456", clientSecret: "secret123"});
+        expect(await client.authorization.credentials()).toEqual({clientId: "123456", clientSecret: "secret123"});
     });
 
     it("should get the endpoints", async () => {
-        expect(await client.authentication.endpoints())
-        .toEqual({authorizationEndpoint: "https://authorizationTestEndpoint/oauth2/v1/authorize", tokenEndpoint: "https://tokenTestEndpoint/oauth2/v1/token"});
+        expect(await client.authorization.endpoints())
+        .toEqual({fastFlowCspAuthEndpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url"});
     });
     
-    it("should create and return an authentication link", async () => {
-        expect(await client.authentication.createAuthenticationLink("testRedirectUri", "testScope", "testLoginHint123"))
-        .toEqual("https://authorizationTestEndpoint/oauth2/v1/authorize?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=testLoginHint123");
+    it("should create and return an authorization link", async () => {
+        expect(await client.authorization.createAuthorizationLink("testRedirectUri", "testScope", "testLoginHint123", "testState"))
+        .toEqual("https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=testLoginHint123&state=testState");
     });
 
-    it("should create and return an authentication link, with optional parameters and encoded text", async () => {
-        expect(await client.authentication.createAuthenticationLink("testRedirectUri", "testScope", "test login hint", "stateTestÄÄä"))
-        .toEqual("https://authorizationTestEndpoint/oauth2/v1/authorize?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=test%20login%20hint&state=stateTest%C3%84%C3%84%C3%A4");
+    it("should create and return an authorization link, with optional parameters and encoded text", async () => {
+        expect(await client.authorization.createAuthorizationLink("testRedirectUri", "testScope", "test login hint", "stateTestÄÄä"))
+        .toEqual("https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url?response_type=code&client_id=123456&redirect_uri=testRedirectUri&scope=testScope&login_hint=test%20login%20hint&state=stateTest%C3%84%C3%84%C3%A4");
     });
+
+    it("should create a valid UUID with randomUUID", () => {
+        expect(typeof(randomUUID())).toBe("string")
+    })
 });
 
 
-describe("Number Verification authentication tests errors", () => {
+describe("Authorization errors tests", () => {
     it("credential fetching should return APIError", async () => {
         fetchMock.mockGlobal().get(
             "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
@@ -116,7 +120,7 @@ describe("Number Verification authentication tests errors", () => {
                 })
             });
         try {
-            await client.authentication.credentials();
+            await client.authorization.credentials();
         } catch (error) {
             expect(error).toBeInstanceOf(APIError);
         }  
@@ -138,7 +142,7 @@ describe("Number Verification authentication tests errors", () => {
             })
         });
         try {
-            await client.authentication.credentials();
+            await client.authorization.credentials();
         } catch (error) {
             expect(error).toBeInstanceOf(ServiceError);
         }
@@ -160,7 +164,7 @@ describe("Number Verification authentication tests errors", () => {
                 })
             });
         try {
-            await client.authentication.endpoints();
+            await client.authorization.endpoints();
         } catch (error) {
             expect(error).toBeInstanceOf(ServiceError);
         }
@@ -182,7 +186,7 @@ describe("Number Verification authentication tests errors", () => {
                 })
             });
         try {
-            await client.authentication.endpoints();
+            await client.authorization.endpoints();
         } catch (error) {
             expect(error).toBeInstanceOf(APIError);
         }

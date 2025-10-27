@@ -21,7 +21,7 @@ import { DeviceStatus } from "./namespaces/deviceStatus";
 import { Geofencing } from "./namespaces/geofencing";
 import { Sessions } from "./namespaces/session";
 import { Slices } from "./namespaces/slice";
-import { Authentication } from "./namespaces/authentication";
+import { Authorization } from "./namespaces/authorization";
 
 
 /**
@@ -34,7 +34,7 @@ import { Authentication } from "./namespaces/authentication";
     console.log(device.getLocation())
     
     ### Args:
-        @param token - Authentication token for the Network as Code API.
+        @param token - Authorization token for the Network as Code API.
  */
 export class NetworkAsCodeClient {
     private _api: APIClient;
@@ -44,7 +44,7 @@ export class NetworkAsCodeClient {
     private _slices: Slices;
     private _insights: CongestionInsights;
     private _geofencing: Geofencing;
-    private _authentication: Authentication;
+    private _authorization: Authorization;
 
 
     constructor(token: string, envMode?: string) {
@@ -55,7 +55,7 @@ export class NetworkAsCodeClient {
         this._slices = new Slices(this._api);
         this._insights = new CongestionInsights(this._api);
         this._geofencing = new Geofencing(this._api);
-        this._authentication = new Authentication(this._api);
+        this._authorization = new Authorization(this._api);
     }
 
     /**
@@ -107,11 +107,11 @@ export class NetworkAsCodeClient {
     }
 
     /**
-     * Namespace containing functionalities related to authentication.
-     * @returns NAC authentication
+     * Namespace containing functionalities related to authorization.
+     * @returns NAC authorization
      */
-    get authentication() {
-        return this._authentication;
+    get authorization() {
+        return this._authorization;
     }
 
     /**

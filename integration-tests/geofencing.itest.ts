@@ -43,9 +43,9 @@ describe("Geofencing", () => {
         const data: any = await notification.json();
 
         expect(data).not.toBeNull();
-        expect(data[0]["data"]["area"]["areaType"]).toEqual("CIRCLE");
-        expect(data[0]["data"]["area"]["center"]["latitude"]).toEqual(47.48627616952785);
-        expect(data[0]["data"]["area"]["radius"]).toEqual(2000);
+        expect(data[0].data.area.areaType).toEqual("CIRCLE");
+        expect(data[0].data.area.center.latitude).toEqual(47.48627616952785);
+        expect(data[0].data.area.radius).toEqual(2000);
 
 
         // Deleting the subscription notification
@@ -79,8 +79,8 @@ describe("Geofencing", () => {
         const data: any = await notification.json();
 
         expect(data).not.toBeNull();
-        expect(data[0]["data"]["area"]["areaType"]).toEqual("POI");
-        expect(data[0]["data"]["area"]["poiName"]).toEqual("StatueOfLiberty");
+        expect(data[0].data.area.areaType).toEqual("POI");
+        expect(data[0].data.area.poiName).toEqual("StatueOfLiberty");
 
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
@@ -112,7 +112,7 @@ describe("Geofencing", () => {
         const data: any = await notification.json();
 
         expect(data).not.toBeNull();
-        expect(data[0]["data"]["area"]["areaType"]).toEqual("CIRCLE");
+        expect(data[0].data.area.areaType).toEqual("CIRCLE");
 
 
         // Deleting the subscription notification
@@ -146,7 +146,7 @@ describe("Geofencing", () => {
         const data: any = await notification.json();
 
         expect(data).not.toBeNull();
-        expect(data[0]["data"]["area"]["areaType"]).toEqual("POI");
+        expect(data[0].data.area.areaType).toEqual("POI");
 
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
@@ -184,7 +184,7 @@ describe("Geofencing", () => {
         const data: any = await notification.json();
 
         expect(data).not.toBeNull();
-        expect(data[0]["data"]["area"]["areaType"]).toEqual("CIRCLE");
+        expect(data[0].data.area.areaType).toEqual("CIRCLE");
 
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
@@ -225,7 +225,7 @@ describe("Geofencing", () => {
         const data: any = await notification.json();
 
         expect(data).not.toBeNull();
-        expect(data[0]["data"]["area"]["areaType"]).toEqual("POI");
+        expect(data[0].data.area.areaType).toEqual("POI");
 
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
