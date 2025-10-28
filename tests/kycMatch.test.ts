@@ -39,7 +39,7 @@ afterEach(() => {
 describe("KYC Match", () => {
     it("KYC Match should match customer", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
@@ -124,7 +124,7 @@ describe("KYC Match", () => {
 
     it("KYC Match with not all attributes requested", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
@@ -184,7 +184,7 @@ describe("KYC Match", () => {
 
     it("should add the device phone number to the body in the backend", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-match/v0.3/match",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",

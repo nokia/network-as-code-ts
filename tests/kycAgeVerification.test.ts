@@ -39,7 +39,7 @@ afterEach(() => {
 describe("KYC Age Verification", () => {
     it("KYC age verification", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-age-verification/v0.1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1/verify",
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
@@ -92,7 +92,7 @@ describe("KYC Age Verification", () => {
 
     it("KYC age verification with not all attributes provided", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-age-verification/v0.1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1/verify",
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
@@ -139,7 +139,7 @@ describe("KYC Age Verification", () => {
 
     it("missing phone number will add it in the backend and work", async () => {
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/passthrough/kyc-age-verification/v0.1/verify",
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1/verify",
             (req: any): any => {
                 expect(req.headers).toEqual({
                     "Content-Type": "application/json",
