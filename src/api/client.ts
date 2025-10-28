@@ -60,9 +60,9 @@ const NUMBER_VERIFICATION_URL =  "/passthrough/camara/v1/number-verification/num
 
 const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3";
 
-const KYC_MATCH = "/passthrough/camara/v1/passthrough/kyc-match/v0.3";
+const KYC_MATCH = "/passthrough/camara/v1/kyc-match/kyc-match/v0.3";
 
-const KYC_AGE_VERIFICATION = "/passthrough/camara/v1/passthrough/kyc-age-verification/v0.1"
+const KYC_AGE_VERIFICATION = "/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1"
 
 const agent = new ProxyAgent();
 
