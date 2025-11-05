@@ -38,31 +38,39 @@ class DeviceStatus {
         };
         this.agent = agent;
     }
-    async subscribe(
-        device: Device,
+
+
+   async subscribe(
+        device: any,
         types: string[],
         sink: string,
         optionalArgs?: SubscribeOptionalArgs
     ): Promise<any> {
+
+        const removeUndefineds = JSON.parse(JSON.stringify(device));
+
         const body: any = {
             protocol: "HTTP",
             sink: sink,
             types: types,
             config: {
                 subscriptionDetail: {
-                    device: device.toJson()
+                    device: removeUndefineds
                 }
             }
         };
 
         if (optionalArgs) {
             if (optionalArgs.subscriptionMaxEvents) {
-                body.subscriptionMaxEvents = optionalArgs.subscriptionMaxEvents;
+                body.config.subscriptionMaxEvents = optionalArgs.subscriptionMaxEvents;
             }
 
             if (optionalArgs.subscriptionExpireTime) {
-                body.subscriptionExpireTime =
-                    optionalArgs.subscriptionExpireTime;
+                body.config.subscriptionExpireTime = optionalArgs.subscriptionExpireTime;
+            }
+
+            if (optionalArgs.initialEvent) {
+                body.config.initialEvent = optionalArgs.initialEvent;
             }
 
             if (optionalArgs.sinkCredential) {
@@ -79,7 +87,8 @@ class DeviceStatus {
 
         errorHandler(response);
 
-        return response.json() as Promise<any>;
+        const result = await response.json()
+        return result
     }
 
     async delete(eventSubscriptionId: string) {
@@ -139,7 +148,7 @@ export class DeviceReachabilityStatusAPI extends DeviceStatus{
     }
 
     async getReachability(device: Device): Promise<ReachabilityStatus> {
-        const response = await fetch(`${this.nacBaseUrl}/device-reachability-status/v1/retrieve`, {
+        const response = await fetch(`${this.nacBaseUrl}/device-status/device-reachability-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,
@@ -170,7 +179,7 @@ export class DeviceRoamingStatusAPI extends DeviceStatus{
     
 
     async getRoaming(device: Device): Promise<RoamingStatus> {
-        const response = await fetch(`${this.nacBaseUrl}/device-roaming-status/v1/retrieve`, {
+        const response = await fetch(`${this.nacBaseUrl}/device-status/device-roaming-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,

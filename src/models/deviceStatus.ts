@@ -57,8 +57,8 @@ export class DeviceStatusSubscription {
     device: Device;
     sink: string;
     eventType: string[];
-    subscriptionExpireTime?: string;
     subscriptionMaxEvents?: number;
+    subscriptionExpireTime?: string;
     startsAt?: Date;
     expiresAt?: Date;
     status?: string;
@@ -68,8 +68,8 @@ export class DeviceStatusSubscription {
         device: Device,
         sink: string,
         eventType: string[],
-        subscriptionExpireTime?: string,
         subscriptionMaxEvents?: number,
+        subscriptionExpireTime?: string,
         startsAt?: Date,
         expiresAt?: Date,
         status?: string,
@@ -78,10 +78,10 @@ export class DeviceStatusSubscription {
         this.device = device;
         this.sink = sink;
         this.eventType = eventType;
+        this.subscriptionMaxEvents = subscriptionMaxEvents;
+        this.subscriptionExpireTime = subscriptionExpireTime;
         this.startsAt = startsAt;
         this.expiresAt = expiresAt;
-        this.subscriptionExpireTime = subscriptionExpireTime;
-        this.subscriptionMaxEvents = subscriptionMaxEvents;
         this.status = status;
     }
     async delete(){};
@@ -112,8 +112,8 @@ export class RoamingStatusSubscription extends DeviceStatusSubscription{
         device: Device,
         sink: string,
         eventType: string[],
-        subscriptionExpireTime?: string,
         subscriptionMaxEvents?: number,
+        subscriptionExpireTime?: string,
         startsAt?: Date,
         expiresAt?: Date,
         status?: string,
@@ -123,8 +123,8 @@ export class RoamingStatusSubscription extends DeviceStatusSubscription{
         device,
         sink,
         eventType,
-        subscriptionExpireTime,
         subscriptionMaxEvents,
+        subscriptionExpireTime,
         startsAt,
         expiresAt,
         status);
@@ -165,8 +165,8 @@ export class ReachabilityStatusSubscription extends DeviceStatusSubscription{
         device: Device,
         sink: string,
         eventType: string[],
-        subscriptionExpireTime?: string,
         subscriptionMaxEvents?: number,
+        subscriptionExpireTime?: string,
         startsAt?: Date,
         expiresAt?: Date,
         status?: string,
@@ -176,8 +176,8 @@ export class ReachabilityStatusSubscription extends DeviceStatusSubscription{
         device,
         sink,
         eventType,
-        subscriptionExpireTime,
         subscriptionMaxEvents,
+        subscriptionExpireTime,
         startsAt,
         expiresAt,
         status);

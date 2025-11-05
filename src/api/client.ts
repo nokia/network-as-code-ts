@@ -42,9 +42,9 @@ const SLICE_URL = "/slice/v1";
 
 const SLICE_ATTACH_URL = "/device-attach/v0";
 
-const DEVICE_REACHABILITY_STATUS_URL = "/device-reachability-status-subscriptions/v0.7";
+const DEVICE_REACHABILITY_STATUS_URL = "/device-status/device-reachability-status-subscriptions/v0.7";
 
-const DEVICE_ROAMING_STATUS_URL = "/device-roaming-status-subscriptions/v0.7";
+const DEVICE_ROAMING_STATUS_URL = "/device-status/device-roaming-status-subscriptions/v0.7";
 
 const CONGESTION_INSIGHTS_URL = "/congestion-insights/v0";
 

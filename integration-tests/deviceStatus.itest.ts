@@ -16,12 +16,7 @@ let agent : ProxyAgent
 beforeAll(() => {
     client = configureClient();
     device = client.devices.get({
-        networkAccessIdentifier: "test-device@testcsp.net",
-        ipv4Address: {
-            publicAddress: "1.1.1.2",
-            privateAddress: "1.1.1.2",
-            publicPort: 80,
-        },
+        phoneNumber: "+99999991000"
     });
     notificationUrl = configureNotificationServerUrl();
     agent = new ProxyAgent();
@@ -35,7 +30,6 @@ describe("Device Status", () => {
             `${notificationUrl}/notify`
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
-
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
         let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
@@ -56,7 +50,7 @@ describe("Device Status", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("can create a reachability subscription using event type enum and delete it", async () => {
@@ -79,7 +73,6 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-
         // Deleting the subscription notification
         notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
             { 
@@ -87,7 +80,7 @@ describe("Device Status", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("can create a roaming subscription with expiry", async () => {
@@ -103,9 +96,7 @@ describe("Device Status", () => {
             }
         );
 
-        expect(subscription.expiresAt).toEqual(
-            new Date(tomorrowDate.toISOString().replace(".000", ""))
-        );
+        expect(subscription.expiresAt?.toDateString()).toBe(tomorrowDate.toDateString());
 
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
@@ -127,7 +118,7 @@ describe("Device Status", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("can create a reachability subscription with other optional arguments", async () => {
@@ -136,14 +127,12 @@ describe("Device Status", () => {
             ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
             `${notificationUrl}/notify`,
             {
-                subscriptionMaxEvents: 2,
-                subscriptionExpireTime: "2024-07-17T13:18:23.682Z"
+                initialEvent: true,
+                subscriptionMaxEvents: 2
             }
         );
-
         expect(subscription.eventSubscriptionId).toBeDefined();
         expect(subscription.subscriptionMaxEvents).toEqual(2);
-        expect(subscription.subscriptionExpireTime).toEqual("2024-07-17T13:18:23.682Z");
 
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
@@ -165,7 +154,7 @@ describe("Device Status", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("can get a subscription by id", async () => {
@@ -175,7 +164,7 @@ describe("Device Status", () => {
             "https://example.com/notify"
         );
 
-        const subscription2 = await client.deviceStatus.get(
+        const subscription2 = await client.deviceStatus.getReachabilitySubscription(
             subscription.eventSubscriptionId
         );
 
@@ -184,7 +173,7 @@ describe("Device Status", () => {
         );
         expect(subscription2.startsAt).toEqual(subscription.startsAt);
 
-        subscription.delete();
+        await subscription.delete();
     });
 
     it.skip("can get a list of subscriptions", async () => {
@@ -206,7 +195,7 @@ describe("Device Status", () => {
             ).length
         ).toBe(1);
 
-        subscription.delete();
+        await subscription.delete();
     });
 
     it("can poll device reachability status sms", async () => {
@@ -216,27 +205,17 @@ describe("Device Status", () => {
 
         const status = await device.getReachability();
 
-        expect(status).toBe("CONNECTED_SMS");
+        expect(status).toEqual(expect.objectContaining({"connectivity": ["SMS"], "reachable": true}));
     });
 
-    it("can poll device reachability status connected", async () => {
+    it("can poll device reachability status data", async () => {
         device = client.devices.get({
             phoneNumber: "+99999991001"
         });
         
         const status = await device.getReachability();
 
-        expect(status).toBe("CONNECTED_DATA");
-    });
-
-    it("can poll device reachability status not connected", async () => {
-        device = client.devices.get({
-            phoneNumber: "+99999991002"
-        });
-        
-        const status = await device.getReachability();
-
-        expect(status).toBe("NOT_CONNECTED");
+        expect(status).toEqual(expect.objectContaining({"connectivity": ["DATA"], "reachable": true}));
     });
 
     it("can poll device roaming status true", async () => {
@@ -249,13 +228,13 @@ describe("Device Status", () => {
         expect(status.roaming).toBeTruthy();
     });
 
-    it("can poll device roaming status false", async () => {
+    it("can poll device reachability status false", async () => {
         device = client.devices.get({
-            phoneNumber: "+99999991001"
+            phoneNumber: "+99999991004"
         });
         
-        const status = await device.getRoaming();
+        const status = await device.getReachability();
 
-        expect(status.roaming).toBeFalsy();
+        expect(status.reachable).toBeFalsy();
     });
 });

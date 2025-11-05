@@ -47,7 +47,6 @@ export class DeviceStatus extends Namespace {
         if (Object.values(roamingTypes).includes(types[0] as any)){
             apiCall = this.api.deviceRoamingStatus
         }
-
         const jsonData = await apiCall.subscribe(
             device,
             types,
