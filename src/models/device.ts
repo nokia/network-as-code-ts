@@ -481,40 +481,4 @@ export class Device {
 
         return response['active'];
     }
-
-    /**
-     * Match a customer identity against the account data bound to their phone number.
-     * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
-     * @returns Promise<any>: Contains the result of matching the provided parameter values to the data in the operator system.
-     */
-    async matchCustomer(
-        params: MatchCustomerParams
-    ): Promise<any> {
-        if (!params.phoneNumber) {
-            params.phoneNumber = this.phoneNumber;
-        }
-        const response: any = await this._api.kycMatch.matchCustomer(
-            params
-        );
-
-        return await response;
-    }
-
-    /**
-     * Check if the user of the line is older than a provided age.
-     * @param params (VerifyAgeParams): Contains age threshold which to compare user age to, subscription phone number and other optional subscriber info.
-     * @returns Promise<any>: true/false/not_available for if the age of the user is the same or older than the age threshold provided. Also results for other optional request params. 
-     */   
-    async verifyAge(
-        params: VerifyAgeParams
-    ): Promise<any> {
-        if (!params.phoneNumber) {
-            params.phoneNumber = this.phoneNumber;
-        }
-        const response: any = await this._api.kycAgeVerification.verifyAge(
-            params
-        );
-
-        return await response;
-    }
 }

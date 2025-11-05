@@ -5,14 +5,9 @@ import { NetworkAsCodeClient } from "network-as-code";
 const client = new NetworkAsCodeClient("<your-application-key-here>");
 
 
-// Then, create a device object for the phone number. */
-const device = client.devices.get({
-    // The phone number accepts the "+" sign, but not spaces or "()" marks
-    phoneNumber: "+999999991000"
-});
+// To match customer records, you must provide the customer's phone number.
 
-
-// Add the customer identity data here, which is to be used in matching
+// Add additional customer identity data, which is to be used in matching
 // a customer against the account data bound to their phone number.
 const parameters =
     {
@@ -38,6 +33,6 @@ const parameters =
         gender: "OTHER"
     }
 
-const customerMatchResult = await device.matchCustomer(parameters);
+const customerMatchResult = await client.kyc.matchCustomer(parameters);
 
 console.log(customerMatchResult)

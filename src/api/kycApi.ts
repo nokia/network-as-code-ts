@@ -20,7 +20,7 @@ import { ProxyAgent } from "proxy-agent";
 
 import fetch from "node-fetch";
 
-export class KYCMatchAPI {
+class KYCMatchAPI {
     private baseUrl: string;
     private headers: HeadersInit;
     private agent: ProxyAgent;
@@ -54,3 +54,39 @@ export class KYCMatchAPI {
         return await response.json()
     }
 }
+
+class KYCAgeVerificationAPI {
+    private baseUrl: string;
+    private headers: HeadersInit;
+    private agent: ProxyAgent;
+
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent
+    ) {
+        this.baseUrl = baseUrl;
+        this.headers = {
+            "Content-Type": "application/json",
+            "X-RapidAPI-Host": rapidHost,
+            "X-RapidAPI-Key": rapidKey, 
+        };
+        this.agent = agent;
+    }
+
+    async verifyAge(params: any) {
+        const bodyParams = Object.fromEntries(Object.entries(params as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined));
+        const response = await fetch(`${this.baseUrl}/verify`, {
+            method: "POST",
+            headers: this.headers,
+            body: JSON.stringify(bodyParams),
+            agent: this.agent,
+        });
+
+        errorHandler(response);
+
+        return await response.json()
+    }
+}
+export {KYCMatchAPI, KYCAgeVerificationAPI};

@@ -29,8 +29,7 @@ import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
 import { CallForwardingApi } from "./callForwardingApi";
-import { KYCMatchAPI } from "./kycMatchApi";
-import { KYCAgeVerificationAPI } from "./kycAgeVerificationApi";
+import { KYCMatchAPI, KYCAgeVerificationAPI } from "./kycApi";
 
 const QOS_URL = "/quality-on-demand/v1";
 

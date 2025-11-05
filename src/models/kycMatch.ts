@@ -16,7 +16,7 @@
 
 
 export interface MatchCustomerParams {
-    phoneNumber?: string,
+    phoneNumber: string,
     idDocument?: string,
     name?: string,
     givenName?: string,

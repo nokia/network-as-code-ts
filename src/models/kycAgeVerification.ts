@@ -17,7 +17,7 @@
 
 export interface VerifyAgeParams {
     ageThreshold: number,
-    phoneNumber?: string,
+    phoneNumber: string,
     idDocument?: string,
     name?: string,
     givenName?: string,

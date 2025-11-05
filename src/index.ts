@@ -22,7 +22,7 @@ import { Geofencing } from "./namespaces/geofencing";
 import { Sessions } from "./namespaces/session";
 import { Slices } from "./namespaces/slice";
 import { Authorization } from "./namespaces/authorization";
-
+import { KYC } from "./namespaces/kyc";
 
 /**
  * A client for working with Network as Code.
@@ -45,7 +45,8 @@ export class NetworkAsCodeClient {
     private _insights: CongestionInsights;
     private _geofencing: Geofencing;
     private _authorization: Authorization;
-
+    private _kyc: KYC;
+    
 
     constructor(token: string, envMode?: string) {
         this._api = new APIClient(token, envMode);
@@ -56,6 +57,7 @@ export class NetworkAsCodeClient {
         this._insights = new CongestionInsights(this._api);
         this._geofencing = new Geofencing(this._api);
         this._authorization = new Authorization(this._api);
+        this._kyc = new KYC(this._api);
     }
 
     /**
@@ -112,6 +114,14 @@ export class NetworkAsCodeClient {
      */
     get authorization() {
         return this._authorization;
+    }
+
+    /**
+     * Namespace containing functionalities related to Know Your Customer.
+     * @returns NAC kyc
+     */
+    get kyc() {
+        return this._kyc;
     }
 
     /**
