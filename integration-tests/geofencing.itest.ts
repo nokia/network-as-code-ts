@@ -15,7 +15,7 @@ let agent : ProxyAgent
 beforeAll(() => {
     client = configureClient();
     device = client.devices.get({
-        phoneNumber:"+3637123456",
+        phoneNumber:"+99999991000",
     });
     notificationUrl = configureNotificationServerUrl();
     agent = new ProxyAgent()
@@ -26,13 +26,14 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `https://nicon-req.requestcatcher.com/`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000}
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000},
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
         expect(subscription.area).toEqual({"areaType": "CIRCLE","center": {"latitude": 47.48627616952785, "longitude": 19.07915612501993}, "radius": 2000});
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 30 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -40,7 +41,6 @@ describe("Geofencing", () => {
             });
 
         const data: any = await notification.json();
-
         expect(data).not.toBeNull();
         expect(data[0].data.area.areaType).toEqual("CIRCLE");
         expect(data[0].data.area.center.latitude).toEqual(47.48627616952785);
@@ -55,13 +55,14 @@ describe("Geofencing", () => {
             });
 
         subscription.delete();
-    },20 * 1000);
+    },40 * 1000);
 
     it.failing("should subscribe for geofencing with areaType POI and event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-            area: {areaType: "POI", poiName: "StatueOfLiberty"}
+            area: {areaType: "POI", poiName: "StatueOfLiberty"},
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -95,7 +96,8 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: [EventType.AREA_ENTERED],
-            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000}
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000},
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -128,7 +130,8 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
-            area: {areaType: "POI", poiName: "StatueOfLiberty"}
+            area: {areaType: "POI", poiName: "StatueOfLiberty"},
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -166,7 +169,8 @@ describe("Geofencing", () => {
                 credentialType:"PLAIN",
                 identifier: "client-id",
                 secret: "client-secret"
-            }
+            },
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -207,7 +211,8 @@ describe("Geofencing", () => {
                 accessToken: "some-access-token",
                 accessTokenType: "bearer",
                 accessTokenExpiresUtc: expirationDate
-            }
+            },
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
