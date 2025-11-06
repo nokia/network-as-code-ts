@@ -27,7 +27,10 @@ describe("Device Status", () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on"],
-            `${notificationUrl}/notify`
+            `${notificationUrl}/notify`,
+            {
+                initialEvent: true
+            }
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
         // Fetching the subscription notification
@@ -57,7 +60,10 @@ describe("Device Status", () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             [EventType.REACHABILITY_DATA],
-            `${notificationUrl}/notify`
+            `${notificationUrl}/notify`,
+            {
+                initialEvent: true
+            }
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
 
@@ -93,6 +99,7 @@ describe("Device Status", () => {
             `${notificationUrl}/notify`,
             {
                 subscriptionExpireTime: tomorrowDate,
+                initialEvent: true
             }
         );
 
@@ -144,7 +151,6 @@ describe("Device Status", () => {
         );
 
         const data = await notification.json();
-
         expect(data).not.toBeNull();
 
         // Deleting the subscription notification
