@@ -176,13 +176,13 @@ export class DeviceStatus extends Namespace {
         return jsonData.map((entry: any) => {
             const deviceDetails = entry.config.subscriptionDetail.device;
 
-                const device = new Device(
-                    this.api,
-                    deviceDetails.networkAccessIdentifier,
-                    deviceDetails.ipv4Address,
-                    deviceDetails.ipv6Address,
-                    deviceDetails.phoneNumber
-                    );
+            const device = new Device(
+                this.api,
+                deviceDetails.networkAccessIdentifier,
+                deviceDetails.ipv4Address,
+                deviceDetails.ipv6Address,
+                deviceDetails.phoneNumber
+            );
 
             return new DeviceStatusSubscription(
                 entry.id,
