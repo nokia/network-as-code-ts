@@ -5,6 +5,7 @@ import { EventType } from "../src/models/deviceStatus";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
+import { v4 as uuid } from 'uuid';
 
 
 let client: NetworkAsCodeClient;
@@ -24,10 +25,11 @@ beforeAll(() => {
 
 describe("Device Status", () => {
     it("can create a roaming subscription and delete it", async () => {
+        const notificationId: string = uuid();
         const subscription = await client.deviceStatus.subscribe(
             device,
             ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on"],
-            `${notificationUrl}/notify`,
+            `${notificationUrl}/notify/${notificationId}`,
             {
                 initialEvent: true
             }
@@ -35,7 +37,7 @@ describe("Device Status", () => {
         expect(subscription.eventSubscriptionId).toBeDefined();
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -47,7 +49,7 @@ describe("Device Status", () => {
         expect(data).not.toBeNull();
 
         // Deleting the subscription notification
-        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -57,10 +59,11 @@ describe("Device Status", () => {
     },20 * 1000);
 
     it("can create a reachability subscription using event type enum and delete it", async () => {
+        const notificationId: string = uuid();
         const subscription = await client.deviceStatus.subscribe(
             device,
             [EventType.REACHABILITY_DATA],
-            `${notificationUrl}/notify`,
+            `${notificationUrl}/notify/${notificationId}`,
             {
                 initialEvent: true
             }
@@ -69,7 +72,7 @@ describe("Device Status", () => {
 
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -80,7 +83,7 @@ describe("Device Status", () => {
 
         expect(data).not.toBeNull();
         // Deleting the subscription notification
-        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -92,11 +95,12 @@ describe("Device Status", () => {
     it("can create a roaming subscription with expiry", async () => {
         const tomorrowDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
         tomorrowDate.setMilliseconds(0);
+        const notificationId: string = uuid();
 
         const subscription = await client.deviceStatus.subscribe(
             device,
             [EventType.ROAMING_STATUS],
-            `${notificationUrl}/notify`,
+            `${notificationUrl}/notify/${notificationId}`,
             {
                 subscriptionExpireTime: tomorrowDate,
                 initialEvent: true
@@ -107,7 +111,7 @@ describe("Device Status", () => {
 
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -119,7 +123,7 @@ describe("Device Status", () => {
         expect(data).not.toBeNull();
 
         // Deleting the subscription notification
-        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -128,14 +132,24 @@ describe("Device Status", () => {
         await subscription.delete();
     },20 * 1000);
 
+    
     it("can create a reachability subscription with other optional arguments", async () => {
+        const notificationId: string = uuid();
+
         const subscription = await client.deviceStatus.subscribe(
             device,
             ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
-            `${notificationUrl}/notify`,
+            `${notificationUrl}/notify/${notificationId}`,
             {
                 initialEvent: true,
-                subscriptionMaxEvents: 2
+                subscriptionMaxEvents: 2, 
+                subscriptionExpireTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                sinkCredential: {
+                    credentialType: "ACCESSTOKEN",
+                    accessToken: "testingAccessToken",
+                    accessTokenType: "bearer", 
+                    accessTokenExpiresUtc: new Date(Date.now() + 24 * 60 * 60 * 1000)
+                }
             }
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
@@ -143,7 +157,7 @@ describe("Device Status", () => {
 
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -154,7 +168,7 @@ describe("Device Status", () => {
         expect(data).not.toBeNull();
 
         // Deleting the subscription notification
-        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
@@ -163,7 +177,7 @@ describe("Device Status", () => {
         await subscription.delete();
     },20 * 1000);
 
-    it("can get a subscription by id", async () => {
+    it("can get a reachability subscription by id", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
@@ -182,7 +196,26 @@ describe("Device Status", () => {
         await subscription.delete();
     });
 
-    it.skip("can get a list of subscriptions", async () => {
+    it("can get a roaming subscription by id", async () => {
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            [EventType.ROAMING_ON],
+            "https://example.com/notify"
+        );
+
+        const subscription2 = await client.deviceStatus.getRoamingSubscription(
+            subscription.eventSubscriptionId
+        );
+
+        expect(subscription2.eventSubscriptionId).toBe(
+            subscription.eventSubscriptionId
+        );
+        expect(subscription2.startsAt).toEqual(subscription.startsAt);
+
+        await subscription.delete();
+    });
+
+    it("can get a list of subscriptions", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],

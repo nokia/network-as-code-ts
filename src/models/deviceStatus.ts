@@ -16,7 +16,7 @@
 
 import { APIClient } from "../api";
 import { Device } from "./device";
-import { AccessTokenCredential, PlainCredential } from "./authorization";
+import { AccessTokenCredential } from "./authorization";
 
 
 export enum EventType {
@@ -33,7 +33,7 @@ export enum EventType {
 export interface SubscribeOptionalArgs {
     subscriptionExpireTime?: Date | string,
     subscriptionMaxEvents?: number,
-    sinkCredential?: PlainCredential | AccessTokenCredential,
+    sinkCredential?: AccessTokenCredential,
     initialEvent?: boolean
 }
 
