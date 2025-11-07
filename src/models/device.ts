@@ -21,7 +21,7 @@ import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
 import { MatchCustomerParams } from "./kycMatch";
 import { VerifyAgeParams } from "./kycAgeVerification";
-import { AccessTokenCredential } from "./authentication";
+import { AccessTokenCredential } from "./authorization";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.

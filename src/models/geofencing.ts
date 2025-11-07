@@ -15,7 +15,7 @@
  */
 
 import { APIClient } from "../api";
-import { PlainCredential, AccessTokenCredential } from "./authentication";
+import { PlainCredential, AccessTokenCredential } from "./authorization";
 
 
 export enum EventType {

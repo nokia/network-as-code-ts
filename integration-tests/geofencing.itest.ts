@@ -24,7 +24,7 @@ beforeAll(() => {
 describe("Geofencing", () => {
     it.failing("should subscribe for geofencing with areaType Circle and event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
-            sink: `https://nicon-req.requestcatcher.com/`,
+            sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
             area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000},
             initialEvent: true
@@ -33,7 +33,7 @@ describe("Geofencing", () => {
         expect(subscription.eventSubscriptionId).toBeTruthy();
         expect(subscription.area).toEqual({"areaType": "CIRCLE","center": {"latitude": 47.48627616952785, "longitude": 19.07915612501993}, "radius": 2000});
         // Fetching the subscription notification
-        await new Promise(resolve => setTimeout(resolve, 30 * 1000));
+        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
             {
                 method: "GET",
@@ -55,7 +55,7 @@ describe("Geofencing", () => {
             });
 
         subscription.delete();
-    },40 * 1000);
+    },20 * 1000);
 
     it.failing("should subscribe for geofencing with areaType POI and event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {

@@ -17,7 +17,7 @@
 import { Device } from "../models/device";
 import { errorHandler } from "../errors";
 import { PortSpec } from "../models/session";
-import { AccessTokenCredential } from "../models/authentication";
+import { AccessTokenCredential } from "../models/authorization";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 

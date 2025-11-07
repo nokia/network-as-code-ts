@@ -5,6 +5,7 @@ import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 import "dotenv/config";
 
+
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 
 let client: NetworkAsCodeClient;
@@ -242,10 +243,9 @@ describe("Qos", () => {
 
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_L");
-
         // Fetching the session notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/qod/${session.id}`,
+        let notification = await fetch(`${notificationUrl}/quality-on-demand/${session.id}`,
             {
                 method: "GET",
                 agent: agent
@@ -262,7 +262,7 @@ describe("Qos", () => {
         
         // Deleting the session notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        notification = await fetch(`${notificationUrl}/qod/${session.id}`,
+        notification = await fetch(`${notificationUrl}/quality-on-demand/${session.id}`,
             {
                 method: "DELETE",
                 agent: agent
@@ -289,7 +289,7 @@ describe("Qos", () => {
 
         // Fetching the session notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/qod/${session.id}`,
+        let notification = await fetch(`${notificationUrl}/quality-on-demand/${session.id}`,
             {
                 method: "GET",
                 agent: agent
@@ -302,7 +302,7 @@ describe("Qos", () => {
         expect(deletionInfo).toHaveProperty("data.statusInfo", "DELETE_REQUESTED")
 
         // Deleting the session notification
-        notification = await fetch(`${notificationUrl}/qod/${session.id}`,
+        notification = await fetch(`${notificationUrl}/quality-on-demand/${session.id}`,
             {
                 method: "DELETE",
                 agent: agent

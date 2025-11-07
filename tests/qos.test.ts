@@ -65,7 +65,7 @@ describe("Qos", () => {
             },
             sink: "https://endpoint.example.com/sink",
             sinkCredential: {
-                credentialType: "ACCESTOKEN"
+                credentialType: "ACCESSTOKEN"
             },
             qosStatus: "REQUESTED",
             statusInfo: "DURATION_EXPIRED",
