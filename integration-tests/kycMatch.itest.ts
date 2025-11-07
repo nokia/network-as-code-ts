@@ -35,12 +35,14 @@ describe("KYC Match", () => {
             email: "abc@example.com",
             gender: "OTHER"
         }
+        
         const result: any = await client.kyc.matchCustomer(params);
         expect(result).toBeTruthy();
-        expect(result.familyNameMatch).toBe("false");
-        expect(result.addressMatch).toBe("false");
-        expect(result.familyNameAtBirthMatch).toBe("false");
-        expect(result.streetNumberMatch).toBe("false");
+        expect(result.idDocumentMatch).toBe(true);
+        expect(result.familyNameMatch).toBe(false);
+        expect(result.addressMatch).toBe(false);
+        expect(result.familyNameAtBirthMatch).toBe(false);
+        expect(result.streetNumberMatch).toBe(false);
     });
 
     it("should match customer with not all params requested", async () => {
@@ -59,10 +61,11 @@ describe("KYC Match", () => {
             region: "Tokyo"
         }
         const result: any = await client.kyc.matchCustomer(params);
+
         expect(result).toBeTruthy();
         expect(result.familyNameMatch).toBe(null);
         expect(result.addressMatch).toBe(null);
-        expect(result.streetNumberMatch).toBe("false");
+        expect(result.streetNumberMatch).toBe(false);
     });
 
     it("wrong phone number should return 403 AuthenticationError", async () => {

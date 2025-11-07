@@ -28,7 +28,7 @@ describe("KYC Age Verification", () => {
         }
         const result: any = await client.kyc.verifyAge(params);
         expect(result).toBeTruthy();
-        expect(result.ageCheck).toBe("true")
+        expect(result.ageCheck).toBe(true)
     });
 
    it("should verify without optional parameters ", async () => {
@@ -38,7 +38,7 @@ describe("KYC Age Verification", () => {
            }
         const result: any = await client.kyc.verifyAge(params);
         expect(result).toBeTruthy();
-        expect(result.ageCheck).toBe("true")
+        expect(result.ageCheck).toBe(true)
     });
 
     it("wrong phone number should return 403 AuthenticationError", async () => {

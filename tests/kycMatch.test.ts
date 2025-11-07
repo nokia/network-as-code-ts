@@ -1,6 +1,5 @@
 import fetchMock from '@fetch-mock/jest';
 import { NetworkAsCodeClient } from "../src";
-import { Device } from "../src/models/device";
 
 jest.mock("node-fetch", () => {
 	const nodeFetch = jest.requireActual("node-fetch");
@@ -68,27 +67,27 @@ describe("KYC Match", () => {
             },
             { response: 
                 JSON.stringify({
-                    idDocumentMatch: 'true',
-                    nameMatch: 'true',
-                    givenNameMatch: 'not_available',
-                    familyNameMatch: 'not_available',
-                    nameKanaHankakuMatch: 'true',
-                    nameKanaZenkakuMatch: 'true',
-                    middleNamesMatch: 'true',
-                    familyNameAtBirthMatch: 'false',
+                    idDocumentMatch: true,
+                    nameMatch: true,
+                    givenNameMatch: null,
+                    familyNameMatch: null,
+                    nameKanaHankakuMatch: true,
+                    nameKanaZenkakuMatch: true,
+                    middleNamesMatch: true,
+                    familyNameAtBirthMatch: false,
                     familyNameAtBirthMatchScore: 90,
-                    addressMatch: 'true',
-                    streetNameMatch: 'true',
-                    streetNumberMatch: 'true',
-                    postalCodeMatch: 'true',
-                    regionMatch: 'true',
-                    localityMatch: 'not_available',
-                    countryMatch: 'true',
-                    houseNumberExtensionMatch: 'not_available',
-                    birthdateMatch: 'true',
-                    emailMatch: 'false',
+                    addressMatch: true,
+                    streetNameMatch: true,
+                    streetNumberMatch: true,
+                    postalCodeMatch: true,
+                    regionMatch: true,
+                    localityMatch: null,
+                    countryMatch: true,
+                    houseNumberExtensionMatch: null,
+                    birthdateMatch: true,
+                    emailMatch: false,
                     emailMatchScore: 87,
-                    genderMatch: 'true'
+                    genderMatch: true
             })});
 
         await client.kyc.matchCustomer(
@@ -145,17 +144,17 @@ describe("KYC Match", () => {
             },
             { response: 
                 JSON.stringify({
-                    idDocumentMatch: 'true',
-                    nameMatch: 'true',
-                    givenNameMatch: 'not_available',
-                    familyNameMatch: 'not_available',
-                    nameKanaHankakuMatch: 'true',
-                    nameKanaZenkakuMatch: 'true',
-                    middleNamesMatch: 'true',
-                    familyNameAtBirthMatch: 'false',
+                    idDocumentMatch: true,
+                    nameMatch: true,
+                    givenNameMatch: null,
+                    familyNameMatch: null,
+                    nameKanaHankakuMatch: true,
+                    nameKanaZenkakuMatch: true,
+                    middleNamesMatch: true,
+                    familynameatbirthmatch: false,
                     familyNameAtBirthMatchScore: 90,
-                    addressMatch: 'true',
-                    streetNameMatch: 'true',
+                    addressMatch: true,
+                    streetNameMatch: true,
                     email: "true"
             })});
 

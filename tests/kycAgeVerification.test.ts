@@ -59,7 +59,7 @@ describe("KYC Age Verification", () => {
             },
             { response: 
                 JSON.stringify({
-                    ageCheck:"true",
+                    ageCheck:true,
                     verifiedStatus:true,
                     identityMatchScore:60,
                     contentLock:false,
@@ -109,7 +109,7 @@ describe("KYC Age Verification", () => {
             },
             { response: 
                 JSON.stringify({
-                    ageCheck:"true",
+                    ageCheck:true,
                     verifiedStatus:true,
                     identityMatchScore:60,
                     contentLock:false,
