@@ -18,7 +18,7 @@ beforeAll(() => {
     agent = new ProxyAgent()
 });
 
-describe("Qos", () => {
+describe("QoD", () => {
     let device: Device;
     let deviceWithPhoneNumber: Device;
     beforeEach(async () => {
@@ -278,7 +278,7 @@ describe("Qos", () => {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
-            sink: `${notificationUrl}/notify`,
+            sink: `${notificationUrl}/notify`
         });
 
         expect(session.status).toEqual("REQUESTED");

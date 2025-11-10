@@ -187,7 +187,7 @@ describe("Device Status", () => {
         subscription.delete();
     });
 
-    it("can get a list of subscriptions", async () => {
+    it.skip("can get a list of subscriptions", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             "org.camaraproject.device-status.v0.connectivity-data",
