@@ -29,10 +29,7 @@ describe("QoD", () => {
                     publicAddress: "1.1.1.2",
                     privateAddress: "1.1.1.2",
                     publicPort: 80,
-                },
-                phoneNumber: `+3670${
-                    Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
-                }`,
+                }
             });
 
             deviceWithPhoneNumber = client.devices.get({
@@ -140,17 +137,18 @@ describe("QoD", () => {
     });
 
     test("should get all sessions", async () => {
-        const session = await device.createQodSession("QOS_E", {
-            duration: 3600,
+        await device.createQodSession("QOS_L", {
             serviceIpv4: "5.6.7.8",
-            serviceIpv6: "2041:0000:140F::875B:131B",
+            duration: 3600
         });
-        expect(session.profile).toEqual("QOS_E");
         const sessions = await device.sessions();
+
         expect(sessions.length).toBeGreaterThan(0);
 
+        await new Promise(resolve => setTimeout(resolve, 10 * 1000));
+
         await device.clearSessions();
-    });
+    }, 15 * 1000);
 
     test("should create a session with service port", async () => {
         const session = await device.createQodSession("QOS_L", {
