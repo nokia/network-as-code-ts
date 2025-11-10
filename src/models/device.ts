@@ -18,7 +18,7 @@ import { APIClient } from "../api/client";
 import { PortSpec, QoDSession } from "./session";
 import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
-import { InvalidParameterError } from "../errors";
+import { errorHandler, InvalidParameterError } from "../errors";
 import { MatchCustomerParams } from "./kycMatch";
 import { VerifyAgeParams } from "./kycAgeVerification";
 import { AccessTokenCredential } from "./authorization";
@@ -194,16 +194,11 @@ export class Device {
             
  */
     async sessions(): Promise<QoDSession[]> {
-        try {
-            const sessions: any = await this._api.sessions.getAllSessions(this);
-
-            return sessions.map((session: any) =>
-                this.__convertSessionModel(session)
-            );
-        } catch {
-
-            return [];
-        }
+        const sessions: any = await this._api.sessions.getAllSessions(this);
+        errorHandler(sessions)
+        return sessions.map((session: any) =>
+            this.__convertSessionModel(session)
+        );
     }
 
     /**
