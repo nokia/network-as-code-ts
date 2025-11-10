@@ -140,17 +140,17 @@ describe("QoD", () => {
     });
 
     test("should get all sessions", async () => {
-        await device.createQodSession("QOS_E", {
+        const session = await device.createQodSession("QOS_E", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
         });
-        await new Promise(resolve => setTimeout(resolve, 15 * 1000));
+        expect(session.profile).toEqual("QOS_E");
         const sessions = await device.sessions();
         expect(sessions.length).toBeGreaterThan(0);
 
         await device.clearSessions();
-    }, 20 * 1000);
+    });
 
     test("should create a session with service port", async () => {
         const session = await device.createQodSession("QOS_L", {
