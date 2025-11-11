@@ -29,10 +29,7 @@ describe("QoD", () => {
                     publicAddress: "1.1.1.2",
                     privateAddress: "1.1.1.2",
                     publicPort: 80,
-                },
-                phoneNumber: `+3670${
-                    Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
-                }`,
+                }
             });
 
             deviceWithPhoneNumber = client.devices.get({
