@@ -22,7 +22,7 @@ beforeAll((): any => {
     return client;
 });
 
-describe("Qos", () => {
+describe("QoD", () => {
     beforeEach(() => {
         fetchMock.mockReset();
     });
