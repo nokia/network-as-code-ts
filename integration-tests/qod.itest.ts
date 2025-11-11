@@ -24,7 +24,7 @@ describe("QoD", () => {
     beforeEach(async () => {
         try {
             device = client.devices.get({
-                networkAccessIdentifier: "test-device@testcsp.net",
+                networkAccessIdentifier: "testdevice@testcsp.net",
                 ipv4Address: {
                     publicAddress: "1.1.1.2",
                     privateAddress: "1.1.1.2",

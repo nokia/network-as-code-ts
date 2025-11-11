@@ -193,21 +193,19 @@ export class Device {
  *   ```
             
  */
-   async sessions(): Promise<QoDSession[]> {
+    async sessions(): Promise<QoDSession[]> {
         try {
             const sessions: any = await this._api.sessions.getAllSessions(this);
-                return sessions.map((session: any) =>
-                    this.__convertSessionModel(session)
-                    );
-            } catch (e: unknown){
-                if (e instanceof Error){
-                    console.log("this is it: ", e)
-                    console.log("Message: ", e.message)
-            }
-                return []
-                
+
+            return sessions.map((session: any) =>
+                this.__convertSessionModel(session)
+            );
+        } catch {
+
+            return [];
         }
     }
+
 
     /**
      *  Clears sessions of the device.
