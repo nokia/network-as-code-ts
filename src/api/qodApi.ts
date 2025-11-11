@@ -129,7 +129,7 @@ export class QodAPI {
 
         errorHandler(response);
 
-        return await response.json();
+        return response.json() as Promise<any>;
     }
 
     /**
