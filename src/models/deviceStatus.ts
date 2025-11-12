@@ -49,6 +49,7 @@ export interface SubscribeOptionalArgs {
         @param subscriptionMaxEvents (string): The maximum amount of event reports that can be created.
         @param startsAt (optional): It represents when this subscription started.
         @param expiresAt (optional): It represents when this subscription should expire.
+        @param status (optional): Current status of the subscription.
     #### Public Methods:
         @method delete(): Deletes device roaming or reachability status subscription.
  */
@@ -101,6 +102,7 @@ export class DeviceStatusSubscription {
         @param subscriptionMaxEvents (string): The maximum amount of event reports that can be created.
         @param startsAt (optional): It represents when this subscription started.
         @param expiresAt (optional): It represents when this subscription should expire.
+        @param status (optional): Current status of the subscription.
     #### Public Methods:
         @method delete(): Deletes device roaming status subscription.
  */
@@ -154,6 +156,7 @@ export class RoamingStatusSubscription extends DeviceStatusSubscription{
         @param subscriptionMaxEvents (string): The maximum amount of event reports that can be created.
         @param startsAt (optional): It represents when this subscription started.
         @param expiresAt (optional): It represents when this subscription should expire.
+        @param status (optional): Current status of the subscription.
     #### Public Methods:
         @method delete(): Deletes device reachability status subscription.
  */

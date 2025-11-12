@@ -24,15 +24,16 @@ const mySubscription = await client.deviceStatus.subscribe(
     // You can add optional parameters as well
     {
         initialEvent: true,
-        subscriptionMaxEvents: 5,
+        subscriptionMaxEvents: 5
     }
 );
 
 // Use this to show the roaming subscription status
 console.log(mySubscription);
 
-// Get the subscription by its ID
-const subscription = await client.deviceStatus.get(mySubscription.eventSubscriptionId);
+// Get the reachability subscription by its ID
+// Change the method call to getRoamingSubscription() to get a roaming subscription
+const subscription = await client.deviceStatus.getReachabilitySubscription(mySubscription.eventSubscriptionId);
 
 // Then, delete the subscription whenever needed
 subscription.delete();

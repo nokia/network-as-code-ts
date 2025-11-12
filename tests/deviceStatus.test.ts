@@ -27,8 +27,8 @@ beforeAll(() => {
         ipv4Address: {
             publicAddress: "1.1.1.2",
             privateAddress: "1.1.1.2",
-            publicPort: 80,
-        },
+            publicPort: 80
+        }
     });
 });
 
@@ -65,7 +65,7 @@ describe("Device Status Reachability Tests", () => {
                     initialEvent: true
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
-                expiresAt: "2024-07-03T21:12:02.871Z",
+                expiresAt: "2024-07-17T13:18:23.682Z",
                 status: "ACTIVE"
             })
         );
@@ -73,7 +73,12 @@ describe("Device Status Reachability Tests", () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
             [EventType.REACHABILITY_SMS],
-            "https://example.com/notify"
+            "https://example.com/notify",
+            {
+                initialEvent: true,
+                subscriptionMaxEvents: 5,
+                subscriptionExpireTime: "2024-07-17T13:18:23.682Z"
+            }
         );
 
         expect(subscription.eventType).toStrictEqual(["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"]);
@@ -99,9 +104,9 @@ describe("Device Status Reachability Tests", () => {
                             }
                         }
                     },
-                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                    subscriptionMaxEvents: 5,
-                    initialEvent: true
+                    subscriptionExpireTime: null,
+                    subscriptionMaxEvents: null,
+                    initialEvent: null
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
                 expiresAt: "2024-07-03T21:12:02.871Z",
@@ -137,9 +142,9 @@ describe("Device Status Reachability Tests", () => {
                             }
                         }
                     },
-                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                    subscriptionMaxEvents: 5,
-                    initialEvent: true
+                    subscriptionExpireTime: null,
+                    subscriptionMaxEvents: null,
+                    initialEvent: null
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
                 expiresAt: "2024-07-03T21:12:02.871Z",
@@ -193,9 +198,9 @@ describe("Device Status Reachability Tests", () => {
                                     }
                                 }
                             },
-                            subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                            subscriptionMaxEvents: 5,
-                            initialEvent: true
+                            subscriptionExpireTime: null,
+                            subscriptionMaxEvents: null,
+                            initialEvent: null
                         },
                         startsAt: "2024-01-11T11:53:20.293671Z",
                         expiresAt: "2024-07-03T21:12:02.871Z",
@@ -263,9 +268,9 @@ describe("Device Status Reachability Tests", () => {
                             }
                         }
                     },
-                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                    subscriptionMaxEvents: 5,
-                    initialEvent: true
+                    subscriptionExpireTime: null,
+                    subscriptionMaxEvents: null,
+                    initialEvent: null
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
                 expiresAt: "2024-07-03T21:12:02.871Z",
@@ -302,8 +307,7 @@ describe("Device Status Reachability Tests", () => {
                             }
                         },
                         subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                        subscriptionMaxEvents: 5,
-                        initialEvent: true
+                        subscriptionMaxEvents: 2
                     }
                 })
             },
@@ -325,8 +329,7 @@ describe("Device Status Reachability Tests", () => {
                                 }
                             },
                             subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                            subscriptionMaxEvents: 5,
-                            initialEvent: true
+                            subscriptionMaxEvents: 2
                         },
                         startsAt: "2024-01-11T11:53:20.293671Z",
                         expiresAt: "2024-07-03T21:12:02.871Z",
@@ -341,6 +344,7 @@ describe("Device Status Reachability Tests", () => {
             "https://example.com/notify",
             {
                 subscriptionExpireTime: new Date("2024-01-11T11:53:20.000Z"),
+                subscriptionMaxEvents: 2
             }
         );
     });
@@ -404,9 +408,9 @@ describe("Device Status Roaming Tests", () => {
                             }
                         }
                     },
-                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                    subscriptionMaxEvents: 5,
-                    initialEvent: true
+                    subscriptionExpireTime: null,
+                    subscriptionMaxEvents: null,
+                    initialEvent: null
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
                 expiresAt: "2024-07-03T21:12:02.871Z",
@@ -442,9 +446,9 @@ describe("Device Status Roaming Tests", () => {
                             }
                         }
                     },
-                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                    subscriptionMaxEvents: 5,
-                    initialEvent: true
+                    subscriptionExpireTime: null,
+                    subscriptionMaxEvents: null,
+                    initialEvent: null
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
                 expiresAt: "2024-07-03T21:12:02.871Z",
@@ -528,9 +532,9 @@ describe("Device Status Roaming Tests", () => {
                                     }
                                 }
                             },
-                            subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                            subscriptionMaxEvents: 5,
-                            initialEvent: true
+                            subscriptionExpireTime: null,
+                            subscriptionMaxEvents: null,
+                            initialEvent: null
                         },
                         startsAt: "2024-01-11T11:53:20.293671Z",
                         expiresAt: "2024-07-03T21:12:02.871Z",
@@ -567,9 +571,9 @@ describe("Device Status Roaming Tests", () => {
                             }
                         }
                     },
-                    subscriptionExpireTime: "2024-07-17T13:18:23.682Z",
-                    subscriptionMaxEvents: 5,
-                    initialEvent: true
+                    subscriptionExpireTime: null,
+                    subscriptionMaxEvents: null,
+                    initialEvent: null
                 },
                 startsAt: "2024-01-11T11:53:20.293671Z",
                 expiresAt: "2024-07-03T21:12:02.871Z",
@@ -718,130 +722,3 @@ describe("Device Status Get All Tests", () => {
     });
 
 });
-/*
-
-   it("handles optional parameters in subscription", async () => {
-        fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-reachability-status",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    subscriptionDetail: {
-                        device: {
-                            networkAccessIdentifier: "test-device@testcsp.net",
-                            ipv4Address: {
-                                publicAddress: "1.1.1.2",
-                                privateAddress: "1.1.1.2",
-                                publicPort: 80,
-                            },
-                        },
-                        type: "REACHABILITY",
-                    },
-                    subscriptionExpireTime: "2024-01-11T11:53:20.293671Z",
-                    maxNumberOfReports: 5,
-                    webhook: {
-                        notificationUrl: "https://example.com/notify",
-                        notificationAuthToken: "asdasd",
-                    },
-                });
-            },
-                { response: Promise.resolve(
-                    JSON.stringify({
-                        subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                        subscriptionDetail: {
-                            device: {
-                                networkAccessIdentifier:
-                                    "test-device@testcsp.net",
-                                ipv4Address: {
-                                    publicAddress: "1.1.1.2",
-                                    privateAddress: "1.1.1.2",
-                                    publicPort: 80,
-                                },
-                            },
-                            type: "REACHABILITY",
-                        },
-                        webhook: {
-                            notificationUrl: "https://example.com/notify",
-                            notificationAuthToken: "asdasd",
-                        },
-                        startsAt: "2024-01-11T11:53:20.293671Z",
-                        expiresAt: "2024-01-11T11:53:20.293671Z",
-                    })
-                )}
-            
-        );
-
-        const subscription = await client.deviceStatus.subscribe(
-            device,
-            ["REACHABILITY"],
-            "https://example.com/notify",
-            {
-                subscriptionExpireTime: "2024-01-11T11:53:20.293671Z",
-                subscriptionMaxEvents: 5,
-                notificationAuthToken: "asdasd",
-            }
-        );
-
-        expect(subscription.startsAt instanceof Date).toBeTruthy();
-        expect(subscription.expiresAt instanceof Date).toBeTruthy();
-        expect(subscription.subscriptionMaxEvents).toEqual(5);
-
-        expect(subscription.expiresAt).toEqual(
-            new Date("2024-01-11T11:53:20.293671Z")
-        );
-    });
-    
-    it("sends the right body to the correct URL for subscription", async () => {
-        fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-roaming-status-subscriptions/v0.7/subscriptions",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    subscriptionDetail: {
-                        device: {
-                            networkAccessIdentifier: "test-device@testcsp.net",
-                            ipv4Address: {
-                                publicAddress: "1.1.1.2",
-                                privateAddress: "1.1.1.2",
-                                publicPort: 80,
-                            },
-                        },
-                        type: "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status",
-                    },
-                    webhook: {
-                        notificationUrl: "https://example.com/notify",
-                    },
-                });
-            },
-                { response: Promise.resolve(
-                    JSON.stringify({
-                        subscriptionId: "89cc1355-2ff1-4091-a935-54817c821260",
-                        subscriptionDetail: {
-                            device: {
-                                networkAccessIdentifier:
-                                    "test-device@testcsp.net",
-                                ipv4Address: {
-                                    publicAddress: "1.1.1.2",
-                                    privateAddress: "1.1.1.2",
-                                    publicPort: 80,
-                                },
-                            },
-                            type: "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status",
-                        },
-                        webhook: {
-                            notificationUrl: "https://example.com/notify",
-                        },
-                        startsAt: "2024-01-11T11:53:20.293671Z",
-                    })
-                )}
-            
-        );
-
-        await client.deviceStatus.subscribe(
-            device,
-            "org.camaraproject.device-roaming-status-subscriptions.v0.roaming-status",
-            "https://example.com/notify"
-        );
-    });
-
-
-
- */
