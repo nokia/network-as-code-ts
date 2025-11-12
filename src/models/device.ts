@@ -19,8 +19,6 @@ import { PortSpec, QoDSession } from "./session";
 import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
-import { MatchCustomerParams } from "./kycMatch";
-import { VerifyAgeParams } from "./kycAgeVerification";
 import { AccessTokenCredential } from "./authorization";
 
 /**

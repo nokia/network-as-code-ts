@@ -155,7 +155,7 @@ describe("KYC Match", () => {
                     familyNameAtBirthMatchScore: 90,
                     addressMatch: true,
                     streetNameMatch: true,
-                    email: "true"
+                    emailMatch: true
             })});
 
         await client.kyc.matchCustomer(

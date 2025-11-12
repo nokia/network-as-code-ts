@@ -36,7 +36,7 @@ export class KYC extends Namespace {
     /**
      * Check if the user of the line is older than a provided age.
      * @param params (VerifyAgeParams): Contains age threshold which to compare user age to, subscription phone number and other optional subscriber info.
-     * @returns Promise<any>: true/false/not_available for if the age of the user is the same or older than the age threshold provided. Also results for other optional request params. 
+     * @returns Promise<any>: true/false/null for if the age of the user is the same or older than the age threshold provided. Also results for other optional request params. 
      */   
     async verifyAge(params: VerifyAgeParams): Promise<any> {
         const response: any = await this.api.kycAgeVerification.verifyAge(

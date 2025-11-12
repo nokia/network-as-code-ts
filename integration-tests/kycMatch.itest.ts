@@ -68,6 +68,38 @@ describe("KYC Match", () => {
         expect(result.streetNumberMatch).toBe(false);
     });
 
+    it("should convert strings to boolean or null", async () => {
+        const params = {
+            phoneNumber: "+999999991000",
+            idDocument: "66666666q",
+            name: "Federica Sanchez Arjona",
+            givenName: "Federica",
+            familyName: "Sanchez Arjona",
+            nameKanaHankaku: "federica",
+            nameKanaZenkaku: "Ｆｅｄｅｒｉｃａ",
+            middleNames: "Sanchez",
+            familyNameAtBirth: "YYYY",
+            address: "Tokyo-to Chiyoda-ku Iidabashi 3-10-10",
+            streetName: "Nicolas Salmeron",
+            streetNumber: "4",
+            postalCode: "1028460",
+            region: "Tokyo",
+            locality: "ZZZZ",
+            country: "JP",
+            houseNumberExtension: "VVVV",
+            birthdate: "1978-08-22",
+            email: "abc@example.com",
+            gender: "OTHER"
+        }
+        
+        const result: any = await client.kyc.matchCustomer(params);
+        Object.entries(result).forEach(([key, value]) => {
+            if (!key.toLowerCase().includes("score")){
+                expect([true, false, null]).toContain(value)
+            }
+            });
+    });
+
     it("wrong phone number should return 403 AuthenticationError", async () => {
         try {
             await client.kyc.matchCustomer(
