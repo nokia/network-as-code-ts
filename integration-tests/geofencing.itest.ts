@@ -22,7 +22,7 @@ beforeAll(() => {
 });
 
 describe("Geofencing", () => {
-    it.failing("should subscribe for geofencing with areaType Circle and event area entered", async () => {
+    it("should subscribe for geofencing with areaType Circle and event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
@@ -57,7 +57,7 @@ describe("Geofencing", () => {
         subscription.delete();
     },20 * 1000);
 
-    it.failing("should subscribe for geofencing with areaType POI and event area entered", async () => {
+    it("should subscribe for geofencing with areaType POI and event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
@@ -92,7 +92,7 @@ describe("Geofencing", () => {
         subscription.delete();
     },20 * 1000);
 
-    it.failing("should subscribe for geofencing event area entered using event type enum", async () => {
+    it("should subscribe for geofencing event area entered using event type enum", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: [EventType.AREA_ENTERED],
@@ -126,7 +126,7 @@ describe("Geofencing", () => {
         subscription.delete();
     },20 * 1000);
 
-    it.failing("should subscribe for geofencing event area left", async () => {
+    it("should subscribe for geofencing event area left", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
@@ -160,7 +160,7 @@ describe("Geofencing", () => {
         subscription.delete();
     },20* 1000);
 
-    it.failing("should subscribe for geofencing event with plain credential", async () => {
+    it("should subscribe for geofencing event with plain credential", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
@@ -199,7 +199,7 @@ describe("Geofencing", () => {
         subscription.delete();
     }, 20 * 1000);
 
-    it.failing("should subscribe for geofencing event with accesstoken credential", async () => {
+    it("should subscribe for geofencing event with accesstoken credential", async () => {
         const expirationDate = new Date(Date.now() + 5 * 60 * 60 * 1000);
         expirationDate.setMilliseconds(0);
         const subscription = await client.geofencing.subscribe(device, {
