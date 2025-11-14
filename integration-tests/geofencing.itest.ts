@@ -54,7 +54,7 @@ describe("Geofencing", () => {
                 agent: agent 
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("should subscribe for geofencing with areaType POI and event area entered", async () => {
@@ -89,7 +89,7 @@ describe("Geofencing", () => {
                 agent: agent 
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("should subscribe for geofencing event area entered using event type enum", async () => {
@@ -123,7 +123,7 @@ describe("Geofencing", () => {
                 agent: agent 
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("should subscribe for geofencing event area left", async () => {
@@ -157,7 +157,7 @@ describe("Geofencing", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20* 1000);
 
     it("should subscribe for geofencing event with plain credential", async () => {
@@ -196,7 +196,7 @@ describe("Geofencing", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     }, 20 * 1000);
 
     it("should subscribe for geofencing event with accesstoken credential", async () => {
@@ -238,7 +238,7 @@ describe("Geofencing", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     }, 20 * 1000);
 
     it("should get an event subscription", async () => {
@@ -254,7 +254,7 @@ describe("Geofencing", () => {
 
         expect(fetchedSubscription.eventSubscriptionId).toBeTruthy();
 
-        subscription.delete();
+        await subscription.delete();
     });
     
     it("should get all event subscriptions", async () => {
@@ -270,7 +270,7 @@ describe("Geofencing", () => {
 
         expect(fetchedSubscriptions.length).toBeGreaterThanOrEqual(0);
 
-        subscription.delete();
+        await subscription.delete();
     });
 
     it("should delete an event subscription", async () => {
@@ -282,7 +282,7 @@ describe("Geofencing", () => {
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
-        subscription.delete();
+        await subscription.delete();
 
         try {
             await client.geofencing.get(subscription.eventSubscriptionId);
