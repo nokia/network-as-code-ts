@@ -89,4 +89,46 @@ class KYCAgeVerificationAPI {
         return await response.json()
     }
 }
-export {KYCMatchAPI, KYCAgeVerificationAPI};
+
+class KYCTenureAPI {
+    private baseUrl: string;
+    private headers: HeadersInit;
+    private agent: ProxyAgent;
+
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent
+    ) {
+        this.baseUrl = baseUrl;
+        this.headers = {
+            "Content-Type": "application/json",
+            "X-RapidAPI-Host": rapidHost,
+            "X-RapidAPI-Key": rapidKey, 
+        };
+        this.agent = agent;
+    }
+
+    async checkTenure(
+        phoneNumber: string,
+        tenureDate: string
+    ) {
+        const body: any = {
+            phoneNumber: phoneNumber, 
+            tenureDate: tenureDate
+        };
+
+        const response = await fetch(`${this.baseUrl}/check-tenure`, {
+            method: "POST",
+            headers: this.headers,
+            body: JSON.stringify(body),
+            agent: this.agent,
+        });
+
+        errorHandler(response)
+        
+        return await response.json()
+    }
+}
+export {KYCMatchAPI, KYCAgeVerificationAPI, KYCTenureAPI};

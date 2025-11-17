@@ -74,6 +74,6 @@ export interface PlainCredential {
 export interface AccessTokenCredential {
     credentialType: "ACCESSTOKEN",
     accessToken: string,
-    accessTokenType?: string,
+    accessTokenType: string,
     accessTokenExpiresUtc: Date | string
 }

@@ -29,7 +29,7 @@ import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
 import { CallForwardingApi } from "./callForwardingApi";
-import { KYCMatchAPI, KYCAgeVerificationAPI } from "./kycApi";
+import { KYCMatchAPI, KYCAgeVerificationAPI, KYCTenureAPI } from "./kycApi";
 
 const QOS_URL = "/quality-on-demand/v1";
 
@@ -61,9 +61,11 @@ const NUMBER_VERIFICATION_URL =  "/passthrough/camara/v1/number-verification/num
 
 const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3";
 
-const KYC_MATCH = "/passthrough/camara/v1/kyc-match/kyc-match/v0.3";
+const KYC_MATCH_URL = "/passthrough/camara/v1/kyc-match/kyc-match/v0.3";
 
-const KYC_AGE_VERIFICATION = "/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1"
+const KYC_AGE_VERIFICATION_URL = "/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1"
+
+const KYC_CHECK_TENURE_URL = "/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1"
 
 const agent = new ProxyAgent();
 
@@ -113,6 +115,7 @@ export class APIClient {
     callForwarding: CallForwardingApi;
     kycMatch: KYCMatchAPI;
     kycAgeVerification: KYCAgeVerificationAPI;
+    kycTenure: KYCTenureAPI;
 
     constructor(
         token: string,
@@ -133,7 +136,8 @@ export class APIClient {
         verificationBaseUrl: string | undefined = undefined,
         callForwardingBaseUrl: string | undefined = undefined,
         kycMatchBaseUrl: string | undefined = undefined,
-        kycAgeVerificationBaseUrl: string | undefined = undefined
+        kycAgeVerificationBaseUrl: string | undefined = undefined,
+        kycTenureBaseUrl: string | undefined = undefined
     ) {
       const baseUrl = environmentBaseUrl(envMode);
       const hostname = environmentHostname(envMode);
@@ -308,7 +312,7 @@ export class APIClient {
       );
 
       if (!kycMatchBaseUrl) {
-        kycMatchBaseUrl = `${baseUrl}${KYC_MATCH}`
+        kycMatchBaseUrl = `${baseUrl}${KYC_MATCH_URL}`
       }
 
       this.kycMatch = new KYCMatchAPI(
@@ -319,11 +323,22 @@ export class APIClient {
       );
 
       if (!kycAgeVerificationBaseUrl) {
-        kycAgeVerificationBaseUrl = `${baseUrl}${KYC_AGE_VERIFICATION}`
+        kycAgeVerificationBaseUrl = `${baseUrl}${KYC_AGE_VERIFICATION_URL}`
       }
 
       this.kycAgeVerification = new KYCAgeVerificationAPI(
         kycAgeVerificationBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!kycTenureBaseUrl) {
+        kycTenureBaseUrl = `${baseUrl}${KYC_CHECK_TENURE_URL}`
+      }
+
+      this.kycTenure = new KYCTenureAPI(
+        kycTenureBaseUrl,
         token,
         hostname,
         agent

@@ -46,6 +46,21 @@ export class KYC extends Namespace {
         return this.__parseStringParams(response);
     }
 
+    /**
+     * Check if the network subscriber has been a customer of the service provider for the specified amount of time.
+     * @param phoneNumber (string): Used as an identifier for the request.
+     * @param tenureDate (string): The specified minimum tenure date from which the continuous tenure is to be confirmed.
+     * @returns Promise<any>: JSON object containing boolean value for the tenure date check and optional contract type, if known.           
+     */   
+    async checkTenure(phoneNumber: string, tenureDate: string): Promise<any> {
+        const response: any = await this.api.kycTenure.checkTenure(
+            phoneNumber,
+            tenureDate
+        );
+        
+        return await response;
+    }
+
     __parseStringParams(params: any){
         const response = Object.fromEntries(Object.entries(params as any).map(([key, value]) => 
             [
