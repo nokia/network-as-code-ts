@@ -30,7 +30,7 @@ export class KYC extends Namespace {
             params
         );
 
-        return await response;
+        return this.__parseStringParams(response);
     }
 
     /**
@@ -43,6 +43,18 @@ export class KYC extends Namespace {
             params
         );
 
-        return await response;
+        return this.__parseStringParams(response);
+    }
+
+    __parseStringParams(params: any){
+        const response = Object.fromEntries(Object.entries(params as any).map(([key, value]) => 
+            [
+                key,
+                value === "true" ? true:
+                value === "false" ? false:
+                value === "undefined" || value === "not_available" ? null
+                :value
+            ]
+        )); return response;
     }
 };

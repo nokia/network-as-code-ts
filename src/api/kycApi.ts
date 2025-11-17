@@ -51,19 +51,7 @@ class KYCMatchAPI {
 
         errorHandler(response);
 
-        const data = await response.json() 
-        
-        const res = Object.fromEntries(Object.entries(data as any).map(([key, value]) => 
-            [
-                key,
-                value === "true" ? true:
-                value === "false" ? false:
-                value === "undefined" || value === "not_available" ? null
-                :value
-            ]
-        ));
-
-        return res
+        return await response.json()
     }
 }
 
@@ -98,19 +86,7 @@ class KYCAgeVerificationAPI {
 
         errorHandler(response);
 
-        const data = await response.json() 
-        
-        const res = Object.fromEntries(Object.entries(data as any).map(([key, value]) => 
-            [
-                key,
-                value === "true" ? true:
-                value === "false" ? false:
-                value === "undefined" || value === "not_available" ? null
-                :value
-            ]
-        ));
-
-        return res
+        return await response.json()
     }
 }
 export {KYCMatchAPI, KYCAgeVerificationAPI};
