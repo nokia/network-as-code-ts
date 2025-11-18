@@ -73,7 +73,7 @@ describe("KYC Fill-In", () => {
                     nationality:null,
             })});
 
-        const result = await client.kyc.fillIn(
+        const result = await client.kyc.requestCustomerData(
             "+99999991001"
         );
 
@@ -129,7 +129,7 @@ describe("KYC Fill-In", () => {
                     nationality:null
             })});
 
-        const result = await client.kyc.fillIn(
+        const result = await client.kyc.requestCustomerData(
             "+99999991003",
         );
 

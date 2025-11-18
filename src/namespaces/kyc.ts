@@ -66,8 +66,8 @@ export class KYC extends Namespace {
      * @param phoneNumber (string): Used as an identifier for the request.
      * @returns Promise<any>: Contains the user information available on file by the user's Operator KYC records. 
      */
-    async fillIn(phoneNumber: string): Promise<any> {
-        const response: any = await this.api.kycFillIn.requestCustomerInfo(
+    async requestCustomerData(phoneNumber: string): Promise<any> {
+        const response: any = await this.api.kycFillIn.requestCustomerData(
             phoneNumber
         );
 
