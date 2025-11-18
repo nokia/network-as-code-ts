@@ -29,7 +29,7 @@ import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
 import { CallForwardingApi } from "./callForwardingApi";
-import { KYCMatchAPI, KYCAgeVerificationAPI, KYCTenureAPI } from "./kycApi";
+import { KYCMatchAPI, KYCAgeVerificationAPI, KYCTenureAPI, KYCFillInAPI } from "./kycApi";
 
 const QOS_URL = "/quality-on-demand/v1";
 
@@ -66,6 +66,8 @@ const KYC_MATCH_URL = "/passthrough/camara/v1/kyc-match/kyc-match/v0.3";
 const KYC_AGE_VERIFICATION_URL = "/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1"
 
 const KYC_CHECK_TENURE_URL = "/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1"
+
+const KYC_FILL_IN_URL = "/passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4";
 
 const agent = new ProxyAgent();
 
@@ -116,6 +118,7 @@ export class APIClient {
     kycMatch: KYCMatchAPI;
     kycAgeVerification: KYCAgeVerificationAPI;
     kycTenure: KYCTenureAPI;
+    kycFillIn: KYCFillInAPI;
 
     constructor(
         token: string,
@@ -137,7 +140,9 @@ export class APIClient {
         callForwardingBaseUrl: string | undefined = undefined,
         kycMatchBaseUrl: string | undefined = undefined,
         kycAgeVerificationBaseUrl: string | undefined = undefined,
-        kycTenureBaseUrl: string | undefined = undefined
+        kycTenureBaseUrl: string | undefined = undefined,
+        kycFillInBaseUrl: string | undefined = undefined
+
     ) {
       const baseUrl = environmentBaseUrl(envMode);
       const hostname = environmentHostname(envMode);
@@ -339,6 +344,17 @@ export class APIClient {
 
       this.kycTenure = new KYCTenureAPI(
         kycTenureBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!kycFillInBaseUrl) {
+        kycFillInBaseUrl = `${baseUrl}${KYC_FILL_IN_URL}`
+      }
+
+      this.kycFillIn = new KYCFillInAPI(
+        kycFillInBaseUrl,
         token,
         hostname,
         agent
