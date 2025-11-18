@@ -13,7 +13,7 @@ beforeAll(() => {
 
 describe("KYC Fill In", () => {   
     it("should get customer information", async () => { 
-        const result: any = await client.kyc.requestCustomerData("+99999991000");
+        const result: any = await client.kyc.requestCustomerInfo("+99999991000");
         expect(result.idDocument).toEqual("66666666q");
         expect(result.name).toEqual("Federica Sanchez Arjona");
         expect(result.gender).toEqual("Male");
@@ -22,7 +22,7 @@ describe("KYC Fill In", () => {
 
 
     it("should get null values, other than birthdate", async () => { 
-        const result: any = await client.kyc.requestCustomerData("+99999991002");
+        const result: any = await client.kyc.requestCustomerInfo("+99999991002");
         expect(result.idDocument).toBeNull()
         expect(result.name).toBeNull();
         expect(result.gender).toBeNull();
@@ -33,7 +33,7 @@ describe("KYC Fill In", () => {
 
     
     it("should get null values, other than gender", async () => { 
-        const result: any = await client.kyc.requestCustomerData("+99999991003");
+        const result: any = await client.kyc.requestCustomerInfo("+99999991003");
         expect(result.idDocument).toBeNull()
         expect(result.name).toBeNull();
         expect(result.birthdate).toBeNull();
@@ -45,7 +45,7 @@ describe("KYC Fill In", () => {
 
     it("wrong phone number should return 403 Forbidden", async () => {
         try {
-            await client.kyc.requestCustomerData("+12334566");
+            await client.kyc.requestCustomerInfo("+12334566");
         } catch (error){
             expect(error).toBeDefined();
             const err = error as Error;
@@ -56,7 +56,7 @@ describe("KYC Fill In", () => {
     
     it("phone number not associated with a CSP customer account should return 404 - Not Found", async () => {
         try {
-            await client.kyc.requestCustomerData("+99999991004");
+            await client.kyc.requestCustomerInfo("+99999991004");
         } catch (error){
             expect(error).toBeDefined();
             const err = error as Error;

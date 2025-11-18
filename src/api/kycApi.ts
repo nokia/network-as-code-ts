@@ -111,7 +111,7 @@ class KYCFillInAPI {
         this.agent = agent;
     }
 
-    async requestCustomerData(phoneNumber: string) {
+    async requestCustomerInfo(phoneNumber: string) {
         const body: any = {
             "phoneNumber": phoneNumber
         }

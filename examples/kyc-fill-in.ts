@@ -5,8 +5,8 @@ import { NetworkAsCodeClient } from "network-as-code";
 const client = new NetworkAsCodeClient("<your-application-key-here>");
 
 
-// To use the requestCustomerData method you must provide the customer's phone number.
-const result = await client.kyc.requestCustomerData("+99999991000");
+// To use the requestCustomerInfo method you must provide the customer's phone number.
+const result = await client.kyc.requestCustomerInfo("+99999991000");
 
 
 // If successful, you can access the results like so:
