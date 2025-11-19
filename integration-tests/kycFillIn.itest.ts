@@ -15,7 +15,6 @@ beforeAll(() => {
 describe("KYC Fill In", () => {   
     it("should get customer information", async () => { 
         const result: KYCFillInResult = await client.kyc.requestCustomerInfo("+99999991000");
-        console.log(result)
         expect(result.idDocument).toEqual("66666666q");
         expect(result.name).toEqual("Federica Sanchez Arjona");
         expect(result.gender).toEqual("Male");
@@ -36,7 +35,6 @@ describe("KYC Fill In", () => {
     
     it("should get null values, other than gender", async () => { 
         const result: KYCFillInResult = await client.kyc.requestCustomerInfo("+99999991003");
-        console.log(result)
         expect(result.idDocument).toBeNull()
         expect(result.name).toBeNull();
         expect(result.birthdate).toBeNull();

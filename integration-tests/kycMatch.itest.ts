@@ -38,7 +38,6 @@ describe("KYC Match", () => {
         }
         
         const result: KYCMatchResult = await client.kyc.matchCustomer(params);
-        console.log(result)
         expect(result).toBeTruthy();
         expect(result.idDocumentMatch).toBe(true);
         expect(result.familyNameMatch).toBe(false);

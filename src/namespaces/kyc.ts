@@ -31,7 +31,7 @@ export class KYC extends Namespace {
             params
         );
 
-        return this.__parseStringParams(response);
+        return this.__parseParams(response);
     }
 
     /**
@@ -44,7 +44,7 @@ export class KYC extends Namespace {
             params
         );
 
-        return this.__parseStringParams(response);
+        return this.__parseParams(response);
     }
 
     /**
@@ -71,19 +71,20 @@ export class KYC extends Namespace {
             phoneNumber
         );
 
-        return await response;
+        return this.__parseParams(response);
     }
     
 
-    __parseStringParams(params: any){
-        let value: keyof any;
-        for (value in params) {
-            if (params[value] === undefined || params[value] == "not_available") {
-                params[value] = null;
-            }
+    __parseParams(params: any){
+        const response = JSON.parse(JSON.stringify(params));
+
+        let value: any;
+        for (value in response) {
+            response[value] === 'not_available' ? response[value] = null
+            : response[value] === "true" ? response[value] = true
+            : response[value] === "false" ? response[value] = false
+            : response[value] = response[value] 
         };
-
-        return params;
+        return response;
     }
-
 };
