@@ -13,7 +13,7 @@ beforeAll(() => {
 
 describe("KYC Check Tenure", () => {   
     it("check tenure should return true", async () => {
-        const result: any = await client.kyc.checkTenure(
+        const result = await client.kyc.checkTenure(
             {
                 phoneNumber: "+99999991000",
                 tenureDate: "2023-07-17"
@@ -24,7 +24,7 @@ describe("KYC Check Tenure", () => {
     });
 
    it("check tenure should return false", async () => {
-        const result: any = await client.kyc.checkTenure(
+        const result = await client.kyc.checkTenure(
             {
                 phoneNumber: "+99999991005",
                 tenureDate: "2023-07-17"
@@ -35,7 +35,7 @@ describe("KYC Check Tenure", () => {
     });
 
    it("should handle date object", async () => {
-        const result: any = await client.kyc.checkTenure(
+        const result = await client.kyc.checkTenure(
             {
                 phoneNumber: "+99999991000",
                 tenureDate: new Date(2023, 7, 17)
@@ -46,7 +46,7 @@ describe("KYC Check Tenure", () => {
     });
 
    it("should return string value for contract type", async () => {
-        const result: any = await client.kyc.checkTenure(
+        const result = await client.kyc.checkTenure(
             {
                 phoneNumber: "+99999991005",
                 tenureDate: "2023-07-17"

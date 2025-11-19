@@ -19,7 +19,7 @@ import { ProxyAgent } from "proxy-agent";
 
 
 import fetch from "node-fetch";
-import { TenureCheckParams } from "../models/kycTenure";
+import { TenureCheckParams, TenureCheckResult } from "../models/kycTenure";
 
 class KYCMatchAPI {
     private baseUrl: string;
@@ -111,7 +111,7 @@ class KYCTenureAPI {
         this.agent = agent;
     }
 
-    async checkTenure(params: TenureCheckParams) {
+    async checkTenure(params: TenureCheckParams): Promise <TenureCheckResult> {
         const body: any = {
             phoneNumber: params.phoneNumber,
         }
@@ -129,7 +129,7 @@ class KYCTenureAPI {
 
         errorHandler(response)
         
-        return await response.json()
+        return TenureCheckResult.fromJson(await response.json())
     }
 }
 export {KYCMatchAPI, KYCAgeVerificationAPI, KYCTenureAPI};

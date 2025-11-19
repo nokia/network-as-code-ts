@@ -30,7 +30,13 @@ export class TenureCheckResult {
         this.tenureDateCheck = tenureDateCheck;
         this.contractType = contractType;
     }
+    static fromJson(jsonData: any): TenureCheckResult {
+            const results = new TenureCheckResult(
+                jsonData.tenureDateCheck,
+                jsonData.contractType
+            );
 
-
+        return results;
+    }
 }
 
