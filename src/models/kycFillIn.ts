@@ -126,8 +126,6 @@ export class KYCFillInResult {
             jsonData.nationality
         );
 
-        const resultWithRemoveUndefineds = JSON.parse(JSON.stringify(results));
-
-        return resultWithRemoveUndefineds;
+        return results;
     }
 }
