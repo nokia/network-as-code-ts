@@ -17,6 +17,7 @@
 import { Namespace } from "./namespace";
 import { MatchCustomerParams } from "../models/kycMatch";
 import { VerifyAgeParams } from "../models/kycAgeVerification";
+import { TenureCheckParams, TenureCheckResult } from "../models/kycTenure";
 
 export class KYC extends Namespace {
 
@@ -49,16 +50,18 @@ export class KYC extends Namespace {
     /**
      * Check if the network subscriber has been a customer of the service provider for the specified amount of time.
      * @param phoneNumber (string): Used as an identifier for the request.
-     * @param tenureDate (string): The specified minimum tenure date from which the continuous tenure is to be confirmed.
-     * @returns Promise<any>: JSON object containing boolean value for the tenure date check and optional contract type, if known.           
+     * @param tenureDate (string | Date): The specified minimum tenure date from which the continuous tenure is to be confirmed.
+     * @returns Promise<TenureCheckResult>: Object containing boolean value for the tenure date check and optional contract type, if known.           
      */   
-    async checkTenure(phoneNumber: string, tenureDate: string): Promise<any> {
-        const response: any = await this.api.kycTenure.checkTenure(
-            phoneNumber,
-            tenureDate
+    async checkTenure(params: TenureCheckParams): Promise<TenureCheckResult> {
+        const jsonData: any = await this.api.kycTenure.checkTenure(
+            params
         );
         
-        return await response;
+        return new TenureCheckResult(
+            jsonData.tenureDateCheck,
+            jsonData.contractType
+        );
     }
 
     __parseStringParams(params: any){

@@ -19,6 +19,7 @@ import { ProxyAgent } from "proxy-agent";
 
 
 import fetch from "node-fetch";
+import { TenureCheckParams } from "../models/kycTenure";
 
 class KYCMatchAPI {
     private baseUrl: string;
@@ -110,14 +111,14 @@ class KYCTenureAPI {
         this.agent = agent;
     }
 
-    async checkTenure(
-        phoneNumber: string,
-        tenureDate: string
-    ) {
+    async checkTenure(params: TenureCheckParams) {
         const body: any = {
-            phoneNumber: phoneNumber, 
-            tenureDate: tenureDate
-        };
+            phoneNumber: params.phoneNumber,
+        }
+
+        body.tenureDate = params.tenureDate instanceof Date ? 
+            body.tenureDate = params.tenureDate.toISOString().split('T')[0] :
+            params.tenureDate
 
         const response = await fetch(`${this.baseUrl}/check-tenure`, {
             method: "POST",

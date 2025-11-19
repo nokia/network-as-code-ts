@@ -14,8 +14,10 @@ beforeAll(() => {
 describe("KYC Check Tenure", () => {   
     it("check tenure should return true", async () => {
         const result: any = await client.kyc.checkTenure(
-            "+99999991000",
-            "2023-07-17"
+            {
+                phoneNumber: "+99999991000",
+                tenureDate: "2023-07-17"
+            }
         );
         expect(result).toBeTruthy();
         expect(result.tenureDateCheck).toBe(true)
@@ -23,17 +25,32 @@ describe("KYC Check Tenure", () => {
 
    it("check tenure should return false", async () => {
         const result: any = await client.kyc.checkTenure(
-            "+99999991005",
-            "2023-07-17"
+            {
+                phoneNumber: "+99999991005",
+                tenureDate: "2023-07-17"
+            }
         );
         expect(result).toBeTruthy();
         expect(result.tenureDateCheck).toBe(false)
     });
 
+   it("should handle date object", async () => {
+        const result: any = await client.kyc.checkTenure(
+            {
+                phoneNumber: "+99999991000",
+                tenureDate: new Date(2023, 7, 17)
+            }
+        );
+        expect(result).toBeTruthy();
+        expect(result.tenureDateCheck).toBe(true)
+    });
+
    it("should return string value for contract type", async () => {
         const result: any = await client.kyc.checkTenure(
-            "+99999991005",
-            "2023-07-17"
+            {
+                phoneNumber: "+99999991005",
+                tenureDate: "2023-07-17"
+            }
         );
         expect(result).toBeTruthy();
         if (result.contractType) {
@@ -44,8 +61,10 @@ describe("KYC Check Tenure", () => {
     it("wrong phone number should return 403 AuthenticationError", async () => {
         try {
             await client.kyc.checkTenure(
-                "+1234567",
-                "1978-08-22"
+            {
+                phoneNumber: "+1234567",
+                tenureDate: "2023-07-17"
+            }
             );
         } catch (error){
             expect(error).toBeDefined();

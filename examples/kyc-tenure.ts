@@ -10,8 +10,11 @@ const client = new NetworkAsCodeClient("<your-application-key-here>");
 // Add the tenure date from which the continuous tenure of the subscriber is to be confirmed
 
 const result = await client.kyc.checkTenure(
-    "+99999991000",
-    "2024-03-17"
+    {
+        phoneNumber: "+99999991000",
+        // You can also use a string value in format of "YYYY-MM-DD"
+        tenureDate: new Date(2023, 7, 17)
+    }
 )
 
 // If successful, you can access the results like so:
