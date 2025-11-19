@@ -76,15 +76,14 @@ export class KYC extends Namespace {
     
 
     __parseStringParams(params: any){
-        const response = Object.fromEntries(Object.entries(params as any).map(([key, value]) => 
-            [
-                key,
-                value === "true" ? true:
-                value === "false" ? false:
-                value === "undefined" || value === "not_available" ? null
-                :value
-            ]
-        )); return response;
+        let value: keyof any;
+        for (value in params) {
+            if (params[value] === undefined || params[value] == "not_available") {
+                params[value] = null;
+            }
+        };
+
+        return params;
     }
 
 };

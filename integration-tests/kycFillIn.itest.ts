@@ -2,6 +2,7 @@ import { beforeAll, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { configureClient } from "./configClient";
+import { KYCFillInResult } from "../src/models/kycFillIn";
 
 
 let client: NetworkAsCodeClient;
@@ -13,7 +14,8 @@ beforeAll(() => {
 
 describe("KYC Fill In", () => {   
     it("should get customer information", async () => { 
-        const result: any = await client.kyc.requestCustomerInfo("+99999991000");
+        const result: KYCFillInResult = await client.kyc.requestCustomerInfo("+99999991000");
+        console.log(result)
         expect(result.idDocument).toEqual("66666666q");
         expect(result.name).toEqual("Federica Sanchez Arjona");
         expect(result.gender).toEqual("Male");
@@ -22,7 +24,7 @@ describe("KYC Fill In", () => {
 
 
     it("should get null values, other than birthdate", async () => { 
-        const result: any = await client.kyc.requestCustomerInfo("+99999991002");
+        const result: KYCFillInResult = await client.kyc.requestCustomerInfo("+99999991002");
         expect(result.idDocument).toBeNull()
         expect(result.name).toBeNull();
         expect(result.gender).toBeNull();
@@ -33,7 +35,8 @@ describe("KYC Fill In", () => {
 
     
     it("should get null values, other than gender", async () => { 
-        const result: any = await client.kyc.requestCustomerInfo("+99999991003");
+        const result: KYCFillInResult = await client.kyc.requestCustomerInfo("+99999991003");
+        console.log(result)
         expect(result.idDocument).toBeNull()
         expect(result.name).toBeNull();
         expect(result.birthdate).toBeNull();

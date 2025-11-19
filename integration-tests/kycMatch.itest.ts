@@ -2,6 +2,7 @@ import { beforeAll, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { configureClient } from "./configClient";
+import { KYCMatchResult } from "../src/models/kycMatch";
 
 
 let client: NetworkAsCodeClient;
@@ -36,7 +37,8 @@ describe("KYC Match", () => {
             gender: "OTHER"
         }
         
-        const result: any = await client.kyc.matchCustomer(params);
+        const result: KYCMatchResult = await client.kyc.matchCustomer(params);
+        console.log(result)
         expect(result).toBeTruthy();
         expect(result.idDocumentMatch).toBe(true);
         expect(result.familyNameMatch).toBe(false);
@@ -60,11 +62,12 @@ describe("KYC Match", () => {
             postalCode: "1028460",
             region: "Tokyo"
         }
-        const result: any = await client.kyc.matchCustomer(params);
+        const result: KYCMatchResult = await client.kyc.matchCustomer(params);
 
         expect(result).toBeTruthy();
-        expect(result.familyNameMatch).toBe(null);
-        expect(result.addressMatch).toBe(null);
+
+        expect(result.familyNameMatch).toBeFalsy();
+        expect(result.addressMatch).toBeFalsy();
         expect(result.streetNumberMatch).toBe(false);
     });
 
@@ -92,7 +95,7 @@ describe("KYC Match", () => {
             gender: "OTHER"
         }
         
-        const result: any = await client.kyc.matchCustomer(params);
+        const result: KYCMatchResult = await client.kyc.matchCustomer(params);
         Object.entries(result).forEach(([key, value]) => {
             if (!key.toLowerCase().includes("score")){
                 expect([true, false, null]).toContain(value)

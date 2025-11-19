@@ -16,7 +16,9 @@
 
 import { errorHandler } from "../errors";
 import { ProxyAgent } from "proxy-agent";
-
+import { KYCMatchResult } from "../models/kycMatch";
+import { KYCVerifyAgeResult } from "../models/kycAgeVerification";
+import { KYCFillInResult } from "../models/kycFillIn";
 
 import fetch from "node-fetch";
 import { TenureCheckParams, TenureCheckResult } from "../models/kycTenure";
@@ -52,7 +54,7 @@ class KYCMatchAPI {
 
         errorHandler(response);
 
-        return await response.json()
+        return KYCMatchResult.fromJson(await response.json());
     }
 }
 
@@ -87,7 +89,7 @@ class KYCAgeVerificationAPI {
 
         errorHandler(response);
 
-        return await response.json()
+        return KYCVerifyAgeResult.fromJson(await response.json());
     }
 }
 
@@ -124,7 +126,7 @@ class KYCFillInAPI {
         });
 
         errorHandler(response);
-        return await response.json()
+        return KYCFillInResult.fromJson(await response.json());
     }
 }
 

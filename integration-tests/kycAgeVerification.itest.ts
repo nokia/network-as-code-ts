@@ -2,6 +2,7 @@ import { beforeAll, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
 import { configureClient } from "./configClient";
+import { KYCVerifyAgeResult } from "../src/models/kycAgeVerification";
 
 
 let client: NetworkAsCodeClient;
@@ -26,7 +27,7 @@ describe("KYC Age Verification", () => {
             includeContentLock: true,
             includeParentalControl: true
         }
-        const result: any = await client.kyc.verifyAge(params);
+        const result: KYCVerifyAgeResult = await client.kyc.verifyAge(params);
         expect(result).toBeTruthy();
         expect(result.ageCheck).toBe(true)
     });
@@ -36,7 +37,7 @@ describe("KYC Age Verification", () => {
             ageThreshold: 18,
             phoneNumber: "+99999991000",
            }
-        const result: any = await client.kyc.verifyAge(params);
+        const result: KYCVerifyAgeResult = await client.kyc.verifyAge(params);
         expect(result).toBeTruthy();
         expect(result.ageCheck).toBe(true)
     });

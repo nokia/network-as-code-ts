@@ -29,3 +29,38 @@ export interface VerifyAgeParams {
     includeContentLock?: boolean,
     includeParentalControl?: boolean
 }
+
+export class KYCVerifyAgeResult {
+    ageCheck: string;
+    verifiedStatus?: boolean | string | null;
+    identityMatchScore?: number;
+    contentLock?: string;
+    parentalControl?: string;
+
+    constructor(
+        ageCheck: string,
+        verifiedStatus: boolean | string | null,
+        identityMatchScore: number,
+        contentLock: string,
+        parentalControl: string
+    ) {
+        this.ageCheck = ageCheck;
+        this.verifiedStatus = verifiedStatus;
+        this.identityMatchScore = identityMatchScore;
+        this.contentLock = contentLock;
+        this.parentalControl = parentalControl;
+    }
+
+
+    static fromJson(jsonData: any): KYCVerifyAgeResult {
+        const results = new KYCVerifyAgeResult(
+            jsonData.ageCheck,
+            jsonData.verifiedStatus,
+            jsonData.identityMatchScore,
+            jsonData.contentLock,
+            jsonData.parentalControl
+        );
+
+        return results;
+    }
+}
