@@ -34,7 +34,7 @@ export class KYC extends Namespace {
             params
         );
 
-        return this.__parseStringParams(response);
+        return this.__deleteUndefineds(response)
     }
 
     /**
@@ -47,7 +47,7 @@ export class KYC extends Namespace {
             params
         );
 
-        return this.__parseStringParams(response);
+        return this.__deleteUndefineds(response)
     }
 
     /**
@@ -74,11 +74,22 @@ export class KYC extends Namespace {
             phoneNumber
         );
 
-        return this.__parseStringParams(response);
+        return this.__deleteUndefineds(response)
     }
     
 
-    __parseStringParams(params: any){
+
+    __deleteUndefineds(params: any) {
+        let value: keyof any;
+        for (value in params) {
+            if (params[value] === undefined) {
+                delete params[value]
+            }
+        };
+        return params;
+    }
+
+    static parseStringParams(params: any){
         let response = JSON.parse(JSON.stringify(params));
         
         response = Object.fromEntries(Object.entries(response as any).map(([key, value]) => 

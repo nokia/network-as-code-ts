@@ -19,6 +19,7 @@ import { ProxyAgent } from "proxy-agent";
 import { MatchCustomerParams, KYCMatchResult } from "../models/kycMatch";
 import { VerifyAgeParams, KYCVerifyAgeResult } from "../models/kycAgeVerification";
 import { KYCFillInResult } from "../models/kycFillIn";
+import { KYC } from "../namespaces/kyc";
 
 import fetch from "node-fetch";
 import { TenureCheckParams, TenureCheckResult } from "../models/kycTenure";
@@ -53,8 +54,9 @@ class KYCMatchAPI {
         });
 
         errorHandler(response);
+        const result = KYC.parseStringParams(await response.json())
 
-        return KYCMatchResult.fromJson(await response.json());
+        return KYCMatchResult.fromJson(result);
     }
 }
 
@@ -88,8 +90,9 @@ class KYCAgeVerificationAPI {
         });
 
         errorHandler(response);
-
-        return KYCVerifyAgeResult.fromJson(await response.json());
+        const result = KYC.parseStringParams(await response.json())
+                
+        return KYCVerifyAgeResult.fromJson(result);
     }
 }
 
@@ -126,7 +129,9 @@ class KYCFillInAPI {
         });
 
         errorHandler(response);
-        return KYCFillInResult.fromJson(await response.json());
+        const result = KYC.parseStringParams(await response.json())
+
+        return KYCFillInResult.fromJson(result);
     }
 }
 
