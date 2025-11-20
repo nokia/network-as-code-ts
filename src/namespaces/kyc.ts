@@ -18,33 +18,36 @@ import { Namespace } from "./namespace";
 import { MatchCustomerParams } from "../models/kycMatch";
 import { VerifyAgeParams } from "../models/kycAgeVerification";
 import { TenureCheckParams, TenureCheckResult } from "../models/kycTenure";
+import { KYCVerifyAgeResult } from "../models/kycAgeVerification";
+import { KYCMatchResult } from "../models/kycMatch";
+import { KYCFillInResult } from "../models/kycFillIn";
 
 export class KYC extends Namespace {
 
     /**
      * Match a customer identity against the account data bound to their phone number.
      * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
-     * @returns Promise<any>: Contains the result of matching the provided parameter values to the data in the operator system.
+     * @returns Promise<KYCMatchResult>: Contains the result of matching the provided parameter values to the data in the operator system.
      */
-    async matchCustomer(params: MatchCustomerParams): Promise<any> {
-        const response: any = await this.api.kycMatch.matchCustomer(
+    async matchCustomer(params: MatchCustomerParams): Promise<KYCMatchResult> {
+        const response = await this.api.kycMatch.matchCustomer(
             params
         );
 
-        return this.__parseParams(response);
+        return this.__parseStringParams(response);
     }
 
     /**
      * Check if the user of the line is older than a provided age.
      * @param params (VerifyAgeParams): Contains age threshold which to compare user age to, subscription phone number and other optional subscriber info.
-     * @returns Promise<any>: true/false/null for if the age of the user is the same or older than the age threshold provided. Also results for other optional request params. 
+     * @returns Promise<VerifyAgeParams>: true/false/null for if the age of the user is the same or older than the age threshold provided. Also results for other optional request params. 
      */   
-    async verifyAge(params: VerifyAgeParams): Promise<any> {
-        const response: any = await this.api.kycAgeVerification.verifyAge(
+    async verifyAge(params: VerifyAgeParams): Promise<KYCVerifyAgeResult> {
+        const response = await this.api.kycAgeVerification.verifyAge(
             params
         );
 
-        return this.__parseParams(response);
+        return this.__parseStringParams(response);
     }
 
     /**
@@ -64,27 +67,29 @@ export class KYC extends Namespace {
     /**
      * Request user information against the account data bound to their phone number
      * @param phoneNumber (string): Used as an identifier for the request.
-     * @returns Promise<any>: Contains the user information available on file by the user's Operator KYC records. 
+     * @returns Promise<KYCFillInResult>: Contains the user information available on file by the user's Operator KYC records. 
      */
-    async requestCustomerInfo(phoneNumber: string): Promise<any> {
-        const response: any = await this.api.kycFillIn.requestCustomerInfo(
+    async requestCustomerInfo(phoneNumber: string): Promise<KYCFillInResult> {
+        const response = await this.api.kycFillIn.requestCustomerInfo(
             phoneNumber
         );
 
-        return this.__parseParams(response);
+        return this.__parseStringParams(response);
     }
     
 
-    __parseParams(params: any){
-        const response = JSON.parse(JSON.stringify(params));
-
-        let value: any;
-        for (value in response) {
-            response[value] === 'not_available' ? response[value] = null
-            : response[value] === "true" ? response[value] = true
-            : response[value] === "false" ? response[value] = false
-            : response[value] = response[value] 
-        };
+    __parseStringParams(params: any){
+        let response = JSON.parse(JSON.stringify(params));
+        
+        response = Object.fromEntries(Object.entries(response as any).map(([key, value]) => 
+            [
+                key,
+                value === "true" ? true:
+                value === "false" ? false:
+                value === "not_available" ? null
+                :value
+            ]
+        )); 
         return response;
     }
 };

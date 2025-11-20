@@ -69,31 +69,31 @@ export class KYCFillInResult {
         countryOfBirth: string,
         nationality: string
     ) {
-        this.phoneNumber = phoneNumber,
-        this.idDocument = idDocument,
-        this.idDocumentType = idDocumentType,
-        this.idDocumentExpiryDate = idDocumentExpiryDate,
-        this.name = name,
-        this.givenName = givenName,
-        this.familyName = familyName,
-        this.nameKanaHankaku = nameKanaHankaku,
-        this.nameKanaZenkaku = nameKanaZenkaku,
-        this.middleNames = middleNames,
-        this.familyNameAtBirth = familyNameAtBirth,
-        this.address = address,
-        this.streetName = streetName,
-        this.streetNumber = streetNumber,
-        this.postalCode = postalCode,
-        this.region = region,
-        this.locality = locality,
-        this.country = country,
-        this.houseNumberExtension = houseNumberExtension,
-        this.birthdate = birthdate,
-        this.email = email,
-        this.gender = gender,
-        this.cityOfBirth = cityOfBirth,
-        this.countryOfBirth = countryOfBirth,
-        this.nationality = nationality
+        this.phoneNumber = phoneNumber;
+        this.idDocument = idDocument;
+        this.idDocumentType = idDocumentType;
+        this.idDocumentExpiryDate = idDocumentExpiryDate;
+        this.name = name;
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.nameKanaHankaku = nameKanaHankaku;
+        this.nameKanaZenkaku = nameKanaZenkaku;
+        this.middleNames = middleNames;
+        this.familyNameAtBirth = familyNameAtBirth;
+        this.address = address;
+        this.streetName = streetName;
+        this.streetNumber = streetNumber;
+        this.postalCode = postalCode;
+        this.region = region;
+        this.locality = locality;
+        this.country = country;
+        this.houseNumberExtension = houseNumberExtension;
+        this.birthdate = birthdate;
+        this.email = email;
+        this.gender = gender;
+        this.cityOfBirth = cityOfBirth;
+        this.countryOfBirth = countryOfBirth;
+        this.nationality = nationality;
     }
 
 

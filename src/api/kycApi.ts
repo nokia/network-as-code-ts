@@ -16,8 +16,8 @@
 
 import { errorHandler } from "../errors";
 import { ProxyAgent } from "proxy-agent";
-import { KYCMatchResult } from "../models/kycMatch";
-import { KYCVerifyAgeResult } from "../models/kycAgeVerification";
+import { MatchCustomerParams, KYCMatchResult } from "../models/kycMatch";
+import { VerifyAgeParams, KYCVerifyAgeResult } from "../models/kycAgeVerification";
 import { KYCFillInResult } from "../models/kycFillIn";
 
 import fetch from "node-fetch";
@@ -43,7 +43,7 @@ class KYCMatchAPI {
         this.agent = agent;
     }
 
-    async matchCustomer(params: any) {
+    async matchCustomer(params: MatchCustomerParams): Promise<KYCMatchResult>{
         const bodyParams = Object.fromEntries(Object.entries(params as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined));
         const response = await fetch(`${this.baseUrl}/match`, {
             method: "POST",
@@ -78,7 +78,7 @@ class KYCAgeVerificationAPI {
         this.agent = agent;
     }
 
-    async verifyAge(params: any) {
+    async verifyAge(params: VerifyAgeParams): Promise<KYCVerifyAgeResult>{
         const bodyParams = Object.fromEntries(Object.entries(params as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined));
         const response = await fetch(`${this.baseUrl}/verify`, {
             method: "POST",
@@ -113,7 +113,7 @@ class KYCFillInAPI {
         this.agent = agent;
     }
 
-    async requestCustomerInfo(phoneNumber: string) {
+    async requestCustomerInfo(phoneNumber: string): Promise<KYCFillInResult> {
         const body: any = {
             "phoneNumber": phoneNumber
         }
