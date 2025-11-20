@@ -54,9 +54,8 @@ class KYCMatchAPI {
         });
 
         errorHandler(response);
-        const result = KYC.parseStringParams(await response.json())
 
-        return KYCMatchResult.fromJson(result);
+        return KYCMatchResult.fromJson(KYC.parseStringParams(await response.json()));
     }
 }
 
@@ -90,9 +89,8 @@ class KYCAgeVerificationAPI {
         });
 
         errorHandler(response);
-        const result = KYC.parseStringParams(await response.json())
                 
-        return KYCVerifyAgeResult.fromJson(result);
+        return KYCVerifyAgeResult.fromJson(KYC.parseStringParams(await response.json()));
     }
 }
 
@@ -129,9 +127,8 @@ class KYCFillInAPI {
         });
 
         errorHandler(response);
-        const result = KYC.parseStringParams(await response.json())
 
-        return KYCFillInResult.fromJson(result);
+        return KYCFillInResult.fromJson(KYC.parseStringParams(await response.json()));
     }
 }
 

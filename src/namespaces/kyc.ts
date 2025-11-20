@@ -61,7 +61,7 @@ export class KYC extends Namespace {
             params
         );
 
-        return await response;
+        return this.__deleteUndefineds(response);
     }
 
     /**
