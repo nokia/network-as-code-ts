@@ -34,20 +34,8 @@ describe("KYC Fill-In", () => {
     it("KYC Fill-In results return values and null", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in ",
-            (req: any): any => {
-                expect(req.headers).toEqual({
-                    "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                    "X-RapidAPI-Key": 'TEST_TOKEN'
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual(
-                    {
-                        phoneNumber: "+99999991001",
-                    }
-                )
-            },
-            { response: 
-                JSON.stringify({
+            {
+                body: {
                     phoneNumber:"+99999991001",
                     idDocument:"12345678l",
                     name:"Arjona",
@@ -71,12 +59,33 @@ describe("KYC Fill-In", () => {
                     cityOfBirth:null,
                     countryOfBirth:null,
                     nationality:null,
-            })});
+                }
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN'
+                },
+                body: {
+                        phoneNumber: "+99999991001",
+                    }
+            });
 
         const result = await client.kyc.requestCustomerInfo(
             "+99999991001"
         );
 
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in ",
+            {
+                method: "POST",
+                body: {
+                        phoneNumber: "+99999991001",
+                    }
+            }
+        );
+        
         expect(result.phoneNumber).toEqual("+99999991001");
         expect(result.idDocument).toEqual("12345678l");
         expect(result.name).toEqual("Arjona");
@@ -90,20 +99,8 @@ describe("KYC Fill-In", () => {
     it("KYC Fill-In results return nulls and values", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in ",
-            (req: any): any => {
-                expect(req.headers).toEqual({
-                    "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                    "X-RapidAPI-Key": 'TEST_TOKEN'
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual(
-                    {
-                        phoneNumber: "+99999991003",
-                    }
-                )
-            },
-            { response: 
-                JSON.stringify({
+            {
+                body: {
                     phoneNumber:null,
                     idDocument:null,
                     name:null,
@@ -127,10 +124,31 @@ describe("KYC Fill-In", () => {
                     cityOfBirth:null,
                     countryOfBirth:null,
                     nationality:null
-            })});
+                }
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN'
+                },
+                body: {
+                        phoneNumber: "+99999991003",
+                    }
+            });
 
         const result = await client.kyc.requestCustomerInfo(
             "+99999991003",
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in ",
+            {
+                method: "POST",
+                body: {
+                        phoneNumber: "+99999991003",
+                    }
+            }
         );
 
         expect(result.phoneNumber).toBeNull();

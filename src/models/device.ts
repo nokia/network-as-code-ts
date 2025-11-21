@@ -75,7 +75,7 @@ export interface QodOptionalArgs {
 /**
  *  A class representing the `Device` model.
  * #### Private Attributes:
-        _api(APIClient): An API client object.
+        #api(APIClient): An API client object.
         _sessions(QoDSession[]): List of device session instances.
 
 
@@ -99,7 +99,7 @@ export interface QodOptionalArgs {
         verifySimSwap (): Verify if there was sim swap
  */
 export class Device {
-    private _api: APIClient;
+    #api: APIClient;
     private _sessions: QoDSession[];
     networkAccessIdentifier?: string;
     phoneNumber?: string;
@@ -114,7 +114,7 @@ export class Device {
         phoneNumber?: string,
         imsi?: number
     ) {
-        this._api = api;
+        this.#api = api;
         this._sessions = [];
         this.networkAccessIdentifier = networkAccessIdentifier;
         this.ipv4Address = ipv4Address;
@@ -179,7 +179,7 @@ export class Device {
             );
         }
 
-        const session = await this._api.sessions.createSession(
+        const session = await this.#api.sessions.createSession(
             profile,
             duration,
             this,
@@ -192,7 +192,7 @@ export class Device {
         );
 
         return QoDSession.convertSessionModel(
-            this._api,
+            this.#api,
             this,
             JSON.parse(JSON.stringify(session))
         );
@@ -208,7 +208,7 @@ export class Device {
  */
     async sessions(): Promise<QoDSession[]> {
         try {
-            const sessions: any = await this._api.sessions.getAllSessions(this);
+            const sessions: any = await this.#api.sessions.getAllSessions(this);
 
             return sessions.map((session: any) =>
                 this.__convertSessionModel(session)
@@ -232,7 +232,7 @@ export class Device {
     }
 
     __convertSessionModel(session: any): QoDSession {
-        const result = QoDSession.convertSessionModel(this._api, this, session);
+        const result = QoDSession.convertSessionModel(this.#api, this, session);
         return result;
     }
 
@@ -245,7 +245,7 @@ export class Device {
      *   ```
      */
     async getLocation(maxAge: number = 60): Promise<Location> {
-        const location = await this._api.locationRetrieval.getLocation(
+        const location = await this.#api.locationRetrieval.getLocation(
             this,
             maxAge
         );
@@ -270,7 +270,7 @@ export class Device {
         radius: number,
         maxAge = 60
     ): Promise<VerificationResult> {
-        return this._api.locationVerify.verifyLocation(
+        return this.#api.locationVerify.verifyLocation(
             latitude,
             longitude,
             this,
@@ -284,7 +284,7 @@ export class Device {
      * @returns Promise<ReachabilityStatus>: The reachability status (true/false) and possibly the time when the status was last updated and the connectivity type (DATA/SMS).
      */
     async getReachability(): Promise<ReachabilityStatus> {
-        const response: ReachabilityStatus = await this._api.deviceReachabilityStatus.getReachability(this);
+        const response: ReachabilityStatus = await this.#api.deviceReachabilityStatus.getReachability(this);
         return response;
     }
 
@@ -293,7 +293,7 @@ export class Device {
      * @returns Promise<RoamingStatus>: The roaming status (true/false) and possibly the time when the status was last updated and the country code and name.
      */
     async getRoaming(): Promise<RoamingStatus> {
-        const response: RoamingStatus = await this._api.deviceRoamingStatus.getRoaming(this);
+        const response: RoamingStatus = await this.#api.deviceRoamingStatus.getRoaming(this);
         return response;
     }
 
@@ -320,7 +320,7 @@ export class Device {
         start?: Date | string,
         end?: Date | string
     ): Promise<Congestion[]> {
-        const congestionInfo = await this._api.insights.getCongestion(
+        const congestionInfo = await this.#api.insights.getCongestion(
             this,
             start,
             end
@@ -343,7 +343,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
 
-        const response: any = await this._api.simSwap.fetchSimSwapDate(
+        const response: any = await this.#api.simSwap.fetchSimSwapDate(
             this.phoneNumber
         );
 
@@ -364,7 +364,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
 
-        const response: any = await this._api.simSwap.verifySimSwap(
+        const response: any = await this.#api.simSwap.verifySimSwap(
             this.phoneNumber,
             maxAge
         );
@@ -381,7 +381,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
 
-        const response: any = await this._api.deviceSwap.fetchDeviceSwapDate(
+        const response: any = await this.#api.deviceSwap.fetchDeviceSwapDate(
             this.phoneNumber
         );
 
@@ -402,7 +402,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
 
-        const response: any = await this._api.deviceSwap.verifyDeviceSwap(
+        const response: any = await this.#api.deviceSwap.verifyDeviceSwap(
             this.phoneNumber,
             maxAge
         );
@@ -426,7 +426,7 @@ export class Device {
         const params = new URLSearchParams({code: code, state: state});
 
 
-        const response: any = await this._api.verification.verifyNumber(
+        const response: any = await this.#api.verification.verifyNumber(
             payload,
             params
         );
@@ -442,7 +442,7 @@ export class Device {
      */
     async getPhoneNumber(code: string, state: string): Promise<string> {
         const params = new URLSearchParams({code: code, state: state});
-        const response: any = await this._api.verification.getPhoneNumber(
+        const response: any = await this.#api.verification.getPhoneNumber(
             params
         );
         return response["devicePhoneNumber"];
@@ -457,7 +457,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
         
-        const response: any = await this._api.callForwarding.retrieveCallForwarding(
+        const response: any = await this.#api.callForwarding.retrieveCallForwarding(
             this.phoneNumber
         );
 
@@ -473,7 +473,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
         
-        const response: any = await this._api.callForwarding.verifyUnconditionalForwarding(
+        const response: any = await this.#api.callForwarding.verifyUnconditionalForwarding(
             this.phoneNumber
         );
 

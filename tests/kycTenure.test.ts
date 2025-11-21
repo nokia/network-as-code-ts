@@ -34,24 +34,24 @@ describe("KYC Check Tenure", () => {
     it("KYC checkTenure results true", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
-            (req: any): any => {
-                expect(req.headers).toEqual({
+            {
+                body: {
+                    tenureDateCheck: true,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                },
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN'
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual(
-                    {
-                        phoneNumber: "+99999991000",
-                        tenureDate: "2023-08-22",
-                    }
-                )
-            },
-            { response: 
-                JSON.stringify({
-                    tenureDateCheck: true,
-                    contractType: "Business"
-            })});
+                }
+            }
+        );
 
         const result = await client.kyc.checkTenure(
             {
@@ -61,6 +61,16 @@ describe("KYC Check Tenure", () => {
 
         );
 
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                }
+            }
+        );
         expect(result.tenureDateCheck).toBe(true)
         expect(result.contractType).toEqual("Business")
     });
@@ -68,24 +78,24 @@ describe("KYC Check Tenure", () => {
     it("KYC checkTenure uses date", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
-            (req: any): any => {
-                expect(req.headers).toEqual({
+                        {
+                body: {
+                    tenureDateCheck: true,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-09-22"
+                },
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN'
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual(
-                    {
-                        phoneNumber: "+99999991000",
-                        tenureDate: "2023-08-22",
-                    }
-                )
-            },
-            { response: 
-                JSON.stringify({
-                    tenureDateCheck: true,
-                    contractType: "Business"
-            })});
+                }
+            }
+        );
 
         const result = await client.kyc.checkTenure(
             {
@@ -95,6 +105,16 @@ describe("KYC Check Tenure", () => {
 
         );
 
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-09-22"
+                }
+            }
+        );
         expect(result.tenureDateCheck).toBe(true)
         expect(result.contractType).toEqual("Business")
     });
@@ -102,24 +122,24 @@ describe("KYC Check Tenure", () => {
     it("KYC checkTenure parses Date object correctly", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
-            (req: any): any => {
-                expect(req.headers).toEqual({
+            {
+                body: {
+                    tenureDateCheck: true,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2025-01-23"
+                },
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN'
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual(
-                    {
-                        phoneNumber: "+99999991000",
-                        tenureDate: "2023-08-22",
-                    }
-                )
-            },
-            { response: 
-                JSON.stringify({
-                    tenureDateCheck: true,
-                    contractType: "Business"
-            })});
+                }
+            }
+        );
 
         const result = await client.kyc.checkTenure(
             {
@@ -129,6 +149,17 @@ describe("KYC Check Tenure", () => {
 
         );
 
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2025-01-23"
+                }
+            }
+        );
+
         expect(result.tenureDateCheck).toBe(true)
         expect(result.contractType).toEqual("Business")
     });
@@ -136,24 +167,24 @@ describe("KYC Check Tenure", () => {
     it("KYC checkTenure results false", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
-            (req: any): any => {
-                expect(req.headers).toEqual({
+            {
+                body: {
+                    tenureDateCheck: false,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                },
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN'
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual(
-                    {
-                        phoneNumber: "+99999991000",
-                        tenureDate: "2023-08-22",
-                    }
-                )
-            },
-            { response: 
-                JSON.stringify({
-                    tenureDateCheck: false,
-                    contractType: "Business"
-            })});
+                }
+            }
+        );
 
         const result = await client.kyc.checkTenure(
             {
@@ -161,6 +192,17 @@ describe("KYC Check Tenure", () => {
                 tenureDate: "2023-08-22"
             }
 
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                }
+            }
         );
 
         expect(result.tenureDateCheck).toBe(false)

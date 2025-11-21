@@ -57,6 +57,7 @@ export class KYC extends Namespace {
      * @returns Promise<TenureCheckResult>: Object containing boolean value for the tenure date check and optional contract type, if known.           
      */   
     async checkTenure(params: TenureCheckParams): Promise<TenureCheckResult> {
+        console.log(params)
         const response: any = await this.api.kycTenure.checkTenure(
             params
         );

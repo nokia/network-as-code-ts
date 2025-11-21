@@ -156,7 +156,6 @@ class KYCTenureAPI {
         const body: any = {
             phoneNumber: params.phoneNumber,
         }
-
         body.tenureDate = params.tenureDate instanceof Date ? 
             body.tenureDate = params.tenureDate.toISOString().split('T')[0] :
             params.tenureDate
