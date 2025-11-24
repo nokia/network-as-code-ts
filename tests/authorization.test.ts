@@ -2,7 +2,6 @@ import fetchMock from '@fetch-mock/jest';
 import { randomUUID } from "crypto";
 
 import { NetworkAsCodeClient } from "../src";
-import { Device } from "../src/models/device";
 import {
     APIError,
     ServiceError
@@ -23,13 +22,9 @@ jest.mock("node-fetch", () => {
 
 let client: NetworkAsCodeClient;
 
-let device: Device;
 
 beforeAll(() => {
     client = new NetworkAsCodeClient("TEST_TOKEN");
-    device = client.devices.get({
-        phoneNumber: "+3637123456"
-    });
 });
 
 beforeEach(() => {
@@ -44,48 +39,62 @@ afterEach(() => {
 describe("Number Verification successfull authorization tests", () => {
     beforeEach(() => {
         fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
-            (_: any, req: any): any => {
-                expect(req.headers).toEqual({
-                    "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                    "X-RapidAPI-Key": 'TEST_TOKEN',
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
+        "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
+            {
+               body: {
                     client_id: "123456",
                     client_secret: "secret123"
-                })
-            })}       
-        );
-
-        fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
-            (_: any, req: any): any => {
-                expect(req.headers).toEqual({
+                } 
+            },
+            { 
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
-                });
+                }
             },
-            { response: Promise.resolve({
-                body: JSON.stringify({
-                    fast_flow_csp_auth_endpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url"
-                }),
-            })
-            }       
-        );
- 
+        )       
+
+        fetchMock.mockGlobal().get(
+        "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
+            {
+               body: {
+                    fast_flow_csp_auth_endpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url",
+                } 
+            },
+            { 
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
+            },
+        )       
     });
 
     it("should get the credentials", async () => {
         expect(await client.authorization.credentials()).toEqual({clientId: "123456", clientSecret: "secret123"});
+        expect(fetchMock).toHaveFetched("https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",  {
+            method: "GET",
+            headers:  {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+            }
+        });
     });
 
     it("should get the endpoints", async () => {
         expect(await client.authorization.endpoints())
         .toEqual({fastFlowCspAuthEndpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url"});
+        expect(fetchMock).toHaveFetched("https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration"  ,  {
+            method: "GET",
+            headers:  {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+            }
+        });
     });
     
     it("should create and return an authorization link", async () => {
@@ -106,90 +115,126 @@ describe("Number Verification successfull authorization tests", () => {
 
 describe("Authorization errors tests", () => {
     it("credential fetching should return APIError", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials"
         fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
-            (_: any, req: any): any => {
-                expect(req.headers).toEqual({
+           url, 
+            {
+                status: 400
+            },
+            { 
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                    "X-RapidAPI-Key": "TEST_TOKEN",
-                });
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             },
-            { response: Promise.resolve({
-                status: 400
-                })
-            });
+        )       
         try {
             await client.authorization.credentials();
         } catch (error) {
             expect(error).toBeInstanceOf(APIError);
-        }  
+            }  
+        expect(fetchMock).toHaveFetched(url,  {
+            method: "GET",
+            headers:  {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+            }
+        });
         }
     );
 
     it("credential fetching should return ServiceError", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials"
         fetchMock.mockGlobal().get(
-        "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
-        (_: any, req: any): any => {
-            expect(req.headers).toEqual({
-                "Content-Type": "application/json",
-                "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                "X-RapidAPI-Key": "TEST_TOKEN",
-            });
-        },
-        { response: Promise.resolve({
-            status: 500
-            })
-        });
+           url, 
+            {
+                status: 500
+            },
+            { 
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
+            },
+        )       
         try {
             await client.authorization.credentials();
         } catch (error) {
             expect(error).toBeInstanceOf(ServiceError);
         }
+        expect(fetchMock).toHaveFetched(url,  {
+            method: "GET",
+            headers:  {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+            }
+        });
         }
     );
 
     it("endpoint fetching should return ServiceError", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration"
         fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
-            (_: any, req: any): any => {
-                expect(req.headers).toEqual({
+           url, 
+            {
+                status: 500
+            },
+            { 
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
-                });
+                }
             },
-            { response: Promise.resolve({
-                status: 500
-                })
-            });
+        )       
         try {
             await client.authorization.endpoints();
         } catch (error) {
             expect(error).toBeInstanceOf(ServiceError);
         }
+        expect(fetchMock).toHaveFetched(url,  {
+            method: "GET",
+            headers:  {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+            }
+        });
         }
     );
 
     it("endpoint fetching should return APIError", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration"
         fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
-            (_: any, req: any): any => {
-                expect(req.headers).toEqual({
+           url, 
+            {
+                status: 400
+            },
+            { 
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
-                });
+                }
             },
-            { response: Promise.resolve({
-                status: 400
-                })
-            });
+        )       
         try {
             await client.authorization.endpoints();
         } catch (error) {
             expect(error).toBeInstanceOf(APIError);
         }
+        expect(fetchMock).toHaveFetched(url,  {
+            method: "GET",
+            headers:  {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN',
+            }
+        });
         }
     );
 });

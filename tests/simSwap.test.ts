@@ -45,22 +45,28 @@ afterEach(() => {
 
 describe("Sim Swap", () => {
     it("should get the latest sim swap date", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "3637123456"
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
+            url,
+            {
+                body: {
                     latestSimChange: "2024-06-19T10:36:59.976Z"
-                })
-            })
-            }
+                }
+            },
+            { 
+                body: {
+                    phoneNumber: "3637123456"
+                }
+            },
         );
 
         const latestSimSwapDate = await device.getSimSwapDate();
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "3637123456"
+            }
+        });
         expect(latestSimSwapDate).toEqual(
             new Date(Date.parse("2024-06-19T10:36:59.976Z"))
         );
@@ -78,70 +84,56 @@ describe("Sim Swap", () => {
     });
 
     it("should return null if the response doesn't contain latestSimChange", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "3637123456"
-                });
+            url,
+            {
+               body: JSON.stringify({}) 
             },
-            { response: Promise.resolve({
-                body: JSON.stringify({})
-            })
-            }
+            { 
+                body: {
+                    phoneNumber: "3637123456"
+                }
+            },
         );
 
         const response = await device.getSimSwapDate();
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "3637123456"
+            }
+        });
         expect(response).toBeNull();
     });
 
-    it("should throw InvalidParameter error for no phone number - verifySimSwap()", async () => {
-        const device = client.devices.get({
-            networkAccessIdentifier: "testuser@open5glab.net"
-        });
-        try {
-            await device.verifySimSwap();
-        } catch (error) {
-            expect(error).toBeInstanceOf(InvalidParameterError);
-        }
-    });
-
     it("should handle null", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "3637123456"
-                });
+            url,
+            {
+               body: {
+                    latestSimSwapDate: null
+                } 
             },
-            { response: Promise.resolve({
-                body: JSON.stringify({
-                    latestSimChange: null
-                })
-            })
-            }
+            { 
+                body: {
+                    phoneNumber: "3637123456" 
+                }
+            },
         );
 
         const latestSimSwapDate = await device.getSimSwapDate();
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "3637123456"
+            }
+        });
         expect(latestSimSwapDate).toBeNull();
     });
 
     it("should raise exception on missing phone number", async () => {
-        fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/retrieve-date",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    networkAccessIdentifier: "device@testcsp.net"
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
-                    latestSimChange: null
-                })
-            })
-            }
-        );
-
         const deviceWithoutNumber = client.devices.get({
             networkAccessIdentifier: "device@testcsp.net"
         });
@@ -152,60 +144,58 @@ describe("Sim Swap", () => {
     });
 
     it("should verify sim swap without max age", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "3637123456"
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
+            url,
+            {
+               body: {
                     swapped: true
-                })
-            })
-            }
+                } 
+            },
+            { 
+                body: {
+                    phoneNumber: "3637123456" 
+                }
+            },
         );
 
         expect(await device.verifySimSwap()).toEqual(true);
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "3637123456"
+            }
+        });
     });
 
     it("should verify sim swap with max age", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
+            url,
+            {
+               body: {
+                    swapped: true
+                } 
+            },
+            { 
+                body: {
                     phoneNumber: "3637123456",
                     maxAge: 120
-                });
+                }
             },
-            { response: Promise.resolve({
-                body: JSON.stringify({
-                    swapped: true
-                })
-            })
-            }
         );
 
         expect(await device.verifySimSwap(120)).toEqual(true);
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "3637123456",
+                maxAge: 120
+            }
+        });
     });
 
     it("verify should raise exception on missing phone number", async () => {
-        fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/sim-swap/sim-swap/v0/check",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    networkAccessIdentifier: "device@testcsp.net"
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
-                    latestSimChange: null
-                })
-            })
-            }
-        );
-
         const deviceWithoutNumber = client.devices.get({
             networkAccessIdentifier: "device@testcsp.net"
         });

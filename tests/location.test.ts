@@ -62,10 +62,21 @@ describe("Location", () => {
     });
 
     it("should send location retrieval request to the right URL with right parameters", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/location-retrieval/v0/retrieve"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/location-retrieval/v0/retrieve",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
+            url,
+               { 
+                body: JSON.stringify({
+                    area: {
+                        center: {
+                            longitude: 0.0,
+                            latitude: 0.0,
+                        },
+                    }
+                }),
+            },
+            {
+                body: {
                     device: {
                         networkAccessIdentifier: "test-device@testcsp.net",
                         ipv4Address: {
@@ -75,24 +86,28 @@ describe("Location", () => {
                         },
                     },
                     maxAge: 60,
-                });
+
+                }
             },
-               { response: Promise.resolve({
-                    body: JSON.stringify({
-                        area: {
-                            center: {
-                                longitude: 0.0,
-                                latitude: 0.0,
-                            },
-                        }
-                    }),
-                })
-            }
         );
 
         const location = await device.getLocation(60);
 
         expect(location).toBeDefined();
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    maxAge: 60,
+            }
+        });
     });
 
     it("should get location from a valid response", async () => {
@@ -136,10 +151,16 @@ describe("Location", () => {
     });
 
     it("should send location verification request to the right URL with right parameters", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/location-verification/v1/verify"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/location-verification/v1/verify",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
+            url,
+              {
+                body: {
+                    verificationResult: "TRUE",
+                    },
+                },
+               {
+                body: {
                     device: {
                         networkAccessIdentifier: "test-device@testcsp.net",
                         ipv4Address: {
@@ -157,19 +178,35 @@ describe("Location", () => {
                         radius: 10_000,
                     },
                     maxAge: 60,
-                });
-            },
-              { response: Promise.resolve({
-                    body: JSON.stringify({
-                        verificationResult: "TRUE",
-                    }),
-                })
+                }
             }
         );
 
         const location = await device.verifyLocation(0, 0, 10_000);
 
         expect(location).toBeDefined();
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    area: {
+                        areaType: "CIRCLE",
+                        center: {
+                            latitude: 0.0,
+                            longitude: 0.0,
+                        },
+                        radius: 10_000,
+                    },
+                    maxAge: 60,
+            }
+        });
     });
 
     it("should return true if location verification response is TRUE", async () => {

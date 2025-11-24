@@ -69,10 +69,18 @@ describe("Congestion Insights", () => {
     });
 
     it("should send correct payload", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
+            url,
+            {
+                body: {
+                        subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
+                        startedAt: "2024-04-15T08:45:37.210563Z",
+                        expiresAt: "2024-04-20T00:00:00Z",
+                }
+            },
+            { 
+                body: {
                     device: {
                         networkAccessIdentifier: "test-device@testcsp.net",
                         ipv4Address: {
@@ -86,16 +94,8 @@ describe("Congestion Insights", () => {
                         notificationAuthToken: "c8974e592c2fa383d4a3960714",
                     },
                     subscriptionExpireTime: "2024-04-20T00:00:00Z",
-                });
+                }
             },
-                
-               { response: Promise.resolve(
-                    JSON.stringify({
-                        subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
-                        startedAt: "2024-04-15T08:45:37.210563Z",
-                        expiresAt: "2024-04-20T00:00:00Z",
-                    })
-                )}
         );
 
         await client.insights.subscribeToCongestionInfo(
@@ -104,22 +104,37 @@ describe("Congestion Insights", () => {
             "https://example.com/notify",
             "c8974e592c2fa383d4a3960714"
         );
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    webhook: {
+                        notificationUrl: "https://example.com/notify",
+                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
+                    },
+                    subscriptionExpireTime: "2024-04-20T00:00:00Z",
+            }
+        });
     });
 
     it("can get a subscription by id", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions/4edb6919-8e91-406a-ab84-900a420af860"
         fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions/4edb6919-8e91-406a-ab84-900a420af860",
-            (_: any, req: any): any => {
-                expect(req.method).toBe("GET");
-            },
-              { response: Promise.resolve({
-                    status: 200,
-                    body: JSON.stringify({
+            url,
+            {
+                body: {
                         subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
                         startedAt: "2024-04-15T08:45:37.210563Z",
                         expiresAt: "2024-04-20T00:00:00Z",
-                    }),
-                })}       
+                }
+            },
         );
 
         const subscription = await client.insights.get(
@@ -129,12 +144,17 @@ describe("Congestion Insights", () => {
         expect(subscription.subscriptionId).toBe(
             "4edb6919-8e91-406a-ab84-900a420af860"
         );
+        expect(fetchMock).toHaveFetched(url, {
+            method: "GET",
+        });
     });
 
     it("can get list of subscriptions", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions"
         fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",
-            JSON.stringify([
+            url,
+            {
+                body: JSON.stringify([
                 {
                     subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
                     startedAt: "2024-04-15T08:45:37.210563Z",
@@ -150,19 +170,31 @@ describe("Congestion Insights", () => {
                     startedAt: "2024-04-15T08:45:37.210563Z",
                     expiresAt: "2024-04-20T00:00:00Z",
                 },
-            ])
+                ])
+            },
         );
 
         const subscriptions = await client.insights.getSubscriptions();
 
         expect(subscriptions.length).toBe(3);
+        expect(fetchMock).toHaveFetched(url, {
+            method: "GET",
+        });
     });
 
     it("can handle a subscriptionExpireTime given as a Date", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
+            url,
+            {
+                body: {
+                        subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
+                        startedAt: "2024-04-15T08:45:37.210563Z",
+                        expiresAt: "2024-01-11T11:53:20.000Z",
+                }
+            },
+            { 
+                body: {
                     device: {
                         networkAccessIdentifier: "test-device@testcsp.net",
                         ipv4Address: {
@@ -175,17 +207,9 @@ describe("Congestion Insights", () => {
                         notificationUrl: "https://example.com/notify",
                         notificationAuthToken: "c8974e592c2fa383d4a3960714",
                     },
-                    subscriptionExpireTime: "2024-01-11T11:53:20.000Z",
-                });
-            }, 
-                { response: Promise.resolve(
-                    JSON.stringify({
-                        subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
-                        startedAt: "2024-04-15T08:45:37.210563Z",
-                        expiresAt: "2024-01-11T11:53:20.000Z",
-                    })
-                )}
-            
+                    subscriptionExpireTime: "2024-01-11T11:53:20.000Z"                                                                                                                         ,
+                }
+            },
         );
 
         const subscription = await client.insights.subscribeToCongestionInfo(
@@ -197,6 +221,24 @@ describe("Congestion Insights", () => {
 
         expect(subscription.startsAt instanceof Date).toBeTruthy();
         expect(subscription.expiresAt instanceof Date).toBeTruthy();
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    webhook: {
+                        notificationUrl: "https://example.com/notify",
+                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
+                    },
+                    subscriptionExpireTime: "2024-01-11T11:53:20.000Z"                                                                                                                         ,
+            }
+        });
     });
 
     it("can delete a subscription", async () => {
@@ -218,25 +260,33 @@ describe("Congestion Insights", () => {
 
         fetchMock.mockGlobal().delete(
             "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions/4edb6919-8e91-406a-ab84-900a420af860",
-            (_: any, req: any): any => {
-                expect(req.method).toBe("DELETE");
-            },
-                { response: Promise.resolve({
+                { 
                     status: 200,
-                })}
+                }
         );
 
         await subscription.delete();
 
         expect(fetchMock.callHistory.calls().length).toBe(2);
+        expect(fetchMock).toHaveFetched("https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions/4edb6919-8e91-406a-ab84-900a420af860", {
+            method: "DELETE",
+        });
     });
 
     it("should poll congestion level of given time range", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/query"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/query",
-            (_: any, req: any): any => {
-                expect(req.method).toBe("POST");
-                expect(JSON.parse(req.body.toString())).toEqual({
+            url,
+            {
+                body: JSON.stringify([{
+                        timeIntervalStart: "2024-08-20T21:00:00+0000",
+                        timeIntervalStop: "2024-08-20T21:05:00+0000",
+                        congestionLevel: "medium",
+                        confidenceLevel: 50
+                }])
+            },
+            { 
+                body: {
                     device: {
                         networkAccessIdentifier: "test-device@testcsp.net",
                         ipv4Address: {
@@ -247,17 +297,8 @@ describe("Congestion Insights", () => {
                     },
                     start: "2024-04-15T05:11:30.961Z",
                     end: "2024-04-16T05:11:30.000Z",
-                });
+                }
             },
-                { response: Promise.resolve([
-                    {
-                        timeIntervalStart: "2024-08-20T21:00:00+0000",
-                        timeIntervalStop: "2024-08-20T21:05:00+0000",
-                        congestionLevel: "medium",
-                        confidenceLevel: 50
-                    }
-                ])}
-            
         );
 
         const congestion = await device.getCongestion(
@@ -267,5 +308,20 @@ describe("Congestion Insights", () => {
 
         expect(congestion.length).toBe(1)
         expect(congestion[0].level).toBe("medium")
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    start: "2024-04-15T05:11:30.961Z",
+                    end: "2024-04-16T05:11:30.000Z",
+            }
+        });
     });
 });
