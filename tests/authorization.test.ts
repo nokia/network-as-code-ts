@@ -121,13 +121,6 @@ describe("Authorization errors tests", () => {
             {
                 status: 400
             },
-            { 
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                    "X-RapidAPI-Key": 'TEST_TOKEN',
-                }
-            },
         )       
         try {
             await client.authorization.credentials();
@@ -151,13 +144,6 @@ describe("Authorization errors tests", () => {
            url, 
             {
                 status: 500
-            },
-            { 
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                    "X-RapidAPI-Key": 'TEST_TOKEN',
-                }
             },
         )       
         try {
@@ -183,13 +169,6 @@ describe("Authorization errors tests", () => {
             {
                 status: 500
             },
-            { 
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                    "X-RapidAPI-Key": 'TEST_TOKEN',
-                }
-            },
         )       
         try {
             await client.authorization.endpoints();
@@ -213,13 +192,6 @@ describe("Authorization errors tests", () => {
            url, 
             {
                 status: 400
-            },
-            { 
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
-                    "X-RapidAPI-Key": 'TEST_TOKEN',
-                }
             },
         )       
         try {
