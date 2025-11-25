@@ -869,12 +869,6 @@ describe("QoD", () => {
             }
         );
 
-        
-        fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/quality-on-demand/v1/sessions?networkAccessIdentifier=testuser@open5glab.net",
-            { body: mockResponse }
-        );
-
         const sessions = await device.sessions();
 
         expect(fetchMock).toHaveFetched(
@@ -906,6 +900,19 @@ describe("QoD", () => {
         const requests = fetchMock.callHistory.calls();
         expect(requests.length).toEqual(4);
         
+        expect(fetchMock).toHaveFetched(
+            `https://network-as-code.p-eu.rapidapi.com/quality-on-demand/v1/sessions/${mockResponse[0].sessionId}`,
+                {
+                method: "DELETE"
+            }
+        );
+
+        expect(fetchMock).toHaveFetched(
+            `https://network-as-code.p-eu.rapidapi.com/quality-on-demand/v1/sessions/${mockResponse[1].sessionId}`,
+            {
+                method: "DELETE"
+            }
+        );
     });
 
     test("should not create a session without ip address", async () => {
@@ -938,6 +945,12 @@ describe("QoD", () => {
         try {
             await client.sessions.get("1234");
             expect(true).toBe(false);
+            expect(fetchMock).toHaveFetched(
+                "https://network-as-code.p-eu.rapidapi.com/quality-on-demand/v1/sessions/1234",
+                {
+                    method: "GET"
+                }
+            );
         } catch (error) {
             expect(true).toBe(true);
         }
