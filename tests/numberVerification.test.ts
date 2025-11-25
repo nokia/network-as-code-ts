@@ -67,6 +67,32 @@ afterEach(() => {
 });
 
 describe("Number Verification, verifying number tests", () => {
+    it.failing("should fail for request headers", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testState" 
+        fetchMock.mockGlobal().post(
+            url, 
+            {
+                devicePhoneNumberVerified: true
+            },
+            {
+                body: {
+                    phoneNumber: "+3637123456"
+                }
+            },
+            
+        );
+
+        await device.verifyNumber("testCode1234", "testState")
+        expect(fetchMock).toHaveFetched(url,  {
+            method: "POST",
+            headers:  {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'WRONG_TOKEN',
+            }
+        });
+    });
+
     it("should get verify number result as true with encoded state parameter in query", async () => {
         const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testSt%C3%A4%C3%A4%C3%A4%C3%A4%C3%A4" 
         fetchMock.mockGlobal().post(

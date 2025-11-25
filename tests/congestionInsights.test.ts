@@ -44,6 +44,62 @@ afterEach(() => {
 });
 
 describe("Congestion Insights", () => {
+    it.failing("should fail for request body", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions"
+        fetchMock.mockGlobal().post(
+            url, 
+            {
+                subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
+                startedAt: "2024-04-12T08:45:37.210563Z",
+                expiresAt: "2024-04-20T00:00:00Z",
+            },
+            {
+                body: {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    webhook: {
+                        notificationUrl: "https://example.com/notify",
+                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
+                    },
+                    subscriptionExpireTime: "2024-04-20T00:00:00Z",
+                }
+            }
+            
+        );
+
+        await client.insights.subscribeToCongestionInfo(
+            device,
+            "2024-04-20T00:00:00Z",
+            "https://this.should.fail/notify",
+            "c8974e592c2fa383d4a3960714"
+        );
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                    device: {
+                        networkAccessIdentifier: "test-device@testcsp.net",
+                        ipv4Address: {
+                            publicAddress: "1.1.1.2",
+                            privateAddress: "1.1.1.2",
+                            publicPort: 80,
+                        },
+                    },
+                    webhook: {
+                        notificationUrl: "https://example.com/notify",
+                        notificationAuthToken: "c8974e592c2fa383d4a3960714",
+                    },
+                    subscriptionExpireTime: "2024-04-20T00:00:00Z",
+            }
+        });
+
+    });
+
     it("should create a congestion insight subscription", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",

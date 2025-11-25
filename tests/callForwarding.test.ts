@@ -39,6 +39,31 @@ afterEach(() => {
 
 
 describe("Call Forwarding Signal", () => {
+    it.failing("should fail for request body", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/unconditional-call-forwardings"
+        fetchMock.mockGlobal().post(
+            url, 
+            {
+                active: true
+            },
+            {
+                body: {
+                    phoneNumber: "+999999991000"
+                }
+            }
+            
+        );
+
+        await device.verifyUnconditionalForwarding();
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "12345678"
+            }
+        });
+
+    });
+
     it("should verify unconditional call forwarding", async () => {
         const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3/unconditional-call-forwardings"
         fetchMock.mockGlobal().post(
