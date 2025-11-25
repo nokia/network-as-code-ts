@@ -124,8 +124,9 @@ describe("Device Status Reachability Tests", () => {
     });
 
     it("can delete a reachability subscription", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/device-status/device-reachability-status-subscriptions/v0.7/subscriptions"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-status/device-reachability-status-subscriptions/v0.7/subscriptions",
+            url,
             JSON.stringify({
                 id: "89cc1355-2ff1-4091-a935-54817c8212604",
                 sink: "https://example.com/notify",
@@ -159,7 +160,7 @@ describe("Device Status Reachability Tests", () => {
         );
 
         fetchMock.mockGlobal().delete(
-            "https://network-as-code.p-eu.rapidapi.com/device-status/device-reachability-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c8212604",
+            `${url}/89cc1355-2ff1-4091-a935-54817c8212604`,
                 { 
                     status: 200,
                 }
@@ -168,7 +169,7 @@ describe("Device Status Reachability Tests", () => {
         await subscription.delete()
 
         expect(fetchMock.callHistory.calls().length).toBe(2);
-        expect(fetchMock).toHaveFetched("https://network-as-code.p-eu.rapidapi.com/device-status/device-reachability-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c8212604", {
+        expect(fetchMock).toHaveFetched(`${url}/89cc1355-2ff1-4091-a935-54817c8212604`, {
             method: "DELETE",
         });
     });
@@ -211,7 +212,7 @@ describe("Device Status Reachability Tests", () => {
         expect(subscription.eventSubscriptionId).toBe(
             "89cc1355-2ff1-4091-a935-54817c821260"
         );
-        expect(fetchMock).toHaveFetched("https://network-as-code.p-eu.rapidapi.com/device-status/device-reachability-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c821260" , {
+        expect(fetchMock).toHaveFetched(url , {
             method: "GET",
         });
     });
@@ -553,8 +554,9 @@ describe("Device Status Roaming Tests", () => {
     });
 
     it("can fetch a roaming subscription by id", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/device-status/device-roaming-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c821260"
         fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/device-status/device-roaming-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c821260",
+            url,
                { 
                 status: 200,
                 body: JSON.stringify({
@@ -590,14 +592,15 @@ describe("Device Status Roaming Tests", () => {
         expect(subscription.eventSubscriptionId).toBe(
             "89cc1355-2ff1-4091-a935-54817c821260"
         );
-        expect(fetchMock).toHaveFetched("https://network-as-code.p-eu.rapidapi.com/device-status/device-roaming-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c821260", {
+        expect(fetchMock).toHaveFetched(url, {
             method: "GET",
         });
     });
 
      it("can delete a roaming subscription", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/device-status/device-roaming-status-subscriptions/v0.7/subscriptions"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/device-status/device-roaming-status-subscriptions/v0.7/subscriptions",
+            url,
             JSON.stringify({
                 id: "89cc1355-2ff1-4091-a935-54817c8212604",
                 sink: "https://example.com/notify",
@@ -632,7 +635,7 @@ describe("Device Status Roaming Tests", () => {
 
 
         fetchMock.mockGlobal().delete(
-            "https://network-as-code.p-eu.rapidapi.com/device-status/device-roaming-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c8212604",
+            `${url}/89cc1355-2ff1-4091-a935-54817c8212604`,
                 { 
                     status: 200,
                 }
@@ -641,7 +644,7 @@ describe("Device Status Roaming Tests", () => {
         await subscription.delete();
 
         expect(fetchMock.callHistory.calls().length).toBe(2);
-        expect(fetchMock).toHaveFetched("https://network-as-code.p-eu.rapidapi.com/device-status/device-roaming-status-subscriptions/v0.7/subscriptions/89cc1355-2ff1-4091-a935-54817c8212604", {
+        expect(fetchMock).toHaveFetched(`${url}/89cc1355-2ff1-4091-a935-54817c8212604`, {
             method: "DELETE",
             });
     });

@@ -207,7 +207,7 @@ describe("Congestion Insights", () => {
                         notificationUrl: "https://example.com/notify",
                         notificationAuthToken: "c8974e592c2fa383d4a3960714",
                     },
-                    subscriptionExpireTime: "2024-01-11T11:53:20.000Z"                                                                                                                         ,
+                    subscriptionExpireTime: "2024-01-11T11:53:20.000Z",
                 }
             },
         );
@@ -236,14 +236,15 @@ describe("Congestion Insights", () => {
                         notificationUrl: "https://example.com/notify",
                         notificationAuthToken: "c8974e592c2fa383d4a3960714",
                     },
-                    subscriptionExpireTime: "2024-01-11T11:53:20.000Z"                                                                                                                         ,
+                    subscriptionExpireTime: "2024-01-11T11:53:20.000Z",
             }
         });
     });
 
     it("can delete a subscription", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions",
+            url,
             JSON.stringify({
                 subscriptionId: "4edb6919-8e91-406a-ab84-900a420af860",
                 startedAt: "2024-04-15T08:45:37.210563Z",
@@ -259,7 +260,7 @@ describe("Congestion Insights", () => {
         );
 
         fetchMock.mockGlobal().delete(
-            "https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions/4edb6919-8e91-406a-ab84-900a420af860",
+            `${url}/4edb6919-8e91-406a-ab84-900a420af860`,
                 { 
                     status: 200,
                 }
@@ -268,7 +269,7 @@ describe("Congestion Insights", () => {
         await subscription.delete();
 
         expect(fetchMock.callHistory.calls().length).toBe(2);
-        expect(fetchMock).toHaveFetched("https://network-as-code.p-eu.rapidapi.com/congestion-insights/v0/subscriptions/4edb6919-8e91-406a-ab84-900a420af860", {
+        expect(fetchMock).toHaveFetched(`${url}/4edb6919-8e91-406a-ab84-900a420af860`, {
             method: "DELETE",
         });
     });
