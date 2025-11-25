@@ -78,7 +78,7 @@ describe("KYC Check Tenure", () => {
     it("KYC checkTenure uses date", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
-                        {
+            {
                 body: {
                     tenureDateCheck: true,
                     contractType: "Business"

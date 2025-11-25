@@ -73,6 +73,8 @@ export class GeofencingAPI {
         if (params.initialEvent) {
             body.config.initialEvent = params.initialEvent;
         }
+
+        console.log(JSON.stringify(body))
         const response = await fetch(`${this.baseUrl}/subscriptions`, {
             method: "POST",
             headers: this.headers,
