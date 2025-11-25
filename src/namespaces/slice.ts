@@ -98,6 +98,7 @@ export class Slices extends Namespace {
 
         const slices: Slice[] = [];
         data.forEach(async (slice: any) => {
+            console.log("INSIDE THE FOR LOOP")
             const sliceInstance = new Slice(
                 this.api,
                 slice.state,

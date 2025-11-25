@@ -416,7 +416,12 @@ describe("Geofencing", () => {
         expect(fetchMock).toHaveFetched(
             "https://network-as-code.p-eu.rapidapi.com/geofencing-subscriptions/v0.3/subscriptions/de87e438-58b4-42c3-9d49-0fbfbd878305",
             {
-                method: "GET"
+                method: "GET",
+                headers:  {
+                        "Content-Type": "application/json",
+                        "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                        "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             }
         );
         expect(geofencingSubscription.eventSubscriptionId).toBe("de87e438-58b4-42c3-9d49-0fbfbd878305")
@@ -495,7 +500,12 @@ describe("Geofencing", () => {
         expect(fetchMock).toHaveFetched(
             "https://network-as-code.p-eu.rapidapi.com/geofencing-subscriptions/v0.3/subscriptions",
             {
-                method: "GET"
+                method: "GET",
+                headers:  {
+                        "Content-Type": "application/json",
+                        "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                        "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             }
         );        
 

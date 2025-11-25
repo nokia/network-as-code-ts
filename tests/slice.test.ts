@@ -314,11 +314,6 @@ describe("Slicing", () => {
         const mockSlices: any = [];
 
         fetchMock.mockGlobal().get(
-            `https://network-as-code.p-eu.rapidapi.com/device-attach/v0/attachments`,
-            { body: JSON.stringify([]) }
-        );
-
-        fetchMock.mockGlobal().get(
             "https://network-as-code.p-eu.rapidapi.com/slice/v1/slices",
             { body: JSON.stringify(mockSlices) }
         );
@@ -336,15 +331,6 @@ describe("Slicing", () => {
                 }
             }
         );
-/* EI TOIMIII, WHY?
-        expect(fetchMock).toHaveFetched(
-            `https://network-as-code.p-eu.rapidapi.com/device-attach/v0/attachments`,
-            {
-                method: "GET",,
-                body: JSON.stringify([])
-            }
-        );
-        */
 
         expect(slices.length).toEqual(0);
     });
@@ -759,7 +745,12 @@ describe("Slicing", () => {
         expect(fetchMock).toHaveFetched(
             "https://network-as-code.p-eu.rapidapi.com/slice/v1/slices/sliceone",
             {
-                method: "DELETE"
+                method: "DELETE",
+                headers:  {
+                        "Content-Type": "application/json",
+                        "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                        "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             }
         );
 
@@ -802,14 +793,17 @@ describe("Slicing", () => {
             }
         );
 
-        /* DOESNT WOKR, WHYYYYYYY?
         expect(fetchMock).toHaveFetched(
             `https://network-as-code.p-eu.rapidapi.com/device-attach/v0/attachments`,
             {
-                method: "GET"
+                method: "GET",
+                headers:  {
+                        "Content-Type": "application/json",
+                        "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                        "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             }
-        );*/
-
+        );
 
         fetchMock.mockGlobal().post(
             `https://network-as-code.p-eu.rapidapi.com/device-attach/v0/attachments`,
@@ -1169,10 +1163,7 @@ describe("Slicing", () => {
                 { body: JSON.stringify([]) }
             );
             const slice = await client.slices.get(MOCK_SLICE["slice"]["name"]);
-            fetchMock.mockGlobal().delete(
-                `https://network-as-code.p-eu.rapidapi.com/device-attach/v0/attachments/attachment-1`,
-                { body: JSON.stringify({}) }
-            );
+
             await slice.detach(device);
             
         } catch (error) {
@@ -1182,24 +1173,26 @@ describe("Slicing", () => {
         expect(fetchMock).toHaveFetched(
             `https://network-as-code.p-eu.rapidapi.com/slice/v1/slices/${MOCK_SLICE.slice.name}`,
             {
-                method: "GET"
+                method: "GET",
+                headers:  {
+                        "Content-Type": "application/json",
+                        "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                        "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             }
         );
 
         expect(fetchMock).toHaveFetched(
             `https://network-as-code.p-eu.rapidapi.com/device-attach/v0/attachments`,
             {
-                method: "GET"
+                method: "GET",
+                headers:  {
+                        "Content-Type": "application/json",
+                        "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                        "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             }
         );
-
-        /* NOT WORKING WHY?
-        expect(fetchMock).toHaveFetched(
-            `https://network-as-code.p-eu.rapidapi.com/device-attach/v0/attachments/attachment-1`,
-            {
-                method: "DELETE"
-            }
-        );*/
     });
 
     it("should get application attachment", async () => {
@@ -1216,7 +1209,12 @@ describe("Slicing", () => {
         expect(fetchMock).toHaveFetched(
             `https://network-as-code.p-eu.rapidapi.com/device-attach/v0/attachments/4f11d02d-e661-4e4b-b623-55292a431c60`,
             {
-                method: "GET"
+                method: "GET",
+                headers:  {
+                        "Content-Type": "application/json",
+                        "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                        "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             }
         );
         expect(response.nac_resource_id).toEqual(
@@ -1262,7 +1260,12 @@ describe("Slicing", () => {
         expect(fetchMock).toHaveFetched(
             `https://network-as-code.p-eu.rapidapi.com/device-attach/v0/attachments`,
             {
-                method: "GET"
+                method: "GET",
+                headers:  {
+                        "Content-Type": "application/json",
+                        "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                        "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             }
         );
         expect(response.length).toEqual(3);
@@ -1285,7 +1288,12 @@ describe("Slicing", () => {
         expect(fetchMock).toHaveFetched(
             `https://network-as-code.p-eu.rapidapi.com/slice/v1/slices/${MOCK_SLICE.slice.name}`,
             {
-                method: "GET"
+                method: "GET",
+                headers:  {
+                        "Content-Type": "application/json",
+                        "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                        "X-RapidAPI-Key": 'TEST_TOKEN',
+                }
             }
         );
     });
