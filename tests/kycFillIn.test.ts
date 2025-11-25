@@ -160,4 +160,60 @@ describe("KYC Fill-In", () => {
         expect(result.nationality).toBeNull();
         expect(result.gender).toEqual("Male");
     });
+
+    it.failing("Should fail for request body", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in ",
+            {
+                body: {
+                    phoneNumber:"+99999991001",
+                    idDocument:"12345678l",
+                    name:"Arjona",
+                    givenName:"Aerica",
+                    familyName:"Sanchez1",
+                    nameKanaHankaku:"sanchez",
+                    nameKanaZenkaku:"S a n c h e z",
+                    middleNames:"Sanchez1",
+                    familyNameAtBirth:"YYYY",
+                    address:"Tokyo-to Chiyoda-ku Iidabashi 3-10-1",
+                    streetName:"Nicolas Salmeron",
+                    streetNumber:"4",
+                    postalCode:"1028460",
+                    region:"Tokyo",
+                    locality:"ZZZZ",
+                    country:"JP",
+                    houseNumberExtension:"36",
+                    birthdate:null,
+                    email:null,
+                    gender:null,
+                    cityOfBirth:null,
+                    countryOfBirth:null,
+                    nationality:null,
+                }
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN'
+                },
+                body: {
+                        phoneNumber: "+99999991001",
+                    }
+            });
+
+        const result = await client.kyc.requestCustomerInfo(
+            "+99999991001"
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4/fill-in ",
+            {
+                method: "POST",
+                body: {
+                        phoneNumber: "+1234567",
+                    }
+            }
+        );
+    });
 });

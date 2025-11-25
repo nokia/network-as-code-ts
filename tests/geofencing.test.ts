@@ -501,4 +501,118 @@ describe("Geofencing", () => {
 
         expect(subscriptions.length).toBe(2)
     })
-})
+
+    it.failing("Should fail for request body", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/geofencing-subscriptions/v0.3/subscriptions",
+            { 
+                body: {
+                    "protocol": "HTTP",
+                    "sink": "https://example.com/",
+                    "types": [
+                        "org.camaraproject.geofencing-subscriptions.v0.area-entered"
+                    ],
+                    "config": {
+                        "subscriptionDetail": {
+                            "device": {
+                                "networkAccessIdentifier": "123456789@domain.com",
+                                "phoneNumber": "+123456789",
+                                "ipv4Address": {
+                                    "publicAddress": "1.1.1.2",
+                                    "publicPort": 80
+                                },
+                                "ipv6Address": "2001:db8:85a3:8d3:1319:8a2e:370:7344"
+                            },
+                            "area": {
+                                "areaType": "CIRCLE",
+                                "center": {
+                                    "latitude": -90,
+                                    "longitude": -180
+                                },
+                                "radius": 2001
+                            }
+                        },
+                        "subscriptionExpireTime": "2025-01-23T10:40:30.616Z",
+                        "subscriptionMaxEvents": 1,
+                        "initialEvent": false
+                    },
+                    "id": "de87e438-58b4-42c3-9d49-0fbfbd878305",
+                    "startsAt": "2025-01-23T10:40:30.616Z"
+                }
+            },
+            { 
+                body: {
+                    "protocol":"HTTP",
+                    "sink":"https://example.com/",
+                    "types":["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
+                    "config":{
+                        "subscriptionDetail":{
+                            "device":{
+                                "networkAccessIdentifier":"testuser@open5glab.net",
+                                "ipv4Address":{
+                                    "publicAddress":"1.1.1.2",
+                                    "publicPort":80
+                                }
+                            },
+                            "area":{
+                                "areaType":"CIRCLE,"
+                                ,"center":{
+                                    "latitude":-90,
+                                    "longitude":-180
+                                },
+                                "radius":2001
+                            }
+                        },
+                        "subscriptionExpireTime":"2025-01-23T10:40:30.616Z",
+                        "subscriptionMaxEvents":1
+                    }
+                }
+            }
+        );
+
+        const geofencingSubscription = await client.geofencing.subscribe(
+            device,
+            {
+                sink: "https://example.com/",
+                types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
+                area: {areaType: "CIRCLE,", center: {latitude: -90, longitude: -180}, radius: 2001},
+                subscriptionExpireTime: new Date("2025-01-23T10:40:30.616Z"),
+                subscriptionMaxEvents: 1,
+                initialEvent: false
+            }
+        )
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/geofencing-subscriptions/v0.3/subscriptions",
+            {
+                method: "POST",
+                body: {
+                    "protocol":"wrong",
+                    "sink":"wrong",
+                    "types":["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
+                    "config":{
+                        "subscriptionDetail":{
+                            "device":{
+                                "networkAccessIdentifier":"testuser@open5glab.net",
+                                "ipv4Address":{
+                                    "publicAddress":"0.0.0.0",
+                                    "publicPort":80
+                                }
+                            },
+                            "area":{
+                                "areaType":"WRONG,"
+                                ,"center":{
+                                    "latitude":-90,
+                                    "longitude":-180
+                                },
+                                "radius":2001
+                            }
+                        },
+                        "subscriptionExpireTime":"2025-01-23T10:40:30.616Z",
+                        "subscriptionMaxEvents":1
+                    }
+                }
+            }
+        );
+    });
+});

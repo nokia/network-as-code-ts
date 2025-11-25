@@ -1416,4 +1416,30 @@ describe("Slicing", () => {
             }
         );
     });
+
+    it.failing("Should fail for request body", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/slice/v1/slices",
+            { body: JSON.stringify(MOCK_SLICE) }
+        );
+
+        const newSlice = await client.slices.create(
+            { mcc: "236", mnc: "30" },
+            { serviceType: "eMBB", differentiator: "AAABBB" },
+            "https://example.com/notify"
+        );
+
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/slice/v1/slices",
+            {
+                method: "POST",
+                body: {
+                    "networkIdentifier":{"mcc":"wrong","mnc":"wrong"},
+                    "sliceInfo":{"serviceType":"wrong","differentiator":"wrong"},
+                    "notificationUrl":"wrong"
+                }
+            }
+        );
+    });
 });

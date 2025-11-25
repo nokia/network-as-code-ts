@@ -207,4 +207,46 @@ describe("KYC Check Tenure", () => {
 
         expect(result.tenureDateCheck).toBe(false)
     });
+
+    it.failing("Should fail for request body", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                body: {
+                    tenureDateCheck: true,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN'
+                }
+            }
+        );
+
+        const result = await client.kyc.checkTenure(
+            {
+                phoneNumber: "+99999991000",
+                tenureDate: "2023-08-22"
+            }
+
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+12345678",
+                    tenureDate: "0000-00-00"
+                }
+            }
+        );
+    });
 });

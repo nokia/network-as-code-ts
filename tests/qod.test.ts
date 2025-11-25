@@ -977,4 +977,87 @@ describe("QoD", () => {
     
         expect(sessions.length).toEqual(0);
     });
+
+    it.failing("Should fail for request body", async () => {
+        let device = client.devices.get({
+            networkAccessIdentifier: "test-device@testcsp.net",
+            ipv4Address: {
+                publicAddress: "1.1.1.2",
+                privateAddress: "1.1.1.2",
+                publicPort: 80,
+            },
+            phoneNumber: "9382948473",
+        });
+        let mockResponse = {
+            sessionId: "08305343-7ed2-43b7-8eda-4c5ae9805bd0",
+            qosProfile: "QOS_L",
+            device: {
+                ipv4Address: {
+                    publicAddress: "1.1.1.2",
+                    privateAddress: "1.1.1.2",
+                    publicPort: 80,
+                },
+                networkAccessIdentifier: "test-device@testcsp.net",
+                phoneNumber: "9382948473",
+            },
+            applicationServer: {
+                ipv4Address: "5.6.7.8",
+            },
+            qosStatus: "REQUESTED",
+            statusInfo: "DURATION_EXPIRED",
+            startedAt: "2024-06-18T09:46:58.213Z",
+            expiresAt: "2024-06-18T09:47:58.213Z",
+            duration: 3600,
+        };
+
+        let mockRequestBody = {
+            qosProfile:"QOS_L",
+            device:{
+                networkAccessIdentifier:"test-device@testcsp.net",
+                phoneNumber:"9382948473",
+                ipv4Address:{
+                    publicAddress:"1.1.1.2",
+                    privateAddress:"1.1.1.2",
+                    publicPort:80
+                }
+            },
+            applicationServer:{
+                ipv4Address:"5.6.7.8"
+            },
+            duration:3600
+        };
+
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/quality-on-demand/v1/sessions",
+            { body: mockResponse },
+            { body: mockRequestBody }
+        );
+        const session = await device.createQodSession("QOS_L", {
+            duration: 3600,
+            serviceIpv4: "5.6.7.8",
+        });
+        
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/quality-on-demand/v1/sessions",
+            {
+                method: "POST",
+                body: {
+                    qosProfile:"wrong",
+                    device:{
+                        networkAccessIdentifier:"test-device@testcsp.net",
+                        phoneNumber:"1234567",
+                        ipv4Address:{
+                            publicAddress:"1.1.1.2",
+                            privateAddress:"1.1.1.2",
+                            publicPort:80
+                        }
+                    },
+                    applicationServer:{
+                        ipv4Address:"0.0.0.0"
+                    },
+                    duration:3600
+                }
+            }
+        );
+    });
 });
