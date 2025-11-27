@@ -1,5 +1,21 @@
 # Changelog
 
+## Version 7.0.0
+
+Breaking changes:
+- KYC functionality is now under `NetworkAsCodeClient.kyc.*` namespace instead of under `Device`
+
+Changes:
+- KYC Fill-in is now supported
+- KYC Tenure is now supported
+- Quality-on-Demand has been updated to support V1 API
+- Device Status now supports Device Roaming and Device Reachability V1
+- KYC functionality now has return models and types for easier use
+
+Fixes:
+- Test mocks were not properly checking request bodies and therefore
+  gave false negatives. These mocks have now been fixed
+
 ## Version 6.0.0
 
 Breaking Changes:
