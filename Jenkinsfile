@@ -13,8 +13,8 @@ pipeline {
       yaml """
         spec:
           containers:
-          - name: narwhal
-            image: nex-nef-docker-releases.repo.cci.nokia.net/nmp/narwhal:latest
+          - name: typescript
+            image: nex-nef-docker-candidates.repo.cci.nokia.net/nmp-sdk-typescript-container:latest
             workingDir: /home/jenkins
             tty: true
             command:
@@ -71,7 +71,7 @@ pipeline {
   stages {
     stage('Setup') {
       steps {
-        container('narwhal') {
+        container('typescript') {
           script {
             sh """
               npm config set proxy http://fihel1d-proxy.emea.nsn-net.net:8080
@@ -83,7 +83,7 @@ pipeline {
     }
     stage('Linting') {
       steps {
-        container('narwhal') {
+        container('typescript') {
           script {
             sh """
               npm run lint
@@ -94,7 +94,7 @@ pipeline {
     }
     stage('Test') {
       steps {
-        container('narwhal') {
+        container('typescript') {
           script {
             sh """
               npm test
@@ -105,7 +105,7 @@ pipeline {
     }
     stage('Audit') {
       steps {
-        container('narwhal') {
+        container('typescript') {
           script {
             sh """
               npm audit --prod
@@ -117,7 +117,7 @@ pipeline {
     stage('Integration Test') {
       when { expression { env.gitlabActionType != "TAG_PUSH"} }
       steps {
-        container('narwhal') {
+        container('typescript') {
           script {
             sh """
               env | grep gitlab
@@ -149,7 +149,7 @@ pipeline {
       }
     stage('Build') {
       steps {
-        container('narwhal') {
+        container('typescript') {
           script {
             sh """
               npm run build
@@ -160,7 +160,7 @@ pipeline {
     }
     stage('Installation Test'){
       steps {
-        container('narwhal') {
+        container('typescript') {
           script {
             sh '''
                 bash installation-test/installation-test-ts.sh              
@@ -174,7 +174,7 @@ pipeline {
     stage('Candidate integration tests against production') {
         when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("rc-")} }
         steps {
-            container('narwhal') {
+            container('typescript') {
                 script {
                     sh """
                     env | grep gitlab
@@ -193,7 +193,7 @@ pipeline {
     stage('Release integration tests against production') {
         when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")} }
         steps {
-            container('narwhal') {
+            container('typescript') {
                 script {
                     sh """
                     env | grep gitlab
@@ -211,7 +211,7 @@ pipeline {
     stage('Publish') {
         when { expression { env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")} }
             steps {
-                container('narwhal') {
+                container('typescript') {
                     script {
                         if(env.gitlabActionType == "TAG_PUSH" && env.gitlabBranch.contains("release-")) {
                             sh '''

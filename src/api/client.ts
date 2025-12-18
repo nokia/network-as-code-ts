@@ -18,7 +18,7 @@ import { ProxyAgent } from "proxy-agent";
 
 import { QodAPI } from "./qodApi";
 import { LocationRetrievalAPI, LocationVerifyAPI } from "./locationApi";
-import { DeviceStatusAPI } from "./deviceStatusAPI";
+import { DeviceReachabilityStatusAPI, DeviceRoamingStatusAPI } from "./deviceStatusAPI";
 import { AttachAPI, SliceAPI } from "./sliceApi";
 import { CongestionInsightsAPI } from "./congestionInsightsApi";
 import { SimSwapAPI } from "./simSwapApi";
@@ -29,20 +29,21 @@ import { CredentialsAPI } from "./credentialsApi";
 import { NumberVerificationAPI } from "./numberVerificationApi";
 import { AccessTokenAPI } from "./accessTokenApi";
 import { CallForwardingApi } from "./callForwardingApi";
-import { KYCMatchAPI } from "./kycMatchApi";
-import { KYCAgeVerificationAPI } from "./kycAgeVerificationApi";
+import { KYCMatchAPI, KYCAgeVerificationAPI, KYCTenureAPI, KYCFillInAPI } from "./kycApi";
 
-const QOS_URL = "/qod/v0";
+const QOS_URL = "/quality-on-demand/v1";
 
 const LOCATION_RETRIEVAL_URL = "/location-retrieval/v0";
 
 const LOCATION_VERIFY_URL = "/location-verification/v1";
 
-const DEVICE_STATUS_URL = "/device-status/v0";
-
 const SLICE_URL = "/slice/v1";
 
 const SLICE_ATTACH_URL = "/device-attach/v0";
+
+const DEVICE_REACHABILITY_STATUS_URL = "/device-status/device-reachability-status-subscriptions/v0.7";
+
+const DEVICE_ROAMING_STATUS_URL = "/device-status/device-roaming-status-subscriptions/v0.7";
 
 const CONGESTION_INSIGHTS_URL = "/congestion-insights/v0";
 
@@ -60,9 +61,13 @@ const NUMBER_VERIFICATION_URL =  "/passthrough/camara/v1/number-verification/num
 
 const CALL_FORWARDING_URL = "/passthrough/camara/v1/call-forwarding-signal/call-forwarding-signal/v0.3";
 
-const KYC_MATCH = "/passthrough/camara/v1/kyc-match/kyc-match/v0.3";
+const KYC_MATCH_URL = "/passthrough/camara/v1/kyc-match/kyc-match/v0.3";
 
-const KYC_AGE_VERIFICATION = "/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1"
+const KYC_AGE_VERIFICATION_URL = "/passthrough/camara/v1/kyc-age-verification/kyc-age-verification/v0.1"
+
+const KYC_CHECK_TENURE_URL = "/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1"
+
+const KYC_FILL_IN_URL = "/passthrough/camara/v1/kyc-fill-in/kyc-fill-in/v0.4";
 
 const agent = new ProxyAgent();
 
@@ -97,9 +102,10 @@ export class APIClient {
     sessions: QodAPI;
     locationRetrieval: LocationRetrievalAPI;
     locationVerify: LocationVerifyAPI;
-    deviceStatus: DeviceStatusAPI;
     slicing: SliceAPI;
     sliceAttach: AttachAPI;
+    deviceReachabilityStatus: DeviceReachabilityStatusAPI;
+    deviceRoamingStatus: DeviceRoamingStatusAPI;
     insights: CongestionInsightsAPI;
     simSwap: SimSwapAPI;
     deviceSwap: DeviceSwapAPI;
@@ -111,6 +117,8 @@ export class APIClient {
     callForwarding: CallForwardingApi;
     kycMatch: KYCMatchAPI;
     kycAgeVerification: KYCAgeVerificationAPI;
+    kycTenure: KYCTenureAPI;
+    kycFillIn: KYCFillInAPI;
 
     constructor(
         token: string,
@@ -118,7 +126,8 @@ export class APIClient {
         qosBaseUrl: string | undefined = undefined,
         locationRetrievalBaseUrl: string | undefined = undefined,
         locationVerifyBaseUrl: string | undefined = undefined,
-        deviceStatusBaseUrl: string | undefined = undefined,
+        deviceReachabilityStatusBaseUrl: string | undefined = undefined,
+        deviceRoamingStatusBaseUrl: string | undefined = undefined,
         sliceBaseUrl: string | undefined = undefined,
         sliceAttachBaseUrl: string | undefined = undefined,
         congestionInsightsBaseUrl: string | undefined = undefined,
@@ -130,7 +139,10 @@ export class APIClient {
         verificationBaseUrl: string | undefined = undefined,
         callForwardingBaseUrl: string | undefined = undefined,
         kycMatchBaseUrl: string | undefined = undefined,
-        kycAgeVerificationBaseUrl: string | undefined = undefined
+        kycAgeVerificationBaseUrl: string | undefined = undefined,
+        kycTenureBaseUrl: string | undefined = undefined,
+        kycFillInBaseUrl: string | undefined = undefined
+
     ) {
       const baseUrl = environmentBaseUrl(envMode);
       const hostname = environmentHostname(envMode);
@@ -166,15 +178,28 @@ export class APIClient {
         agent
       );
 
-      if (!deviceStatusBaseUrl) {
-        deviceStatusBaseUrl = `${baseUrl}${DEVICE_STATUS_URL}`
+      if (!deviceReachabilityStatusBaseUrl) {
+        deviceReachabilityStatusBaseUrl = `${baseUrl}${DEVICE_REACHABILITY_STATUS_URL}`
       }
 
-      this.deviceStatus = new DeviceStatusAPI(
-        deviceStatusBaseUrl,
+      this.deviceReachabilityStatus = new DeviceReachabilityStatusAPI(
+        deviceReachabilityStatusBaseUrl,
         token,
         hostname,
-        agent
+        agent,
+        baseUrl
+      );
+
+      if (!deviceRoamingStatusBaseUrl) {
+        deviceRoamingStatusBaseUrl = `${baseUrl}${DEVICE_ROAMING_STATUS_URL}`
+      }
+
+      this.deviceRoamingStatus = new DeviceRoamingStatusAPI(
+        deviceRoamingStatusBaseUrl,
+        token,
+        hostname,
+        agent,
+        baseUrl
       );
 
       if (!sliceBaseUrl) {
@@ -292,7 +317,7 @@ export class APIClient {
       );
 
       if (!kycMatchBaseUrl) {
-        kycMatchBaseUrl = `${baseUrl}${KYC_MATCH}`
+        kycMatchBaseUrl = `${baseUrl}${KYC_MATCH_URL}`
       }
 
       this.kycMatch = new KYCMatchAPI(
@@ -303,11 +328,33 @@ export class APIClient {
       );
 
       if (!kycAgeVerificationBaseUrl) {
-        kycAgeVerificationBaseUrl = `${baseUrl}${KYC_AGE_VERIFICATION}`
+        kycAgeVerificationBaseUrl = `${baseUrl}${KYC_AGE_VERIFICATION_URL}`
       }
 
       this.kycAgeVerification = new KYCAgeVerificationAPI(
         kycAgeVerificationBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!kycTenureBaseUrl) {
+        kycTenureBaseUrl = `${baseUrl}${KYC_CHECK_TENURE_URL}`
+      }
+
+      this.kycTenure = new KYCTenureAPI(
+        kycTenureBaseUrl,
+        token,
+        hostname,
+        agent
+      );
+
+      if (!kycFillInBaseUrl) {
+        kycFillInBaseUrl = `${baseUrl}${KYC_FILL_IN_URL}`
+      }
+
+      this.kycFillIn = new KYCFillInAPI(
+        kycFillInBaseUrl,
         token,
         hostname,
         agent

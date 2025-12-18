@@ -5,6 +5,7 @@ import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 import "dotenv/config";
 
+
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 
 let client: NetworkAsCodeClient;
@@ -17,21 +18,18 @@ beforeAll(() => {
     agent = new ProxyAgent()
 });
 
-describe("Qos", () => {
+describe("QoD", () => {
     let device: Device;
     let deviceWithPhoneNumber: Device;
     beforeEach(async () => {
         try {
             device = client.devices.get({
-                networkAccessIdentifier: "test-device@testcsp.net",
+                networkAccessIdentifier: "testdevice@testcsp.net",
                 ipv4Address: {
                     publicAddress: "1.1.1.2",
                     privateAddress: "1.1.1.2",
                     publicPort: 80,
-                },
-                phoneNumber: `+3670${
-                    Math.floor(Math.random() * (999999 - 123456 + 1)) + 123456
-                }`,
+                }
             });
 
             deviceWithPhoneNumber = client.devices.get({
@@ -49,6 +47,7 @@ describe("Qos", () => {
             throw error;
         }
     });
+
 
     test("should get a device", () => {
         expect((device.ipv4Address as DeviceIpv4Addr).publicAddress).toEqual(
@@ -151,6 +150,7 @@ describe("Qos", () => {
         await device.clearSessions();
     });
 
+
     test("should create a session with service port", async () => {
         const session = await device.createQodSession("QOS_L", {
             duration: 3600,
@@ -237,15 +237,14 @@ describe("Qos", () => {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
-            notificationUrl: `${notificationUrl}/notify`,
+            sink: `${notificationUrl}/notify`,
         });
 
         expect(session.status).toEqual("REQUESTED");
         expect(session.profile).toEqual("QOS_L");
-
         // Fetching the session notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/qod/${session.id}`,
+        let notification = await fetch(`${notificationUrl}/quality-on-demand/${session.id}`,
             {
                 method: "GET",
                 agent: agent
@@ -262,7 +261,7 @@ describe("Qos", () => {
         
         // Deleting the session notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        notification = await fetch(`${notificationUrl}/qod/${session.id}`,
+        notification = await fetch(`${notificationUrl}/quality-on-demand/${session.id}`,
             {
                 method: "DELETE",
                 agent: agent
@@ -278,7 +277,7 @@ describe("Qos", () => {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
-            notificationUrl: `${notificationUrl}/notify`,
+            sink: `${notificationUrl}/notify`
         });
 
         expect(session.status).toEqual("REQUESTED");
@@ -289,7 +288,7 @@ describe("Qos", () => {
 
         // Fetching the session notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/qod/${session.id}`,
+        let notification = await fetch(`${notificationUrl}/quality-on-demand/${session.id}`,
             {
                 method: "GET",
                 agent: agent
@@ -302,7 +301,7 @@ describe("Qos", () => {
         expect(deletionInfo).toHaveProperty("data.statusInfo", "DELETE_REQUESTED")
 
         // Deleting the session notification
-        notification = await fetch(`${notificationUrl}/qod/${session.id}`,
+        notification = await fetch(`${notificationUrl}/quality-on-demand/${session.id}`,
             {
                 method: "DELETE",
                 agent: agent

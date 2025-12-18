@@ -13,24 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
 
 import { errorHandler } from "../errors";
-import { Device, RoamingStatus } from "../models/device";
+import { Device, RoamingStatus, ReachabilityStatus } from "../models/device";
 import { SubscribeOptionalArgs } from "../models/deviceStatus";
 
-export class DeviceStatusAPI {
-    private baseUrl: string;
-    private headers: HeadersInit;
-    private agent: ProxyAgent;
-
+class DeviceStatus {
+    baseUrl: string;
+    headers: HeadersInit;
+    agent: ProxyAgent;
     constructor(
         baseUrl: string,
         rapidKey: string,
         rapidHost: string,
-        agent: ProxyAgent
+        agent: ProxyAgent,
     ) {
         this.baseUrl = baseUrl;
         this.headers = {
@@ -41,38 +39,45 @@ export class DeviceStatusAPI {
         this.agent = agent;
     }
 
-    async subscribe(
-        device: Device,
-        eventType: string,
-        notificationUrl: string,
+
+   async subscribe(
+        device: any,
+        types: string[],
+        sink: string,
         optionalArgs?: SubscribeOptionalArgs
     ): Promise<any> {
+
+        const removeUndefineds = JSON.parse(JSON.stringify(device));
+
         const body: any = {
-            subscriptionDetail: {
-                device: device.toJson(),
-                type: eventType,
-            },
-            webhook: {
-                notificationUrl: notificationUrl,
-            },
+            protocol: "HTTP",
+            sink: sink,
+            types: types,
+            config: {
+                subscriptionDetail: {
+                    device: removeUndefineds
+                }
+            }
         };
 
         if (optionalArgs) {
-            if (optionalArgs.maxNumberOfReports) {
-                body.maxNumberOfReports = optionalArgs.maxNumberOfReports;
+            if (optionalArgs.subscriptionMaxEvents) {
+                body.config.subscriptionMaxEvents = optionalArgs.subscriptionMaxEvents;
             }
 
             if (optionalArgs.subscriptionExpireTime) {
-                body.subscriptionExpireTime =
-                    optionalArgs.subscriptionExpireTime;
+                body.config.subscriptionExpireTime = optionalArgs.subscriptionExpireTime;
             }
 
-            if (optionalArgs.notificationAuthToken) {
-                body.webhook.notificationAuthToken =
-                    optionalArgs.notificationAuthToken;
+            if (optionalArgs.initialEvent) {
+                body.config.initialEvent = optionalArgs.initialEvent;
             }
+
+            if (optionalArgs.sinkCredential) {
+                body.sinkCredential = optionalArgs.sinkCredential ? Object.fromEntries(Object.entries(optionalArgs.sinkCredential as {[key:string]: any}).filter(([, value]) => value !== null && value !== undefined)) : undefined;
+            }
+
         }
-
         const response = await fetch(`${this.baseUrl}/subscriptions`, {
             method: "POST",
             headers: this.headers,
@@ -82,7 +87,8 @@ export class DeviceStatusAPI {
 
         errorHandler(response);
 
-        return response.json() as Promise<any>;
+        const result = await response.json()
+        return result
     }
 
     async delete(eventSubscriptionId: string) {
@@ -122,11 +128,27 @@ export class DeviceStatusAPI {
 
         errorHandler(response);
 
-        return response.json() as Promise<any>;
+        return response.json() as Promise<any>
     }
 
-    async getConnectivity(device: Device) {
-        const response = await fetch(`${this.baseUrl}/connectivity`, {
+}
+
+export class DeviceReachabilityStatusAPI extends DeviceStatus{
+    private nacBaseUrl: string;
+
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent,
+        base: string
+    ) {
+        super(baseUrl, rapidKey, rapidHost, agent);
+        this.nacBaseUrl = base
+    }
+
+    async getReachability(device: Device): Promise<ReachabilityStatus> {
+        const response = await fetch(`${this.nacBaseUrl}/device-status/device-reachability-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,
@@ -137,11 +159,27 @@ export class DeviceStatusAPI {
 
         errorHandler(response);
 
-        return response.json() as Promise<any>;
+        return response.json() as Promise<ReachabilityStatus>;
     }
 
-    async getRoaming(device: Device) {
-        const response = await fetch(`${this.baseUrl}/roaming`, {
+}
+
+export class DeviceRoamingStatusAPI extends DeviceStatus{
+    private nacBaseUrl: string;
+    constructor(
+        baseUrl: string,
+        rapidKey: string,
+        rapidHost: string,
+        agent: ProxyAgent,
+        base: string
+    ) {
+        super(baseUrl, rapidKey, rapidHost, agent);
+        this.nacBaseUrl = base;
+    }
+    
+
+    async getRoaming(device: Device): Promise<RoamingStatus> {
+        const response = await fetch(`${this.nacBaseUrl}/device-status/device-roaming-status/v1/retrieve`, {
             method: "POST",
             headers: this.headers,
             agent: this.agent,

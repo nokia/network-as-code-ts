@@ -19,8 +19,7 @@ import { PortSpec, QoDSession } from "./session";
 import { Location, VerificationResult } from "./location";
 import { Congestion } from "./congestionInsights";
 import { InvalidParameterError } from "../errors";
-import { MatchCustomerParams } from "./kycMatch";
-import { VerifyAgeParams } from "./kycAgeVerification";
+import { AccessTokenCredential } from "./authorization";
 
 /**
  *  An interface representing the `DeviceIpv4Addr` model.
@@ -38,14 +37,29 @@ export interface DeviceIpv4Addr {
 /**
  * An interface representing roaming status
  * #### Public attributes
+ *          lastStatusTime (Date | string): last time that the device status was updated
  *          roaming (boolean): indicates whether this device is currently roaming
  *          countryCode (number): code for the country in which the roaming is happening
  *          countryName (string[]): list of country names, if any, for this country code
  */
 export interface RoamingStatus {
+    lastStatusTime?: Date | string;
     roaming: boolean;
     countryCode?: number;
     countryName?: string[];
+}
+
+/**
+ * An interface representing reachability status
+ * #### Public attributes
+ *          lastStatusTime (Date | string): last time that the device status was updated
+ *          reachable (boolean): indicates overall device reachability
+ *          connectivity (string[]): indicates whether or not the device is connected to the network for DATA/SMS usage
+ */
+export interface ReachabilityStatus {
+    lastStatusTime?: Date | string;
+    reachable: boolean;
+    connectivity?: string[];
 }
 
 export interface QodOptionalArgs {
@@ -54,14 +68,14 @@ export interface QodOptionalArgs {
     serviceIpv6?: string;
     devicePorts?: PortSpec;
     servicePorts?: PortSpec;
-    notificationUrl?: string;
-    notificationAuthToken?: string;
+    sink?: string;
+    sinkCredential?: AccessTokenCredential
 }
 
 /**
  *  A class representing the `Device` model.
  * #### Private Attributes:
-        _api(APIClient): An API client object.
+        #api(APIClient): An API client object.
         _sessions(QoDSession[]): List of device session instances.
 
 
@@ -85,7 +99,7 @@ export interface QodOptionalArgs {
         verifySimSwap (): Verify if there was sim swap
  */
 export class Device {
-    private _api: APIClient;
+    #api: APIClient;
     private _sessions: QoDSession[];
     networkAccessIdentifier?: string;
     phoneNumber?: string;
@@ -100,7 +114,7 @@ export class Device {
         phoneNumber?: string,
         imsi?: number
     ) {
-        this._api = api;
+        this.#api = api;
         this._sessions = [];
         this.networkAccessIdentifier = networkAccessIdentifier;
         this.ipv4Address = ipv4Address;
@@ -134,13 +148,16 @@ export class Device {
                 - serviceIpv6 (optional): IPv6 address of the service.
                 - devicePorts (optional): List of the device ports.
                 - servicePorts (optional): List of the application server ports.
-                - notificationUrl (optional): Notification URL for session-related events.
-                - notificationAuthToken (optional): Security bearer token to authenticate registration of session.
+                - sink (optional): URL for session-related events.
+                - sinkCredential (optional): Authorization information to protect the notification endpoint. 
             @returns Promise<QoDSession>
 
-            @exmple ```TypeScript
-            session = device.createSession(profile="QOS_L", 
-            {serviceIpv4:"5.6.7.8", serviceIpv6:"2041:0000:140F::875B:131B", notificationUrl:"https://example.com/notifications, notificationToken: "c8974e592c2fa383d4a3960714"})
+            @example ```TypeScript
+            const session = device.createSession("QOS_L", {
+                    duration: 3600,
+                    serviceIpv4: "5.6.7.8",
+                    serviceIpv6: "2041:0000:140F::875B:131B"
+                })
             ```
  */
     async createQodSession(
@@ -151,8 +168,8 @@ export class Device {
             serviceIpv6,
             devicePorts,
             servicePorts,
-            notificationUrl,
-            notificationAuthToken,
+            sink,
+            sinkCredential,
         }: QodOptionalArgs
     ): Promise<QoDSession> {
         // Checks if at least one parameter is set
@@ -162,7 +179,7 @@ export class Device {
             );
         }
 
-        const session = await this._api.sessions.createSession(
+        const session = await this.#api.sessions.createSession(
             profile,
             duration,
             this,
@@ -170,12 +187,12 @@ export class Device {
             serviceIpv4,
             devicePorts,
             servicePorts,
-            notificationUrl,
-            notificationAuthToken
+            sink,
+            sinkCredential
         );
 
         return QoDSession.convertSessionModel(
-            this._api,
+            this.#api,
             this,
             JSON.parse(JSON.stringify(session))
         );
@@ -191,7 +208,7 @@ export class Device {
  */
     async sessions(): Promise<QoDSession[]> {
         try {
-            const sessions: any = await this._api.sessions.getAllSessions(this);
+            const sessions: any = await this.#api.sessions.getAllSessions(this);
 
             return sessions.map((session: any) =>
                 this.__convertSessionModel(session)
@@ -201,6 +218,7 @@ export class Device {
             return [];
         }
     }
+
 
     /**
      *  Clears sessions of the device.
@@ -214,7 +232,7 @@ export class Device {
     }
 
     __convertSessionModel(session: any): QoDSession {
-        const result = QoDSession.convertSessionModel(this._api, this, session);
+        const result = QoDSession.convertSessionModel(this.#api, this, session);
         return result;
     }
 
@@ -227,7 +245,7 @@ export class Device {
      *   ```
      */
     async getLocation(maxAge: number = 60): Promise<Location> {
-        const location = await this._api.locationRetrieval.getLocation(
+        const location = await this.#api.locationRetrieval.getLocation(
             this,
             maxAge
         );
@@ -252,7 +270,7 @@ export class Device {
         radius: number,
         maxAge = 60
     ): Promise<VerificationResult> {
-        return this._api.locationVerify.verifyLocation(
+        return this.#api.locationVerify.verifyLocation(
             latitude,
             longitude,
             this,
@@ -262,21 +280,21 @@ export class Device {
     }
 
     /**
-     * Retrieves the current connectivity status of the device
-     * @returns Promise<string>: The connectivity status, e.g. "CONNECTED_DATA"
+     * Retrieves the current reachability status of the device
+     * @returns Promise<ReachabilityStatus>: The reachability status (true/false) and possibly the time when the status was last updated and the connectivity type (DATA/SMS).
      */
-    async getConnectivity(): Promise<string> {
-        const json = await this._api.deviceStatus.getConnectivity(this);
-
-        return json["connectivityStatus"];
+    async getReachability(): Promise<ReachabilityStatus> {
+        const response: ReachabilityStatus = await this.#api.deviceReachabilityStatus.getReachability(this);
+        return response;
     }
 
     /**
-     * Retrieves the current connectivity status of the device
-     * @returns Promise<RoamingStatus>: The roaming status for whether the device is roaming and in what network
+     * Retrieves the current roaming status of the device
+     * @returns Promise<RoamingStatus>: The roaming status (true/false) and possibly the time when the status was last updated and the country code and name.
      */
     async getRoaming(): Promise<RoamingStatus> {
-        return this._api.deviceStatus.getRoaming(this);
+        const response: RoamingStatus = await this.#api.deviceRoamingStatus.getRoaming(this);
+        return response;
     }
 
     toJson(): any {
@@ -302,7 +320,7 @@ export class Device {
         start?: Date | string,
         end?: Date | string
     ): Promise<Congestion[]> {
-        const congestionInfo = await this._api.insights.getCongestion(
+        const congestionInfo = await this.#api.insights.getCongestion(
             this,
             start,
             end
@@ -325,7 +343,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
 
-        const response: any = await this._api.simSwap.fetchSimSwapDate(
+        const response: any = await this.#api.simSwap.fetchSimSwapDate(
             this.phoneNumber
         );
 
@@ -346,7 +364,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
 
-        const response: any = await this._api.simSwap.verifySimSwap(
+        const response: any = await this.#api.simSwap.verifySimSwap(
             this.phoneNumber,
             maxAge
         );
@@ -363,7 +381,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
 
-        const response: any = await this._api.deviceSwap.fetchDeviceSwapDate(
+        const response: any = await this.#api.deviceSwap.fetchDeviceSwapDate(
             this.phoneNumber
         );
 
@@ -384,7 +402,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
 
-        const response: any = await this._api.deviceSwap.verifyDeviceSwap(
+        const response: any = await this.#api.deviceSwap.verifyDeviceSwap(
             this.phoneNumber,
             maxAge
         );
@@ -408,7 +426,7 @@ export class Device {
         const params = new URLSearchParams({code: code, state: state});
 
 
-        const response: any = await this._api.verification.verifyNumber(
+        const response: any = await this.#api.verification.verifyNumber(
             payload,
             params
         );
@@ -424,7 +442,7 @@ export class Device {
      */
     async getPhoneNumber(code: string, state: string): Promise<string> {
         const params = new URLSearchParams({code: code, state: state});
-        const response: any = await this._api.verification.getPhoneNumber(
+        const response: any = await this.#api.verification.getPhoneNumber(
             params
         );
         return response["devicePhoneNumber"];
@@ -439,7 +457,7 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
         
-        const response: any = await this._api.callForwarding.retrieveCallForwarding(
+        const response: any = await this.#api.callForwarding.retrieveCallForwarding(
             this.phoneNumber
         );
 
@@ -455,46 +473,10 @@ export class Device {
             throw new InvalidParameterError("Device phone number is required.");
         }
         
-        const response: any = await this._api.callForwarding.verifyUnconditionalForwarding(
+        const response: any = await this.#api.callForwarding.verifyUnconditionalForwarding(
             this.phoneNumber
         );
 
         return response['active'];
-    }
-
-    /**
-     * Match a customer identity against the account data bound to their phone number.
-     * @param params (MatchCustomerParams): A customers data that will be compared to data bound to their phone number in the operator systems.
-     * @returns Promise<any>: Contains the result of matching the provided parameter values to the data in the operator system.
-     */
-    async matchCustomer(
-        params: MatchCustomerParams
-    ): Promise<any> {
-        if (!params.phoneNumber) {
-            params.phoneNumber = this.phoneNumber;
-        }
-        const response: any = await this._api.kycMatch.matchCustomer(
-            params
-        );
-
-        return await response;
-    }
-
-    /**
-     * Check if the user of the line is older than a provided age.
-     * @param params (VerifyAgeParams): Contains age threshold which to compare user age to, subscription phone number and other optional subscriber info.
-     * @returns Promise<any>: true/false/not_available for if the age of the user is the same or older than the age threshold provided. Also results for other optional request params. 
-     */   
-    async verifyAge(
-        params: VerifyAgeParams
-    ): Promise<any> {
-        if (!params.phoneNumber) {
-            params.phoneNumber = this.phoneNumber;
-        }
-        const response: any = await this._api.kycAgeVerification.verifyAge(
-            params
-        );
-
-        return await response;
     }
 }

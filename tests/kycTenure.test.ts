@@ -1,0 +1,252 @@
+import fetchMock from '@fetch-mock/jest';
+import { NetworkAsCodeClient } from "../src";
+
+jest.mock("node-fetch", () => {
+	const nodeFetch = jest.requireActual("node-fetch");
+	// only needed if your application makes use of Response, Request
+	// or Headers classes directly
+	Object.assign(fetchMock.config, {
+		fetch: nodeFetch,
+		Response: nodeFetch.Response,
+		Request: nodeFetch.Request,
+		Headers: nodeFetch.Headers,
+	});
+	return fetchMock.fetchHandler;
+});
+
+let client: NetworkAsCodeClient;
+
+beforeAll(() => {
+    client = new NetworkAsCodeClient("TEST_TOKEN");
+});
+
+
+beforeEach(() => {
+    fetchMock.mockReset();
+});
+
+afterEach(() => {
+    fetchMock.unmockGlobal();
+});
+
+
+describe("KYC Check Tenure", () => {
+    it("KYC checkTenure results true", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                body: {
+                    tenureDateCheck: true,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN'
+                }
+            }
+        );
+
+        const result = await client.kyc.checkTenure(
+            {
+                phoneNumber: "+99999991000",
+                tenureDate: "2023-08-22"
+            }
+
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                }
+            }
+        );
+        expect(result.tenureDateCheck).toBe(true)
+        expect(result.contractType).toEqual("Business")
+    });
+
+    it("KYC checkTenure uses date", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                body: {
+                    tenureDateCheck: true,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-09-22"
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN'
+                }
+            }
+        );
+
+        const result = await client.kyc.checkTenure(
+            {
+                phoneNumber: "+99999991000",
+                tenureDate: new Date(2023, 8, 22)
+            }
+
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-09-22"
+                }
+            }
+        );
+        expect(result.tenureDateCheck).toBe(true)
+        expect(result.contractType).toEqual("Business")
+    });
+
+    it("KYC checkTenure parses Date object correctly", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                body: {
+                    tenureDateCheck: true,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2025-01-23"
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN'
+                }
+            }
+        );
+
+        const result = await client.kyc.checkTenure(
+            {
+                phoneNumber: "+99999991000",
+                tenureDate: new Date("2025-01-23T10:40:30.616Z")
+            }
+
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2025-01-23"
+                }
+            }
+        );
+
+        expect(result.tenureDateCheck).toBe(true)
+        expect(result.contractType).toEqual("Business")
+    });
+
+    it("KYC checkTenure results false", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                body: {
+                    tenureDateCheck: false,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN'
+                }
+            }
+        );
+
+        const result = await client.kyc.checkTenure(
+            {
+                phoneNumber: "+99999991000",
+                tenureDate: "2023-08-22"
+            }
+
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                }
+            }
+        );
+
+        expect(result.tenureDateCheck).toBe(false)
+    });
+
+    it.failing("Should fail for request body", async () => {
+        fetchMock.mockGlobal().post(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                body: {
+                    tenureDateCheck: true,
+                    contractType: "Business"
+                }
+            },
+            {
+                body:{
+                    phoneNumber: "+99999991000",
+                    tenureDate: "2023-08-22"
+                },
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'TEST_TOKEN'
+                }
+            }
+        );
+
+        const result = await client.kyc.checkTenure(
+            {
+                phoneNumber: "+99999991000",
+                tenureDate: "2023-08-22"
+            }
+
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-tenure/kyc-tenure/v0.1/check-tenure",
+            {
+                method: "POST",
+                body:{
+                    phoneNumber: "+12345678",
+                    tenureDate: "0000-00-00"
+                }
+            }
+        );
+    });
+});

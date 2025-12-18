@@ -1,44 +1,39 @@
 // Device Status functionalities
 
-// Subscribing to Connectivity and Roaming updates:
+// Subscribing to Reachability or Roaming updates:
 
 import { NetworkAsCodeClient } from "network-as-code";
-
+import { EventType } from "../src/models/deviceStatus";
 
 const client = new NetworkAsCodeClient("<your-application-key-here>");
 
 // Create a device object for the mobile device we want to use
 const myDevice = client.devices.get({
-    networkAccessIdentifier: "device@testcsp.net",
-    ipv4Address: {
-        publicAddress: "233.252.0.2",
-        privateAddress: "192.0.2.25",
-        publicPort: 80,
-    },
-    Ipv6Address: "2041:0000:140F::875B:131B",
     // The phone number accepts the "+" sign, but not spaces or "()" marks
-    phoneNumber: "36721601234567"
+    phoneNumber: "+99999991000"
 });
 
 // Simply change the event_type whenever needed.
 const mySubscription = await client.deviceStatus.subscribe(
     myDevice,
-    // When necessary, change it to:
-    // "org.camaraproject.device-status.v0.roaming-status"
-    "org.camaraproject.device-status.v0.connectivity-data",
+    // When necessary, change this to different event_type, for example:
+    // [EventType.ROAMING_STATUS]
+    [EventType.REACHABILITY_DATA],
     // Use HTTPS to send notifications
     "https://example.com/notify",
+    // You can add optional parameters as well
     {
-        maxNumberOfReports: 5,
-        notificationAuthToken: "replace-with-your-auth-token"
+        initialEvent: true,
+        subscriptionMaxEvents: 5
     }
 );
 
 // Use this to show the roaming subscription status
 console.log(mySubscription);
 
-// Get the subscription by its ID
-const subscription = await client.deviceStatus.get(mySubscription.eventSubscriptionId);
+// Get the reachability subscription by its ID
+// Change the method call to getRoamingSubscription() to get a roaming subscription
+const subscription = await client.deviceStatus.getReachabilitySubscription(mySubscription.eventSubscriptionId);
 
 // Then, delete the subscription whenever needed
 subscription.delete();

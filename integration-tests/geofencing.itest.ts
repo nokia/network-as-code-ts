@@ -15,7 +15,7 @@ let agent : ProxyAgent
 beforeAll(() => {
     client = configureClient();
     device = client.devices.get({
-        phoneNumber:"+3637123456",
+        phoneNumber:"+99999991000",
     });
     notificationUrl = configureNotificationServerUrl();
     agent = new ProxyAgent()
@@ -26,12 +26,12 @@ describe("Geofencing", () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000}
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000},
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
         expect(subscription.area).toEqual({"areaType": "CIRCLE","center": {"latitude": 47.48627616952785, "longitude": 19.07915612501993}, "radius": 2000});
-
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 15 * 1000));
         let notification = await fetch(`${notificationUrl}/geofencing-subscriptions/${subscription.eventSubscriptionId}`,
@@ -41,7 +41,6 @@ describe("Geofencing", () => {
             });
 
         const data: any = await notification.json();
-
         expect(data).not.toBeNull();
         expect(data[0].data.area.areaType).toEqual("CIRCLE");
         expect(data[0].data.area.center.latitude).toEqual(47.48627616952785);
@@ -55,14 +54,15 @@ describe("Geofencing", () => {
                 agent: agent 
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("should subscribe for geofencing with areaType POI and event area entered", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-entered"],
-            area: {areaType: "POI", poiName: "StatueOfLiberty"}
+            area: {areaType: "POI", poiName: "StatueOfLiberty"},
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -89,14 +89,15 @@ describe("Geofencing", () => {
                 agent: agent 
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("should subscribe for geofencing event area entered using event type enum", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: [EventType.AREA_ENTERED],
-            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000}
+            area: {areaType: "CIRCLE", center: {latitude: 47.48627616952785, longitude: 19.07915612501993}, radius: 2000},
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -122,14 +123,15 @@ describe("Geofencing", () => {
                 agent: agent 
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
     it("should subscribe for geofencing event area left", async () => {
         const subscription = await client.geofencing.subscribe(device, {
             sink: `${notificationUrl}/notify`,
             types: ["org.camaraproject.geofencing-subscriptions.v0.area-left"],
-            area: {areaType: "POI", poiName: "StatueOfLiberty"}
+            area: {areaType: "POI", poiName: "StatueOfLiberty"},
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -155,7 +157,7 @@ describe("Geofencing", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20* 1000);
 
     it("should subscribe for geofencing event with plain credential", async () => {
@@ -167,7 +169,8 @@ describe("Geofencing", () => {
                 credentialType:"PLAIN",
                 identifier: "client-id",
                 secret: "client-secret"
-            }
+            },
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -193,7 +196,7 @@ describe("Geofencing", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     }, 20 * 1000);
 
     it("should subscribe for geofencing event with accesstoken credential", async () => {
@@ -208,7 +211,8 @@ describe("Geofencing", () => {
                 accessToken: "some-access-token",
                 accessTokenType: "bearer",
                 accessTokenExpiresUtc: expirationDate
-            }
+            },
+            initialEvent: true
         });
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
@@ -234,7 +238,7 @@ describe("Geofencing", () => {
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     }, 20 * 1000);
 
     it("should get an event subscription", async () => {
@@ -250,7 +254,7 @@ describe("Geofencing", () => {
 
         expect(fetchedSubscription.eventSubscriptionId).toBeTruthy();
 
-        subscription.delete();
+        await subscription.delete();
     });
     
     it("should get all event subscriptions", async () => {
@@ -266,7 +270,7 @@ describe("Geofencing", () => {
 
         expect(fetchedSubscriptions.length).toBeGreaterThanOrEqual(0);
 
-        subscription.delete();
+        await subscription.delete();
     });
 
     it("should delete an event subscription", async () => {
@@ -278,7 +282,7 @@ describe("Geofencing", () => {
 
         expect(subscription.eventSubscriptionId).toBeTruthy();
 
-        subscription.delete();
+        await subscription.delete();
 
         try {
             await client.geofencing.get(subscription.eventSubscriptionId);

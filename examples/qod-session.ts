@@ -1,6 +1,6 @@
 // QoD functionalities
 
-// QoS session examples:
+// QoD session examples:
 
 import { NetworkAsCodeClient } from "network-as-code";
 
@@ -25,14 +25,18 @@ const myDevice = client.devices.get({
 // Create a QoD session with QOS_L (large bandwidth)
 // that lasts for 3,600 seconds (1 hour).
 // For TypeScript, values can be expressed directly,
-// but the QoS profile comes before the IP address(es) and duration:
+// but the QoD profile comes before the IP address(es) and duration:
 const mySession = await myDevice.createQodSession("QOS_L", {
     serviceIpv4: "233.252.0.2",
     serviceIpv6: "2001:db8:1234:5678:9abc:def0:fedc:ba98",
     duration: 3600,
     // Use HTTPS to send or subscribe to notifications
-    notificationUrl: "https://notify.me/here",
-    notificationAuthToken: "replace-with-your-auth-token",
+    sink: "https://example.com/notifications",
+    sinkCredential: {
+        credentialType:"ACCESSTOKEN", 
+        accessToken: "some-access-token", 
+        accessTokenType: "bearer", 
+        accessTokenExpiresUtc: new Date("2025-01-23T10:40:30.616Z")}
 });
 
 // Let's confirm that the device has the newly created session

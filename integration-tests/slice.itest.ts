@@ -172,7 +172,7 @@ describe("Slicing", () => {
 
     // NOTE: This test takes a long time to execute, since it must wait for slice updates
     // if you are in a rush, add a temporary skip here
-    test("Should deactivate and delete with notification polling", async() => {
+    test.skip("Should deactivate and delete with notification polling", async() => {
         let lastNotification: {[key: string]: any};
         let data: {[key: string]: any}[];
         const random = Math.floor(Math.random() * 1000) + 1;

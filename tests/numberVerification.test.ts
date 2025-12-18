@@ -30,36 +30,36 @@ beforeEach(() => {
     fetchMock.mockReset();
     fetchMock.mockGlobal().get(
         "https://network-as-code.p-eu.rapidapi.com/oauth2/v1/auth/clientcredentials",
-        (req: any): any => {
-            expect(req.headers).toEqual({
+        {
+           body: {
+                client_id: "123456",
+                client_secret: "secret123"
+            } 
+        },
+        { 
+            headers: {
                 "Content-Type": "application/json",
                 "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                 "X-RapidAPI-Key": 'TEST_TOKEN',
-            })
+            }
         },
-        { response: Promise.resolve({
-            body: JSON.stringify({
-                client_id: "123456",
-                client_secret: "secret123"
-            })
-        })}  
-    );
+    )       
 
     fetchMock.mockGlobal().get(
         "https://network-as-code.p-eu.rapidapi.com/.well-known/openid-configuration",
-        (req: any): any => {
-            expect(req.headers).toEqual({
+        {
+           body: {
+                fast_flow_csp_auth_endpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url",
+            } 
+        },
+        { 
+            headers: {
                 "Content-Type": "application/json",
                 "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                 "X-RapidAPI-Key": 'TEST_TOKEN',
-            })
+            }
         },
-        { response: Promise.resolve({
-            body: JSON.stringify({
-                fast_flow_csp_auth_endpoint: "https://fastFlowCspAuthTestEndpoint/oauth2/v1/retrieve_csp_auth_url"
-            })
-        })}
-    );
+    )       
 });
 
 afterEach(() => {
@@ -67,44 +67,84 @@ afterEach(() => {
 });
 
 describe("Number Verification, verifying number tests", () => {
-    it("should get verify number result as true with encoded state parameter in query", async () => {
+    it.failing("should fail for request headers", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testState" 
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testSt%C3%A4%C3%A4%C3%A4%C3%A4%C3%A4", 
-            (req: any): any => {
-                expect(req.headers).toEqual({
+            url, 
+            {
+                devicePhoneNumberVerified: true
+            },
+            {
+                body: {
+                    phoneNumber: "+3637123456"
+                }
+            },
+            
+        );
+
+        await device.verifyNumber("testCode1234", "testState")
+        expect(fetchMock).toHaveFetched(url,  {
+            method: "POST",
+            headers:  {
+                    "Content-Type": "application/json",
+                    "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
+                    "X-RapidAPI-Key": 'WRONG_TOKEN',
+            }
+        });
+    });
+
+    it("should get verify number result as true with encoded state parameter in query", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testSt%C3%A4%C3%A4%C3%A4%C3%A4%C3%A4" 
+        fetchMock.mockGlobal().post(
+            url,
+            {
+                body: {
+                    devicePhoneNumberVerified: true
+                }
+            },
+            {
+                body: {
+                    phoneNumber: "+3637123456"
+                }
+            },
+        )
+
+        expect(await device.verifyNumber("testCode1234", "testStäääää")).toBeTruthy();
+        expect(fetchMock).toHaveFetched(url,  {
+            method: "POST",
+            headers:  {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+3637123456"
-                })},
-                { response: 
-                    JSON.stringify({
-                        devicePhoneNumberVerified: true
-                })});
-
-        expect(await device.verifyNumber("testCode1234", "testStäääää")).toBeTruthy();
+            }
+        });
     });
 
     it("should get verify number result as false", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testState" 
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/verify?code=testCode1234&state=testState", 
-            (req: any): any => {
-                expect(req.headers).toEqual({
+            url,
+            {
+                body: {
+                    devicePhoneNumberVerified: false
+                }
+            },
+            {
+                body: {
+                    phoneNumber: "+3637123456"
+                }
+            },
+        )
+
+        expect(await device.verifyNumber("testCode1234", "testState")).toBeFalsy();
+        expect(fetchMock).toHaveFetched(url,  {
+            method: "POST",
+            headers:  {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+3637123456"
-                })},
-                { response: 
-                    JSON.stringify({
-                        devicePhoneNumberVerified: false
-                })});
-
-        expect(await device.verifyNumber("testCode1234", "testState")).toBeFalsy();
+            }
+        });
     });
 
     it("no phonenumber provided, should get verify number result as error", async () => {
@@ -120,20 +160,25 @@ describe("Number Verification, verifying number tests", () => {
     });
     
    it("should get phone number", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/device-phone-number?code=testCode1234&state=testState" 
         fetchMock.mockGlobal().get(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/number-verification/number-verification/v0/device-phone-number?code=testCode1234&state=testState", 
-            (req: any): any => {
-                expect(req.headers).toEqual({
+            url,
+            {
+                body: {
+                    devicePhoneNumber: "+123456789"
+                }
+            }
+            );
+
+        expect(await device.getPhoneNumber("testCode1234", "testState")).toMatch("+123456789");
+        expect(fetchMock).toHaveFetched(url,  {
+            method: "GET",
+            headers:  {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN',
-                })},
-                { response: 
-                    JSON.stringify({
-                        devicePhoneNumber: "+123456789"
-                })});
-
-        expect(await device.getPhoneNumber("testCode1234", "testState")).toMatch("+123456789");
+            }
+        });
     });
 
 });

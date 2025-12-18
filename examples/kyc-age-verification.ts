@@ -5,13 +5,6 @@ import { NetworkAsCodeClient } from "network-as-code";
 const client = new NetworkAsCodeClient("<your-application-key-here>");
 
 
-// Then, create a device object for the phone number */
-const device = client.devices.get({
-    // The phone number accepts the "+" sign, but not spaces or "()" marks
-    phoneNumber: "+999999991000"
-});
-
-
 // Add the phone number of the subscriber and the age threshold to compare to here. 
 // Add optionally also the other information of the subscriber here, as well as if the
 // subscription has a content lock or parental control. 
@@ -31,6 +24,6 @@ const parameters =
         includeParentalControl: true
     }
 
-const customerAgeVerifyResult = await device.verifyAge(parameters);
+const customerAgeVerifyResult = await client.kyc.verifyAge(parameters);
 
 console.log(customerAgeVerifyResult)

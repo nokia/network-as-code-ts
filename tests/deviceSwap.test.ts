@@ -39,18 +39,18 @@ afterEach(() => {
 
 describe("Device Swap", () => {
     it("should get the latest device swap date", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+346661113334"
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
+            url,
+            {
+                body: {
                     latestDeviceChange: "2024-06-19T10:36:59.976Z"
-                })
-            })
+                }
+            },
+            {
+                body: {
+                    phoneNumber: "+346661113334"
+                }
             }
         );
 
@@ -58,6 +58,12 @@ describe("Device Swap", () => {
         expect(latestDeviceSwapDate).toEqual(
             new Date(Date.parse("2024-06-19T10:36:59.976Z"))
         );
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "+346661113334"
+            }
+        });
     });
 
     it("should throw InvalidParameter error for no phone number - getDeviceSwapDate()", async () => {
@@ -72,70 +78,56 @@ describe("Device Swap", () => {
     });
 
     it("should return null if the response doesn't contain latestDeviceChange", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+346661113334"
-                });
-            },
-            { response: Promise.resolve({
+            url,
+            {
                 body: JSON.stringify({})
-            })
+            },
+            {
+                body: {
+                    phoneNumber: "+346661113334"
+                }
             }
         );
 
         const response = await device.getDeviceSwapDate();
         expect(response).toBeNull();
-    });
-
-    it("should throw InvalidParameter error for no phone number - verifyDeviceSwap()", async () => {
-        const device = client.devices.get({
-            networkAccessIdentifier: "testuser@open5glab.net"
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "+346661113334"
+            }
         });
-        try {
-            await device.verifyDeviceSwap();
-        } catch (error) {
-            expect(error).toBeInstanceOf(InvalidParameterError);
-        }
     });
 
     it("should handle null", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+346661113334"
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
+            url,
+            {
+                body: {
                     latestDeviceChange: null
-                })
-            })
+                }
+            },
+            {
+                body: {
+                    phoneNumber: "+346661113334"
+                }
             }
         );
 
         const latestDeviceSwapDate = await device.getDeviceSwapDate();
         expect(latestDeviceSwapDate).toBeNull();
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "+346661113334"
+            }
+        });
     });
 
-    it("get date should raise exception on missing phone number", async () => {
-        fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/retrieve-date",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    networkAccessIdentifier: "device@testcsp.net"
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
-                    latestDeviceChange: null
-                })
-            })
-            }
-        );
-
+    it("get date should raise exception on missing phone number - getDeviceSwapDate()", async () => {
         const deviceWithoutNumber = client.devices.get({
             networkAccessIdentifier: "device@testcsp.net"
         });
@@ -146,60 +138,58 @@ describe("Device Swap", () => {
     });
 
     it("should verify device swap without max age", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/check"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/check",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    phoneNumber: "+346661113334"
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
+            url,
+            {
+                body: {
                     swapped: true
-                })
-            })
+                }
+            },
+            {
+                body: {
+                    phoneNumber: "+346661113334"
+                }
             }
         );
 
         expect(await device.verifyDeviceSwap()).toEqual(true);
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "+346661113334"
+            }
+        });
     });
 
     it("should verify device swap with max age", async () => {
+        const url = "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/check"
         fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/check",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
+            url,
+            {
+                body: {
+                    swapped: true
+                }
+            },
+            {
+                body: {
                     phoneNumber: "+346661113334",
                     maxAge: 120
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
-                    swapped: true
-                })
-            })
+                }
             }
         );
 
         expect(await device.verifyDeviceSwap(120)).toEqual(true);
+        expect(fetchMock).toHaveFetched(url, {
+            method: "POST",
+            body:  {
+                phoneNumber: "+346661113334",
+                maxAge: 120
+            }
+        });
     });
 
-    it("verify should raise exception on missing phone number", async () => {
-        fetchMock.mockGlobal().post(
-            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/device-swap/device-swap/v1/check",
-            (_: any, req: any): any => {
-                expect(JSON.parse(req.body.toString())).toEqual({
-                    networkAccessIdentifier: "device@testcsp.net"
-                });
-            },
-            { response: Promise.resolve({
-                body: JSON.stringify({
-                    latestDeviceChange: null
-                })
-            })
-            }
-        );
-
+    it("verify should raise exception on missing phone number - verifyDeviceSwap()", async () => {
         const deviceWithoutNumber = client.devices.get({
             networkAccessIdentifier: "device@testcsp.net"
         });

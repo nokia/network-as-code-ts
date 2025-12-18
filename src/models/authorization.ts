@@ -48,3 +48,32 @@ export class Endpoints {
         this.fastFlowCspAuthEndpoint = fastFlowCspAuthEndpoint;    
     }
 }
+
+/**
+ *  A class representing the `PlainCredential` model.
+    #### Public Attributes:
+       @param credentialType (string): The type of the credential. "PLAIN".
+       @param identifier (string): Possibly an account or username.
+       @param secret (string): Possibly a password or passphrase.
+ */
+export interface PlainCredential {
+    credentialType: "PLAIN",
+    identifier: string,
+    secret: string
+
+}
+
+/**
+ *  A class representing the `AccessTokenCredential` model.
+    #### Public Attributes:
+       @param credentialType (string): The type of the credential. "ACCESSTOKEN"
+       @param accessToken (string): Previously obtained token.
+       @param accessTokenType (string): Type of the access token, for example 'bearer'.
+       @param accessTokenExpiresUtc (Date | string): When the access token expires.
+ */
+export interface AccessTokenCredential {
+    credentialType: "ACCESSTOKEN",
+    accessToken: string,
+    accessTokenType: string,
+    accessTokenExpiresUtc: Date | string
+}

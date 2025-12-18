@@ -5,6 +5,7 @@ import { EventType } from "../src/models/deviceStatus";
 import { configureClient, configureNotificationServerUrl } from "./configClient";
 import { ProxyAgent } from "proxy-agent";
 import fetch from "node-fetch";
+import { v4 as uuid } from 'uuid';
 
 
 let client: NetworkAsCodeClient;
@@ -16,29 +17,27 @@ let agent : ProxyAgent
 beforeAll(() => {
     client = configureClient();
     device = client.devices.get({
-        networkAccessIdentifier: "test-device@testcsp.net",
-        ipv4Address: {
-            publicAddress: "1.1.1.2",
-            privateAddress: "1.1.1.2",
-            publicPort: 80,
-        },
+        phoneNumber: "+99999991000"
     });
     notificationUrl = configureNotificationServerUrl();
     agent = new ProxyAgent();
 });
 
 describe("Device Status", () => {
-    it("can create a connectivity subscription and delete it", async () => {
+    it("can create a roaming subscription and delete it", async () => {
+        const notificationId: string = uuid();
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "org.camaraproject.device-status.v0.connectivity-data",
-            `${notificationUrl}/notify`
+            ["org.camaraproject.device-roaming-status-subscriptions.v0.roaming-on"],
+            `${notificationUrl}/notify/${notificationId}`,
+            {
+                initialEvent: true
+            }
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
-
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -50,26 +49,30 @@ describe("Device Status", () => {
         expect(data).not.toBeNull();
 
         // Deleting the subscription notification
-        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
-    it("can create a connectivity subscription using event type enum and delete it", async () => {
+    it("can create a reachability subscription using event type enum and delete it", async () => {
+        const notificationId: string = uuid();
         const subscription = await client.deviceStatus.subscribe(
             device,
-            EventType.CONNECTIVITY_DATA,
-            `${notificationUrl}/notify`
+            [EventType.REACHABILITY_DATA],
+            `${notificationUrl}/notify/${notificationId}`,
+            {
+                initialEvent: true
+            }
         );
         expect(subscription.eventSubscriptionId).toBeDefined();
 
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -79,37 +82,36 @@ describe("Device Status", () => {
         const data = await notification.json();
 
         expect(data).not.toBeNull();
-
         // Deleting the subscription notification
-        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
-    it("can create a connectivity subscription with expiry", async () => {
+    it("can create a roaming subscription with expiry", async () => {
         const tomorrowDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
         tomorrowDate.setMilliseconds(0);
+        const notificationId: string = uuid();
 
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "org.camaraproject.device-status.v0.connectivity-data",
-            `${notificationUrl}/notify`,
+            [EventType.ROAMING_STATUS],
+            `${notificationUrl}/notify/${notificationId}`,
             {
                 subscriptionExpireTime: tomorrowDate,
+                initialEvent: true
             }
         );
 
-        expect(subscription.expiresAt).toEqual(
-            new Date(tomorrowDate.toISOString().replace(".000", ""))
-        );
+        expect(subscription.expiresAt?.toDateString()).toBe(tomorrowDate.toDateString());
 
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -121,33 +123,41 @@ describe("Device Status", () => {
         expect(data).not.toBeNull();
 
         // Deleting the subscription notification
-        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
-    it("can create a connectivity subscription with other optional arguments", async () => {
+    
+    it("can create a reachability subscription with other optional arguments", async () => {
+        const notificationId: string = uuid();
+
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "org.camaraproject.device-status.v0.connectivity-data",
-            `${notificationUrl}/notify`,
+            ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
+            `${notificationUrl}/notify/${notificationId}`,
             {
-                maxNumberOfReports: 2,
-                notificationAuthToken: "my-token",
+                initialEvent: true,
+                subscriptionMaxEvents: 2, 
+                subscriptionExpireTime: new Date(Date.now() + 24 * 60 * 60 * 1000),
+                sinkCredential: {
+                    credentialType: "ACCESSTOKEN",
+                    accessToken: "testingAccessToken",
+                    accessTokenType: "bearer", 
+                    accessTokenExpiresUtc: new Date(Date.now() + 24 * 60 * 60 * 1000)
+                }
             }
         );
-
         expect(subscription.eventSubscriptionId).toBeDefined();
-        expect(subscription.maxNumOfReports).toEqual(2);
-        expect(subscription.notificationAuthToken).toEqual("my-token");
+        expect(subscription.subscriptionMaxEvents).toEqual(2);
 
         // Fetching the subscription notification
         await new Promise(resolve => setTimeout(resolve, 5 * 1000));
-        let notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        let notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             {
                 method: "GET",
                 agent: agent
@@ -155,27 +165,26 @@ describe("Device Status", () => {
         );
 
         const data = await notification.json();
-
         expect(data).not.toBeNull();
 
         // Deleting the subscription notification
-        notification = await fetch(`${notificationUrl}/device-status/${subscription.eventSubscriptionId}`,
+        notification = await fetch(`${notificationUrl}/device-status/${notificationId}`,
             { 
                 method: 'DELETE',
                 agent: agent
             });
 
-        subscription.delete();
+        await subscription.delete();
     },20 * 1000);
 
-    it("can get a subscription by id", async () => {
+    it("can get a reachability subscription by id", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "org.camaraproject.device-status.v0.connectivity-data",
+            ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
             "https://example.com/notify"
         );
 
-        const subscription2 = await client.deviceStatus.get(
+        const subscription2 = await client.deviceStatus.getReachabilitySubscription(
             subscription.eventSubscriptionId
         );
 
@@ -184,13 +193,32 @@ describe("Device Status", () => {
         );
         expect(subscription2.startsAt).toEqual(subscription.startsAt);
 
-        subscription.delete();
+        await subscription.delete();
+    });
+
+    it("can get a roaming subscription by id", async () => {
+        const subscription = await client.deviceStatus.subscribe(
+            device,
+            [EventType.ROAMING_ON],
+            "https://example.com/notify"
+        );
+
+        const subscription2 = await client.deviceStatus.getRoamingSubscription(
+            subscription.eventSubscriptionId
+        );
+
+        expect(subscription2.eventSubscriptionId).toBe(
+            subscription.eventSubscriptionId
+        );
+        expect(subscription2.startsAt).toEqual(subscription.startsAt);
+
+        await subscription.delete();
     });
 
     it("can get a list of subscriptions", async () => {
         const subscription = await client.deviceStatus.subscribe(
             device,
-            "org.camaraproject.device-status.v0.connectivity-data",
+            ["org.camaraproject.device-reachability-status-subscriptions.v0.reachability-data"],
             "https://example.com/notify"
         );
 
@@ -206,37 +234,27 @@ describe("Device Status", () => {
             ).length
         ).toBe(1);
 
-        subscription.delete();
+        await subscription.delete();
     });
 
-    it("can poll device connectivity status sms", async () => {
+    it("can poll device reachability status sms", async () => {
         device = client.devices.get({
             phoneNumber: "+99999991000"
         });
 
-        const status = await device.getConnectivity();
+        const status = await device.getReachability();
 
-        expect(status).toBe("CONNECTED_SMS");
+        expect(status).toEqual(expect.objectContaining({"connectivity": ["SMS"], "reachable": true}));
     });
 
-    it("can poll device connectivity status connected", async () => {
+    it("can poll device reachability status data", async () => {
         device = client.devices.get({
             phoneNumber: "+99999991001"
         });
         
-        const status = await device.getConnectivity();
+        const status = await device.getReachability();
 
-        expect(status).toBe("CONNECTED_DATA");
-    });
-
-    it("can poll device connectivity status not connected", async () => {
-        device = client.devices.get({
-            phoneNumber: "+99999991002"
-        });
-        
-        const status = await device.getConnectivity();
-
-        expect(status).toBe("NOT_CONNECTED");
+        expect(status).toEqual(expect.objectContaining({"connectivity": ["DATA"], "reachable": true}));
     });
 
     it("can poll device roaming status true", async () => {
@@ -249,13 +267,13 @@ describe("Device Status", () => {
         expect(status.roaming).toBeTruthy();
     });
 
-    it("can poll device roaming status false", async () => {
+    it("can poll device reachability status false", async () => {
         device = client.devices.get({
-            phoneNumber: "+99999991001"
+            phoneNumber: "+99999991004"
         });
         
-        const status = await device.getRoaming();
+        const status = await device.getReachability();
 
-        expect(status.roaming).toBeFalsy();
+        expect(status.reachable).toBeFalsy();
     });
 });

@@ -1,18 +1,14 @@
 import { beforeAll, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
-import { Device } from "../src/models/device";
 import { configureClient } from "./configClient";
+import { KYCVerifyAgeResult } from "../src/models/kycAgeVerification";
 
 
 let client: NetworkAsCodeClient;
-let device: Device;
 
 beforeAll(() => {
     client = configureClient();
-    device = client.devices.get({
-        phoneNumber: "+99999991000",
-    });
 });
 
 describe("KYC Age Verification", () => {   
@@ -31,33 +27,24 @@ describe("KYC Age Verification", () => {
             includeContentLock: true,
             includeParentalControl: true
         }
-        const result: any = await device.verifyAge(params);
+        const result: KYCVerifyAgeResult = await client.kyc.verifyAge(params);
         expect(result).toBeTruthy();
-        expect(result.ageCheck).toBe("true")
+        expect(result.ageCheck).toBe(true)
     });
 
-   it("if missing phone number from request body, ahould add in the backend it and work ", async () => {
+   it("should verify without optional parameters ", async () => {
        const params = {
             ageThreshold: 18,
-            idDocument: "66666666q",
-            name: "Federica Sanchez Arjona",
-            givenName: "Federica",
-            familyName: "Sanchez Arjona",
-            middleNames: "Sanchez",
-            familyNameAtBirth: "YYYY",
-            birthdate: "1978-08-22",
-            email: "federicaSanchez.Arjona@example.com",
-            includeContentLock: true,
-            includeParentalControl: true
-        }
-        const result: any = await device.verifyAge(params);
+            phoneNumber: "+99999991000",
+           }
+        const result: KYCVerifyAgeResult = await client.kyc.verifyAge(params);
         expect(result).toBeTruthy();
-        expect(result.ageCheck).toBe("true")
+        expect(result.ageCheck).toBe(true)
     });
 
     it("wrong phone number should return 403 AuthenticationError", async () => {
         try {
-            await device.verifyAge(
+            await client.kyc.verifyAge(
                 {   
                     ageThreshold: 18,
                     phoneNumber: "+1234567",

@@ -15,25 +15,12 @@
  */
 
 import { APIClient } from "../api";
+import { AccessTokenCredential, PlainCredential } from "./authorization";
 
 
 export enum EventType {
     AREA_ENTERED = "org.camaraproject.geofencing-subscriptions.v0.area-entered",
     AREA_LEFT = "org.camaraproject.geofencing-subscriptions.v0.area-left"
-}
-
-export interface PlainCredential {
-    credentialType: "PLAIN",
-    identifier: string,
-    secret: string
-
-}
-
-export interface AccessTokenCredential {
-    credentialType: "ACCESSTOKEN",
-    accessToken: string,
-    accessTokenType?: string,
-    accessTokenExpiresUtc: Date | string
 }
 
 export interface GeofencingSubscriptionParams {

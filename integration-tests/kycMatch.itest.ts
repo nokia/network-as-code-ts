@@ -1,18 +1,14 @@
 import { beforeAll, describe, expect } from "@jest/globals";
 import "dotenv/config";
 import { NetworkAsCodeClient } from "../src";
-import { Device } from "../src/models/device";
 import { configureClient } from "./configClient";
+import { KYCMatchResult } from "../src/models/kycMatch";
 
 
 let client: NetworkAsCodeClient;
-let device: Device;
 
 beforeAll(() => {
     client = configureClient();
-    device = client.devices.get({
-        phoneNumber: "+99999991000",
-    });
 });
 
 
@@ -40,12 +36,14 @@ describe("KYC Match", () => {
             email: "abc@example.com",
             gender: "OTHER"
         }
-        const result: any = await device.matchCustomer(params);
+        
+        const result: KYCMatchResult = await client.kyc.matchCustomer(params);
         expect(result).toBeTruthy();
-        expect(result.familyNameMatch).toBe("false");
-        expect(result.addressMatch).toBe("false");
-        expect(result.familyNameAtBirthMatch).toBe("false");
-        expect(result.streetNumberMatch).toBe("false");
+        expect(result.idDocumentMatch).toBe(true);
+        expect(result.familyNameMatch).toBe(false);
+        expect(result.addressMatch).toBe(false);
+        expect(result.familyNameAtBirthMatch).toBe(false);
+        expect(result.streetNumberMatch).toBe(false);
     });
 
     it("should match customer with not all params requested", async () => {
@@ -63,15 +61,18 @@ describe("KYC Match", () => {
             postalCode: "1028460",
             region: "Tokyo"
         }
-        const result: any = await device.matchCustomer(params);
+        const result: KYCMatchResult = await client.kyc.matchCustomer(params);
+
         expect(result).toBeTruthy();
-        expect(result.familyNameMatch).toBe(null);
-        expect(result.addressMatch).toBe(null);
-        expect(result.streetNumberMatch).toBe("false");
+
+        expect(result.familyNameMatch).toBeFalsy();
+        expect(result.addressMatch).toBeFalsy();
+        expect(result.streetNumberMatch).toBe(false);
     });
 
-   it("if missing phone number from request body, should add in the backend it and work ", async () => {
+    it("should convert strings to boolean or null", async () => {
         const params = {
+            phoneNumber: "+999999991000",
             idDocument: "66666666q",
             name: "Federica Sanchez Arjona",
             givenName: "Federica",
@@ -92,17 +93,18 @@ describe("KYC Match", () => {
             email: "abc@example.com",
             gender: "OTHER"
         }
-        const result: any = await device.matchCustomer(params);
-        expect(result).toBeTruthy();
-        expect(result.familyNameMatch).toBe("false");
-        expect(result.addressMatch).toBe("false");
-        expect(result.familyNameAtBirthMatch).toBe("false");
-        expect(result.streetNumberMatch).toBe("false");;
+        
+        const result: KYCMatchResult = await client.kyc.matchCustomer(params);
+        Object.entries(result).forEach(([key, value]) => {
+            if (!key.toLowerCase().includes("score")){
+                expect([true, false, null]).toContain(value)
+            }
+            });
     });
 
     it("wrong phone number should return 403 AuthenticationError", async () => {
         try {
-            await device.matchCustomer(
+            await client.kyc.matchCustomer(
                 {   phoneNumber: "+12345678",
                     idDocument: "123456",
                     name: "testName",

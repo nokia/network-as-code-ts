@@ -1,7 +1,5 @@
 import fetchMock from '@fetch-mock/jest';
 import { NetworkAsCodeClient } from "../src";
-import { Device } from "../src/models/device";
-import { InvalidParameterError } from '../src/errors';
 
 jest.mock("node-fetch", () => {
 	const nodeFetch = jest.requireActual("node-fetch");
@@ -17,13 +15,9 @@ jest.mock("node-fetch", () => {
 });
 
 let client: NetworkAsCodeClient;
-let device: Device;
 
 beforeAll(() => {
     client = new NetworkAsCodeClient("TEST_TOKEN");
-    device = client.devices.get({
-        phoneNumber: "+999999991000"
-    });
 });
 
 
@@ -40,14 +34,37 @@ describe("KYC Match", () => {
     it("KYC Match should match customer", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
-            (req: any): any => {
-                expect(req.headers).toEqual({
+            {
+                body: {
+                    idDocumentMatch: true,
+                    nameMatch: true,
+                    givenNameMatch: null,
+                    familyNameMatch: null,
+                    nameKanaHankakuMatch: true,
+                    nameKanaZenkakuMatch: true,
+                    middleNamesMatch: true,
+                    familyNameAtBirthMatch: false,
+                    familyNameAtBirthMatchScore: 90,
+                    addressMatch: true,
+                    streetNameMatch: true,
+                    streetNumberMatch: true,
+                    postalCodeMatch: true,
+                    regionMatch: true,
+                    localityMatch: null,
+                    countryMatch: true,
+                    houseNumberExtensionMatch: null,
+                    birthdateMatch: true,
+                    emailMatch: false,
+                    emailMatchScore: 87,
+                    genderMatch: true
+                }
+            },{
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN'
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual(
-                    {
+                },
+                body: {
                         phoneNumber: "+999999991000",
                         idDocument: "123456",
                         name: "testName",
@@ -68,35 +85,11 @@ describe("KYC Match", () => {
                         birthdate: "TestBirthdate",
                         email: "TestEmail",
                         gender: "TestGender"
-                    }
-                )
-            },
-            { response: 
-                JSON.stringify({
-                    idDocumentMatch: 'true',
-                    nameMatch: 'true',
-                    givenNameMatch: 'not_available',
-                    familyNameMatch: 'not_available',
-                    nameKanaHankakuMatch: 'true',
-                    nameKanaZenkakuMatch: 'true',
-                    middleNamesMatch: 'true',
-                    familyNameAtBirthMatch: 'false',
-                    familyNameAtBirthMatchScore: 90,
-                    addressMatch: 'true',
-                    streetNameMatch: 'true',
-                    streetNumberMatch: 'true',
-                    postalCodeMatch: 'true',
-                    regionMatch: 'true',
-                    localityMatch: 'not_available',
-                    countryMatch: 'true',
-                    houseNumberExtensionMatch: 'not_available',
-                    birthdateMatch: 'true',
-                    emailMatch: 'false',
-                    emailMatchScore: 87,
-                    genderMatch: 'true'
-            })});
+                }
+            }
+        );
 
-        await device.matchCustomer(
+        await client.kyc.matchCustomer(
             {
                 phoneNumber: "+999999991000",
                 idDocument: "123456",
@@ -120,19 +113,63 @@ describe("KYC Match", () => {
                 gender: "TestGender"
             }
         );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
+            {
+                method: "POST",
+                body: {
+                    phoneNumber: "+999999991000",
+                    idDocument: "123456",
+                    name: "testName",
+                    givenName: "testGivenName",
+                    familyName: "TestFamilyName",
+                    nameKanaHankaku: "TestNameKanaHankaku",
+                    nameKanaZenkaku: "TestNameKanaZenkaku",
+                    middleNames: "TestMiddleNames",
+                    familyNameAtBirth: "TestFamilyNameAtBirth",
+                    address: "TestAddress",
+                    streetName: "TestStreetName",
+                    streetNumber: "TestStreetNumber",
+                    postalCode: "TestPostalCode",
+                    region: "TestRegion",
+                    locality: "TestLocality",
+                    country: "TestCountry",
+                    houseNumberExtension: "TestHouseNumberExtension",
+                    birthdate: "TestBirthdate",
+                    email: "TestEmail",
+                    gender: "TestGender"
+                }
+            }
+        );
     });
 
     it("KYC Match with not all attributes requested", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
-            (req: any): any => {
-                expect(req.headers).toEqual({
+            { 
+                body: {
+                    idDocumentMatch: true,
+                    nameMatch: true,
+                    givenNameMatch: null,
+                    familyNameMatch: null,
+                    nameKanaHankakuMatch: true,
+                    nameKanaZenkakuMatch: true,
+                    middleNamesMatch: true,
+                    familynameatbirthmatch: false,
+                    familyNameAtBirthMatchScore: 90,
+                    addressMatch: true,
+                    streetNameMatch: true,
+                    emailMatch: true
+                }
+            },
+            {
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN'
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual(
-                    {
+                },
+                body: {
                         phoneNumber: "+999999991000",
                         idDocument: "123456",
                         name: "testName",
@@ -146,25 +183,9 @@ describe("KYC Match", () => {
                         streetName: "TestStreetName",
                         email: "TestEmail"
                     }
-                )
-            },
-            { response: 
-                JSON.stringify({
-                    idDocumentMatch: 'true',
-                    nameMatch: 'true',
-                    givenNameMatch: 'not_available',
-                    familyNameMatch: 'not_available',
-                    nameKanaHankakuMatch: 'true',
-                    nameKanaZenkakuMatch: 'true',
-                    middleNamesMatch: 'true',
-                    familyNameAtBirthMatch: 'false',
-                    familyNameAtBirthMatchScore: 90,
-                    addressMatch: 'true',
-                    streetNameMatch: 'true',
-                    email: "true"
-            })});
+            });
 
-        await device.matchCustomer(
+        await client.kyc.matchCustomer(
             {
                 phoneNumber: "+999999991000",
                 idDocument: "123456",
@@ -180,19 +201,63 @@ describe("KYC Match", () => {
                 email: "TestEmail"
             }
         );
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
+            {
+                method: "POST",
+                body: {
+                    phoneNumber: "+999999991000",
+                    idDocument: "123456",
+                    name: "testName",
+                    givenName: "testGivenName",
+                    familyName: "TestFamilyName",
+                    nameKanaHankaku: "TestNameKanaHankaku",
+                    nameKanaZenkaku: "TestNameKanaZenkaku",
+                    middleNames: "TestMiddleNames",
+                    familyNameAtBirth: "TestFamilyNameAtBirth",
+                    address: "TestAddress",
+                    streetName: "TestStreetName",
+                    email: "TestEmail"
+                }
+            }
+        );
     });
 
-    it("should add the device phone number to the body in the backend", async () => {
+    it.failing("Should fail for request body", async () => {
         fetchMock.mockGlobal().post(
             "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
-            (req: any): any => {
-                expect(req.headers).toEqual({
+            {
+                body: {
+                    idDocumentMatch: true,
+                    nameMatch: true,
+                    givenNameMatch: null,
+                    familyNameMatch: null,
+                    nameKanaHankakuMatch: true,
+                    nameKanaZenkakuMatch: true,
+                    middleNamesMatch: true,
+                    familyNameAtBirthMatch: false,
+                    familyNameAtBirthMatchScore: 90,
+                    addressMatch: true,
+                    streetNameMatch: true,
+                    streetNumberMatch: true,
+                    postalCodeMatch: true,
+                    regionMatch: true,
+                    localityMatch: null,
+                    countryMatch: true,
+                    houseNumberExtensionMatch: null,
+                    birthdateMatch: true,
+                    emailMatch: false,
+                    emailMatchScore: 87,
+                    genderMatch: true
+                }
+            },{
+                headers: {
                     "Content-Type": "application/json",
                     "X-RapidAPI-Host": "network-as-code.nokia.rapidapi.com",
                     "X-RapidAPI-Key": 'TEST_TOKEN'
-                }),
-                expect(JSON.parse(req.body.toString())).toEqual(
-                    {
+                },
+                body: {
+                        phoneNumber: "+999999991000",
                         idDocument: "123456",
                         name: "testName",
                         givenName: "testGivenName",
@@ -211,38 +276,14 @@ describe("KYC Match", () => {
                         houseNumberExtension: "TestHouseNumberExtension",
                         birthdate: "TestBirthdate",
                         email: "TestEmail",
-                        gender: "TestGender",
-                        phoneNumber: "+999999991000"
-                    }
-                )
-            },
-            { response: 
-                JSON.stringify({
-                    idDocumentMatch: 'true',
-                    nameMatch: 'true',
-                    givenNameMatch: 'not_available',
-                    familyNameMatch: 'not_available',
-                    nameKanaHankakuMatch: 'true',
-                    nameKanaZenkakuMatch: 'true',
-                    middleNamesMatch: 'true',
-                    familyNameAtBirthMatch: 'false',
-                    familyNameAtBirthMatchScore: 90,
-                    addressMatch: 'true',
-                    streetNameMatch: 'true',
-                    streetNumberMatch: 'true',
-                    postalCodeMatch: 'true',
-                    regionMatch: 'true',
-                    localityMatch: 'not_available',
-                    countryMatch: 'true',
-                    houseNumberExtensionMatch: 'not_available',
-                    birthdateMatch: 'true',
-                    emailMatch: 'false',
-                    emailMatchScore: 87,
-                    genderMatch: 'true'
-            })});
+                        gender: "TestGender"
+                }
+            }
+        );
 
-        await device.matchCustomer(
+        await client.kyc.matchCustomer(
             {
+                phoneNumber: "+999999991000",
                 idDocument: "123456",
                 name: "testName",
                 givenName: "testGivenName",
@@ -262,6 +303,35 @@ describe("KYC Match", () => {
                 birthdate: "TestBirthdate",
                 email: "TestEmail",
                 gender: "TestGender"
+            }
+        );
+
+        expect(fetchMock).toHaveFetched(
+            "https://network-as-code.p-eu.rapidapi.com/passthrough/camara/v1/kyc-match/kyc-match/v0.3/match",
+            {
+                method: "POST",
+                body: {
+                    phoneNumber: "+1234567",
+                    idDocument: "wrong",
+                    name: "wrong",
+                    givenName: "wrong",
+                    familyName: "wrong",
+                    nameKanaHankaku: "wrong",
+                    nameKanaZenkaku: "wrong",
+                    middleNames: "wrong",
+                    familyNameAtBirth: "wrong",
+                    address: "wrong",
+                    streetName: "wrong",
+                    streetNumber: "wrong",
+                    postalCode: "wrong",
+                    region: "wrong",
+                    locality: "wrong",
+                    country: "wrong",
+                    houseNumberExtension: "wrong",
+                    birthdate: "wrong",
+                    email: "wrong",
+                    gender: "wrong"
+                }
             }
         );
     });
