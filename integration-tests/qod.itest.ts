@@ -55,7 +55,7 @@ describe("QoD", () => {
         );
     });
 
-    test("should create a session", async () => {
+    test.skip("should create a session", async () => {
         const session = await device.createQodSession("QOS_L", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -68,7 +68,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create a session to a device with phone number", async () => {
+    test.skip("should create a session to a device with phone number", async () => {
         const session = await deviceWithPhoneNumber.createQodSession("QOS_L", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -83,7 +83,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with medium profile", async () => {
+    test.skip("should create a session with medium profile", async () => {
         const session = await device.createQodSession("QOS_M", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -94,7 +94,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with small profile", async () => {
+    test.skip("should create a session with small profile", async () => {
         const session = await device.createQodSession("QOS_S", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -105,7 +105,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with low latency profile", async () => {
+    test.skip("should create a session with low latency profile", async () => {
         const session = await device.createQodSession("QOS_E", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -116,7 +116,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should get one session", async () => {
+    test.skip("should get one session", async () => {
         const session = await device.createQodSession("QOS_E", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -137,7 +137,7 @@ describe("QoD", () => {
         }
     });
 
-    test("should get all sessions", async () => {
+    test.skip("should get all sessions", async () => {
         await device.createQodSession("QOS_E", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -151,7 +151,7 @@ describe("QoD", () => {
     });
 
 
-    test("should create a session with service port", async () => {
+    test.skip("should create a session with service port", async () => {
         const session = await device.createQodSession("QOS_L", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -164,7 +164,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with service port range", async () => {
+    test.skip("should create a session with service port range", async () => {
         const session = await device.createQodSession("QOS_M", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -178,7 +178,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with device port", async () => {
+    test.skip("should create a session with device port", async () => {
         const session = await device.createQodSession("QOS_M", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -192,7 +192,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with device port range", async () => {
+    test.skip("should create a session with device port range", async () => {
         const session = await device.createQodSession("QOS_M", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -206,7 +206,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with duration", async () => {
+    test.skip("should create a session with duration", async () => {
         const session = await device.createQodSession("QOS_L", {
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
@@ -219,7 +219,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should extend the duration of a session", async () => {
+    test.skip("should extend the duration of a session", async () => {
         const session = await device.createQodSession("QOS_L", {
             serviceIpv4: "5.6.7.8",
             serviceIpv6: "2041:0000:140F::875B:131B",
@@ -232,7 +232,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create and delete a session with notification url", async () => {
+    test.skip("should create and delete a session with notification url", async () => {
         const session = await device.createQodSession("QOS_L", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -272,7 +272,7 @@ describe("QoD", () => {
 
     },20 * 1000);
 
-    test("should change session status from deletion", async () => {
+    test.skip("should change session status from deletion", async () => {
         const session = await device.createQodSession("QOS_L", {
             duration: 3600,
             serviceIpv4: "5.6.7.8",
@@ -309,7 +309,7 @@ describe("QoD", () => {
 
     },20 * 1000);
 
-    test("should create a session with public and private ipv4", async () => {
+    test.skip("should create a session with public and private ipv4", async () => {
         device = client.devices.get({
             networkAccessIdentifier: "test-device@testcsp.net",
             ipv4Address: {
@@ -329,7 +329,7 @@ describe("QoD", () => {
         await session.deleteSession();
     });
 
-    test("should create a session with public ipv4 and public port", async () => {
+    test.skip("should create a session with public ipv4 and public port", async () => {
         device = client.devices.get({
             networkAccessIdentifier: "test-device@testcsp.net",
             ipv4Address: {

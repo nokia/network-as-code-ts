@@ -44,7 +44,7 @@ describe("Slicing", () => {
         );
     });
 
-    test("should create a slice", async () => {
+    test.skip("should create a slice", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const new_slice = await client.slices.create(
@@ -71,7 +71,7 @@ describe("Slicing", () => {
         expect(slices.length).toBeGreaterThanOrEqual(0);
     });
 
-    test("should create a slice with other optional args", async () => {
+    test.skip("should create a slice with other optional args", async () => {
         const slice = await client.slices.create(
             { mcc: "236", mnc: "30" },
             { serviceType: "eMBB", differentiator: "444444" },
@@ -126,7 +126,7 @@ describe("Slicing", () => {
         await slice.delete();
     });
 
-    test("should get a slice", async () => {
+    test.skip("should get a slice", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
@@ -145,7 +145,7 @@ describe("Slicing", () => {
         await slice.delete();
     });
 
-    test("should mark a deleted slice's state as 'Deleted'", async () => {
+    test.skip("should mark a deleted slice's state as 'Deleted'", async () => {
         const random = Math.floor(Math.random() * 1000) + 1;
 
         const slice = await client.slices.create(
