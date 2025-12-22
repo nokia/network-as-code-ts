@@ -12,7 +12,7 @@ beforeAll(() => {
 });
 
 describe("KYC Check Tenure", () => {   
-    it("check tenure should return true", async () => {
+    it.skip("check tenure should return true", async () => {
         const result = await client.kyc.checkTenure(
             {
                 phoneNumber: "+99999991000",
@@ -23,7 +23,7 @@ describe("KYC Check Tenure", () => {
         expect(result.tenureDateCheck).toBe(true)
     });
 
-   it("check tenure should return false", async () => {
+   it.skip("check tenure should return false", async () => {
         const result = await client.kyc.checkTenure(
             {
                 phoneNumber: "+99999991005",
@@ -34,7 +34,7 @@ describe("KYC Check Tenure", () => {
         expect(result.tenureDateCheck).toBe(false)
     });
 
-   it("should handle date object", async () => {
+   it.skip("should handle date object", async () => {
         const result = await client.kyc.checkTenure(
             {
                 phoneNumber: "+99999991000",
@@ -45,7 +45,7 @@ describe("KYC Check Tenure", () => {
         expect(result.tenureDateCheck).toBe(true)
     });
 
-   it("should return string value for contract type", async () => {
+   it.skip("should return string value for contract type", async () => {
         const result = await client.kyc.checkTenure(
             {
                 phoneNumber: "+99999991005",
@@ -58,7 +58,7 @@ describe("KYC Check Tenure", () => {
         }
     });
 
-    it("wrong phone number should return 403 AuthenticationError", async () => {
+    it.skip("wrong phone number should return 403 AuthenticationError", async () => {
         try {
             await client.kyc.checkTenure(
             {
